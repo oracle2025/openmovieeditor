@@ -6,16 +6,13 @@ namespace nle
 {
 	
 VideoClip::VideoClip( Track *track, int64_t position, IVideoFile *vf )
-//VideoClip::VideoClip( Track *track, int64_t position, const char* filename )
 	: Clip( track, position )
 {
-//	m_length = 500;
-	m_videoFile = vf; //new VideoFileQT("/home/oracle/test3.mov");
+	m_videoFile = vf;
 }
 int64_t VideoClip::length()
 {
 	return m_videoFile->length() - ( m_trimA + m_trimB );
-//	return 500 - ( m_trimA + m_trimB );
 }
 void VideoClip::reset()
 {

@@ -13,6 +13,7 @@ class VideoClip : public Clip
 	public:
 //		VideoClip( Track *track, int64_t position, const char* filename );
 		VideoClip( Track *track, int64_t position, IVideoFile *vf );
+		~VideoClip();
 		int64_t length();
 		void reset();
 		unsigned char* getFrame( int64_t position );

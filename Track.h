@@ -15,7 +15,7 @@ enum Track_Types {
 class Track
 {
 	public:
-		virtual ~Track(){}
+		virtual ~Track();
 		std::list< Clip* >* getClips() { return &m_clips; }
 		virtual int type() = 0;
 		virtual void reset();

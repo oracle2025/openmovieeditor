@@ -16,10 +16,13 @@ class AudioTrack : public Track
 		~AudioTrack();
 
 		// method declerations
-		void add_audio( int64_t position, const char* filename );
+		int fillBuffer( float* output, unsigned long frames, int64_t position );
+		//void add_audio( int64_t position, const char* filename );
 		int type() { return TRACK_TYPE_AUDIO; }
+		void reset();
 	private:
 		// member variable declerations
+		std::list< Clip* >::iterator m_current;
 };
 	
 } /* namespace nle */

@@ -11,6 +11,14 @@ Track::Track( int num )
 {
 	m_num = num;
 }
+Track::~Track()
+{
+	Clip *clip;
+	while(m_clips.size()) {
+		clip = m_clips.pop_back();
+		delete clip;
+	}
+}
 void Track::add( Clip* clip )
 {
 	m_clips.push_back( clip );
