@@ -2,6 +2,8 @@
 #include <quicktime/colormodels.h>
 #include "VideoFileQT.h"
 #include <string.h>
+#include <iostream>
+using namespace std;
 
 namespace nle
 {
@@ -29,6 +31,12 @@ VideoFileQT::VideoFileQT( const char* filename )
 	for (int i = 0; i < m_height; i++) {
                 m_rows[i] = m_frame + m_width * 3 * i;
 	}
+	cout << "Video Duration: " << lqt_video_duration( m_qt, 0 ) << endl;
+	cout << "Video FPS: " << quicktime_frame_rate( m_qt, 0 ) << endl;
+	cout << "Video Length: " << quicktime_video_length( m_qt, 0 ) << endl;
+	cout << "Video Timescale: " << lqt_video_time_scale( m_qt, 0 ) << endl;
+	cout << "Audio Length: " << quicktime_audio_length( m_qt, 0 ) << endl;
+	cout << "Audio Samplerate: " << quicktime_sample_rate( m_qt, 0 ) << endl;
 	m_ok = true;
 }
 VideoFileQT::~VideoFileQT()

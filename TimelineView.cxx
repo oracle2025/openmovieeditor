@@ -1,3 +1,4 @@
+#include <iostream>
 #include <FL/Fl.H>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Window.H>
@@ -11,9 +12,12 @@
 #include "MoveDragHandler.h"
 #include "TrimDragHandler.h"
 #include "Rect.h"
+using namespace std;
 
 namespace nle
 {
+
+bool USING_AUDIO = 0;
 	
 
 TimelineView::TimelineView( int x, int y, int w, int h, const char *label )
@@ -23,11 +27,13 @@ TimelineView::TimelineView( int x, int y, int w, int h, const char *label )
 	m_timeline = new Timeline();
 	m_timeline->add_video( 0, 30, "/home/oracle/tmp/test3.mov" );
 	m_timeline->add_video( 1, 100, "/home/oracle/tmp/test3.mov" );
+	m_timeline->add_audio( 2, 0, "/home/oracle/tmp/test3.mov" );
 	m_scrollPosition = 0;
 	SwitchBoard::i()->timelineView(this);
 }
 TimelineView::~TimelineView()
 {
+	cout << "Never Called" << endl;
 	delete m_timeline;
 	m_timeline = NULL;
 }
@@ -39,11 +45,11 @@ int TimelineView::handle( int event )
 		case FL_PUSH: {
 				Clip* cl = get_clip( _x, _y );
 				if (cl) {
-					if ( _x < get_screen_position( cl->position() ) + 8 ) {
+					if ( _x < get_screen_position( cl->position(), cl->track()->stretchFactor() ) + 8 ) {
 						m_dragHandler = new TrimDragHandler(
 								this, cl, cl->track()->num(),
 								0, 0, false );
-					} else if ( _x > get_screen_position( cl->position() + cl->length() ) - 8) {
+					} else if ( _x > get_screen_position( cl->position() + cl->length(), cl->track()->stretchFactor() ) - 8) {
 						m_dragHandler = new TrimDragHandler(
 								this, cl, cl->track()->num(),
 								0, 0, true );
@@ -113,15 +119,26 @@ void TimelineView::draw()
 				y() + TRACK_SPACING + cnt * (TRACK_HEIGHT + TRACK_SPACING),
 				w() - 2 * TRACK_SPACING,
 				TRACK_HEIGHT );
-		fl_scale( SwitchBoard::i()->zoom(), 1.0 );
-		fl_translate( - m_scrollPosition, 0.0 );
-		for ( std::list< Clip* >::iterator j = vcl->begin(); j != vcl->end(); j++ ) {
-			p = float( (*j)->position() );
-			l = float( (*j)->length() );
-			Draw::box( p, 0, l, TRACK_HEIGHT, FL_DARK3 );
-			Draw::triangle( p, TRACK_HEIGHT/2, true );
-			Draw::triangle( p + l, TRACK_HEIGHT/2, false );
-		}
+		USING_AUDIO = (*i)->type() == TRACK_TYPE_AUDIO;
+		fl_scale( SwitchBoard::i()->zoom() / (*i)->stretchFactor(), 1.0 );
+		fl_translate( - (m_scrollPosition * (*i)->stretchFactor()), 0.0 );
+		//if ( (*i)->type() == TRACK_TYPE_VIDEO ) {
+			for ( std::list< Clip* >::iterator j = vcl->begin(); j != vcl->end(); j++ ) {
+				p = float( (*j)->position() );
+				l = float( (*j)->length() );
+				Draw::box( p, 0, l, TRACK_HEIGHT, FL_DARK3 );
+				Draw::triangle( p, TRACK_HEIGHT/2, true );
+				Draw::triangle( p + l, TRACK_HEIGHT/2, false );
+		//	}
+		}/* else {
+			for ( std::list< Clip* >::iterator j = vcl->begin(); j != vcl->end(); j++ ) {
+				p = float( (*j)->position() );
+				l = float( (*j)->length() );
+				Draw::box( p / 1601.6, 0, l / 1601.6, TRACK_HEIGHT, FL_DARK3 );
+				Draw::triangle( p / 1601.6, TRACK_HEIGHT/2, true );
+				Draw::triangle( (p + l) / 1601.6, TRACK_HEIGHT/2, false );
+			}
+		}*/
 		fl_pop_clip();
 		fl_pop_matrix();
 		cnt++;
@@ -142,9 +159,9 @@ int64_t TimelineView::get_real_position( int p )
 {
 	return int64_t( float(p - TRACK_SPACING) * SwitchBoard::i()->zoom() ) + m_scrollPosition;
 }
-int TimelineView::get_screen_position( int64_t p )
+int TimelineView::get_screen_position( int64_t p, float stretchFactor )
 {
-	return int ( float( p - m_scrollPosition ) / SwitchBoard::i()->zoom() ) + TRACK_SPACING;
+	return int ( float( p - ( m_scrollPosition * stretchFactor ) ) / SwitchBoard::i()->zoom() / stretchFactor ) + TRACK_SPACING;
 
 }
 void TimelineView::scroll( int64_t position )
@@ -189,9 +206,9 @@ Rect TimelineView::get_track_rect( Track* track )
 Rect TimelineView::get_clip_rect( Clip* clip, bool clipping )
 {
 	Rect tmp(
-			get_screen_position( clip->position() ),
+			get_screen_position( clip->position() / clip->track()->stretchFactor() ),
 			TRACK_SPACING + (TRACK_SPACING + TRACK_HEIGHT) * clip->track()->num(),
-			clip->length(),
+			clip->length() / SwitchBoard::i()->zoom() / clip->track()->stretchFactor(),
 			TRACK_HEIGHT
 		);
 	if ( clipping ) {
@@ -211,7 +228,7 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 	Track *old_tr = clip->track();
 	if (!new_tr || new_tr->type() != old_tr->type() )
 		return;
-	clip->position( get_real_position( _x - offset ) );
+	clip->position( get_real_position( _x - offset ) * clip->track()->stretchFactor() );
 	if ( new_tr == old_tr ) {
 		return;
 	}
@@ -222,10 +239,10 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 void TimelineView::trim_clip( Clip* clip, int _x, bool trimRight )
 {
 	if (trimRight) {
-		clip->trimB( ( clip->position() + clip->length() ) - get_real_position(_x)  );
+		clip->trimB( ( clip->position() + clip->length() ) - ( get_real_position(_x) * clip->track()->stretchFactor() ) );
 		return;
 	}
-	clip->trimA( get_real_position(_x) - clip->position() );
+	clip->trimA( get_real_position(_x) * clip->track()->stretchFactor() - clip->position() );
 }
 void TimelineView::move_cursor( int64_t position )
 {

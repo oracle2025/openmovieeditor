@@ -10,6 +10,7 @@ VideoClip::VideoClip( Track *track, int64_t position, IVideoFile *vf )
 {
 	m_videoFile = vf;
 }
+VideoClip::~VideoClip(){}
 int64_t VideoClip::length()
 {
 	return m_videoFile->length() - ( m_trimA + m_trimB );

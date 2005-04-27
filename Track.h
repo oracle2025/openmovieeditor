@@ -18,6 +18,7 @@ class Track
 		virtual ~Track();
 		std::list< Clip* >* getClips() { return &m_clips; }
 		virtual int type() = 0;
+		virtual float stretchFactor() = 0;
 		virtual void reset();
 		void add( Clip* clip );
 		void remove( Clip* clip );

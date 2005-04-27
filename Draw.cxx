@@ -24,9 +24,15 @@ void Draw::box( float x, float y, float w, float h, Fl_Color c )
 	fl_end_loop();
 
 }
+extern bool USING_AUDIO;
 void Draw::triangle( float x, float y, bool direction )
 {
-	float _x = direction ? 8 : -8;
+	float _x;
+	if (USING_AUDIO) {
+		_x = direction ? 8 * ( 48000 / 29.97 ) : - 8 * ( 48000 / 29.97 );
+	} else {
+		_x = direction ? 8 : -8;
+	}
 	fl_color( FL_BLACK );
 	fl_begin_polygon();
 	fl_vertex( x, y );

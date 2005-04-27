@@ -5,6 +5,8 @@
 #include <FL/Fl_Widget.H>
 #include <stdint.h>
 #include "Rect.h"
+#include "NextFrameListener.h"
+
 namespace nle
 {
 #define TRACK_HEIGHT 30
@@ -35,7 +37,7 @@ class TimelineView : public Fl_Widget
 		void draw();
 	private:
 		int64_t get_real_position( int p );
-		int get_screen_position( int64_t p );
+		int get_screen_position( int64_t p, float stretchFactor = 1.0 );
 		
 		Timeline *m_timeline;
 		DragHandler *m_dragHandler;

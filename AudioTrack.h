@@ -17,9 +17,10 @@ class AudioTrack : public Track
 
 		// method declerations
 		int fillBuffer( float* output, unsigned long frames, int64_t position );
-		//void add_audio( int64_t position, const char* filename );
+		void add_audio( int64_t position, const char* filename );
 		int type() { return TRACK_TYPE_AUDIO; }
 		void reset();
+		float stretchFactor() { return ( 48000 / 29.97 ); }
 	private:
 		// member variable declerations
 		std::list< Clip* >::iterator m_current;

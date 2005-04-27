@@ -8,6 +8,13 @@ Fl_Menu_Item NleUI::menu_[] = {
  {0}
 };
 
+inline void NleUI::cb_fileBrowser_i(Fl_File_Browser* o, void*) {
+  std::cout << (char *)((Fl_File_Browser*)o)->text(((Fl_File_Browser*)o)->value()) << std::endl;
+}
+void NleUI::cb_fileBrowser(Fl_File_Browser* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_fileBrowser_i(o,v);
+}
+
 inline void NleUI::cb__i(Fl_Button*, void*) {
   m_videoView->play();
 }
@@ -43,13 +50,29 @@ NleUI::NleUI() {
           o->box(FL_UP_BOX);
           { Fl_Box* o = new Fl_Box(0, 50, 235, 150, "Filemanager");
             o->hide();
-            Fl_Group::current()->resizable(o);
           }
-          { Fl_Box* o = new Fl_Box(0, 50, 235, 150, "Project");
+          { Fl_Group* o = new Fl_Group(0, 50, 235, 150, "Project");
             o->hide();
+            { Fl_Value_Input* o = new Fl_Value_Input(55, 60, 55, 25, "Width");
+              o->maximum(1024);
+              o->step(1);
+              o->value(640);
+            }
+            { Fl_Value_Input* o = new Fl_Value_Input(55, 90, 55, 25, "Height");
+              o->maximum(768);
+              o->step(1);
+              o->value(480);
+            }
+            { Fl_Box* o = new Fl_Box(135, 145, 55, 25);
+              Fl_Group::current()->resizable(o);
+            }
+            o->end();
+            Fl_Group::current()->resizable(o);
           }
           { Fl_Group* o = new Fl_Group(0, 50, 235, 150, "Files");
             { Fl_File_Browser* o = fileBrowser = new Fl_File_Browser(5, 55, 225, 140);
+              o->type(1);
+              o->callback((Fl_Callback*)cb_fileBrowser);
               Fl_Group::current()->resizable(o);
             }
             o->end();

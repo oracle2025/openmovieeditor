@@ -14,8 +14,9 @@ Track::Track( int num )
 Track::~Track()
 {
 	Clip *clip;
-	while(m_clips.size()) {
-		clip = m_clips.pop_back();
+	while( m_clips.size() ) {
+		clip = *m_clips.end();
+		m_clips.pop_back();
 		delete clip;
 	}
 }

@@ -18,6 +18,7 @@ class VideoTrack : public Track
 		// method declerations
 		void add_video( int64_t position, const char* filename );
 		int type() { return TRACK_TYPE_VIDEO; }
+		float stretchFactor() { return 1.0; }
 	private:
 		// member variable declerations
 };

@@ -9,7 +9,9 @@
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Tabs.H>
 #include <FL/Fl_Box.H>
+#include <FL/Fl_Value_Input.H>
 #include <FL/Fl_File_Browser.H>
+#include <iostream>
 #include "VideoView.h"
 #include <FL/Fl_Button.H>
 #include "TimelineView.h"
@@ -23,6 +25,10 @@ private:
   static Fl_Menu_Item menu_[];
 public:
   Fl_File_Browser *fileBrowser;
+private:
+  inline void cb_fileBrowser_i(Fl_File_Browser*, void*);
+  static void cb_fileBrowser(Fl_File_Browser*, void*);
+public:
   nle::VideoView *m_videoView;
 private:
   inline void cb__i(Fl_Button*, void*);

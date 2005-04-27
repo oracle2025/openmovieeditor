@@ -4,17 +4,22 @@
 namespace nle
 {
 
+class NextFrameListener;
+class Timeline;
 
 class Sound
 {
 	public:
-		Sound();
+		Sound( NextFrameListener *nfl );
 		~Sound();
 		void Play();
 		void Stop();
 		int  fillBuffer( float* output, unsigned long frames );
 	private:
-		int m_pipe[2];
+		NextFrameListener *m_nfl;
+		Timeline *m_tl;
+		int64_t m_soundSamples;
+		int64_t m_videoFrames;
 };
 
 

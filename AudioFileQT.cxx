@@ -1,4 +1,7 @@
 #include "AudioFileQT.h"
+#include <string.h>
+#include <iostream>
+using namespace std;
 
 #define FRAMES_PER_BUFFER 256
 
@@ -22,6 +25,7 @@ AudioFileQT::AudioFileQT( const char* filename )
 	//check samplerate
 	//check channels
 	m_ok = true;
+	m_oneShot = true;
 }
 AudioFileQT::~AudioFileQT()
 {
@@ -31,23 +35,29 @@ AudioFileQT::~AudioFileQT()
 void AudioFileQT::seek( int64_t sample )
 {
 	quicktime_set_audio_position( m_qt, sample, 0 );
+	m_oneShot = true;
+	
 }
 int AudioFileQT::fillBuffer( float* output, unsigned long frames )
 {
 	static float left_buffer[FRAMES_PER_BUFFER];
 	static float right_buffer[FRAMES_PER_BUFFER];
-	static float buf_pointer[2] = { left_buffer, right_buffer };
-	//int64_t lqt_last_audio_position(quicktime_t * file, int track);
+	static float *buf_pointer[2] = { left_buffer, right_buffer };
 	if ( frames > FRAMES_PER_BUFFER ) {
 		return 0;
 	}
 	int64_t diff = lqt_last_audio_position( m_qt, 0 );
 	lqt_decode_audio_track( m_qt, NULL, buf_pointer, frames, 0 );
 	diff = lqt_last_audio_position( m_qt, 0 ) - diff;
+	if ( m_oneShot ) {
+		diff = frames;
+		m_oneShot = false;
+	}
 	for ( int i = 0; i < diff; i++ ) {
 		output[i*2] = left_buffer[i]; // use left shift for *2 ??
 		output[i*2+1] = right_buffer[i];
 	}
+//	cout << "AudioFileQT::fillBuffer " << diff << endl;
 	return diff;
 }
 

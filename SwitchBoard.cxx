@@ -1,9 +1,15 @@
+#include <iostream>
+
 #include "SwitchBoard.h"
 #include "Timeline.h"
 #include "TimelineView.h"
 
+using namespace std;
+
 namespace nle
 {
+
+//extern bool USING_AUDIO;
 
 SwitchBoard::SwitchBoard()
 {
@@ -17,7 +23,11 @@ void SwitchBoard::zoom( float zoom )
 }
 float SwitchBoard::zoom()
 {
-	return m_zoom;
+	/*if (USING_AUDIO) {
+		return m_zoom / ( 48000 / 29.97 );
+	} else {*/
+		return m_zoom;
+//	}
 }
 void SwitchBoard::timeline( Timeline* tl )
 {

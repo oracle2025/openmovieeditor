@@ -3,9 +3,9 @@
 
 int
 main( int argc, char** argv ) {
-  NleUI* nui = new NleUI;
-  Fl::visual(FL_DOUBLE|FL_INDEX);
+  NleUI nui;
+  Fl::visual(FL_DOUBLE|FL_RGB);
 
-  nui->show( argc, argv );
+  nui.show( argc, argv );
   return Fl::run();
 }

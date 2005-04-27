@@ -11,7 +11,7 @@ class Track;
 class Clip
 {
 	public:
-		virtual ~Clip(){}
+		virtual ~Clip() {}
 		virtual int64_t length() = 0;
 		virtual void reset() = 0;
 		void position( int64_t position ) { m_position = position; }
