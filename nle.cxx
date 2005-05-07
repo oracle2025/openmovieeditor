@@ -80,7 +80,7 @@ NleUI::NleUI() {
           o->end();
         }
         { Fl_Group* o = new Fl_Group(235, 25, 240, 175);
-          { nle::VideoView* o = m_videoView = new nle::VideoView(235, 25, 240, 150, "VideoView");
+          { nle::VideoViewGL* o = m_videoView = new nle::VideoViewGL(235, 25, 240, 150, "VideoView");
             o->box(FL_DOWN_BOX);
             o->color(FL_BACKGROUND_COLOR);
             o->selection_color(FL_BACKGROUND_COLOR);

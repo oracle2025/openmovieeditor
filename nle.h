@@ -12,7 +12,7 @@
 #include <FL/Fl_Value_Input.H>
 #include <FL/Fl_File_Browser.H>
 #include <iostream>
-#include "VideoView.h"
+#include "VideoViewGL.h"
 #include <FL/Fl_Button.H>
 #include "TimelineView.h"
 #include <FL/Fl_Slider.H>
@@ -29,7 +29,7 @@ private:
   inline void cb_fileBrowser_i(Fl_File_Browser*, void*);
   static void cb_fileBrowser(Fl_File_Browser*, void*);
 public:
-  nle::VideoView *m_videoView;
+  nle::VideoViewGL *m_videoView;
 private:
   inline void cb__i(Fl_Button*, void*);
   static void cb_(Fl_Button*, void*);

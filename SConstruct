@@ -1,5 +1,5 @@
 env = Environment( CC = 'g++', CXXFLAGS='-ggdb', LINKFLAGS='-lquicktime -lportaudio' )
-env.ParseConfig( 'fltk-config --cxxflags --ldflags' )
+env.ParseConfig( 'fltk-config --cxxflags --ldflags --use-gl' )
 
 src_list = Split("""Clip.cxx
 	nle.cxx
@@ -9,7 +9,7 @@ src_list = Split("""Clip.cxx
 	SwitchBoard.cxx
 	TimelineView.cxx
 	VideoClip.cxx
-	VideoView.cxx
+	VideoViewGL.cxx
 	Draw.cxx
 	Track.cxx
 	Rect.cxx
@@ -19,6 +19,7 @@ src_list = Split("""Clip.cxx
 	AudioTrack.cxx
 	AudioClip.cxx
 	AudioFileQT.cxx
-	Sound.cxx""")
+	Sound.cxx
+	tga.c""")
 
 env.Program('nle', src_list )
