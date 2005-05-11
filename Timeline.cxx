@@ -13,6 +13,8 @@ using namespace std;
 namespace nle
 {
 
+Timeline* g_timeline;
+
 Timeline::Timeline()
 {
 	VideoTrack *vt;
@@ -32,9 +34,12 @@ Timeline::Timeline()
 	SwitchBoard::i()->timeline( this );
 	m_playPosition = 0;
 	m_samplePosition = 0;
+
+	g_timeline = this; //Singleton sucks, this is better :)
 }
 Timeline::~Timeline()
 {
+	g_timeline = NULL;
 	m_videoTracks.clear();
 	m_audioTracks.clear();
 	Track *track;
