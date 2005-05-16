@@ -39,33 +39,19 @@ TimelineView::~TimelineView()
 }
 int TimelineView::handle( int event )
 {
+	int _x = Fl::event_x() - x();
+	int _y = Fl::event_y() - y();
 	switch ( event ) {
 		case FL_PASTE:
 			cout << "FL_PASTE" << endl;
 			cout << "Text: (" << Fl::event_text() << ") " << Fl::event_length() << endl;
 			cout << "X: " << Fl::event_x() << " Y: " << Fl::event_y() << endl;
 			return 1;
-			break;
 		case FL_DND_DRAG:
-			//cout << "FL_DND_DRAG" << endl;
-			break;
 		case FL_DND_RELEASE:
-			cout << "FL_DND_RELEASE" << endl;
-			return 1;
-			break;
 		case FL_DND_ENTER:
-			cout << "FL_DND_ENTER" << endl;
-			return 1;
-			break;
 		case FL_DND_LEAVE:
-			cout << "FL_DND_LEAVE" << endl;
 			return 1;
-			break;
-	}
-
-	int _x = Fl::event_x() - x();
-	int _y = Fl::event_y() - y();
-	switch ( event ) {
 		case FL_PUSH: {
 				Clip* cl = get_clip( _x, _y );
 				if (cl) {
@@ -99,7 +85,7 @@ int TimelineView::handle( int event )
 				return 1;
 			}
 		default:
-		return Fl_Widget::handle( event );	
+			return Fl_Widget::handle( event );	
 	}
 	
 }

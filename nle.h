@@ -17,6 +17,7 @@
 #include <FL/Fl_Button.H>
 #include "TimelineView.h"
 #include <FL/Fl_Slider.H>
+#include "Flmm_Scalebar.H"
 
 class NleUI {
 public:

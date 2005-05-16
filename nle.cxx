@@ -39,7 +39,7 @@ void NleUI::cb_2(Fl_Slider* o, void* v) {
 
 NleUI::NleUI() {
   Fl_Double_Window* w;
-  { Fl_Double_Window* o = mainWindow = new Fl_Double_Window(475, 380, "MovieEditor");
+  { Fl_Double_Window* o = mainWindow = new Fl_Double_Window(475, 400, "MovieEditor");
     w = o;
     o->user_data((void*)(this));
     { Fl_Menu_Bar* o = new Fl_Menu_Bar(0, 0, 475, 25);
@@ -134,6 +134,20 @@ NleUI::NleUI() {
       o->step(1);
       o->slider_size(0.4);
       o->callback((Fl_Callback*)cb_2);
+    }
+    { Flmm_Scalebar* o = new Flmm_Scalebar(0, 380, 475, 20);
+      o->type(1);
+      o->box(FL_FLAT_BOX);
+      o->color(FL_DARK2);
+      o->selection_color(FL_BACKGROUND_COLOR);
+      o->labeltype(FL_NORMAL_LABEL);
+      o->labelfont(0);
+      o->labelsize(14);
+      o->labelcolor(FL_BLACK);
+      o->maximum(1024);
+      o->slider_size(0.40404);
+      o->align(FL_ALIGN_BOTTOM);
+      o->when(FL_WHEN_CHANGED);
     }
     o->end();
   }
