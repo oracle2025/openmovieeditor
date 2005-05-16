@@ -18,16 +18,15 @@ class VideoViewGL : public Fl_Gl_Window, NextFrameListener
 {
 	public:
 		VideoViewGL( int x, int y, int w, int h, const char *l = 0 );
+		~VideoViewGL();
 		void draw();
 		void nextFrame( int64_t frame );
-		void play(){}
-		void stop(){}
-		void addFrame( frame_struct* frame );
-		/* add Frame */
+		void play();
+		void stop();
 	private:
-		Timeline *m_timeline;
+		//Timeline *m_timeline; //g_timeline
 		Sound *m_snd;
-		std::list< frame_struct* > m_frameList;
+		//std::list< frame_struct* > m_frameList;
 };
 
 } /* namespace nle */

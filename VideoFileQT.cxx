@@ -31,6 +31,11 @@ VideoFileQT::VideoFileQT( const char* filename )
 	for (int i = 0; i < m_height; i++) {
                 m_rows[i] = m_frame + m_width * 3 * i;
 	}
+	m_framestruct.x = 0;
+	m_framestruct.y = 0;
+	m_framestruct.w = quicktime_video_width( m_qt, 0 );
+	m_framestruct.h = quicktime_video_height( m_qt, 0 );
+	m_framestruct.RGB = m_frame;
 	cout << "Video Duration: " << lqt_video_duration( m_qt, 0 ) << endl;
 	cout << "Width: " << quicktime_video_width( m_qt, 0 ) << endl;
 	cout << "Height: " << quicktime_video_height( m_qt, 0 ) << endl;
@@ -58,10 +63,10 @@ int64_t VideoFileQT::length()
 int VideoFileQT::fps()
 {
 }
-unsigned char* VideoFileQT::read()
+frame_struct* VideoFileQT::read()
 {
 	quicktime_decode_video( m_qt, m_rows, 0);
-	return m_frame;
+	return &m_framestruct;
 }
 void VideoFileQT::seek( int64_t frame )
 {

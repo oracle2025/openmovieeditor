@@ -22,10 +22,6 @@ void vv_callback(void*)
 	nle::SwitchBoard::i()->move_cursor();
 	Fl::repeat_timeout(0.01, vv_callback);
 }
-void pipe_cb( int, void* )
-{
-//	read( fd, buf, 1 );
-}
 
 namespace nle
 {

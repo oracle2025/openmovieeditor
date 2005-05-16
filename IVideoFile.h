@@ -1,6 +1,8 @@
 #ifndef _I_VIDEO_FILE_H_
 #define _I_VIDEO_FILE_H_
 
+#include "frame_struct.h"
+
 namespace nle
 {
 
@@ -13,7 +15,7 @@ class IVideoFile
 		inline int width() { return m_width; }
 		inline int height() { return m_height; }
 		virtual int fps() = 0;
-		virtual unsigned char* read() = 0;
+		virtual frame_struct* read() = 0;
 		virtual void seek( int64_t frame ) = 0;
 	protected:
 		int m_width;

@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <list>
 
+#include "frame_struct.h"
+
 namespace nle
 {
 
@@ -22,12 +24,13 @@ class Timeline
 		int64_t m_samplePosition;
 		// method declerations
 		void reset();
-		unsigned char* nextFrame();
+		frame_struct* nextFrame();
 		int fillBuffer( float* output, unsigned long frames );
 
 		void add_video( int track, int64_t position, const char* filename );
 		void add_audio( int track, int64_t position, const char* filename );
 		std::list< Track* >* getTracks() { return &m_allTracks; }
+		std::list< VideoTrack* >* getVideoTracks() { return &m_videoTracks; }
 	private:
 		// member variable declerations
 		std::list< Track* > m_allTracks;

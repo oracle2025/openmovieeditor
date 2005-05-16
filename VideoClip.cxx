@@ -1,6 +1,9 @@
 #include <string>
+#include <iostream>
 #include "VideoClip.h"
 #include "IVideoFile.h"
+
+using namespace std;
 
 namespace nle
 {
@@ -19,7 +22,7 @@ void VideoClip::reset()
 {
 	m_videoFile->seek( m_trimA );
 }
-unsigned char* VideoClip::getFrame( int64_t position )
+frame_struct* VideoClip::getFrame( int64_t position )
 {
 	if ( position < m_position || position > m_position + length() )
 		return NULL;

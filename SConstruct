@@ -1,5 +1,9 @@
-env = Environment( CC = 'g++', CXXFLAGS='-ggdb', LINKFLAGS='-lquicktime -lportaudio' )
+PROF_FLAGS = '-pg'
+DEBUG_FLAGS = '-ggdb'
+
+env = Environment( CC = 'g++', CXXFLAGS=DEBUG_FLAGS, LINKFLAGS='-lquicktime -lportaudio -pg' )
 env.ParseConfig( 'fltk-config --cxxflags --ldflags --use-gl' )
+#env.ParseConfig( 'flu-config --cxxflags --ldflags' )
 
 src_list = Split("""Clip.cxx
 	nle.cxx
@@ -15,6 +19,7 @@ src_list = Split("""Clip.cxx
 	Rect.cxx
 	MoveDragHandler.cxx
 	TrimDragHandler.cxx
+	FileBrowser.cxx
 	VideoFileQT.cxx
 	AudioTrack.cxx
 	AudioClip.cxx

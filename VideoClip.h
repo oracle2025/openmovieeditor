@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include "Clip.h"
-
+#include "frame_struct.h"
 namespace nle
 {
 class IVideoFile;
@@ -16,7 +16,7 @@ class VideoClip : public Clip
 		~VideoClip();
 		int64_t length();
 		void reset();
-		unsigned char* getFrame( int64_t position );
+		frame_struct* getFrame( int64_t position );
 		/*VideoFrame *getFrame( VideoFrame* frame, int64_t position ) */
 	private:
 //		int64_t m_length;

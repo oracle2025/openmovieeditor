@@ -20,8 +20,10 @@ class VideoTrack : public Track
 		void add_video( int64_t position, const char* filename );
 		int type() { return TRACK_TYPE_VIDEO; }
 		float stretchFactor() { return 1.0; }
-		frame_struct m_frame;
+		frame_struct* nextFrame();
+		void reset();
 	private:
+		int64_t m_playPosition;
 		// member variable declerations
 		// TODO: add frame_struct + dirtybit, stuff here!
 };

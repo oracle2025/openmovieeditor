@@ -21,7 +21,7 @@ bool USING_AUDIO = 0;
 	
 
 TimelineView::TimelineView( int x, int y, int w, int h, const char *label )
-	: Fl_Widget( x, y, w, h, label )
+	: Fl_Widget( x, y, w, h, label )//, Flu_DND("DND_Timeline")
 {
 	m_dragHandler = NULL;
 	m_timeline = new Timeline();
@@ -39,6 +39,30 @@ TimelineView::~TimelineView()
 }
 int TimelineView::handle( int event )
 {
+	switch ( event ) {
+		case FL_PASTE:
+			cout << "FL_PASTE" << endl;
+			cout << "Text: (" << Fl::event_text() << ") " << Fl::event_length() << endl;
+			cout << "X: " << Fl::event_x() << " Y: " << Fl::event_y() << endl;
+			return 1;
+			break;
+		case FL_DND_DRAG:
+			//cout << "FL_DND_DRAG" << endl;
+			break;
+		case FL_DND_RELEASE:
+			cout << "FL_DND_RELEASE" << endl;
+			return 1;
+			break;
+		case FL_DND_ENTER:
+			cout << "FL_DND_ENTER" << endl;
+			return 1;
+			break;
+		case FL_DND_LEAVE:
+			cout << "FL_DND_LEAVE" << endl;
+			return 1;
+			break;
+	}
+
 	int _x = Fl::event_x() - x();
 	int _y = Fl::event_y() - y();
 	switch ( event ) {
@@ -78,24 +102,8 @@ int TimelineView::handle( int event )
 		return Fl_Widget::handle( event );	
 	}
 	
-/*	static int x, y;
-	switch( event ) {
-		case FL_PUSH:
-			x = Fl::event_x();
-			y = Fl::event_y();
-			return 1;
-		case FL_DRAG:
-			window()->make_current();
-			fl_overlay_rect(x, y, Fl::event_x()-x, Fl::event_y()-y);
-			return 1;
-		case FL_RELEASE:
-			window()->make_current();
-			fl_overlay_clear();
-			return 1;
-		default:
-			return Fl_Widget::handle( event );
-	}*/
 }
+
 void TimelineView::draw()
 {
 	fl_overlay_clear();
@@ -206,9 +214,9 @@ Rect TimelineView::get_track_rect( Track* track )
 Rect TimelineView::get_clip_rect( Clip* clip, bool clipping )
 {
 	Rect tmp(
-			get_screen_position( clip->position() / clip->track()->stretchFactor() ),
-			TRACK_SPACING + (TRACK_SPACING + TRACK_HEIGHT) * clip->track()->num(),
-			clip->length() / SwitchBoard::i()->zoom() / clip->track()->stretchFactor(),
+			get_screen_position( int( clip->position() / clip->track()->stretchFactor() ) ),
+			int( TRACK_SPACING + (TRACK_SPACING + TRACK_HEIGHT) * clip->track()->num() ),
+			int( clip->length() / SwitchBoard::i()->zoom() / clip->track()->stretchFactor() ),
 			TRACK_HEIGHT
 		);
 	if ( clipping ) {
@@ -228,7 +236,7 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 	Track *old_tr = clip->track();
 	if (!new_tr || new_tr->type() != old_tr->type() )
 		return;
-	clip->position( get_real_position( _x - offset ) * clip->track()->stretchFactor() );
+	clip->position( int64_t( get_real_position( _x - offset ) * clip->track()->stretchFactor() ) );
 	if ( new_tr == old_tr ) {
 		return;
 	}
@@ -239,26 +247,15 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 void TimelineView::trim_clip( Clip* clip, int _x, bool trimRight )
 {
 	if (trimRight) {
-		clip->trimB( ( clip->position() + clip->length() ) - ( get_real_position(_x) * clip->track()->stretchFactor() ) );
+		clip->trimB( int64_t( ( clip->position() + clip->length() ) - ( get_real_position(_x) * clip->track()->stretchFactor() ) ) );
 		return;
 	}
-	clip->trimA( get_real_position(_x) * clip->track()->stretchFactor() - clip->position() );
+	clip->trimA( int64_t( get_real_position(_x) * clip->track()->stretchFactor() - clip->position() ) );
 }
 void TimelineView::move_cursor( int64_t position )
 {
 	window()->make_current();
 	fl_overlay_rect( get_screen_position(position), y(), 1, h() );
 }
-/*
-void TimelineView::onDrag( int x, int y )
-{
-	if ( m_dragHandler ) {
-		m_dragHandler->Drag( x, y );
-		return;
-	}
-	m_dragHandler = new DragHandler( this, x, y );
-}
-
- */
 
 } /* namespace nle */
