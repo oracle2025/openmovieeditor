@@ -33,6 +33,8 @@ class TimelineView : public Fl_Widget
 		void move_clip( Clip* clip, int _x, int _y, int offset );
 		void trim_clip( Clip* clip, int _x, bool trimRight );
 		void move_cursor( int64_t position );
+		void stylus( long stylus_pos );
+		long stylus();
 		void zoom( float zoom );
 	protected:
 		void draw();
@@ -43,6 +45,7 @@ class TimelineView : public Fl_Widget
 		Timeline *m_timeline;
 		DragHandler *m_dragHandler;
 		int64_t m_scrollPosition;
+		int64_t m_stylusPosition;
 };
 
 } /* namespace nle */

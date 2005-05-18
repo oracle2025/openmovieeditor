@@ -13,7 +13,7 @@ using namespace std;
 namespace nle
 {
 
-Timeline* g_timeline;
+Timeline* g_timeline = 0;
 
 Timeline::Timeline()
 {

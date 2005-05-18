@@ -19,6 +19,7 @@ namespace nle
 
 bool USING_AUDIO = 0;
 	
+TimelineView* g_timelineView = 0;
 
 TimelineView::TimelineView( int x, int y, int w, int h, const char *label )
 	: Fl_Widget( x, y, w, h, label )//, Flu_DND("DND_Timeline")
@@ -29,7 +30,9 @@ TimelineView::TimelineView( int x, int y, int w, int h, const char *label )
 	m_timeline->add_video( 1, 100, "/home/oracle/tmp/test3.mov" );
 	m_timeline->add_audio( 2, 0, "/home/oracle/tmp/test3.mov" );
 	m_scrollPosition = 0;
+	m_stylusPosition = 0;
 	SwitchBoard::i()->timelineView(this);
+	g_timelineView = this;
 }
 TimelineView::~TimelineView()
 {
@@ -138,6 +141,8 @@ void TimelineView::draw()
 		cnt++;
 	}
 	fl_pop_clip();
+	fl_overlay_rect( get_screen_position(m_stylusPosition), y(), 1, h() );
+	
 	/*
 	for i in VideoTracks:
 		draw VideoTrackBackground
@@ -151,11 +156,12 @@ void TimelineView::add_video( int track, int y, const char* filename )
 }
 int64_t TimelineView::get_real_position( int p )
 {
-	return int64_t( float(p - TRACK_SPACING) * SwitchBoard::i()->zoom() ) + m_scrollPosition;
+	//return int64_t( float(p - TRACK_SPACING) * SwitchBoard::i()->zoom() ) + m_scrollPosition;
+	return int64_t( float(p - TRACK_SPACING) / SwitchBoard::i()->zoom() ) + m_scrollPosition;
 }
 int TimelineView::get_screen_position( int64_t p, float stretchFactor )
 {
-	return int ( float( p - ( m_scrollPosition * stretchFactor ) ) / SwitchBoard::i()->zoom() / stretchFactor ) + TRACK_SPACING;
+	return int ( float( p - ( m_scrollPosition * stretchFactor ) ) * SwitchBoard::i()->zoom() / stretchFactor ) + TRACK_SPACING;
 
 }
 void TimelineView::scroll( int64_t position )
@@ -245,8 +251,13 @@ void TimelineView::trim_clip( Clip* clip, int _x, bool trimRight )
 }
 void TimelineView::move_cursor( int64_t position )
 {
+	m_stylusPosition = position;
 	window()->make_current();
 	fl_overlay_rect( get_screen_position(position), y(), 1, h() );
+}
+void TimelineView::stylus( long stylus_pos )
+{
+	move_cursor( get_real_position( stylus_pos ) );
 }
 
 } /* namespace nle */
