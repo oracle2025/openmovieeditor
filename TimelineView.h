@@ -33,6 +33,7 @@ class TimelineView : public Fl_Widget
 		void move_clip( Clip* clip, int _x, int _y, int offset );
 		void trim_clip( Clip* clip, int _x, bool trimRight );
 		void move_cursor( int64_t position );
+		void zoom( float zoom );
 	protected:
 		void draw();
 	private:

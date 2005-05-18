@@ -30,16 +30,25 @@ void NleUI::cb_1(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_1_i(o,v);
 }
 
-inline void NleUI::cb_2_i(Fl_Slider* o, void*) {
-  m_timelineView->scroll((int64_t)((Fl_Slider *)o)->value());
+inline void NleUI::cb_2_i(Flmm_Scalebar* o, void*) {
+  Flmm_Scalebar *sb = (Flmm_Scalebar *)o;
+float len = 1025.0;
+float width = 640.0;
+float slider_size = float(sb->slider_size_i() + 1) / len ;
+float zoom = (width / slider_size) / len;
+m_timelineView->scroll((int64_t)sb->value());
+m_timelineView->zoom( zoom );
+// cout << "Scale: " << sb->slider_size_i() << endl;
+// cout << "Value: " << sb->value() << endl;
+// cout << "ss: " << slider_size << " zm: " << zoom << endl;
 }
-void NleUI::cb_2(Fl_Slider* o, void* v) {
+void NleUI::cb_2(Flmm_Scalebar* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_2_i(o,v);
 }
 
 NleUI::NleUI() {
   Fl_Double_Window* w;
-  { Fl_Double_Window* o = mainWindow = new Fl_Double_Window(475, 400, "MovieEditor");
+  { Fl_Double_Window* o = mainWindow = new Fl_Double_Window(475, 380, "MovieEditor");
     w = o;
     o->user_data((void*)(this));
     { Fl_Menu_Bar* o = new Fl_Menu_Bar(0, 0, 475, 25);
@@ -50,7 +59,7 @@ NleUI::NleUI() {
         { Fl_Tabs* o = new Fl_Tabs(0, 25, 235, 175);
           o->box(FL_UP_BOX);
           o->labelcolor(FL_GRAY0);
-          { Fl_Box* o = new Fl_Box(0, 50, 235, 150, "Filemanager");
+          { Fl_Box* o = new Fl_Box(0, 50, 235, 150, "Object Inspector");
             o->hide();
           }
           { Fl_Group* o = new Fl_Group(0, 50, 235, 150, "Project");
@@ -128,14 +137,7 @@ NleUI::NleUI() {
       o->end();
       Fl_Group::current()->resizable(o);
     }
-    { Fl_Slider* o = new Fl_Slider(0, 360, 475, 20);
-      o->type(1);
-      o->maximum(1024);
-      o->step(1);
-      o->slider_size(0.4);
-      o->callback((Fl_Callback*)cb_2);
-    }
-    { Flmm_Scalebar* o = new Flmm_Scalebar(0, 380, 475, 20);
+    { Flmm_Scalebar* o = new Flmm_Scalebar(0, 360, 475, 20);
       o->type(1);
       o->box(FL_FLAT_BOX);
       o->color(FL_DARK2);
@@ -146,6 +148,7 @@ NleUI::NleUI() {
       o->labelcolor(FL_BLACK);
       o->maximum(1024);
       o->slider_size(0.40404);
+      o->callback((Fl_Callback*)cb_2);
       o->align(FL_ALIGN_BOTTOM);
       o->when(FL_WHEN_CHANGED);
     }

@@ -161,6 +161,11 @@ int TimelineView::get_screen_position( int64_t p, float stretchFactor )
 void TimelineView::scroll( int64_t position )
 {
 	m_scrollPosition = position;
+	//redraw();
+}
+void TimelineView::zoom( float zoom )
+{
+	SwitchBoard::i()->zoom( zoom );
 	redraw();
 }
 Track* TimelineView::get_track( int _x, int _y )

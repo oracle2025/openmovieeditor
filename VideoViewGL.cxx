@@ -8,8 +8,6 @@
 #include "Timeline.h"
 #include "Sound.h"
 
-#include "tga.h"
-
 using namespace std;
 
 namespace nle
@@ -76,7 +74,7 @@ void VideoViewGL::draw()
 {
 	if ( !valid() ) {
 		glLoadIdentity(); glViewport( 0, 0, w(), h() );
-		glOrtho( -10, 10, -10, 10, -20000, 10000 ); glEnable( GL_BLEND );
+		glOrtho( 0, 10, 10, 0, -20000, 10000 ); glEnable( GL_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glEnable (GL_TEXTURE_2D);
     	//	loadTGA ("texture.tga", 13);
@@ -107,12 +105,12 @@ void VideoViewGL::draw()
 		glBegin (GL_QUADS);
 		glTexCoord2f (0.0, 0.0);
 		glVertex3f (0.0, 0.0, 0.0);
-		glTexCoord2f (1.0, 0.0);
-		glVertex3f (9.0, 0.0, 0.0);
-		glTexCoord2f (1.0, 1.0);
-		glVertex3f (9.0, 9.0, 0.0);
-		glTexCoord2f (0.0, 1.0);
-		glVertex3f (0.0, 9.0, 0.0);
+		glTexCoord2f (0.71875, 0.0);
+		glVertex3f (10.0, 0.0, 0.0);
+		glTexCoord2f (0.71875, 0.46875);
+		glVertex3f (10.0, 10.0, 0.0);
+		glTexCoord2f (0.0, 0.46875);
+		glVertex3f (0.0, 10.0, 0.0);
 		glEnd ();
 	}
 	/*

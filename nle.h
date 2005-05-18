@@ -16,8 +16,8 @@
 #include "VideoViewGL.h"
 #include <FL/Fl_Button.H>
 #include "TimelineView.h"
-#include <FL/Fl_Slider.H>
 #include "Flmm_Scalebar.H"
+using namespace std;
 
 class NleUI {
 public:
@@ -40,8 +40,8 @@ private:
 public:
   nle::TimelineView *m_timelineView;
 private:
-  inline void cb_2_i(Fl_Slider*, void*);
-  static void cb_2(Fl_Slider*, void*);
+  inline void cb_2_i(Flmm_Scalebar*, void*);
+  static void cb_2(Flmm_Scalebar*, void*);
 public:
   void show( int argc, char **argv );
 };

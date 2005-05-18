@@ -21,7 +21,7 @@ static int callback( void *inputBuffer, void *outputBuffer,
 		void *userData )
 {
 	Sound* snd = (Sound*)userData;
-	return framesPerBuffer != snd->fillBuffer( (float*)outputBuffer, framesPerBuffer );
+	return ( framesPerBuffer != snd->fillBuffer( (float*)outputBuffer, framesPerBuffer ) );
 }
 
 Sound::Sound( NextFrameListener *nfl )

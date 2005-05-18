@@ -25,7 +25,6 @@ class VideoTrack : public Track
 	private:
 		int64_t m_playPosition;
 		// member variable declerations
-		// TODO: add frame_struct + dirtybit, stuff here!
 };
 	
 } /* namespace nle */
