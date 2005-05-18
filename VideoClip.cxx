@@ -1,7 +1,7 @@
 #include <string>
 #include <iostream>
-#include "VideoClip.h"
-#include "IVideoFile.h"
+#include "VideoClip.H"
+#include "IVideoFile.H"
 
 using namespace std;
 

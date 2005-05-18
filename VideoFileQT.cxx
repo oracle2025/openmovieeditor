@@ -1,6 +1,6 @@
 #include <quicktime/lqt.h>
 #include <quicktime/colormodels.h>
-#include "VideoFileQT.h"
+#include "VideoFileQT.H"
 #include <string.h>
 #include <iostream>
 using namespace std;

@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include "SwitchBoard.h"
-#include "Timeline.h"
-#include "TimelineView.h"
+#include "SwitchBoard.H"
+#include "Timeline.H"
+#include "TimelineView.H"
 
 using namespace std;
 

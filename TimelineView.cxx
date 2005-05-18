@@ -3,15 +3,15 @@
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Window.H>
 #include <FL/fl_draw.H>
-#include "TimelineView.h"
-#include "Timeline.h"
-#include "SwitchBoard.h"
-#include "Draw.h"
-#include "VideoClip.h"
-#include "VideoTrack.h"
-#include "MoveDragHandler.h"
-#include "TrimDragHandler.h"
-#include "Rect.h"
+#include "TimelineView.H"
+#include "Timeline.H"
+#include "SwitchBoard.H"
+#include "Draw.H"
+#include "VideoClip.H"
+#include "VideoTrack.H"
+#include "MoveDragHandler.H"
+#include "TrimDragHandler.H"
+#include "Rect.H"
 using namespace std;
 
 namespace nle

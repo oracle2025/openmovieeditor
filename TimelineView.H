@@ -4,8 +4,8 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Widget.H>
 #include <stdint.h>
-#include "Rect.h"
-#include "NextFrameListener.h"
+#include "Rect.H"
+#include "NextFrameListener.H"
 
 namespace nle
 {

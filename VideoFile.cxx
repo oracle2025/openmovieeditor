@@ -6,7 +6,7 @@ g++ -o VideoFileTest VideoFileTest.cxx VideoFile.cxx -lavformat -lavcodec -lz -L
 #include <iostream>
 #include <stdint.h>
 #include <stdio.h>
-#include "VideoFile.h"
+#include "VideoFile.H"
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include <FL/fl_draw.H>

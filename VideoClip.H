@@ -2,7 +2,7 @@
 #define _VIDEO_CLIP_H_
 
 #include <stdint.h>
-#include "Clip.h"
+#include "Clip.H"
 #include "frame_struct.h"
 namespace nle
 {

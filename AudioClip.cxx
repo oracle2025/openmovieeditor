@@ -1,5 +1,5 @@
 #include "AudioClip.H"
-#include "AudioFileQT.h"
+#include "AudioFileQT.H"
 #include <string.h>
 #include <iostream>
 

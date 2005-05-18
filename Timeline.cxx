@@ -1,9 +1,9 @@
-#include "Timeline.h"
-#include "VideoTrack.h"
-#include "AudioTrack.h"
-#include "VideoClip.h"
-#include "Track.h"
-#include "SwitchBoard.h"
+#include "Timeline.H"
+#include "VideoTrack.H"
+#include "AudioTrack.H"
+#include "VideoClip.H"
+#include "Track.H"
+#include "SwitchBoard.H"
 #include <string>
 #include <iostream>
 

@@ -3,8 +3,8 @@
 #include <FL/Fl_Window.H>
 #include <FL/fl_draw.H>
 
-#include "MoveDragHandler.h"
-#include "TimelineView.h"
+#include "MoveDragHandler.H"
+#include "TimelineView.H"
 
 
 namespace nle

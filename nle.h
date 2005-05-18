@@ -12,10 +12,11 @@
 #include <FL/Fl_Value_Input.H>
 #include <iostream>
 #include <string>
-#include "FileBrowser.h"
-#include "VideoViewGL.h"
+#include "FileBrowser.H"
+#include "VideoViewGL.H"
 #include <FL/Fl_Button.H>
-#include "TimelineView.h"
+#include "Ruler.H"
+#include "TimelineView.H"
 #include "Flmm_Scalebar.H"
 using namespace std;
 

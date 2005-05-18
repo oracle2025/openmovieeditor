@@ -1,6 +1,6 @@
-#include "VideoTrack.h"
-#include "VideoClip.h"
-#include "VideoFileQT.h"
+#include "VideoTrack.H"
+#include "VideoClip.H"
+#include "VideoFileQT.H"
 
 namespace nle
 {

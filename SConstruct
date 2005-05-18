@@ -15,6 +15,7 @@ src_list = Split("""Clip.cxx
 	VideoClip.cxx
 	VideoViewGL.cxx
 	Draw.cxx
+	Ruler.cxx
 	Track.cxx
 	Rect.cxx
 	MoveDragHandler.cxx

@@ -123,16 +123,31 @@ NleUI::NleUI() {
         }
         o->end();
       }
-      { nle::TimelineView* o = m_timelineView = new nle::TimelineView(0, 200, 475, 160);
-        o->box(FL_NO_BOX);
-        o->color(FL_BACKGROUND_COLOR);
-        o->selection_color(FL_BACKGROUND_COLOR);
-        o->labeltype(FL_NORMAL_LABEL);
-        o->labelfont(0);
-        o->labelsize(14);
-        o->labelcolor(FL_BLACK);
-        o->align(FL_ALIGN_CENTER);
-        o->when(2);
+      { Fl_Group* o = new Fl_Group(0, 200, 475, 160);
+        { nle::Ruler* o = new nle::Ruler(0, 200, 475, 25, "Ruler");
+          o->box(FL_UP_BOX);
+          o->color(FL_BACKGROUND_COLOR);
+          o->selection_color(FL_BACKGROUND_COLOR);
+          o->labeltype(FL_NORMAL_LABEL);
+          o->labelfont(0);
+          o->labelsize(14);
+          o->labelcolor(FL_BLACK);
+          o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
+          o->when(FL_WHEN_RELEASE);
+        }
+        { nle::TimelineView* o = m_timelineView = new nle::TimelineView(0, 225, 475, 135);
+          o->box(FL_NO_BOX);
+          o->color(FL_BACKGROUND_COLOR);
+          o->selection_color(FL_BACKGROUND_COLOR);
+          o->labeltype(FL_NORMAL_LABEL);
+          o->labelfont(0);
+          o->labelsize(14);
+          o->labelcolor(FL_BLACK);
+          o->align(FL_ALIGN_CENTER);
+          o->when(2);
+          Fl_Group::current()->resizable(o);
+        }
+        o->end();
       }
       o->end();
       Fl_Group::current()->resizable(o);

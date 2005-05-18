@@ -1,7 +1,7 @@
 #ifndef _AUDIO_CLIP_H_
 #define _AUDIO_CLIP_H_
 
-#include "Clip.h"
+#include "Clip.H"
 
 namespace nle
 {

@@ -6,7 +6,7 @@
 
 #include <list>
 
-#include "NextFrameListener.h"
+#include "NextFrameListener.H"
 #include "frame_struct.h"
 
 namespace nle

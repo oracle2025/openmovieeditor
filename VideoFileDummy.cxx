@@ -1,4 +1,4 @@
-#include "VideoFileDummy.h"
+#include "VideoFileDummy.H"
 #include <fstream>
 #include <iostream>
 #include <stdlib.h>

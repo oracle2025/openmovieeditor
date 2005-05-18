@@ -1,7 +1,7 @@
 #ifndef _DRAG_HANDLER_H_
 #define _DRAG_HANDLER_H_
 
-#include "Rect.h"
+#include "Rect.H"
 
 namespace nle
 {

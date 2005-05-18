@@ -2,11 +2,11 @@
 #include <string> // declares for_each
 #include <iostream>
 
-#include "VideoViewGL.h"
-#include "VideoTrack.h"
+#include "VideoViewGL.H"
+#include "VideoTrack.H"
 #include "globals.H"
-#include "Timeline.h"
-#include "Sound.h"
+#include "Timeline.H"
+#include "Sound.H"
 
 using namespace std;
 

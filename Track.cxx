@@ -1,5 +1,5 @@
-#include "Track.h"
-#include "Clip.h"
+#include "Track.H"
+#include "Clip.H"
 
 #include <algorithm>
 

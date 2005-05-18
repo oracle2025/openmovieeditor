@@ -1,4 +1,4 @@
-#include "AudioFileQT.h"
+#include "AudioFileQT.H"
 #include <string.h>
 #include <iostream>
 using namespace std;

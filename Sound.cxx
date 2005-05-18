@@ -1,10 +1,10 @@
 #include <iostream>
 #include <portaudio.h>
 
-#include "Sound.h"
-#include "NextFrameListener.h"
-#include "Timeline.h"
-#include "SwitchBoard.h"
+#include "Sound.H"
+#include "NextFrameListener.H"
+#include "Timeline.H"
+#include "SwitchBoard.H"
 
 using namespace std;
 

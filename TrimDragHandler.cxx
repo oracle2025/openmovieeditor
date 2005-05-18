@@ -3,8 +3,8 @@
 #include <FL/Fl_Window.H>
 #include <FL/fl_draw.H>
 
-#include "TrimDragHandler.h"
-#include "TimelineView.h"
+#include "TrimDragHandler.H"
+#include "TimelineView.H"
 
 namespace nle
 {

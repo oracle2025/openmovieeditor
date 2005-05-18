@@ -4,10 +4,10 @@
 #include <FL/fl_draw.H>
 #include <iostream>
 
-#include "VideoView.h"
-#include "SwitchBoard.h"
-#include "Timeline.h"
-#include "Sound.h"
+#include "VideoView.H"
+#include "SwitchBoard.H"
+#include "Timeline.H"
+#include "Sound.H"
 
 using namespace std;
 

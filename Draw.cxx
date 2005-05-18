@@ -1,6 +1,6 @@
 #include <FL/Fl.H>
 #include <FL/fl_draw.H>
-#include "Draw.h"
+#include "Draw.H"
 
 namespace nle
 {

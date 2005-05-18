@@ -2,7 +2,7 @@
 #define _VIDEO_FILE_QT_H
 
 #include <quicktime/lqt.h>
-#include "IVideoFile.h"
+#include "IVideoFile.H"
 #include "frame_struct.h"
 namespace nle
 {

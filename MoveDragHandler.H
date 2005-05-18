@@ -1,8 +1,8 @@
 #ifndef _MOVE_DRAG_HANDLER_H_
 #define _MOVE_DRAG_HANDLER_H_
 
-#include "Rect.h"
-#include "DragHandler.h"
+#include "Rect.H"
+#include "DragHandler.H"
 namespace nle
 {
 class Clip;

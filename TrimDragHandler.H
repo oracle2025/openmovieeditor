@@ -1,7 +1,7 @@
 #ifndef _TRIM_DRAG_HANDLER_H_
 #define _TRIM_DRAG_HANDLER_H_
 
-#include "DragHandler.h"
+#include "DragHandler.H"
 
 namespace nle
 {
