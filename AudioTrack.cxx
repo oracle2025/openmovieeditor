@@ -1,6 +1,6 @@
 #include "AudioTrack.h"
 #include "AudioFileQT.h"
-#include "AudioClip.h"
+#include "AudioClip.H"
 #include <iostream>
 
 namespace nle
