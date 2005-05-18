@@ -26,6 +26,7 @@ class VideoViewGL : public Fl_Gl_Window, NextFrameListener
 	private:
 		//Timeline *m_timeline; //g_timeline
 		Sound *m_snd;
+		bool m_playing;
 		//std::list< frame_struct* > m_frameList;
 };
 

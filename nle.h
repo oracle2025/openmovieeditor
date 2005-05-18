@@ -40,8 +40,9 @@ private:
 public:
   nle::TimelineView *m_timelineView;
 private:
-  inline void cb_2_i(Flmm_Scalebar*, void*);
-  static void cb_2(Flmm_Scalebar*, void*);
+  Flmm_Scalebar *scaleBar;
+  inline void cb_scaleBar_i(Flmm_Scalebar*, void*);
+  static void cb_scaleBar(Flmm_Scalebar*, void*);
 public:
   void show( int argc, char **argv );
 };

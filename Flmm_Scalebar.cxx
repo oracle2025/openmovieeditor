@@ -53,6 +53,9 @@ int Flmm_Scalebar::value(int position, int size, int top, int total) {
 int Flmm_Scalebar::slider_size_i() { 
   return slider_size_i_; 
 }
+void Flmm_Scalebar::slider_size_i( int v ) {
+  slider_size_i_ = v;
+}
 
 void Flmm_Scalebar::drawSliderBg(int x, int y, int w, int h) {
   if (!(damage()&FL_DAMAGE_ALL)) { // not a complete redraw

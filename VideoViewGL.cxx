@@ -19,6 +19,7 @@ VideoViewGL::VideoViewGL( int x, int y, int w, int h, const char *l )
 {
 	m_snd = new Sound( this );
 	vv_cb_window = this->window();
+	m_playing = false;
 }
 VideoViewGL::~VideoViewGL()
 {
@@ -33,7 +34,7 @@ GLuint video_canvas[10];
 #define T_H 512
 void draw_track_helper( VideoTrack* track )
 {
-	if ( texture_counter >= 10 )
+	if ( texture_counter >= 1 )
 		return;
 	frame_struct *fs = track->nextFrame();
 	if (!fs)
@@ -98,7 +99,11 @@ void VideoViewGL::draw()
 		once = false;
 	}
 	texture_counter = 0;
-	for_each( g_timeline->getVideoTracks()->begin(), g_timeline->getVideoTracks()->end(), draw_track_helper );
+	if (m_playing) {
+		for_each( g_timeline->getVideoTracks()->begin(), g_timeline->getVideoTracks()->end(), draw_track_helper );
+	} else {
+		texture_counter++;
+	}
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	for ( int i = 0; i < texture_counter; i++ ) {
 		glBindTexture (GL_TEXTURE_2D, video_canvas[i] );
@@ -129,11 +134,13 @@ void VideoViewGL::nextFrame( int64_t frame )
 }
 void VideoViewGL::play()
 {
+	m_playing = true;
 	g_timeline->reset();
 	m_snd->Play();
 }
 void VideoViewGL::stop()
 {
+	m_playing = false;
 	m_snd->Stop();
 }
 

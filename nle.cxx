@@ -30,7 +30,7 @@ void NleUI::cb_1(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_1_i(o,v);
 }
 
-inline void NleUI::cb_2_i(Flmm_Scalebar* o, void*) {
+inline void NleUI::cb_scaleBar_i(Flmm_Scalebar* o, void*) {
   Flmm_Scalebar *sb = (Flmm_Scalebar *)o;
 float len = 1025.0;
 float width = 640.0;
@@ -40,10 +40,10 @@ m_timelineView->scroll((int64_t)sb->value());
 m_timelineView->zoom( zoom );
 // cout << "Scale: " << sb->slider_size_i() << endl;
 // cout << "Value: " << sb->value() << endl;
-// cout << "ss: " << slider_size << " zm: " << zoom << endl;
+//cout << "ss: " << sb->slider_size_i() << " zm: " << zoom << endl;
 }
-void NleUI::cb_2(Flmm_Scalebar* o, void* v) {
-  ((NleUI*)(o->parent()->user_data()))->cb_2_i(o,v);
+void NleUI::cb_scaleBar(Flmm_Scalebar* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_scaleBar_i(o,v);
 }
 
 NleUI::NleUI() {
@@ -137,7 +137,7 @@ NleUI::NleUI() {
       o->end();
       Fl_Group::current()->resizable(o);
     }
-    { Flmm_Scalebar* o = new Flmm_Scalebar(0, 360, 475, 20);
+    { Flmm_Scalebar* o = scaleBar = new Flmm_Scalebar(0, 360, 475, 20);
       o->type(1);
       o->box(FL_FLAT_BOX);
       o->color(FL_DARK2);
@@ -148,7 +148,7 @@ NleUI::NleUI() {
       o->labelcolor(FL_BLACK);
       o->maximum(1024);
       o->slider_size(0.40404);
-      o->callback((Fl_Callback*)cb_2);
+      o->callback((Fl_Callback*)cb_scaleBar);
       o->align(FL_ALIGN_BOTTOM);
       o->when(FL_WHEN_CHANGED);
     }
@@ -157,5 +157,6 @@ NleUI::NleUI() {
 }
 
 void NleUI::show( int argc, char **argv ) {
-  mainWindow->show(argc, argv);
+  scaleBar->slider_size_i(300);
+mainWindow->show(argc, argv);
 }
