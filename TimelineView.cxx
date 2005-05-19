@@ -210,10 +210,11 @@ Rect TimelineView::get_track_rect( Track* track )
 }
 Rect TimelineView::get_clip_rect( Clip* clip, bool clipping )
 {
+	
 	Rect tmp(
 			get_screen_position( int( clip->position() / clip->track()->stretchFactor() ) ),
 			int( TRACK_SPACING + (TRACK_SPACING + TRACK_HEIGHT) * clip->track()->num() ),
-			int( clip->length() / SwitchBoard::i()->zoom() / clip->track()->stretchFactor() ),
+			int( clip->length() * SwitchBoard::i()->zoom() / clip->track()->stretchFactor() ),
 			TRACK_HEIGHT
 		);
 	if ( clipping ) {
