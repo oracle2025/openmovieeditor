@@ -13,6 +13,7 @@ class Ruler : public Fl_Widget
 	public:
 		Ruler( int x, int y, int w, int h, const char *label = 0 );
 		int handle( int event );
+		void stylus( long stylus_pos );
 	protected:
 		void draw();
 	private:

@@ -18,6 +18,7 @@
 #include "Ruler.H"
 #include "TimelineView.H"
 #include "Flmm_Scalebar.H"
+#include "globals.H"
 using namespace std;
 
 class NleUI {
@@ -47,4 +48,5 @@ private:
 public:
   void show( int argc, char **argv );
 };
+extern Flmm_Scalebar* g_scrollBar;
 #endif

@@ -12,6 +12,8 @@
 #include "MoveDragHandler.H"
 #include "TrimDragHandler.H"
 #include "Rect.H"
+#include "events.H"
+
 using namespace std;
 
 namespace nle
@@ -92,7 +94,13 @@ int TimelineView::handle( int event )
 	}
 	
 }
+void TimelineView::resize(int x, int y, int w, int h)
+{
+	Fl_Widget::resize( x, y, w, h );
+	long num = long( this->w() / SwitchBoard::i()->zoom() );
+	e_scroll_position( m_scrollPosition, num, 1024 );
 
+}
 void TimelineView::draw()
 {
 	fl_overlay_clear();
@@ -173,6 +181,7 @@ void TimelineView::zoom( float zoom )
 {
 	SwitchBoard::i()->zoom( zoom );
 	redraw();
+	e_stylus_position( get_screen_position(m_stylusPosition) );
 }
 Track* TimelineView::get_track( int _x, int _y )
 {
@@ -253,8 +262,27 @@ void TimelineView::trim_clip( Clip* clip, int _x, bool trimRight )
 void TimelineView::move_cursor( int64_t position )
 {
 	m_stylusPosition = position;
+	if ( m_stylusPosition < 0 ) {
+		m_stylusPosition = 0;
+	} else if ( m_stylusPosition > 1024 ) {
+		m_stylusPosition = 1024;
+	}
 	window()->make_current();
-	fl_overlay_rect( get_screen_position(position), y(), 1, h() );
+	long screen_pos = get_screen_position(m_stylusPosition);
+	if ( screen_pos < 0 ) {
+		m_scrollPosition = get_real_position( screen_pos );
+		screen_pos = get_screen_position(m_stylusPosition);
+		e_scroll_position( m_scrollPosition, w() / SwitchBoard::i()->zoom(), 1024 );
+		redraw();
+	} else if ( screen_pos > w() - 2 * TRACK_SPACING ) {
+		m_scrollPosition = get_real_position( screen_pos - ( w() - 2 * TRACK_SPACING ) );
+		screen_pos = get_screen_position(m_stylusPosition);
+		e_scroll_position( m_scrollPosition, w() / SwitchBoard::i()->zoom(), 1024  );
+		redraw();
+	} else {
+		fl_overlay_rect( screen_pos, y(), 1, h() );
+	}
+	e_stylus_position( screen_pos );
 }
 void TimelineView::stylus( long stylus_pos )
 {

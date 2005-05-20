@@ -10,6 +10,8 @@
 namespace nle
 {
 
+Ruler* g_ruler;
+
 Ruler::Ruler( int x, int y, int w, int h, const char *label )
 	: Fl_Widget( x, y, w, h, label )
 {
@@ -17,6 +19,7 @@ Ruler::Ruler( int x, int y, int w, int h, const char *label )
 	m_stylus.y = 0;
 	m_stylus.w = 25;
 	m_stylus.h = 25;
+	g_ruler = this;
 }
 
 void Ruler::draw()
@@ -40,15 +43,19 @@ int Ruler::handle( int event )
 		case FL_DRAG:
 			if ( !__x )
 				break;
-			m_stylus.x = _x - __x;
+/*			m_stylus.x = _x - __x;
 			{
 				m_stylus.x = m_stylus.x < 0 ? 0 : m_stylus.x;
 				m_stylus.x = m_stylus.x + m_stylus.w > w() - x() ? w() - x() - m_stylus.w : m_stylus.x;
 			}
 //			g_timelineView->move_cursor( m_stylus.x + ( m_stylus.w / 2 ) - TRACK_SPACING );
 			g_timelineView->stylus( x() + m_stylus.x + ( m_stylus.w / 2 ) ); 
-			redraw();
-			return 1;
+			redraw();*/
+			{
+				long new_x = _x - __x;
+				g_timelineView->stylus( x() + new_x + ( m_stylus.w / 2 ) );
+				return 1;
+			}
 		case FL_RELEASE:
 			if ( __x ) {
 				__x = 0;
@@ -57,6 +64,11 @@ int Ruler::handle( int event )
 			break;
 	}
 	return Fl_Widget::handle( event );
+}
+void Ruler::stylus( long stylus_pos )
+{
+	m_stylus.x = stylus_pos - ( m_stylus.w / 2 );
+	redraw();
 }
 
 } /* namespace nle */

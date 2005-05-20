@@ -32,15 +32,11 @@ void NleUI::cb_1(Fl_Button* o, void* v) {
 
 inline void NleUI::cb_scaleBar_i(Flmm_Scalebar* o, void*) {
   Flmm_Scalebar *sb = (Flmm_Scalebar *)o;
-float len = 1025.0;
-float width = 640.0;
-float slider_size = float(sb->slider_size_i() + 1) / len ;
-float zoom = (width / slider_size) / len;
-m_timelineView->scroll((int64_t)sb->value());
+float width = sb->w();
+float slider_size = sb->slider_size_i();
+float zoom = width / slider_size;
+m_timelineView->scroll( (int64_t)sb->value() );
 m_timelineView->zoom( zoom );
-// cout << "Scale: " << sb->slider_size_i() << endl;
-// cout << "Value: " << sb->value() << endl;
-//cout << "ss: " << sb->slider_size_i() << " zm: " << zoom << endl;
 }
 void NleUI::cb_scaleBar(Flmm_Scalebar* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_scaleBar_i(o,v);
@@ -172,6 +168,8 @@ NleUI::NleUI() {
 }
 
 void NleUI::show( int argc, char **argv ) {
-  scaleBar->slider_size_i(300);
+  g_scrollBar = scaleBar;
+scaleBar->slider_size_i(300);
 mainWindow->show(argc, argv);
 }
+Flmm_Scalebar* g_scrollBar;
