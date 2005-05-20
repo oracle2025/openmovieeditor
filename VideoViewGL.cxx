@@ -27,19 +27,32 @@
 #include "globals.H"
 #include "Timeline.H"
 #include "Sound.H"
+#include "SwitchBoard.H"
+
+#define LEN_TIMEOUT 0.01
 
 using namespace std;
 
 namespace nle
 {
-Fl_Window *vv_cb_window;
-
+static bool vv_play;
+static Fl_Window *vv_cb_window;
+static void vv_callback( void* )
+{
+	if ( !vv_play )
+		return;
+	SwitchBoard::i()->move_cursor();
+	Fl::repeat_timeout( LEN_TIMEOUT, vv_callback );
+}
+VideoViewGL* g_videoView;
 VideoViewGL::VideoViewGL( int x, int y, int w, int h, const char *l )
 	: Fl_Gl_Window( x, y, w, h, l )
 {
 	m_snd = new Sound( this );
 	vv_cb_window = this->window();
 	m_playing = false;
+	m_seek = false;
+	g_videoView = this;
 }
 VideoViewGL::~VideoViewGL()
 {
@@ -52,7 +65,8 @@ GLuint video_canvas[10];
 //#define T_H 240
 #define T_W 512 
 #define T_H 512
-void draw_track_helper( VideoTrack* track )
+#if 0
+static void draw_track_helper( VideoTrack* track )
 {
 	if ( texture_counter >= 1 )
 		return;
@@ -91,6 +105,7 @@ void draw_track_helper( VideoTrack* track )
 	}
 	// TODO geht das so überhaupt? sollte man nicht mehrere Texturen initialisieren
 }
+#endif
 void VideoViewGL::draw()
 {
 	if ( !valid() ) {
@@ -119,11 +134,24 @@ void VideoViewGL::draw()
 		once = false;
 	}
 	texture_counter = 0;
-	if (m_playing) {
-		for_each( g_timeline->getVideoTracks()->begin(), g_timeline->getVideoTracks()->end(), draw_track_helper );
-	} else {
-		texture_counter++;
+	if (m_seek) {
+		m_seek = false;
+		frame_struct *fs = g_timeline->frame( m_seekPosition );
+		if ( fs ) {
+			glBindTexture( GL_TEXTURE_2D, video_canvas[texture_counter] );
+			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs->w, fs->h, GL_RGB, GL_UNSIGNED_BYTE, fs->RGB );
+		}
 	}
+	if (m_playing) {
+		//for_each( g_timeline->getVideoTracks()->begin(), g_timeline->getVideoTracks()->end(), draw_track_helper );
+		frame_struct *fs = g_timeline->nextFrame();
+		if ( fs ) {
+			glBindTexture( GL_TEXTURE_2D, video_canvas[texture_counter] );
+			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs->w, fs->h, GL_RGB, GL_UNSIGNED_BYTE, fs->RGB );
+		}
+	} else {
+	}
+	texture_counter++;
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	for ( int i = 0; i < texture_counter; i++ ) {
 		glBindTexture (GL_TEXTURE_2D, video_canvas[i] );
@@ -152,16 +180,25 @@ void VideoViewGL::nextFrame( int64_t frame )
 	Fl::awake();
 	Fl::unlock();
 }
+void VideoViewGL::seek( int64_t position )
+{
+	m_seekPosition = position;
+	m_seek = true;
+	redraw();
+}
 void VideoViewGL::play()
 {
 	m_playing = true;
 	g_timeline->reset();
 	m_snd->Play();
+	vv_play = true;
+	Fl::add_timeout( LEN_TIMEOUT, vv_callback, NULL );
 }
 void VideoViewGL::stop()
 {
 	m_playing = false;
 	m_snd->Stop();
+	vv_play = false;
 }
 
 } /* namespace nle */

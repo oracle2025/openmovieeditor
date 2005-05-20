@@ -21,6 +21,7 @@
 #include <FL/fl_draw.H>
 
 #include "Draw.H"
+#include "SwitchBoard.H"
 
 namespace nle
 {
@@ -48,11 +49,13 @@ extern bool USING_AUDIO;
 void Draw::triangle( float x, float y, bool direction )
 {
 	float _x;
+	float zoom = SwitchBoard::i()->zoom();
 	if (USING_AUDIO) {
 		_x = direction ? 8 * ( 48000 / 29.97 ) : - 8 * ( 48000 / 29.97 );
 	} else {
 		_x = direction ? 8 : -8;
 	}
+	_x = _x / zoom;
 	fl_color( FL_BLACK );
 	fl_begin_polygon();
 	fl_vertex( x, y );

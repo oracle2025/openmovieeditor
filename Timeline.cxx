@@ -95,19 +95,25 @@ void Timeline::reset()
 	m_samplePosition = 0;
 	for_each( m_allTracks.begin(), m_allTracks.end(), reset_helper );
 }
+frame_struct* Timeline::frame( int64_t position )
+{
+	frame_struct* res = NULL;
+	frame_struct* tmp = NULL;
+	for ( std::list< VideoTrack* >::iterator i = m_videoTracks.begin(); i != m_videoTracks.end(); i++ ) {
+		VideoTrack* current = *i;
+		if ( tmp = current->frame( position ) )
+			res = tmp;
+	}
+	return res;
+}
 frame_struct* Timeline::nextFrame()
 {
 	frame_struct* res = NULL;
+	frame_struct* tmp = NULL;
 	for ( std::list< VideoTrack* >::iterator i = m_videoTracks.begin(); i != m_videoTracks.end(); i++ ) {
 		VideoTrack* current = *i;
-		std::list< Clip* >* clips = current->getClips();
-		for ( std::list< Clip* >::iterator j = clips->begin(); j != clips->end(); j++ ) {
-			res = ((VideoClip*)(*j))->getFrame(m_playPosition);
-			if ( res ) {
-				m_playPosition++;
-				return res;
-			}
-		}
+		tmp = current->nextFrame();
+		res = tmp ? tmp : res;
 	}
 	m_playPosition++;
 	return res;

@@ -40,12 +40,15 @@ class VideoViewGL : public Fl_Gl_Window, NextFrameListener
 		~VideoViewGL();
 		void draw();
 		void nextFrame( int64_t frame );
+		void seek( int64_t position );
 		void play();
 		void stop();
 	private:
 		//Timeline *m_timeline; //g_timeline
 		Sound *m_snd;
 		bool m_playing;
+		bool m_seek;
+		int64_t m_seekPosition;
 		//std::list< frame_struct* > m_frameList;
 };
 

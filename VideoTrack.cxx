@@ -46,6 +46,16 @@ void VideoTrack::add_video( int64_t position, const char* filename )
 	}
 	m_clips.push_back( new VideoClip( this, position, vf ) );
 }
+frame_struct* VideoTrack::frame( int64_t position )
+{
+	frame_struct* res = NULL;
+	for ( std::list< Clip* >::iterator j = m_clips.begin(); j != m_clips.end(); j++ ) {
+		if ( res = ((VideoClip*)(*j))->getFrame( position ) )
+			return res;
+	}
+	return NULL;
+
+}
 frame_struct* VideoTrack::nextFrame()
 {
 	frame_struct* res = NULL;

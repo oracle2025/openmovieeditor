@@ -183,7 +183,6 @@ void TimelineView::add_video( int track, int y, const char* filename )
 }
 int64_t TimelineView::get_real_position( int p )
 {
-	//return int64_t( float(p - TRACK_SPACING) * SwitchBoard::i()->zoom() ) + m_scrollPosition;
 	return int64_t( float(p - TRACK_SPACING) / SwitchBoard::i()->zoom() ) + m_scrollPosition;
 }
 int TimelineView::get_screen_position( int64_t p, float stretchFactor )
@@ -291,17 +290,18 @@ void TimelineView::move_cursor( int64_t position )
 	if ( screen_pos < 0 ) {
 		m_scrollPosition = get_real_position( screen_pos );
 		screen_pos = get_screen_position(m_stylusPosition);
-		e_scroll_position( m_scrollPosition, w() / SwitchBoard::i()->zoom(), 1024 );
+		e_scroll_position( m_scrollPosition, long( w() / SwitchBoard::i()->zoom() ), 1024 );
 		redraw();
 	} else if ( screen_pos > w() - 2 * TRACK_SPACING ) {
 		m_scrollPosition = get_real_position( screen_pos - ( w() - 2 * TRACK_SPACING ) );
 		screen_pos = get_screen_position(m_stylusPosition);
-		e_scroll_position( m_scrollPosition, w() / SwitchBoard::i()->zoom(), 1024  );
+		e_scroll_position( m_scrollPosition, long( w() / SwitchBoard::i()->zoom() ), 1024  );
 		redraw();
 	} else {
 		fl_overlay_rect( screen_pos, y(), 1, h() );
 	}
 	e_stylus_position( screen_pos );
+	e_seek_position( m_stylusPosition );
 }
 void TimelineView::stylus( long stylus_pos )
 {

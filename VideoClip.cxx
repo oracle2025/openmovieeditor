@@ -44,8 +44,14 @@ void VideoClip::reset()
 }
 frame_struct* VideoClip::getFrame( int64_t position )
 {
+	static int64_t last_pos = position;
 	if ( position < m_position || position > m_position + length() )
 		return NULL;
+	if ( last_pos + 1 != position ) {
+		int64_t s_pos = position - m_position + m_trimA;
+		m_videoFile->seek( s_pos );
+	} 
+	last_pos = position;
 	return m_videoFile->read();
 }
 	

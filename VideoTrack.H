@@ -40,6 +40,7 @@ class VideoTrack : public Track
 		int type() { return TRACK_TYPE_VIDEO; }
 		float stretchFactor() { return 1.0; }
 		frame_struct* nextFrame();
+		frame_struct* frame( int64_t position );
 		void reset();
 	private:
 		int64_t m_playPosition;

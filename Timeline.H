@@ -44,6 +44,7 @@ class Timeline
 		// method declerations
 		void reset();
 		frame_struct* nextFrame();
+		frame_struct* frame( int64_t position );
 		int fillBuffer( float* output, unsigned long frames );
 
 		void add_video( int track, int64_t position, const char* filename );
