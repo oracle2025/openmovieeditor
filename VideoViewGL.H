@@ -49,6 +49,7 @@ class VideoViewGL : public Fl_Gl_Window, NextFrameListener
 		bool m_playing;
 		bool m_seek;
 		int64_t m_seekPosition;
+		int64_t m_playingPosition;
 		//std::list< frame_struct* > m_frameList;
 };
 

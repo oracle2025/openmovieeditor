@@ -1,4 +1,4 @@
-/*  FilmStrip.H
+/*  VideoView.H
  *
  *  Copyright (C) 2003 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,34 +17,31 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _FILM_STRIP_H_
-#define _FILM_STRIP_H_
+#ifndef _VIDEO_VIEW_H_
+#define _VIDEO_VIEW_H_
 
+#include "NextFrameListener.H"
 
 namespace nle
 {
 
-typedef struct
-{
-	unsigned char* data;
-	int w;
-	int h;
-} pic_struct;
+class Timeline;
+class Sound;
 
-class FilmStrip
+class VideoView : public Fl_Widget, NextFrameListener
 {
 	public:
-		FilmStrip( VideoFile* vfile );
-		~FilmStrip();
-		inline unsigned int count() { return m_count; }
-		inline pic_strict* get_pic( unsigned int index ) { return index < m_count ? m_pics[index] : NULL }
+		VideoView( int x, int y, int w, int h, const char *label = 0 );
+		~VideoView();
+		void play();
+		void stop();
+		void draw();
+		void nextFrame( int64_t frame );
 	private:
-		unsigned int m_count;
-		pic_struct *m_pics;
+		Timeline *m_timeline;
+		Sound *m_snd;
 };
-
-
+	
 } /* namespace nle */
-
-#endif /* _FILM_STRIP_H_ */
+#endif /* _VIDEO_VIEW_H_ */
 

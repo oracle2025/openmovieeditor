@@ -53,6 +53,7 @@ VideoViewGL::VideoViewGL( int x, int y, int w, int h, const char *l )
 	m_playing = false;
 	m_seek = false;
 	g_videoView = this;
+	m_playingPosition = 0;
 }
 VideoViewGL::~VideoViewGL()
 {
@@ -109,7 +110,20 @@ static void draw_track_helper( VideoTrack* track )
 void VideoViewGL::draw()
 {
 	if ( !valid() ) {
-		glLoadIdentity(); glViewport( 0, 0, w(), h() );
+		int _w, _h, _x, _y;
+		float a_b = ( 368.0 / 240.0 );
+		{
+			if ( w() < h() * a_b ) {
+				_h = int( w() / a_b );
+				_w = w();
+			} else {
+				_h = h();
+				_w = int( h() * a_b );
+			}
+			_x = ( w() - _w ) / 2;
+			_y = ( h() - _h ) / 2;
+		}
+		glLoadIdentity(); glViewport( _x, _y, _w, _h );
 		glOrtho( 0, 10, 10, 0, -20000, 10000 ); glEnable( GL_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glEnable (GL_TEXTURE_2D);
@@ -142,7 +156,14 @@ void VideoViewGL::draw()
 			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs->w, fs->h, GL_RGB, GL_UNSIGNED_BYTE, fs->RGB );
 		}
 	}
+	static int64_t last_frame = m_playingPosition;
 	if (m_playing) {
+		if ( last_frame == m_playingPosition ) {
+			return;
+		} else {
+			last_frame = m_playingPosition;
+		}
+		cout << "2" << endl;
 		//for_each( g_timeline->getVideoTracks()->begin(), g_timeline->getVideoTracks()->end(), draw_track_helper );
 		frame_struct *fs = g_timeline->nextFrame();
 		if ( fs ) {
@@ -176,6 +197,8 @@ void VideoViewGL::draw()
 void VideoViewGL::nextFrame( int64_t frame )
 {
 	Fl::lock();
+	cout << "1" << endl;
+	m_playingPosition = frame;
 	redraw();
 	Fl::awake();
 	Fl::unlock();
@@ -189,6 +212,7 @@ void VideoViewGL::seek( int64_t position )
 void VideoViewGL::play()
 {
 	m_playing = true;
+	m_playingPosition = 0;
 	g_timeline->reset();
 	m_snd->Play();
 	vv_play = true;

@@ -114,6 +114,7 @@ frame_struct* Timeline::nextFrame()
 		VideoTrack* current = *i;
 		tmp = current->nextFrame();
 		res = tmp ? tmp : res;
+		break;
 	}
 	m_playPosition++;
 	return res;
