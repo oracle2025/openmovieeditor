@@ -22,6 +22,7 @@
 
 #include "VideoClip.H"
 #include "IVideoFile.H"
+#include "FilmStrip.H"
 
 using namespace std;
 
@@ -32,6 +33,8 @@ VideoClip::VideoClip( Track *track, int64_t position, IVideoFile *vf )
 	: Clip( track, position )
 {
 	m_videoFile = vf;
+	m_filmStrip = new FilmStrip( vf );
+	m_lastFramePosition = -1;
 }
 VideoClip::~VideoClip(){}
 int64_t VideoClip::length()
@@ -40,19 +43,30 @@ int64_t VideoClip::length()
 }
 void VideoClip::reset()
 {
-	m_videoFile->seek( m_trimA );
+	m_videoFile->seek( m_trimA );//FIXME noch nötig??
+	/*evtl. damit nicht bei jedem Abspiel vorgang für jeden Clip geseekt werden muss*/
 }
 frame_struct* VideoClip::getFrame( int64_t position )
 {
-	static int64_t last_pos = position;
+//	m_lastFramePosition = position;
 	if ( position < m_position || position > m_position + length() )
 		return NULL;
-	if ( last_pos + 1 != position ) {
+	if ( m_lastFramePosition + 1 != position ) {
 		int64_t s_pos = position - m_position + m_trimA;
 		m_videoFile->seek( s_pos );
 	} 
-	last_pos = position;
+	m_lastFramePosition = position;
 	return m_videoFile->read();
 }
+/*frame_struct* VideoClip::get_preview( int index )
+{
+	pic_struct *p = m_filmStrip->get_pic( index ); //data w h
+	m_previewFrame.x = 0;
+	m_previewFrame.y = 0;
+	m_previewFrame.w = p->w;
+	m_previewFrame.h = p->h;
+	m_previewFrame.RGB = p->data;
+	return &m_previewFrame;
+}*/
 	
 } /* namespace nle */

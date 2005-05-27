@@ -20,8 +20,10 @@
 #include <iostream>
 #include <string.h>
 
-#include <quicktime/lqt.h>
-#include <quicktime/colormodels.h>
+#include <lqt/lqt.h>
+#include <lqt/colormodels.h>
+//#include <quicktime/lqt.h>
+//#include <quicktime/colormodels.h>
 
 #include "VideoFileQT.H"
 
@@ -46,10 +48,10 @@ VideoFileQT::VideoFileQT( const char* filename )
 	if ( !quicktime_supported_video( m_qt, 0 ) )
 		return;
 	lqt_set_cmodel( m_qt, 0, BC_RGB888);
-	int m_width = quicktime_video_width( m_qt, 0 );
-	int m_height = quicktime_video_height( m_qt, 0 );
-	m_frame = new unsigned char[m_width * m_height * 4];
-	m_rows = new (unsigned char*)[m_height * sizeof(char*)];
+	m_width = quicktime_video_width( m_qt, 0 );
+	m_height = quicktime_video_height( m_qt, 0 );
+	m_frame = new unsigned char[m_width * m_height * 3];
+	m_rows = new (unsigned char*)[m_height];
 	for (int i = 0; i < m_height; i++) {
                 m_rows[i] = m_frame + m_width * 3 * i;
 	}
@@ -67,6 +69,12 @@ VideoFileQT::VideoFileQT( const char* filename )
 	cout << "Audio Length: " << quicktime_audio_length( m_qt, 0 ) << endl;
 	cout << "Audio Samplerate: " << quicktime_sample_rate( m_qt, 0 ) << endl;
 	m_ok = true;
+/*	unsigned char p[25*25*3];
+	unsigned char* ro[25];
+	for ( int i = 0; i < 25; i++ ) {
+		ro[i] = p + i * 25 * 3;
+	}
+	quicktime_decode_scaled( m_qt, 0, 0, 25, 25, 25, 25, BC_RGB888, ro, 0 );*/
 }
 VideoFileQT::~VideoFileQT()
 {
@@ -89,6 +97,10 @@ frame_struct* VideoFileQT::read()
 {
 	quicktime_decode_video( m_qt, m_rows, 0);
 	return &m_framestruct;
+}
+void VideoFileQT::read( unsigned char** rows, int w, int h )
+{
+	quicktime_decode_scaled( m_qt, 0, 0, m_width, m_height, w, h, BC_RGB888, rows, 0 );
 }
 void VideoFileQT::seek( int64_t frame )
 {

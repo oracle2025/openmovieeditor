@@ -41,6 +41,7 @@ int64_t AudioClip::length()
 void AudioClip::reset()
 {
 	m_audioFile->seek( m_trimA );
+	m_lastSamplePosition = -256; //FIXME no nummber!
 }
 int AudioClip::fillBuffer( float* output, unsigned long frames, int64_t position )
 {
@@ -53,6 +54,10 @@ int AudioClip::fillBuffer( float* output, unsigned long frames, int64_t position
 				( m_position - position ) < frames ? ( m_position - position ) : frames  );
 		frames_written += ( m_position - position ) < frames ? ( m_position - position ) : frames;
 	}
+	if ( m_lastSamplePosition + frames != position ) {
+		m_audioFile->seek( position - frames_written - m_position + m_trimA );
+	}
+	m_lastSamplePosition += frames;
 	return frames_written + m_audioFile->fillBuffer(
 			&output[frames_written], frames - frames_written
 			);

@@ -43,8 +43,9 @@ class Timeline
 		int64_t m_samplePosition;
 		// method declerations
 		void reset();
+		inline void seek( int64_t position ) { m_seekPosition = position; }
 		frame_struct* nextFrame();
-		frame_struct* frame( int64_t position );
+		frame_struct* getFrame( int64_t position );
 		int fillBuffer( float* output, unsigned long frames );
 
 		void add_video( int track, int64_t position, const char* filename );
@@ -56,6 +57,7 @@ class Timeline
 		std::list< Track* > m_allTracks;
 		std::list< VideoTrack* > m_videoTracks;
 		std::list< AudioTrack* > m_audioTracks;
+		int64_t m_seekPosition;
 };
 	
 } /* namespace nle */

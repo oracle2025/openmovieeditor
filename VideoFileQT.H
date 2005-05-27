@@ -20,7 +20,8 @@
 #ifndef _VIDEO_FILE_QT_H
 #define _VIDEO_FILE_QT_H
 
-#include <quicktime/lqt.h>
+//#include <quicktime/lqt.h>
+#include <lqt/lqt.h>
 
 #include "IVideoFile.H"
 #include "frame_struct.h"
@@ -37,6 +38,7 @@ class VideoFileQT : public IVideoFile
 		int64_t length();
 		int fps();
 		frame_struct* read();
+		void read( unsigned char** rows, int w, int h );
 		void seek( int64_t frame );
 	private:
 		quicktime_t* m_qt;

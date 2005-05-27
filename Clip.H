@@ -38,6 +38,7 @@ class Clip
 		Track* track() { return m_track; }
 		void track( Track* track ) { m_track = track; }
 		void trimA( int64_t trim );
+		inline int64_t trimA() { return m_trimA; }
 		void trimB( int64_t trim );
 	protected:
 		Clip( Track *track, int64_t position );

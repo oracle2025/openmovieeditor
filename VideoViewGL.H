@@ -44,6 +44,9 @@ class VideoViewGL : public Fl_Gl_Window, NextFrameListener
 		void play();
 		void stop();
 	private:
+		int m_A;
+		int m_B;
+		int m_C;
 		//Timeline *m_timeline; //g_timeline
 		Sound *m_snd;
 		bool m_playing;

@@ -1,4 +1,4 @@
-/*  VideoView.H
+/*  VideoViewFL.H
  *
  *  Copyright (C) 2003 Richard Spindler <richard.spindler AT gmail.com>
  *

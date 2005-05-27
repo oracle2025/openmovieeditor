@@ -32,6 +32,7 @@
 #include "TrimDragHandler.H"
 #include "Rect.H"
 #include "events.H"
+#include "FilmStrip.H"
 
 using namespace std;
 
@@ -151,10 +152,24 @@ void TimelineView::draw()
 				p = float( (*j)->position() );
 				l = float( (*j)->length() );
 				Draw::box( p, 0, l, TRACK_HEIGHT, FL_DARK3 );
+				if ( (*i)->type() == TRACK_TYPE_VIDEO ) {
+					int _x, _y;
+					VideoClip* vc = ((VideoClip*)(*j));
+					_y = y() + TRACK_SPACING + cnt * (TRACK_HEIGHT + TRACK_SPACING);
+					FilmStrip* fs = vc->getFilmStrip();
+					int s = vc->trimA() / 100;
+					int e = ( vc->length() / 100 ) + s;
+					int off = vc->trimA() % 100;
+					for ( int k = s; k < e; k++ ) {
+						_x = get_screen_position( (*j)->position() + (k - s) * 100, (*i)->stretchFactor()  ) - off;
+						pic_struct* f = fs->get_pic(k);
+						fl_draw_image( f->data, _x, _y, f->w, f->h );
+					}
+				}
 				Draw::triangle( p, TRACK_HEIGHT/2, true );
 				Draw::triangle( p + l, TRACK_HEIGHT/2, false );
-		//	}
-		}/* else {
+			}
+		/*} else {
 			for ( std::list< Clip* >::iterator j = vcl->begin(); j != vcl->end(); j++ ) {
 				p = float( (*j)->position() );
 				l = float( (*j)->length() );
@@ -197,6 +212,11 @@ void TimelineView::scroll( int64_t position )
 }
 void TimelineView::zoom( float zoom )
 {
+	if ( isinf(zoom) || isnan(zoom) || zoom >= 10.0 ) {
+		redraw();
+		e_stylus_position( get_screen_position(m_stylusPosition) );
+		return;
+	}
 	SwitchBoard::i()->zoom( zoom );
 	redraw();
 	e_stylus_position( get_screen_position(m_stylusPosition) );

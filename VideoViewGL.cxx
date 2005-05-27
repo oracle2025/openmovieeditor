@@ -29,7 +29,9 @@
 #include "Sound.H"
 #include "SwitchBoard.H"
 
-#define LEN_TIMEOUT 0.01
+#include <unistd.h>
+
+#define LEN_TIMEOUT 0.05
 
 using namespace std;
 
@@ -54,6 +56,9 @@ VideoViewGL::VideoViewGL( int x, int y, int w, int h, const char *l )
 	m_seek = false;
 	g_videoView = this;
 	m_playingPosition = 0;
+	m_A = 0;
+	m_B = 0;
+	m_C = 0;
 }
 VideoViewGL::~VideoViewGL()
 {
@@ -130,9 +135,9 @@ void VideoViewGL::draw()
     	//	loadTGA ("texture.tga", 13);
 	}
 	static bool once = true;
+	static unsigned char p[3 * T_W * T_H] = { 0 };
 	if (once) {
 		glGenTextures( 10, video_canvas );
-		unsigned char p[3 * T_W * T_H] = { 0 };
 		for ( int i = 0; i < 10; i++ ) {
 /*			if ( loadTGA ("texture.tga", video_canvas[i]) != 1)
 				cerr << "TGA Error" << endl;*/
@@ -150,25 +155,33 @@ void VideoViewGL::draw()
 	texture_counter = 0;
 	if (m_seek) {
 		m_seek = false;
-		frame_struct *fs = g_timeline->frame( m_seekPosition );
+		frame_struct *fs = g_timeline->getFrame( m_seekPosition );
 		if ( fs ) {
 			glBindTexture( GL_TEXTURE_2D, video_canvas[texture_counter] );
 			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs->w, fs->h, GL_RGB, GL_UNSIGNED_BYTE, fs->RGB );
+		} else {
+			glBindTexture( GL_TEXTURE_2D, video_canvas[texture_counter] );
+			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, T_W, T_H, GL_RGB, GL_UNSIGNED_BYTE, p );
 		}
+
 	}
-	static int64_t last_frame = m_playingPosition;
+	static int64_t last_frame = m_playingPosition; //FIXME Vorsicht, falls mehrere Instanzen existieren
 	if (m_playing) {
 		if ( last_frame == m_playingPosition ) {
+			m_A++;
 			return;
 		} else {
+			m_B++;
 			last_frame = m_playingPosition;
 		}
-		cout << "2" << endl;
 		//for_each( g_timeline->getVideoTracks()->begin(), g_timeline->getVideoTracks()->end(), draw_track_helper );
 		frame_struct *fs = g_timeline->nextFrame();
 		if ( fs ) {
 			glBindTexture( GL_TEXTURE_2D, video_canvas[texture_counter] );
 			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs->w, fs->h, GL_RGB, GL_UNSIGNED_BYTE, fs->RGB );
+		} else {
+			glBindTexture( GL_TEXTURE_2D, video_canvas[texture_counter] );
+			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, T_W, T_H, GL_RGB, GL_UNSIGNED_BYTE, p );
 		}
 	} else {
 	}
@@ -196,8 +209,13 @@ void VideoViewGL::draw()
 
 void VideoViewGL::nextFrame( int64_t frame )
 {
+/*	static int64_t last_frame = frame;
+	if (frame == last_frame) {
+		cout << "XXX" << endl;
+	}
+	last_frame = frame;
+	m_C++;*/
 	Fl::lock();
-	cout << "1" << endl;
 	m_playingPosition = frame;
 	redraw();
 	Fl::awake();
@@ -220,6 +238,7 @@ void VideoViewGL::play()
 }
 void VideoViewGL::stop()
 {
+	cout << "A: " << m_A << " B: " << m_B << " C: " << m_C << endl;
 	m_playing = false;
 	m_snd->Stop();
 	vv_play = false;

@@ -30,6 +30,9 @@ int main( int argc, char** argv )
 	Fl::background( 93, 93, 114 );
 	Fl::foreground( 255, 255, 255 );
 	Fl::set_color( FL_BLACK, 200, 200, 200 );
+
+	Fl::lock();
+	
 	  
 	nui.show( argc, argv );
 	return Fl::run();

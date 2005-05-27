@@ -20,6 +20,7 @@
 #ifndef _FILM_STRIP_H_
 #define _FILM_STRIP_H_
 
+#include <stdint.h>
 
 namespace nle
 {
@@ -31,13 +32,15 @@ typedef struct
 	int h;
 } pic_struct;
 
+class IVideoFile;
+
 class FilmStrip
 {
 	public:
-		FilmStrip( VideoFile* vfile );
+		FilmStrip( IVideoFile* vfile );
 		~FilmStrip();
 		inline unsigned int count() { return m_count; }
-		inline pic_strict* get_pic( unsigned int index ) { return index < m_count ? m_pics[index] : NULL }
+		inline pic_struct* get_pic( unsigned int index ) { return index < m_count ? &m_pics[index] : 0; }
 	private:
 		unsigned int m_count;
 		pic_struct *m_pics;

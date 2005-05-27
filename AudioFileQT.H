@@ -22,7 +22,8 @@
 
 #include <stdint.h>
 
-#include <quicktime/lqt.h>
+//#include <quicktime/lqt.h>
+#include <lqt/lqt.h>
 
 namespace nle
 {

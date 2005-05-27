@@ -1,4 +1,4 @@
-/*  VideoView.cxx
+/*  VideoViewFL.cxx
  *
  *  Copyright (C) 2003 Richard Spindler <richard.spindler AT gmail.com>
  *

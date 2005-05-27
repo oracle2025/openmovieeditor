@@ -91,32 +91,30 @@ void Timeline::add_audio( int track, int64_t position, const char* filename )
 void reset_helper( Track* track ) { track->reset(); }
 void Timeline::reset()
 {
-	m_playPosition = 0;
-	m_samplePosition = 0;
+	m_playPosition = m_seekPosition;
+	m_samplePosition = m_seekPosition * ( 48000 / 29.97 );
 	for_each( m_allTracks.begin(), m_allTracks.end(), reset_helper );
 }
-frame_struct* Timeline::frame( int64_t position )
+frame_struct* Timeline::getFrame( int64_t position )
 {
 	frame_struct* res = NULL;
 	frame_struct* tmp = NULL;
 	for ( std::list< VideoTrack* >::iterator i = m_videoTracks.begin(); i != m_videoTracks.end(); i++ ) {
 		VideoTrack* current = *i;
-		if ( tmp = current->frame( position ) )
-			res = tmp;
+		if ( tmp = current->getFrame( position ) )
+			return tmp;
 	}
 	return res;
 }
 frame_struct* Timeline::nextFrame()
 {
 	frame_struct* res = NULL;
-	frame_struct* tmp = NULL;
+	m_playPosition++;
 	for ( std::list< VideoTrack* >::iterator i = m_videoTracks.begin(); i != m_videoTracks.end(); i++ ) {
 		VideoTrack* current = *i;
-		tmp = current->nextFrame();
-		res = tmp ? tmp : res;
-		break;
+		if ( res = current->getFrame( m_playPosition - 1 ) )
+			return res;
 	}
-	m_playPosition++;
 	return res;
 }
 

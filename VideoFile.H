@@ -32,7 +32,6 @@ class VideoFile
 {
 	public:
 		// constructors and destructors
-		VideoFile( const std::string &filename, int mode = VF_READ );
 		~VideoFile();
 		
 		// method declerations
@@ -41,6 +40,8 @@ class VideoFile
 		int fps();
 		uchar* read();
 		void seek( int64_t frame );
+	protected:
+		VideoFile( const std::string &filename, int mode = VF_READ );
 	private:
 		// member variable declerations
 		int             m_videoStream;

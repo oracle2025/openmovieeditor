@@ -28,20 +28,22 @@
 namespace nle
 {
 class IVideoFile;
+class FilmStrip;
 
 class VideoClip : public Clip
 {
 	public:
-//		VideoClip( Track *track, int64_t position, const char* filename );
 		VideoClip( Track *track, int64_t position, IVideoFile *vf );
 		~VideoClip();
 		int64_t length();
 		void reset();
 		frame_struct* getFrame( int64_t position );
-		/*VideoFrame *getFrame( VideoFrame* frame, int64_t position ) */
+		inline FilmStrip* getFilmStrip() { return m_filmStrip; }
 	private:
-//		int64_t m_length;
 		IVideoFile *m_videoFile;
+		FilmStrip *m_filmStrip;
+		frame_struct m_previewFrame;
+		int64_t m_lastFramePosition;
 };
 
 } /* namespace nle */

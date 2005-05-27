@@ -99,10 +99,10 @@ int Sound::fillBuffer( float* output, unsigned long frames )
 	 */
 	int res = m_tl->fillBuffer( output, frames );
 	m_soundSamples += res;
-/*	if ( m_soundSamples / ( 48000 / 29.97 ) > m_videoFrames ) {
+	if ( m_soundSamples / ( 48000 / 29.97 ) > m_videoFrames ) {
 		m_videoFrames++;
 		m_nfl->nextFrame( m_videoFrames );
-	}*/
+	}
 	return res;
 }
 

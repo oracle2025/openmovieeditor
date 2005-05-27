@@ -42,8 +42,10 @@ Ruler::Ruler( int x, int y, int w, int h, const char *label )
 
 void Ruler::draw()
 {
+	fl_push_clip( x(), y(), w(), h());
 	fl_draw_box( FL_UP_BOX, x(), y(), w(), h(), FL_BACKGROUND_COLOR );
 	fl_draw_box( FL_DIAMOND_UP_BOX, x() + m_stylus.x, y() + m_stylus.y, m_stylus.w, m_stylus.h, FL_BACKGROUND_COLOR );
+	fl_pop_clip();
 }
 
 int Ruler::handle( int event )
@@ -86,7 +88,8 @@ int Ruler::handle( int event )
 void Ruler::stylus( long stylus_pos )
 {
 	m_stylus.x = stylus_pos - ( m_stylus.w / 2 );
-	redraw();
+	redraw(); //FIXME: OpenGL Window is redrawn
+	// Maybe it should be somehow draw from within VideoViewGL
 }
 
 } /* namespace nle */
