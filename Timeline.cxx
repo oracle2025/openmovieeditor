@@ -58,6 +58,7 @@ Timeline::Timeline()
 
 	g_timeline = this; //Singleton sucks, this is better :)
 
+	m_seekPosition = 0;
 	
 
 	

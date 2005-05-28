@@ -115,7 +115,7 @@ static void draw_track_helper( VideoTrack* track )
 void VideoViewGL::draw()
 {
 	if ( !valid() ) {
-		int _w, _h, _x, _y;
+/*		int _w, _h, _x, _y;
 		float a_b = ( 368.0 / 240.0 );
 		{
 			if ( w() < h() * a_b ) {
@@ -127,8 +127,8 @@ void VideoViewGL::draw()
 			}
 			_x = ( w() - _w ) / 2;
 			_y = ( h() - _h ) / 2;
-		}
-		glLoadIdentity(); glViewport( _x, _y, _w, _h );
+		}*/
+		glLoadIdentity(); glViewport( 0, 0, w(), h() ); // glViewport( _x, _y, _w, _h );
 		glOrtho( 0, 10, 10, 0, -20000, 10000 ); glEnable( GL_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glEnable (GL_TEXTURE_2D);
@@ -139,8 +139,6 @@ void VideoViewGL::draw()
 	if (once) {
 		glGenTextures( 10, video_canvas );
 		for ( int i = 0; i < 10; i++ ) {
-/*			if ( loadTGA ("texture.tga", video_canvas[i]) != 1)
-				cerr << "TGA Error" << endl;*/
 			glBindTexture (GL_TEXTURE_2D, video_canvas[i] );
 			glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
 			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -152,10 +150,11 @@ void VideoViewGL::draw()
 		}
 		once = false;
 	}
-	texture_counter = 0;
+//	texture_counter = 0;
+	static frame_struct *fs = 0;
 	if (m_seek) {
 		m_seek = false;
-		frame_struct *fs = g_timeline->getFrame( m_seekPosition );
+		fs = g_timeline->getFrame( m_seekPosition );
 		if ( fs ) {
 			glBindTexture( GL_TEXTURE_2D, video_canvas[texture_counter] );
 			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs->w, fs->h, GL_RGB, GL_UNSIGNED_BYTE, fs->RGB );
@@ -175,7 +174,7 @@ void VideoViewGL::draw()
 			last_frame = m_playingPosition;
 		}
 		//for_each( g_timeline->getVideoTracks()->begin(), g_timeline->getVideoTracks()->end(), draw_track_helper );
-		frame_struct *fs = g_timeline->nextFrame();
+		fs = g_timeline->nextFrame();
 		if ( fs ) {
 			glBindTexture( GL_TEXTURE_2D, video_canvas[texture_counter] );
 			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs->w, fs->h, GL_RGB, GL_UNSIGNED_BYTE, fs->RGB );
@@ -185,19 +184,56 @@ void VideoViewGL::draw()
 		}
 	} else {
 	}
-	texture_counter++;
+	//texture_counter++;
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-	for ( int i = 0; i < texture_counter; i++ ) {
-		glBindTexture (GL_TEXTURE_2D, video_canvas[i] );
+	static float gl_x, gl_y, gl_w, gl_h;
+	if (fs) { //TODO: Optimize ?
+		static int w_buf = fs->w; 
+		static int h_buf = fs->h;
+		static int ww_buf = w();
+		static int wh_buf = h();
+		static bool a = true;
+		if ( a || !( w_buf == fs->w && h_buf == fs->h && ww_buf == w() && wh_buf == h() ) ) {
+			a = false;
+			float f_v = ( (float)fs->w / (float)fs->h );
+			float f_w = ( (float)w() / (float)h() );
+			float f_g = f_v / f_w;
+			if ( f_g > 1.0 ) {
+				gl_h = 10.0 / f_g;
+				gl_w = 10.0;
+			} else {
+				gl_h = 10.0;
+				gl_w = f_g * 10.0;
+			}
+			gl_x = ( 10.0 - gl_w ) / 2;
+			gl_y = ( 10.0 - gl_h ) / 2;
+			w_buf = fs->w;
+			h_buf = fs->h;
+			ww_buf = w();
+			wh_buf = h();
+		}
+	}
+	
+//	for ( int i = 0; i < texture_counter; i++ ) {
+	if (fs) {
+		glBindTexture (GL_TEXTURE_2D, video_canvas[texture_counter] );
 		glBegin (GL_QUADS);
-		glTexCoord2f (0.0, 0.0);
+		glTexCoord2f (  0.0,      0.0 );
+		glVertex3f   (  gl_x,      gl_y, 0.0 );
+		glTexCoord2f (  0.71875,  0.0 ); 
+		glVertex3f   ( gl_x + gl_w,      gl_y, 0.0 );
+		glTexCoord2f (  0.71875,  0.46875 ); // (368.0 / 512.0) (240.0 / 512.0)
+		glVertex3f   ( gl_x + gl_w,     gl_y + gl_h, 0.0 );
+		glTexCoord2f (  0.0,      0.46875 );
+		glVertex3f   (  gl_x,     gl_y + gl_h, 0.0 );
+/*		glTexCoord2f (0.0, 0.0);
 		glVertex3f (0.0, 0.0, 0.0);
-		glTexCoord2f (0.71875, 0.0);
+		glTexCoord2f (0.71875, 0.0); 
 		glVertex3f (10.0, 0.0, 0.0);
-		glTexCoord2f (0.71875, 0.46875);
+		glTexCoord2f (0.71875, 0.46875); // (368.0 / 512.0) (240.0 / 512.0)
 		glVertex3f (10.0, 10.0, 0.0);
 		glTexCoord2f (0.0, 0.46875);
-		glVertex3f (0.0, 10.0, 0.0);
+		glVertex3f (0.0, 10.0, 0.0);*/
 		glEnd ();
 	}
 	/*
