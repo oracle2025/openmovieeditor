@@ -50,9 +50,9 @@ TimelineView::TimelineView( int x, int y, int w, int h, const char *label )
 	m_dragHandler = NULL;
 	m_timeline = new Timeline();
 	
-	m_timeline->add_video( 0, 30, "/home/oracle/tmp/test3.mov" );
-	m_timeline->add_video( 1, 100, "/home/oracle/tmp/test3.mov" );
-	m_timeline->add_audio( 2, 0, "/home/oracle/tmp/test3.mov" );
+//	m_timeline->add_video( 0, 30, "/home/oracle/tmp/test3.mov" );
+//	m_timeline->add_video( 1, 100, "/home/oracle/tmp/test3.mov" );
+//	m_timeline->add_audio( 2, 0, "/home/oracle/tmp/test3.mov" );
 
 	m_scrollPosition = 0;
 	m_stylusPosition = 0;
@@ -77,11 +77,16 @@ int TimelineView::handle( int event )
 			cout << "FL_PASTE" << endl;
 			cout << "Text: (" << Fl::event_text() << ") " << Fl::event_length() << endl;
 			cout << "X: " << Fl::event_x() << " Y: " << Fl::event_y() << endl;
-			cout << "Real Position: " << get_real_position(_x) << endl;
 			{
+				int64_t rp = get_real_position(_x);
+				cout << "Real Position: " << rp << endl;
 				Track* t = get_track( _x, _y );
-				if (t)
+				if (t && !fl_filename_isdir(Fl::event_text()) ) {
+					
 					cout << "Track: " << t->num() << endl;
+					t->add( Fl::event_text(), int64_t(rp * t->stretchFactor()) );
+					redraw();
+				}
 			}
 			return 1;
 		case FL_DND_DRAG:
@@ -206,7 +211,7 @@ void TimelineView::draw()
 }
 void TimelineView::add_video( int track, int y, const char* filename )
 {
-	m_timeline->add_video( track, get_real_position( y ), filename );
+	//m_timeline->add_video( track, get_real_position( y ), filename );
 }
 int64_t TimelineView::get_real_position( int p )
 {
@@ -271,7 +276,7 @@ Rect TimelineView::get_clip_rect( Clip* clip, bool clipping )
 {
 	
 	Rect tmp(
-			get_screen_position( int( clip->position() / clip->track()->stretchFactor() ) ),
+			get_screen_position( clip->position(), clip->track()->stretchFactor() ),
 			int( TRACK_SPACING + (TRACK_SPACING + TRACK_HEIGHT) * clip->track()->num() ),
 			int( clip->length() * SwitchBoard::i()->zoom() / clip->track()->stretchFactor() ),
 			TRACK_HEIGHT

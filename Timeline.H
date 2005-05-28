@@ -48,8 +48,8 @@ class Timeline
 		frame_struct* getFrame( int64_t position );
 		int fillBuffer( float* output, unsigned long frames );
 
-		void add_video( int track, int64_t position, const char* filename );
-		void add_audio( int track, int64_t position, const char* filename );
+/*		void add_video( int track, int64_t position, const char* filename ); //TODO: für undo redo wär das aber doch besser als direkt auf dem Track zu basteln
+		void add_audio( int track, int64_t position, const char* filename );*/
 		std::list< Track* >* getTracks() { return &m_allTracks; }
 		std::list< VideoTrack* >* getVideoTracks() { return &m_videoTracks; }
 		std::list< AudioTrack* >* getAudioTracks() { return &m_audioTracks; }

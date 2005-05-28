@@ -40,7 +40,7 @@ class Track
 		virtual float stretchFactor() = 0;
 		virtual void reset();
 		void add( Clip* clip );
-		virtual void add( const char* filename, position )=0;
+		virtual void add( const char* filename, int64_t position )=0;
 		void remove( Clip* clip );
 		int num() { return m_num; }
 	protected:

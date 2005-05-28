@@ -75,7 +75,7 @@ Timeline::~Timeline()
 	}
 }
 
-void Timeline::add_video( int track, int64_t position, const char* filename )
+/*void Timeline::add_video( int track, int64_t position, const char* filename )
 {
 	std::list< Track* >::iterator i = m_allTracks.begin();
 	for ( int j = 0; j < track; j++ )
@@ -92,7 +92,7 @@ void Timeline::add_audio( int track, int64_t position, const char* filename )
 		iter++;
 	}
 	(*iter)->add_audio( position, filename );
-}
+}*/
 void reset_helper( Track* track ) { track->reset(); }
 void Timeline::reset()
 {

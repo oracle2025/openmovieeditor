@@ -33,7 +33,7 @@ AudioTrack::AudioTrack( int num )
 AudioTrack::~AudioTrack()
 {
 }
-void AudioTrack::add_audio( int64_t position, const char* filename )
+void AudioTrack::add( const char* filename, int64_t position )
 {
 	AudioFileQT *af = new AudioFileQT( filename );
 	if ( !af->ok() ) {
