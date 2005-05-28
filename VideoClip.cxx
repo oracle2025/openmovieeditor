@@ -37,6 +37,10 @@ VideoClip::VideoClip( Track *track, int64_t position, IVideoFile *vf )
 	m_lastFramePosition = -1;
 }
 VideoClip::~VideoClip(){}
+const char* VideoClip::filename()
+{
+	return m_videoFile->filename();
+}
 int64_t VideoClip::length()
 {
 	return m_videoFile->length() - ( m_trimA + m_trimB );

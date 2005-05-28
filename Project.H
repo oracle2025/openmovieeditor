@@ -27,11 +27,11 @@ class Project
 {
 	public:
 		// constructors and destructors
+		static void write_project();
 
 		// method declerations
 	private:
 		// member variable declerations
-		Timeline m_timeline;
 		
 };
 

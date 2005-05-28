@@ -39,6 +39,7 @@ class VideoClip : public Clip
 		void reset();
 		frame_struct* getFrame( int64_t position );
 		inline FilmStrip* getFilmStrip() { return m_filmStrip; }
+		const char* filename();
 	private:
 		IVideoFile *m_videoFile;
 		FilmStrip *m_filmStrip;

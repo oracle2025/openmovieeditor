@@ -33,6 +33,7 @@
 #include "Rect.H"
 #include "events.H"
 #include "FilmStrip.H"
+#include "Project.H"
 
 using namespace std;
 
@@ -48,13 +49,18 @@ TimelineView::TimelineView( int x, int y, int w, int h, const char *label )
 {
 	m_dragHandler = NULL;
 	m_timeline = new Timeline();
+	
 	m_timeline->add_video( 0, 30, "/home/oracle/tmp/test3.mov" );
 	m_timeline->add_video( 1, 100, "/home/oracle/tmp/test3.mov" );
 	m_timeline->add_audio( 2, 0, "/home/oracle/tmp/test3.mov" );
+
 	m_scrollPosition = 0;
 	m_stylusPosition = 0;
 	SwitchBoard::i()->timelineView(this);
 	g_timelineView = this;
+
+	Project::write_project();
+	
 }
 TimelineView::~TimelineView()
 {
@@ -71,6 +77,12 @@ int TimelineView::handle( int event )
 			cout << "FL_PASTE" << endl;
 			cout << "Text: (" << Fl::event_text() << ") " << Fl::event_length() << endl;
 			cout << "X: " << Fl::event_x() << " Y: " << Fl::event_y() << endl;
+			cout << "Real Position: " << get_real_position(_x) << endl;
+			{
+				Track* t = get_track( _x, _y );
+				if (t)
+					cout << "Track: " << t->num() << endl;
+			}
 			return 1;
 		case FL_DND_DRAG:
 		case FL_DND_RELEASE:

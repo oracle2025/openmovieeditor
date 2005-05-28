@@ -24,6 +24,7 @@
 
 //#include <quicktime/lqt.h>
 #include <lqt/lqt.h>
+#include "globals.H"
 
 namespace nle
 {
@@ -39,11 +40,13 @@ class AudioFileQT
 		int fillBuffer( float* output, unsigned long frames );
 			//sizof(output) = frames * 2
 			//File Format: 44100 stereo interleaved
+		const char* filename() { return m_filename; }
 	private:
 		quicktime_t* m_qt;
 		int64_t m_length;
 		bool m_ok;
 		bool m_oneShot;
+		char m_filename[STR_LEN];
 };
 
 }

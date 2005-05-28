@@ -34,6 +34,7 @@ class AudioClip : public Clip
 		int64_t length();
 		void reset();
 		int fillBuffer( float* output, unsigned long frames, int64_t position );
+		const char* filename();
 	private:
 		AudioFileQT* m_audioFile;
 		int64_t m_lastSamplePosition;

@@ -68,6 +68,7 @@ VideoFileQT::VideoFileQT( const char* filename )
 	cout << "Video Timescale: " << lqt_video_time_scale( m_qt, 0 ) << endl;
 	cout << "Audio Length: " << quicktime_audio_length( m_qt, 0 ) << endl;
 	cout << "Audio Samplerate: " << quicktime_sample_rate( m_qt, 0 ) << endl;
+	strncpy(m_filename, filename, STR_LEN);
 	m_ok = true;
 /*	unsigned char p[25*25*3];
 	unsigned char* ro[25];

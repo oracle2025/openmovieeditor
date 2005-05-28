@@ -46,6 +46,7 @@ AudioFileQT::AudioFileQT( const char* filename )
 	m_length = quicktime_audio_length( m_qt, 0 );
 	//check samplerate
 	//check channels
+	strncpy(m_filename, filename, STR_LEN);
 	m_ok = true;
 	m_oneShot = true;
 }

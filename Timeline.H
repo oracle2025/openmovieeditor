@@ -52,6 +52,7 @@ class Timeline
 		void add_audio( int track, int64_t position, const char* filename );
 		std::list< Track* >* getTracks() { return &m_allTracks; }
 		std::list< VideoTrack* >* getVideoTracks() { return &m_videoTracks; }
+		std::list< AudioTrack* >* getAudioTracks() { return &m_audioTracks; }
 	private:
 		// member variable declerations
 		std::list< Track* > m_allTracks;

@@ -27,6 +27,7 @@
 #include "Track.H"
 #include "SwitchBoard.H"
 
+
 using namespace std;
 
 
@@ -56,6 +57,10 @@ Timeline::Timeline()
 	m_samplePosition = 0;
 
 	g_timeline = this; //Singleton sucks, this is better :)
+
+	
+
+	
 }
 Timeline::~Timeline()
 {
@@ -92,7 +97,7 @@ void reset_helper( Track* track ) { track->reset(); }
 void Timeline::reset()
 {
 	m_playPosition = m_seekPosition;
-	m_samplePosition = m_seekPosition * ( 48000 / 29.97 );
+	m_samplePosition = int64_t( m_seekPosition * ( 48000 / 29.97 ) );
 	for_each( m_allTracks.begin(), m_allTracks.end(), reset_helper );
 }
 frame_struct* Timeline::getFrame( int64_t position )

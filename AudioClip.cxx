@@ -38,6 +38,10 @@ int64_t AudioClip::length()
 {
 	return m_audioFile->length() - ( m_trimA + m_trimB );
 }
+const char* AudioClip::filename()
+{
+	return m_audioFile->filename();
+}
 void AudioClip::reset()
 {
 	m_audioFile->seek( m_trimA );

@@ -40,6 +40,8 @@ class Clip
 		void trimA( int64_t trim );
 		inline int64_t trimA() { return m_trimA; }
 		void trimB( int64_t trim );
+		inline int64_t trimB() { return m_trimB; }
+		virtual const char* filename()=0;
 	protected:
 		Clip( Track *track, int64_t position );
 		int64_t m_position;

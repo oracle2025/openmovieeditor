@@ -5,6 +5,7 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Menu_Bar.H>
+#include "Project.H"
 #include <FL/Fl_Tile.H>
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Tabs.H>
@@ -27,6 +28,8 @@ public:
 private:
   Fl_Double_Window *mainWindow;
   static Fl_Menu_Item menu_[];
+  inline void cb_Save_i(Fl_Menu_*, void*);
+  static void cb_Save(Fl_Menu_*, void*);
 public:
   nle::FileBrowser *fileBrowser;
 private:

@@ -1,7 +1,14 @@
 PROF_FLAGS = '-pg'
-DEBUG_FLAGS = '-ggdb'
+DEBUG_FLAGS = '-ggdb -I./sexpr_1.0.0/src'
+LIBS = ['sexp']
+LIBPATH = ['./sexpr_1.0.0/lib']
 
-env = Environment( CC = 'g++', CXXFLAGS=DEBUG_FLAGS, LINKFLAGS='-lquicktime -lportaudio -ggdb' )
+env = Environment( CC = 'g++',
+	CXXFLAGS=DEBUG_FLAGS,
+	LINKFLAGS='-lquicktime -lportaudio -ggdb',
+	LIBS=LIBS,
+	LIBPATH=LIBPATH
+	)
 env.ParseConfig( 'fltk-config --cxxflags --ldflags --use-gl' )
 #env.ParseConfig( 'flu-config --cxxflags --ldflags' )
 
@@ -16,6 +23,7 @@ src_list = Split("""Clip.cxx
 	VideoViewGL.cxx
 	FilmStrip.cxx
 	Draw.cxx
+	Project.cxx
 	Ruler.cxx
 	Track.cxx
 	Rect.cxx

@@ -21,6 +21,7 @@
 #define _I_VIDEO_FILE_H_
 
 #include "frame_struct.h"
+#include "globals.H"
 
 namespace nle
 {
@@ -36,9 +37,11 @@ class IVideoFile
 		virtual frame_struct* read() = 0;
 		virtual void read( unsigned char** rows, int w, int h ) = 0; //For Timeline Picture Preview
 		virtual void seek( int64_t frame ) = 0;
+		const char* filename() { return m_filename; }
 	protected:
 		int m_width;
 		int m_height;
+		char m_filename[STR_LEN];
 };
 
 } /* namespace nle */

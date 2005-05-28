@@ -20,6 +20,8 @@
 #ifndef _GLOBALS_H_
 #define _GLOBALS_H_
 
+#define STR_LEN 512
+
 namespace nle
 {
 

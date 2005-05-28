@@ -36,7 +36,7 @@ void VideoTrack::reset()
 	Track::reset();
 	m_playPosition = 0;
 }
-void VideoTrack::add_video( int64_t position, const char* filename )
+void VideoTrack::add_video( int64_t position, const char* filename ) //FIXME: use IVideoFile here??
 {
 	VideoFileQT *vf = new VideoFileQT( filename );
 	
