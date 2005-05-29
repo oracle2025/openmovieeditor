@@ -1,0 +1,15 @@
+Hi,
+
+this is a Non Linear Movie Editor, it is in it's very early stages of development.
+
+http://propirate.net/oracle/nle/
+
+-Richard Spindler <richard.spindler AT gmail.com>
+
+
+Deps:
+
+fltk
+libquicktime >= 0.9.6
+portaudio v_18
+scons
