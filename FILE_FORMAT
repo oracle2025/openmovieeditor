@@ -1,0 +1,37 @@
+(nle_project
+  (version "0.0.0")
+  (zoom "1.0")
+  (scroll "0")
+  (stylus "0")
+  (video_tracks
+    (track
+      ("filename" "position" "trimA" "trimB")
+      ("filename" "position" "trimA" "trimB")
+    )
+    (track
+      ("filename" "position" "trimA" "trimB")
+      ("filename" "position" "trimA" "trimB")
+    )
+  )
+)
+
+(nle_project
+	(version "0.0.0")
+	(zoom "1.0")
+	(scroll "0")
+	(stylus "0")
+	(video_tracks
+		(track
+			("filename" "30" "0" "0")
+		)
+		(track
+			("filename" "100" "0" "0")
+		)
+	)
+	(audio_tracks
+		(track
+			("filename" "0" "0" "0")
+		)
+		(track)
+	)
+)
