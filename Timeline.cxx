@@ -26,6 +26,7 @@
 #include "VideoClip.H"
 #include "Track.H"
 #include "SwitchBoard.H"
+#include "Renderer.H"
 
 
 using namespace std;
@@ -60,7 +61,7 @@ Timeline::Timeline()
 
 	m_seekPosition = 0;
 	
-
+//	Renderer a("h");
 	
 }
 Timeline::~Timeline()

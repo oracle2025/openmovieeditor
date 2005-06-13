@@ -28,6 +28,7 @@ typedef struct
 	int x, y, w, h;
 	unsigned char *RGB;
 	unsigned char *YUV;
+	unsigned char **rows;
 } frame_struct;
 
 } /* namespace nle */

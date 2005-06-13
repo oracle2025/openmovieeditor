@@ -6,6 +6,7 @@
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Menu_Bar.H>
 #include "Project.H"
+#include "Renderer.H"
 #include <FL/Fl_Tile.H>
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Tabs.H>
@@ -52,4 +53,14 @@ public:
   void show( int argc, char **argv );
 };
 extern Flmm_Scalebar* g_scrollBar;
+#include <FL/Fl_Menu_Button.H>
+#include <FL/Fl_Return_Button.H>
+
+class EncodeDialog {
+public:
+  EncodeDialog();
+private:
+  Fl_Double_Window *encodeDialog;
+  static Fl_Menu_Item menu_Audio[];
+};
 #endif

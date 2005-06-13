@@ -35,6 +35,7 @@ src_list = Split("""Clip.cxx
 	AudioClip.cxx
 	AudioFileQT.cxx
 	Sound.cxx
+	Renderer.cxx
 	Flmm_Scalebar.cxx""")
 
 env.Program('nle', src_list )

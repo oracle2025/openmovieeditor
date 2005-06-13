@@ -4,6 +4,8 @@
 
 inline void NleUI::cb_Save_i(Fl_Menu_*, void*) {
   nle::Project::write_project();
+nle::Renderer a("/home/oracle/t.mov");
+a.go();
 }
 void NleUI::cb_Save(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Save_i(o,v);
@@ -185,3 +187,26 @@ scaleBar->slider_size_i(300);
 mainWindow->show(argc, argv);
 }
 Flmm_Scalebar* g_scrollBar;
+
+Fl_Menu_Item EncodeDialog::menu_Audio[] = {
+ {"aa", 0,  0, 0, 0, 0, 0, 14, 56},
+ {0,0,0,0,0,0,0,0,0}
+};
+
+EncodeDialog::EncodeDialog() {
+  Fl_Double_Window* w;
+  { Fl_Double_Window* o = encodeDialog = new Fl_Double_Window(325, 145);
+    w = o;
+    o->user_data((void*)(this));
+    { Fl_Menu_Button* o = new Fl_Menu_Button(110, 25, 200, 25, "Audio Codec");
+      o->align(FL_ALIGN_LEFT);
+      o->menu(menu_Audio);
+    }
+    { Fl_Menu_Button* o = new Fl_Menu_Button(110, 55, 200, 25, "Video Codec");
+      o->align(FL_ALIGN_LEFT);
+    }
+    new Fl_Return_Button(170, 110, 140, 25, "Encode");
+    new Fl_Button(15, 110, 140, 25, "Cancel");
+    o->end();
+  }
+}
