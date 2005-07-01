@@ -148,5 +148,19 @@ void Project::write_project()
 	
 }
 
+void Project::read_project()
+{
+	const char filename[] = "/home/oracle/video_project_file";
+	int fd;
+	char pstr[1024];
+	sexp_t *sx, *param;
+	sexp_iowrap_t *iow;
+
+	fd = open(filename,O_RDONLY);
+	iow = init_iowrap(fd);
+	sx = read_one_sexp(iow);
+
+
+}
 
 } /* namespace nle */

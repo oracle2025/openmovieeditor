@@ -28,6 +28,7 @@ class Project
 	public:
 		// constructors and destructors
 		static void write_project();
+		static void read_project();
 
 		// method declerations
 	private:

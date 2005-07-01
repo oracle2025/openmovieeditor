@@ -1,3 +1,6 @@
+# pkg-config gavl --cflags
+# pkg-config gavl --libs
+
 PROF_FLAGS = '-pg'
 DEBUG_FLAGS = '-ggdb -I./sexpr_1.0.0/src'
 LIBS = ['sexp']
