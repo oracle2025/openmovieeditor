@@ -25,6 +25,10 @@
 #include <cstring>
 #include <inttypes.h>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 #include <sexp.h>
 
 #include "Project.H"
