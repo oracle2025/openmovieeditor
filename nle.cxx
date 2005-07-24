@@ -22,14 +22,6 @@ Fl_Menu_Item NleUI::menu_[] = {
  {0,0,0,0,0,0,0,0,0}
 };
 
-inline void NleUI::cb_fileBrowser_i(nle::FileBrowser* o, void*) {
-  nle::FileBrowser *fb = (nle::FileBrowser*)o;
-fb->load_rel();
-}
-void NleUI::cb_fileBrowser(nle::FileBrowser* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_fileBrowser_i(o,v);
-}
-
 inline void NleUI::cb__i(Fl_Button*, void*) {
   m_videoView->play();
 }
@@ -43,6 +35,93 @@ inline void NleUI::cb_1_i(Fl_Button*, void*) {
 void NleUI::cb_1(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_1_i(o,v);
 }
+
+inline void NleUI::cb_fileBrowser_i(nle::FileBrowser* o, void*) {
+  nle::FileBrowser *fb = (nle::FileBrowser*)o;
+fb->load_rel();
+}
+void NleUI::cb_fileBrowser(nle::FileBrowser* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_fileBrowser_i(o,v);
+}
+
+#include <FL/Fl_Pixmap.H>
+static const char *idata_tool_positioning[] = {
+"32 32 2 1",
+" \tc None",
+".\tc #000000",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"       .                .       ",
+"      ..                ..      ",
+"     ...                ...     ",
+"    ....                ....    ",
+"   ..........................   ",
+"    ....                ....    ",
+"     ...                ...     ",
+"      ..                ..      ",
+"       .                .       ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                "
+};
+static Fl_Pixmap image_tool_positioning(idata_tool_positioning);
+
+static const char *idata_tool_automations[] = {
+"32 32 2 1",
+" \tc None",
+".\tc #000000",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                .               ",
+"               ...              ",
+"              .....             ",
+"             .......            ",
+"            .........           ",
+"                .               ",
+"                .               ",
+"                .               ",
+"                .               ",
+"                                ",
+"                  .             ",
+"              .....             ",
+"              .....             ",
+"              .....             ",
+"              .....             ",
+"             ......             ",
+"                                ",
+"                .               ",
+"                .               ",
+"                .               ",
+"                .               ",
+"            .........           ",
+"             .......            ",
+"              .....             ",
+"               ...              ",
+"                .               ",
+"                                ",
+"                                "
+};
+static Fl_Pixmap image_tool_automations(idata_tool_automations);
 
 inline void NleUI::cb_scaleBar_i(Flmm_Scalebar* o, void*) {
   Flmm_Scalebar *sb = (Flmm_Scalebar *)o;
@@ -58,58 +137,16 @@ void NleUI::cb_scaleBar(Flmm_Scalebar* o, void* v) {
 
 NleUI::NleUI() {
   Fl_Double_Window* w;
-  { Fl_Double_Window* o = mainWindow = new Fl_Double_Window(475, 380, "MovieEditor");
+  { Fl_Double_Window* o = mainWindow = new Fl_Double_Window(515, 380, "MovieEditor");
     w = o;
     o->user_data((void*)(this));
-    { Fl_Menu_Bar* o = new Fl_Menu_Bar(0, 0, 475, 25);
+    { Fl_Menu_Bar* o = new Fl_Menu_Bar(0, 0, 515, 25);
       o->menu(menu_);
     }
-    { Fl_Tile* o = new Fl_Tile(0, 25, 475, 335);
-      { Fl_Group* o = new Fl_Group(0, 25, 475, 175);
-        { Fl_Tabs* o = new Fl_Tabs(0, 25, 235, 175);
-          o->box(FL_UP_BOX);
-          o->labelcolor(FL_GRAY0);
-          { Fl_Box* o = new Fl_Box(0, 50, 235, 150, "Object Inspector");
-            o->hide();
-          }
-          { Fl_Group* o = new Fl_Group(0, 50, 235, 150, "Project");
-            o->hide();
-            { Fl_Value_Input* o = new Fl_Value_Input(55, 60, 55, 25, "Width");
-              o->maximum(1024);
-              o->step(1);
-              o->value(640);
-            }
-            { Fl_Value_Input* o = new Fl_Value_Input(55, 90, 55, 25, "Height");
-              o->maximum(768);
-              o->step(1);
-              o->value(480);
-            }
-            { Fl_Box* o = new Fl_Box(135, 145, 55, 25);
-              Fl_Group::current()->resizable(o);
-            }
-            o->end();
-            Fl_Group::current()->resizable(o);
-          }
-          { Fl_Group* o = new Fl_Group(0, 50, 235, 150, "Files");
-            { nle::FileBrowser* o = fileBrowser = new nle::FileBrowser(5, 55, 225, 140);
-              o->box(FL_NO_BOX);
-              o->color(FL_BACKGROUND2_COLOR);
-              o->selection_color(FL_SELECTION_COLOR);
-              o->labeltype(FL_NORMAL_LABEL);
-              o->labelfont(0);
-              o->labelsize(14);
-              o->labelcolor(FL_BLACK);
-              o->callback((Fl_Callback*)cb_fileBrowser);
-              o->align(FL_ALIGN_BOTTOM);
-              o->when(FL_WHEN_RELEASE_ALWAYS);
-              Fl_Group::current()->resizable(o);
-            }
-            o->end();
-          }
-          o->end();
-        }
-        { Fl_Group* o = new Fl_Group(235, 25, 240, 175);
-          { nle::VideoViewGL* o = m_videoView = new nle::VideoViewGL(235, 25, 240, 150, "VideoView");
+    { Fl_Tile* o = new Fl_Tile(0, 25, 515, 335);
+      { Fl_Group* o = new Fl_Group(0, 25, 515, 175);
+        { Fl_Group* o = new Fl_Group(275, 25, 240, 175);
+          { nle::VideoViewGL* o = m_videoView = new nle::VideoViewGL(275, 25, 240, 150, "VideoView");
             o->box(FL_DOWN_BOX);
             o->color(FL_BACKGROUND_COLOR);
             o->selection_color(FL_BACKGROUND_COLOR);
@@ -121,20 +158,92 @@ NleUI::NleUI() {
             o->when(FL_WHEN_RELEASE);
             Fl_Group::current()->resizable(o);
           }
-          { Fl_Button* o = new Fl_Button(355, 175, 60, 25, "@>");
+          { Fl_Button* o = new Fl_Button(395, 175, 60, 25, "@>");
             o->callback((Fl_Callback*)cb_);
           }
-          new Fl_Button(415, 175, 60, 25, "@>|");
-          new Fl_Button(235, 175, 60, 25, "@|<");
-          { Fl_Button* o = new Fl_Button(295, 175, 60, 25, "@||");
+          new Fl_Button(455, 175, 60, 25, "@>|");
+          new Fl_Button(275, 175, 60, 25, "@|<");
+          { Fl_Button* o = new Fl_Button(335, 175, 60, 25, "@||");
             o->callback((Fl_Callback*)cb_1);
+          }
+          o->end();
+        }
+        { Fl_Group* o = new Fl_Group(0, 25, 275, 175);
+          { Fl_Tabs* o = new Fl_Tabs(45, 25, 230, 175);
+            o->box(FL_UP_BOX);
+            o->labelcolor(FL_GRAY0);
+            { Fl_Box* o = new Fl_Box(45, 50, 230, 70, "Object Inspector");
+              o->hide();
+            }
+            { Fl_Group* o = new Fl_Group(45, 50, 230, 150, "Project");
+              o->hide();
+              { Fl_Value_Input* o = new Fl_Value_Input(105, 60, 55, 25, "Width");
+                o->maximum(1024);
+                o->step(1);
+                o->value(640);
+              }
+              { Fl_Value_Input* o = new Fl_Value_Input(105, 90, 55, 25, "Height");
+                o->maximum(768);
+                o->step(1);
+                o->value(480);
+              }
+              { Fl_Box* o = new Fl_Box(175, 120, 55, 77);
+                Fl_Group::current()->resizable(o);
+              }
+              o->end();
+              Fl_Group::current()->resizable(o);
+            }
+            { Fl_Group* o = new Fl_Group(45, 50, 230, 150, "Files");
+              { nle::FileBrowser* o = fileBrowser = new nle::FileBrowser(50, 55, 220, 140);
+                o->box(FL_NO_BOX);
+                o->color(FL_BACKGROUND2_COLOR);
+                o->selection_color(FL_SELECTION_COLOR);
+                o->labeltype(FL_NORMAL_LABEL);
+                o->labelfont(0);
+                o->labelsize(14);
+                o->labelcolor(FL_BLACK);
+                o->callback((Fl_Callback*)cb_fileBrowser);
+                o->align(FL_ALIGN_BOTTOM);
+                o->when(FL_WHEN_RELEASE_ALWAYS);
+                Fl_Group::current()->resizable(o);
+              }
+              o->end();
+            }
+            o->end();
+            Fl_Group::current()->resizable(o);
+          }
+          { Fl_Group* o = new Fl_Group(0, 25, 45, 175);
+            o->box(FL_UP_BOX);
+            o->labelsize(12);
+            { Fl_Box* o = new Fl_Box(5, 47, 36, 68);
+              o->box(FL_DOWN_BOX);
+            }
+            { Fl_Button* o = new Fl_Button(7, 49, 32, 32);
+              o->tooltip("Positioning");
+              o->type(102);
+              o->image(image_tool_positioning);
+              o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
+            }
+            { Fl_Button* o = new Fl_Button(7, 81, 32, 32);
+              o->tooltip("Automations");
+              o->type(102);
+              o->image(image_tool_automations);
+              o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
+            }
+            { Fl_Box* o = new Fl_Box(10, 135, 25, 25);
+              Fl_Group::current()->resizable(o);
+            }
+            { Fl_Box* o = new Fl_Box(0, 25, 45, 25, "Tools");
+              o->labelsize(12);
+            }
+            o->end();
           }
           o->end();
         }
         o->end();
       }
-      { Fl_Group* o = new Fl_Group(0, 200, 475, 160);
-        { nle::Ruler* o = new nle::Ruler(0, 200, 475, 25, "Ruler");
+      { Fl_Group* o = new Fl_Group(0, 200, 515, 160);
+        { nle::Ruler* o = new nle::Ruler(0, 200, 515, 25, "Ruler");
           o->box(FL_UP_BOX);
           o->color(FL_BACKGROUND_COLOR);
           o->selection_color(FL_BACKGROUND_COLOR);
@@ -145,7 +254,7 @@ NleUI::NleUI() {
           o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
           o->when(FL_WHEN_RELEASE);
         }
-        { nle::TimelineView* o = m_timelineView = new nle::TimelineView(0, 225, 475, 135);
+        { nle::TimelineView* o = m_timelineView = new nle::TimelineView(0, 225, 515, 135);
           o->box(FL_NO_BOX);
           o->color(FL_BACKGROUND_COLOR);
           o->selection_color(FL_BACKGROUND_COLOR);
@@ -162,7 +271,7 @@ NleUI::NleUI() {
       o->end();
       Fl_Group::current()->resizable(o);
     }
-    { Flmm_Scalebar* o = scaleBar = new Flmm_Scalebar(0, 360, 475, 20);
+    { Flmm_Scalebar* o = scaleBar = new Flmm_Scalebar(0, 360, 515, 20);
       o->type(1);
       o->box(FL_FLAT_BOX);
       o->color(FL_DARK2);
@@ -207,6 +316,19 @@ EncodeDialog::EncodeDialog() {
     }
     new Fl_Return_Button(170, 110, 140, 25, "Encode");
     new Fl_Button(15, 110, 140, 25, "Cancel");
+    o->end();
+  }
+}
+
+ChangesDialog::ChangesDialog() {
+  Fl_Double_Window* w;
+  { Fl_Double_Window* o = new Fl_Double_Window(410, 80, "Unsaved changes!");
+    w = o;
+    o->user_data((void*)(this));
+    new Fl_Box(5, 10, 385, 25, "Save changes?");
+    new Fl_Button(5, 50, 120, 25, "Don\'t Save");
+    new Fl_Button(160, 50, 120, 25, "Cancel");
+    new Fl_Return_Button(285, 50, 120, 25, "Save");
     o->end();
   }
 }

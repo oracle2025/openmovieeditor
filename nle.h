@@ -9,14 +9,14 @@
 #include "Renderer.H"
 #include <FL/Fl_Tile.H>
 #include <FL/Fl_Group.H>
+#include "VideoViewGL.H"
+#include <FL/Fl_Button.H>
 #include <FL/Fl_Tabs.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Value_Input.H>
 #include <iostream>
 #include <string>
 #include "FileBrowser.H"
-#include "VideoViewGL.H"
-#include <FL/Fl_Button.H>
 #include "Ruler.H"
 #include "TimelineView.H"
 #include "Flmm_Scalebar.H"
@@ -32,17 +32,17 @@ private:
   inline void cb_Save_i(Fl_Menu_*, void*);
   static void cb_Save(Fl_Menu_*, void*);
 public:
-  nle::FileBrowser *fileBrowser;
-private:
-  inline void cb_fileBrowser_i(nle::FileBrowser*, void*);
-  static void cb_fileBrowser(nle::FileBrowser*, void*);
-public:
   nle::VideoViewGL *m_videoView;
 private:
   inline void cb__i(Fl_Button*, void*);
   static void cb_(Fl_Button*, void*);
   inline void cb_1_i(Fl_Button*, void*);
   static void cb_1(Fl_Button*, void*);
+public:
+  nle::FileBrowser *fileBrowser;
+private:
+  inline void cb_fileBrowser_i(nle::FileBrowser*, void*);
+  static void cb_fileBrowser(nle::FileBrowser*, void*);
 public:
   nle::TimelineView *m_timelineView;
 private:
@@ -62,5 +62,10 @@ public:
 private:
   Fl_Double_Window *encodeDialog;
   static Fl_Menu_Item menu_Audio[];
+};
+
+class ChangesDialog {
+public:
+  ChangesDialog();
 };
 #endif

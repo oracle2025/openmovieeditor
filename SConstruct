@@ -7,10 +7,10 @@ LIBS = ['sexp']
 LIBPATH = ['./sexpr_1.0.0/lib']
 
 env = Environment( CC = 'g++',
-	CXXFLAGS=DEBUG_FLAGS,
-	LINKFLAGS='-lquicktime -lportaudio -ggdb',
-	LIBS=LIBS,
-	LIBPATH=LIBPATH
+	CXXFLAGS = "-Iicons/ " + DEBUG_FLAGS,
+	LINKFLAGS = '-lquicktime -lportaudio -ggdb',
+	LIBS = LIBS,
+	LIBPATH = LIBPATH
 	)
 env.ParseConfig( 'fltk-config --cxxflags --ldflags --use-gl' )
 #env.ParseConfig( 'flu-config --cxxflags --ldflags' )

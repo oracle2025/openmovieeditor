@@ -18,10 +18,12 @@
  */
 
 #include <iostream>
+
 #include <FL/Fl.H>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Window.H>
 #include <FL/fl_draw.H>
+
 #include "TimelineView.H"
 #include "Timeline.H"
 #include "SwitchBoard.H"
@@ -34,6 +36,9 @@
 #include "events.H"
 #include "FilmStrip.H"
 #include "Project.H"
+
+#include "audio.xpm"
+#include "video.xpm"
 
 using namespace std;
 
@@ -153,15 +158,44 @@ void TimelineView::draw()
 
 	for ( std::list< Track* >::iterator i = vtl->begin(); i != vtl->end(); i++ ) {
 		vcl = (*i)->getClips();
-		fl_push_matrix();
-		fl_translate( x() + TRACK_SPACING,
-				y() + TRACK_SPACING + cnt * (TRACK_HEIGHT + TRACK_SPACING) );
-		Draw::box( 0, 0, w() - 2 * TRACK_SPACING, TRACK_HEIGHT, FL_DARK2 );
-		fl_push_clip( x() + TRACK_SPACING,
-				y() + TRACK_SPACING + cnt * (TRACK_HEIGHT + TRACK_SPACING),
-				w() - 2 * TRACK_SPACING,
-				TRACK_HEIGHT );
 		USING_AUDIO = (*i)->type() == TRACK_TYPE_AUDIO;
+		
+		fl_push_matrix();
+		
+		{
+			int box_x = x() + TRACK_SPACING;
+			int box_y = y() + TRACK_SPACING + cnt * (TRACK_HEIGHT + TRACK_SPACING);
+			
+			fl_draw_box( FL_UP_BOX, box_x,
+					box_y,
+					64, TRACK_HEIGHT + 1, FL_BACKGROUND_COLOR );
+			
+			fl_color( FL_BLACK );
+			fl_font( FL_HELVETICA, 11 );
+				
+			char *s;
+			if ( USING_AUDIO ) {
+				s = "Audio";
+				fl_draw_pixmap( audio_xpm, box_x + 3,
+						box_y + 5 );
+			} else {
+				s = "Video";
+				fl_draw_pixmap( video_xpm, box_x + 6,
+						box_y + 8 );
+			}
+			
+			fl_draw( s, box_x + 23, 
+					box_y + 18);
+		}
+		fl_translate( x() + LEFT_TRACK_SPACING,
+				y() + TRACK_SPACING + cnt * (TRACK_HEIGHT + TRACK_SPACING) );
+		
+		Draw::box( 0, 0, w() - TRACK_SPACING - LEFT_TRACK_SPACING, TRACK_HEIGHT, FL_DARK2 );
+
+		fl_push_clip( x() + LEFT_TRACK_SPACING,
+				y() + TRACK_SPACING + cnt * (TRACK_HEIGHT + TRACK_SPACING),
+				w() - TRACK_SPACING - LEFT_TRACK_SPACING,
+				TRACK_HEIGHT );
 		fl_scale( SwitchBoard::i()->zoom() / (*i)->stretchFactor(), 1.0 );
 		fl_translate( - (m_scrollPosition * (*i)->stretchFactor()), 0.0 );
 		//if ( (*i)->type() == TRACK_TYPE_VIDEO ) {
@@ -215,11 +249,11 @@ void TimelineView::add_video( int track, int y, const char* filename )
 }
 int64_t TimelineView::get_real_position( int p )
 {
-	return int64_t( float(p - TRACK_SPACING) / SwitchBoard::i()->zoom() ) + m_scrollPosition;
+	return int64_t( float(p - LEFT_TRACK_SPACING) / SwitchBoard::i()->zoom() ) + m_scrollPosition;
 }
 int TimelineView::get_screen_position( int64_t p, float stretchFactor )
 {
-	return int ( float( p - ( m_scrollPosition * stretchFactor ) ) * SwitchBoard::i()->zoom() / stretchFactor ) + TRACK_SPACING;
+	return int ( float( p - ( m_scrollPosition * stretchFactor ) ) * SwitchBoard::i()->zoom() / stretchFactor ) + LEFT_TRACK_SPACING;
 
 }
 void TimelineView::scroll( int64_t position )

@@ -32,6 +32,7 @@ namespace nle
 {
 #define TRACK_HEIGHT 30
 #define TRACK_SPACING 5
+#define LEFT_TRACK_SPACING 74
 
 
 class Track;
