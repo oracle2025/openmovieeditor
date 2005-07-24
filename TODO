@@ -1,5 +1,12 @@
-Decode Video in a seperate Thread to avoid CPU-Blocking??
-bei Sound-Ende stoppen
-FileFormat
-Render
-load Project
+  - Decode Video in a seperate Thread to avoid GUI-Blocking??
+  - bei Sound-Ende stoppen
+  - sexpr FileFormat
+  - load Project from File
+  - Final Render to File
+  - Realtime Preview Render to OpenGL
+    - Transparenzy
+  - Auto Crossfade (Audio/Video)
+  - Video Automations ?
+  - Audio Automations !! ( Volume / Balance )
+  - Status Zeile für Automation Zahlenparameter
+  - Video Clip can contain Audio, can be splitted (Context Menü für Tracks)
