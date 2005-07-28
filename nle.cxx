@@ -135,9 +135,34 @@ void NleUI::cb_scaleBar(Flmm_Scalebar* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_scaleBar_i(o,v);
 }
 
+static const char *idata_trash[] = {
+"16 16 4 1",
+" \tc None",
+".\tc #000000",
+"+\tc #B3B3B3",
+"@\tc #404040",
+"     .......    ",
+"   ...+++++...  ",
+"  ..+++...+++.. ",
+" ..+++.+++.+++..",
+" ..+++++++++++..",
+"  ..+++++++++.. ",
+"  ....+++++.... ",
+"  .++.......++. ",
+"  .++@++@++@++. ",
+"  .++@++@++@++. ",
+"  .++@++@++@++. ",
+"  .++@++@++@++. ",
+"  .++@++@++@++. ",
+"  ..+@++@++@+.. ",
+"   ...++@++...  ",
+"     .......    "
+};
+static Fl_Pixmap image_trash(idata_trash);
+
 NleUI::NleUI() {
   Fl_Double_Window* w;
-  { Fl_Double_Window* o = mainWindow = new Fl_Double_Window(515, 380, "MovieEditor");
+  { Fl_Double_Window* o = mainWindow = new Fl_Double_Window(515, 400, "MovieEditor");
     w = o;
     o->user_data((void*)(this));
     { Fl_Menu_Bar* o = new Fl_Menu_Bar(0, 0, 515, 25);
@@ -221,6 +246,7 @@ NleUI::NleUI() {
             { Fl_Button* o = new Fl_Button(7, 49, 32, 32);
               o->tooltip("Positioning");
               o->type(102);
+              o->value(1);
               o->image(image_tool_positioning);
               o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
             }
@@ -285,6 +311,17 @@ NleUI::NleUI() {
       o->callback((Fl_Callback*)cb_scaleBar);
       o->align(FL_ALIGN_BOTTOM);
       o->when(FL_WHEN_CHANGED);
+    }
+    { Fl_Group* o = new Fl_Group(0, 380, 515, 20);
+      o->box(FL_ENGRAVED_BOX);
+      { Fl_Box* o = new Fl_Box(490, 380, 25, 20);
+        o->box(FL_UP_BOX);
+        o->image(image_trash);
+      }
+      { Fl_Box* o = new Fl_Box(330, 385, 25, 15);
+        Fl_Group::current()->resizable(o);
+      }
+      o->end();
     }
     o->end();
   }

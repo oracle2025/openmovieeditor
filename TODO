@@ -10,3 +10,9 @@
   - Audio Automations !! ( Volume / Balance )
   - Status Zeile für Automation Zahlenparameter
   - Video Clip can contain Audio, can be splitted (Context Menü für Tracks)
+  - Löschen von Clips per Drag auf [TRASH]
+  - Umschalten zwischen Dateiliste und Thumbnails per Contextmenü
+  - Titelgenerator
+    - statischer Text
+    - Lauftitel Horizontal / Vertikal
+    - Drop Shadow ?
