@@ -16,3 +16,12 @@
     - statischer Text
     - Lauftitel Horizontal / Vertikal
     - Drop Shadow ?
+    - http://sourceforge.net/projects/oglft
+    - http://sourceforge.net/projects/gltext/
+    - http://freshmeat.net/search/?q=fonts+opengl
+    - http://gltt.sourceforge.net/
+    - Mit ImageMagick auf ein Canvas schreiben, und das auf eine Textur legen
+
+
+Ruler: 00:10:00  |  00:20:00  |  00:30:00 
+  - eine eigene Klasse, die nur den Hintergrund vom Ruler malt.
