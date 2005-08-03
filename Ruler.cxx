@@ -63,14 +63,6 @@ int Ruler::handle( int event )
 		case FL_DRAG:
 			if ( !__x )
 				break;
-/*			m_stylus.x = _x - __x;
-			{
-				m_stylus.x = m_stylus.x < 0 ? 0 : m_stylus.x;
-				m_stylus.x = m_stylus.x + m_stylus.w > w() - x() ? w() - x() - m_stylus.w : m_stylus.x;
-			}
-//			g_timelineView->move_cursor( m_stylus.x + ( m_stylus.w / 2 ) - TRACK_SPACING );
-			g_timelineView->stylus( x() + m_stylus.x + ( m_stylus.w / 2 ) ); 
-			redraw();*/
 			{
 				long new_x = _x - __x;
 				g_timelineView->stylus( x() + new_x + ( m_stylus.w / 2 ) );
