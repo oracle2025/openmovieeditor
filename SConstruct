@@ -13,6 +13,7 @@ env = Environment( CC = 'g++',
 	LIBPATH = LIBPATH
 	)
 env.ParseConfig( 'fltk-config --cxxflags --ldflags --use-gl' )
+env.ParseConfig( 'Magick++-config --cppflags --ldflags --libs' )
 #env.ParseConfig( 'flu-config --cxxflags --ldflags' )
 
 src_list = Split("""Clip.cxx
@@ -39,6 +40,7 @@ src_list = Split("""Clip.cxx
 	AudioFileQT.cxx
 	Sound.cxx
 	Renderer.cxx
-	Flmm_Scalebar.cxx""")
+	Flmm_Scalebar.cxx
+  Texter.cxx""")
 
 env.Program('nle', src_list )

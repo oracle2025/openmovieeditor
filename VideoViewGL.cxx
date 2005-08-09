@@ -28,13 +28,14 @@
 #include "Timeline.H"
 #include "Sound.H"
 #include "SwitchBoard.H"
+#include "Texter.H"
 
 #include <unistd.h>
 
 #define LEN_TIMEOUT 0.05
 
 using namespace std;
-
+using namespace Magick;
 namespace nle
 {
 static bool vv_play;
@@ -146,11 +147,36 @@ void VideoViewGL::draw()
 			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-			glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, T_W, T_H, 0, GL_RGB, GL_UNSIGNED_BYTE, p);
+			if ( i != 1 ) {glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, T_W, T_H, 0, GL_RGB, GL_UNSIGNED_BYTE, p);}
+		}
+		{
+			//Texter te;
+			glBindTexture( GL_TEXTURE_2D, video_canvas[1] );
+			//glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 512, 512, GL_RGB, GL_UNSIGNED_BYTE, te.generateText(512, 512,"SUNFUN") );
+			
+
+			//Image model( "512x512", Color( MaxRGB, 0, MaxRGB, 0 ) );
+			Image model("out.png");
+			//Image model( 512, 512, "RGBA", CharPixel, p );
+			
+			Blob blob;
+			model.fontPointsize( 50 );
+			model.font( "Helvetica" );
+			model.strokeColor( Color() );                                                                    
+			model.fillColor( "black" );
+			model.annotate( "OpenGL", "+0+20", NorthGravity );
+
+			model.magick( "RGBA" );
+			model.write( &blob );
+			/*model.magick( "JPEG" );
+			model.write( "out.raw" );*/
+			
+			glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, blob.data() );
+			//glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, te.generateText(512, 512,"SUNFUN") );
 		}
 		once = false;
 	}
-//	texture_counter = 0;
+	texture_counter = 0;
 	static frame_struct *fs = 0;
 	if (m_seek) {
 		m_seek = false;
@@ -226,14 +252,19 @@ void VideoViewGL::draw()
 		glVertex3f   ( gl_x + gl_w,     gl_y + gl_h, 0.0 );
 		glTexCoord2f (  0.0,      0.46875 );
 		glVertex3f   (  gl_x,     gl_y + gl_h, 0.0 );
-/*		glTexCoord2f (0.0, 0.0);
-		glVertex3f (0.0, 0.0, 0.0);
-		glTexCoord2f (0.71875, 0.0); 
-		glVertex3f (10.0, 0.0, 0.0);
-		glTexCoord2f (0.71875, 0.46875); // (368.0 / 512.0) (240.0 / 512.0)
-		glVertex3f (10.0, 10.0, 0.0);
-		glTexCoord2f (0.0, 0.46875);
-		glVertex3f (0.0, 10.0, 0.0);*/
+		glEnd ();
+	}
+	{
+		glBindTexture (GL_TEXTURE_2D, video_canvas[1] );
+		glBegin (GL_QUADS);
+		glTexCoord2f (  0.0,      0.0 );
+		glVertex3f   (  gl_x,      gl_y, 0.0 );
+		glTexCoord2f (  1.0,  0.0 ); 
+		glVertex3f   ( gl_x + gl_w,      gl_y, 0.0 );
+		glTexCoord2f (  1.0,  1.0 ); // (368.0 / 512.0) (240.0 / 512.0)
+		glVertex3f   ( gl_x + gl_w,     gl_y + gl_h, 0.0 );
+		glTexCoord2f (  0.0,      1.0 );
+		glVertex3f   (  gl_x,     gl_y + gl_h, 0.0 );
 		glEnd ();
 	}
 	/*
