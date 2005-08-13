@@ -44,7 +44,7 @@ class TimelineView : public Fl_Widget
 {
 	public:
 		TimelineView( int x, int y, int w, int h, const char *label = 0 );
-		~TimelineView();
+		virtual ~TimelineView();
 		int handle( int event );
 		void resize(int x, int y, int w, int h);
 		void add_video( int track, int y, const char* filename ); /*remove me!*/

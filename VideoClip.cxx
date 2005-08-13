@@ -36,7 +36,11 @@ VideoClip::VideoClip( Track *track, int64_t position, IVideoFile *vf )
 	m_filmStrip = new FilmStrip( vf );
 	m_lastFramePosition = -1;
 }
-VideoClip::~VideoClip(){}
+VideoClip::~VideoClip()
+{
+	delete m_filmStrip;
+	delete m_videoFile;
+}
 const char* VideoClip::filename()
 {
 	return m_videoFile->filename();
