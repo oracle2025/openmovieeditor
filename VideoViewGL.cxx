@@ -259,11 +259,11 @@ void VideoViewGL::draw()
 		glBegin (GL_QUADS);
 		glTexCoord2f (  0.0,      0.0 );
 		glVertex3f   (  gl_x,      gl_y, 0.0 );
-		glTexCoord2f (  1.0,  0.0 ); 
+		glTexCoord2f (  0.71875,  0.0 ); 
 		glVertex3f   ( gl_x + gl_w,      gl_y, 0.0 );
-		glTexCoord2f (  1.0,  1.0 ); // (368.0 / 512.0) (240.0 / 512.0)
+		glTexCoord2f (  0.71875,  0.46875 ); // (368.0 / 512.0) (240.0 / 512.0)
 		glVertex3f   ( gl_x + gl_w,     gl_y + gl_h, 0.0 );
-		glTexCoord2f (  0.0,      1.0 );
+		glTexCoord2f (  0.0,      0.46875 );
 		glVertex3f   (  gl_x,     gl_y + gl_h, 0.0 );
 		glEnd ();
 	}
