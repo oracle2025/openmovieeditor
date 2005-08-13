@@ -193,13 +193,10 @@ NleUI::NleUI() {
           }
           o->end();
         }
-        { Fl_Group* o = new Fl_Group(0, 25, 275, 175);
+        { Fl_Group* o = new Fl_Group(0, 25, 280, 175);
           { Fl_Tabs* o = new Fl_Tabs(45, 25, 230, 175);
             o->box(FL_UP_BOX);
             o->labelcolor(FL_GRAY0);
-            { Fl_Box* o = new Fl_Box(45, 50, 230, 70, "Object Inspector");
-              o->hide();
-            }
             { Fl_Group* o = new Fl_Group(45, 50, 230, 150, "Project");
               o->hide();
               { Fl_Value_Input* o = new Fl_Value_Input(105, 60, 55, 25, "Width");
@@ -212,7 +209,7 @@ NleUI::NleUI() {
                 o->step(1);
                 o->value(480);
               }
-              { Fl_Box* o = new Fl_Box(175, 120, 55, 77);
+              { Fl_Box* o = new Fl_Box(175, 120, 55, 80);
                 Fl_Group::current()->resizable(o);
               }
               o->end();
@@ -234,6 +231,21 @@ NleUI::NleUI() {
               }
               o->end();
             }
+            { Fl_Group* o = new Fl_Group(45, 50, 230, 150, "Object Inspector");
+              o->hide();
+              { Fl_Menu_Button* o = new Fl_Menu_Button(120, 55, 150, 25, "Font");
+                o->align(FL_ALIGN_LEFT);
+              }
+              { Fl_Value_Input* o = new Fl_Value_Input(120, 85, 150, 25, "Font Size");
+                o->maximum(40);
+                o->step(1);
+              }
+              { Fl_Text_Editor* o = new Fl_Text_Editor(120, 115, 150, 80, "Text");
+                o->align(FL_ALIGN_LEFT);
+                Fl_Group::current()->resizable(o);
+              }
+              o->end();
+            }
             o->end();
             Fl_Group::current()->resizable(o);
           }
@@ -248,7 +260,7 @@ NleUI::NleUI() {
               o->type(102);
               o->value(1);
               o->image(image_tool_positioning);
-              o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
+              o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
             }
             { Fl_Button* o = new Fl_Button(7, 81, 32, 32);
               o->tooltip("Automations");
@@ -314,7 +326,7 @@ NleUI::NleUI() {
     }
     { Fl_Group* o = new Fl_Group(0, 380, 515, 20);
       o->box(FL_ENGRAVED_BOX);
-      { Fl_Box* o = new Fl_Box(490, 380, 25, 20);
+      { Fl_Box* o = trashCan = new Fl_Box(490, 380, 25, 20);
         o->box(FL_UP_BOX);
         o->image(image_trash);
       }
@@ -329,6 +341,7 @@ NleUI::NleUI() {
 
 void NleUI::show( int argc, char **argv ) {
   g_scrollBar = scaleBar;
+g_trashCan = trashCan;
 scaleBar->slider_size_i(300);
 mainWindow->show(argc, argv);
 }
@@ -369,3 +382,4 @@ ChangesDialog::ChangesDialog() {
     o->end();
   }
 }
+Fl_Box *g_trashCan;

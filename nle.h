@@ -12,11 +12,13 @@
 #include "VideoViewGL.H"
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Tabs.H>
-#include <FL/Fl_Box.H>
 #include <FL/Fl_Value_Input.H>
+#include <FL/Fl_Box.H>
 #include <iostream>
 #include <string>
 #include "FileBrowser.H"
+#include <FL/Fl_Menu_Button.H>
+#include <FL/Fl_Text_Editor.H>
 #include "Ruler.H"
 #include "TimelineView.H"
 #include "Flmm_Scalebar.H"
@@ -49,11 +51,11 @@ private:
   Flmm_Scalebar *scaleBar;
   inline void cb_scaleBar_i(Flmm_Scalebar*, void*);
   static void cb_scaleBar(Flmm_Scalebar*, void*);
+  Fl_Box *trashCan;
 public:
   void show( int argc, char **argv );
 };
 extern Flmm_Scalebar* g_scrollBar;
-#include <FL/Fl_Menu_Button.H>
 #include <FL/Fl_Return_Button.H>
 
 class EncodeDialog {
@@ -68,4 +70,5 @@ class ChangesDialog {
 public:
   ChangesDialog();
 };
+extern Fl_Box *g_trashCan;
 #endif

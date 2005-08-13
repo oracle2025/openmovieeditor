@@ -326,12 +326,28 @@ Rect TimelineView::get_clip_rect( Clip* clip, bool clipping )
 	}
 	return tmp;
 }
+
+bool inside_widget( Fl_Widget* widget, int x, int y )
+{
+	int w_x = widget->x();
+	int w_y = widget->y();
+	int w_w = widget->w();
+	int w_h = widget->h();
+	return ( x >= w_x && x <= w_x + w_w && y >= w_y && y <= w_y + w_h );
+}
+
 void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 {
 	Track *new_tr = get_track( _x, _y );
 	Track *old_tr = clip->track();
-	if (!new_tr || new_tr->type() != old_tr->type() )
+	if ( inside_widget( g_trashCan, x() + _x, y() + _y ) ) {
+		old_tr->remove( clip );
+		delete clip;
 		return;
+	}
+	if (!new_tr || new_tr->type() != old_tr->type() ) {
+		return;
+	}
 	clip->position( int64_t( get_real_position( _x - offset ) * clip->track()->stretchFactor() ) );
 	if ( new_tr == old_tr ) {
 		return;
