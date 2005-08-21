@@ -39,5 +39,7 @@ extern VideoViewGL* g_videoView;
 
 } /* namespace nle */
 
+extern float g_fps;
+
 #endif /* _GLOBALS_H_ */
 

@@ -17,9 +17,13 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <iostream>
+
 #include "VideoTrack.H"
 #include "VideoClip.H"
 #include "VideoFileQT.H"
+
+using namespace std;
 
 namespace nle
 {
@@ -41,6 +45,7 @@ void VideoTrack::add( const char* filename, int64_t position ) //FIXME: use IVid
 	VideoFileQT *vf = new VideoFileQT( filename );
 	
 	if ( !vf->ok() ) {
+		cerr << "VideoFile not OK" << endl;
 		delete vf;
 		return;
 	}

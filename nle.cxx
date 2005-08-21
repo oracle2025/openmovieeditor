@@ -36,6 +36,28 @@ void NleUI::cb_1(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_1_i(o,v);
 }
 
+inline void NleUI::cb_PAL_i(Fl_Menu_*, void*) {
+  g_fps = 25.0;
+std::cout << "PAL" << std::endl;
+}
+void NleUI::cb_PAL(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_PAL_i(o,v);
+}
+
+inline void NleUI::cb_NTSC_i(Fl_Menu_*, void*) {
+  g_fps = 29.97;
+std::cout << "NTSC" << std::endl;
+}
+void NleUI::cb_NTSC(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_NTSC_i(o,v);
+}
+
+Fl_Menu_Item NleUI::menu_FPS[] = {
+ {"PAL 25", 0,  (Fl_Callback*)NleUI::cb_PAL, 0, 0, 0, 0, 14, 56},
+ {"NTSC 29.97", 0,  (Fl_Callback*)NleUI::cb_NTSC, 0, 0, 0, 0, 14, 56},
+ {0,0,0,0,0,0,0,0,0}
+};
+
 inline void NleUI::cb_fileBrowser_i(nle::FileBrowser* o, void*) {
   nle::FileBrowser *fb = (nle::FileBrowser*)o;
 fb->load_rel();
@@ -193,29 +215,40 @@ NleUI::NleUI() {
           }
           o->end();
         }
-        { Fl_Group* o = new Fl_Group(0, 25, 280, 175);
+        { Fl_Group* o = new Fl_Group(0, 25, 275, 175);
           { Fl_Tabs* o = new Fl_Tabs(45, 25, 230, 175);
             o->box(FL_UP_BOX);
             o->labelcolor(FL_GRAY0);
             { Fl_Group* o = new Fl_Group(45, 50, 230, 150, "Project");
-              o->hide();
-              { Fl_Value_Input* o = new Fl_Value_Input(105, 60, 55, 25, "Width");
+              { Fl_Value_Input* o = new Fl_Value_Input(105, 60, 100, 25, "Width");
                 o->maximum(1024);
                 o->step(1);
                 o->value(640);
               }
-              { Fl_Value_Input* o = new Fl_Value_Input(105, 90, 55, 25, "Height");
+              { Fl_Value_Input* o = new Fl_Value_Input(105, 90, 100, 25, "Height");
                 o->maximum(768);
                 o->step(1);
                 o->value(480);
               }
-              { Fl_Box* o = new Fl_Box(175, 120, 55, 80);
+              { Fl_Box* o = new Fl_Box(210, 180, 60, 15);
                 Fl_Group::current()->resizable(o);
+              }
+              { Fl_Choice* o = new Fl_Choice(105, 120, 100, 25, "FPS");
+                o->down_box(FL_BORDER_BOX);
+                o->menu(menu_FPS);
+              }
+              { Fl_Value_Input* o = new Fl_Value_Input(105, 150, 100, 25, "Rate");
+                o->minimum(32000);
+                o->maximum(48000);
+                o->step(1);
+                o->value(48000);
+                o->deactivate();
               }
               o->end();
               Fl_Group::current()->resizable(o);
             }
             { Fl_Group* o = new Fl_Group(45, 50, 230, 150, "Files");
+              o->hide();
               { nle::FileBrowser* o = fileBrowser = new nle::FileBrowser(50, 55, 220, 140);
                 o->box(FL_NO_BOX);
                 o->color(FL_BACKGROUND2_COLOR);
@@ -340,7 +373,8 @@ NleUI::NleUI() {
 }
 
 void NleUI::show( int argc, char **argv ) {
-  g_scrollBar = scaleBar;
+  g_fps = 25.0;
+g_scrollBar = scaleBar;
 g_trashCan = trashCan;
 scaleBar->slider_size_i(300);
 mainWindow->show(argc, argv);
@@ -383,3 +417,4 @@ ChangesDialog::ChangesDialog() {
   }
 }
 Fl_Box *g_trashCan;
+float g_fps;

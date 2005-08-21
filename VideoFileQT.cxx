@@ -20,8 +20,8 @@
 #include <iostream>
 #include <string.h>
 
-#include <lqt/lqt.h>
-#include <lqt/colormodels.h>
+#include <lqt.h>
+#include <colormodels.h>
 //#include <quicktime/lqt.h>
 //#include <quicktime/colormodels.h>
 
@@ -39,14 +39,20 @@ VideoFileQT::VideoFileQT( const char* filename )
 	m_frame = NULL;
 	m_rows = NULL;
 	char *lqt_sucks_filename = strdup( filename );
-	if ( !quicktime_check_sig( lqt_sucks_filename ) )
+	if ( !quicktime_check_sig( lqt_sucks_filename ) ) {
+		cerr << "Check Sig failed" << endl;
 		return;
+	}
 	m_qt = quicktime_open( lqt_sucks_filename, true, false );
 	free(lqt_sucks_filename);
-	if ( quicktime_video_tracks( m_qt ) == 0 )
+	if ( quicktime_video_tracks( m_qt ) == 0 ) {
+		cerr << "No Video Tracks" << endl;
 		return;
-	if ( !quicktime_supported_video( m_qt, 0 ) )
+	}
+	if ( !quicktime_supported_video( m_qt, 0 ) ) {
+		cerr << "Video Codec not supported" << endl;
 		return;
+	}
 	lqt_set_cmodel( m_qt, 0, BC_RGB888);
 	m_width = quicktime_video_width( m_qt, 0 );
 	m_height = quicktime_video_height( m_qt, 0 );

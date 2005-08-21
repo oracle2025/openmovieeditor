@@ -33,7 +33,18 @@ void *Texter::generateText( unsigned int w, unsigned int h, const char* text )
 	try {
 		string font = "Helvetica";
 		//Image model( buf, Color( 0, 0, 0, MaxRGB ) );
-		Image model( buf, Color( MaxRGB, MaxRGB, MaxRGB, 0 ) );
+		Image model("out.png");
+		Blob blob;
+		model.fontPointsize( 50 );
+		model.font( "Helvetica" );
+		model.strokeColor( Color() );                                                                    
+		model.fillColor( "black" );
+		model.annotate( "OpenGL", "+0+20", NorthGravity );
+
+		model.magick( "RGBA" );
+		model.write( m_blob );
+		
+		/*Image model( buf, Color( MaxRGB, MaxRGB, MaxRGB, 0 ) );
 		model.fontPointsize( 18 );
 		model.density( "72x72" );
 		model.font( font );
@@ -45,7 +56,7 @@ void *Texter::generateText( unsigned int w, unsigned int h, const char* text )
 		model.write( m_blob );
 		
 		model.magick( "JPEG" );
-		model.write( "out.jpg" );
+		model.write( "out.jpg" );*/
 
 		
 	} catch( exception &error_ ) {

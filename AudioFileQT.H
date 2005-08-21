@@ -23,7 +23,7 @@
 #include <stdint.h>
 
 //#include <quicktime/lqt.h>
-#include <lqt/lqt.h>
+#include <lqt.h>
 #include "globals.H"
 
 namespace nle

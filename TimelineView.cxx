@@ -36,6 +36,7 @@
 #include "events.H"
 #include "FilmStrip.H"
 #include "Project.H"
+#include "helper.H"
 
 #include "audio.xpm"
 #include "video.xpm"
@@ -367,6 +368,7 @@ void TimelineView::trim_clip( Clip* clip, int _x, bool trimRight )
 void TimelineView::move_cursor( int64_t position )
 {
 	m_stylusPosition = position;
+	//cout << timestamp_to_string( position ) << endl;
 	if ( m_stylusPosition < 0 ) {
 		m_stylusPosition = 0;
 	} else if ( m_stylusPosition > 1024 ) {
@@ -374,20 +376,19 @@ void TimelineView::move_cursor( int64_t position )
 	}
 	window()->make_current();
 	long screen_pos = get_screen_position(m_stylusPosition);
-	if ( screen_pos < 0 ) {
+	if ( screen_pos < LEFT_TRACK_SPACING ) {
 		m_scrollPosition = get_real_position( screen_pos );
-		screen_pos = get_screen_position(m_stylusPosition);
 		e_scroll_position( m_scrollPosition, long( w() / SwitchBoard::i()->zoom() ), 1024 );
 		redraw();
-	} else if ( screen_pos > w() - 2 * TRACK_SPACING ) {
-		m_scrollPosition = get_real_position( screen_pos - ( w() - 2 * TRACK_SPACING ) );
-		screen_pos = get_screen_position(m_stylusPosition);
+	} else if ( screen_pos > w() - TRACK_SPACING ) {
+		m_scrollPosition = get_real_position( screen_pos - ( w() - TRACK_SPACING - LEFT_TRACK_SPACING )  ); //(25 = stylus_width)
 		e_scroll_position( m_scrollPosition, long( w() / SwitchBoard::i()->zoom() ), 1024  );
 		redraw();
 	} else {
-		fl_overlay_rect( screen_pos, y(), 1, h() );
+		window()->make_current();
+		fl_overlay_rect( get_screen_position(m_stylusPosition), y(), 1, h() );
 	}
-	e_stylus_position( screen_pos );
+	e_stylus_position( get_screen_position(m_stylusPosition) );
 	e_seek_position( m_stylusPosition );
 }
 void TimelineView::stylus( long stylus_pos )

@@ -14,6 +14,7 @@
 #include <FL/Fl_Tabs.H>
 #include <FL/Fl_Value_Input.H>
 #include <FL/Fl_Box.H>
+#include <FL/Fl_Choice.H>
 #include <iostream>
 #include <string>
 #include "FileBrowser.H"
@@ -40,6 +41,11 @@ private:
   static void cb_(Fl_Button*, void*);
   inline void cb_1_i(Fl_Button*, void*);
   static void cb_1(Fl_Button*, void*);
+  static Fl_Menu_Item menu_FPS[];
+  inline void cb_PAL_i(Fl_Menu_*, void*);
+  static void cb_PAL(Fl_Menu_*, void*);
+  inline void cb_NTSC_i(Fl_Menu_*, void*);
+  static void cb_NTSC(Fl_Menu_*, void*);
 public:
   nle::FileBrowser *fileBrowser;
 private:
@@ -71,4 +77,5 @@ public:
   ChangesDialog();
 };
 extern Fl_Box *g_trashCan;
+extern float g_fps;
 #endif

@@ -21,6 +21,7 @@
 #define _AUDIO_TRACK_H_
 
 #include "Track.H"
+#include "globals.H"
 
 namespace nle
 {
@@ -39,7 +40,7 @@ class AudioTrack : public Track
 		void add( const char* filename, int64_t position );
 		int type() { return TRACK_TYPE_AUDIO; }
 		void reset();
-		float stretchFactor() { return ( 48000 / 29.97 ); }
+		float stretchFactor() { return ( 48000 / g_fps ); }
 	private:
 		// member variable declerations
 		std::list< Clip* >::iterator m_current;

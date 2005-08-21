@@ -59,10 +59,10 @@ class TimelineView : public Fl_Widget
 		void stylus( long stylus_pos );
 		long stylus();
 		void zoom( float zoom );
+		int64_t get_real_position( int p );
 	protected:
 		void draw();
 	private:
-		int64_t get_real_position( int p );
 		int get_screen_position( int64_t p, float stretchFactor = 1.0 );
 		
 		Timeline *m_timeline;

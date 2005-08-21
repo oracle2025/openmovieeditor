@@ -70,8 +70,10 @@ static int texture_counter;
 GLuint video_canvas[10];
 //#define T_W 368
 //#define T_H 240
-#define T_W 512 
-#define T_H 512
+#define T_W_F 1024.0 
+#define T_H_F 1024.0
+#define T_W 1024 
+#define T_H 1024
 #if 0
 static void draw_track_helper( VideoTrack* track )
 {
@@ -150,11 +152,11 @@ void VideoViewGL::draw()
 			if ( i != 1 ) {glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, T_W, T_H, 0, GL_RGB, GL_UNSIGNED_BYTE, p);}
 		}
 		{
-			//Texter te;
+			Texter te;
 			glBindTexture( GL_TEXTURE_2D, video_canvas[1] );
 			//glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 512, 512, GL_RGB, GL_UNSIGNED_BYTE, te.generateText(512, 512,"SUNFUN") );
 			
-
+			/*
 			//Image model( "512x512", Color( MaxRGB, 0, MaxRGB, 0 ) );
 			Image model("out.png");
 			//Image model( 512, 512, "RGBA", CharPixel, p );
@@ -168,11 +170,9 @@ void VideoViewGL::draw()
 
 			model.magick( "RGBA" );
 			model.write( &blob );
-			/*model.magick( "JPEG" );
-			model.write( "out.raw" );*/
 			
-			glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, blob.data() );
-			//glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, te.generateText(512, 512,"SUNFUN") );
+			glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, blob.data() );*/
+			glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, te.generateText(512, 512,"SUNFUN") );
 		}
 		once = false;
 	}
@@ -244,13 +244,15 @@ void VideoViewGL::draw()
 	if (fs) {
 		glBindTexture (GL_TEXTURE_2D, video_canvas[texture_counter] );
 		glBegin (GL_QUADS);
+		float ww = fs->w / T_W_F;
+		float hh = fs->h / T_H_F;
 		glTexCoord2f (  0.0,      0.0 );
 		glVertex3f   (  gl_x,      gl_y, 0.0 );
-		glTexCoord2f (  0.71875,  0.0 ); 
+		glTexCoord2f (  ww,  0.0 );  // (fs->w / 512.0)
 		glVertex3f   ( gl_x + gl_w,      gl_y, 0.0 );
-		glTexCoord2f (  0.71875,  0.46875 ); // (368.0 / 512.0) (240.0 / 512.0)
+		glTexCoord2f (  ww,  hh ); // (368.0 / 512.0) (240.0 / 512.0)
 		glVertex3f   ( gl_x + gl_w,     gl_y + gl_h, 0.0 );
-		glTexCoord2f (  0.0,      0.46875 );
+		glTexCoord2f (  0.0,      hh ); // (fs->h / 512.0)
 		glVertex3f   (  gl_x,     gl_y + gl_h, 0.0 );
 		glEnd ();
 	}

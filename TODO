@@ -22,6 +22,7 @@
     - http://gltt.sourceforge.net/
     - Mit ImageMagick auf ein Canvas schreiben, und das auf eine Textur legen
   - Farbkorrektur wird eine Diagonale durch das Bild gelegt, die man an zwei Punkten manipulieren kann, und die Links und Rechts je das alte bzw. neue Bild anzeigt
+  - Fehlermeldung wenn die FrameRate nicht PAL ist (25fps??) und Audio nicht 48000 Samples hat.
 
 
 Ruler: 00:10:00  |  00:20:00  |  00:30:00 

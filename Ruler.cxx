@@ -17,12 +17,14 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+
 #include <FL/Fl.h>
 #include <FL/fl_draw.H>
 
 #include "Ruler.H"
 #include "globals.H"
 #include "TimelineView.H"
+#include "helper.H"
 
 
 namespace nle
@@ -30,10 +32,11 @@ namespace nle
 
 Ruler* g_ruler;
 
+
 Ruler::Ruler( int x, int y, int w, int h, const char *label )
 	: Fl_Widget( x, y, w, h, label )
 {
-	m_stylus.x = 10;
+	m_stylus.x = LEFT_TRACK_SPACING - 12;
 	m_stylus.y = 0;
 	m_stylus.w = 25;
 	m_stylus.h = 25;
@@ -42,9 +45,20 @@ Ruler::Ruler( int x, int y, int w, int h, const char *label )
 
 void Ruler::draw()
 {
+	// SwitchBoard::i()->zoom();
+	// g_scrollBar->value();
+	// g_fps;
+	
 	fl_push_clip( x(), y(), w(), h());
+	
 	fl_draw_box( FL_UP_BOX, x(), y(), w(), h(), FL_BACKGROUND_COLOR );
+
+	fl_color(FL_FOREGROUND_COLOR);
+	fl_font( FL_HELVETICA, 11 );
+	fl_draw( timestamp_to_string(g_timelineView->get_real_position(200)), x() + 200, y() + 14 );
+	
 	fl_draw_box( FL_DIAMOND_UP_BOX, x() + m_stylus.x, y() + m_stylus.y, m_stylus.w, m_stylus.h, FL_BACKGROUND_COLOR );
+		
 	fl_pop_clip();
 }
 

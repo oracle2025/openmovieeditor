@@ -1,4 +1,4 @@
-/*  VideoFileQT.H
+/*  helper.H
  *
  *  Copyright (C) 2003 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,36 +17,19 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _VIDEO_FILE_QT_H
-#define _VIDEO_FILE_QT_H
+#ifndef _HELPER_H_
+#define _HELPER_H_
 
-//#include <quicktime/lqt.h>
-#include <lqt.h>
-
-#include "IVideoFile.H"
-#include "frame_struct.h"
+#include <stdint.h>
 
 namespace nle
 {
 
-class VideoFileQT : public IVideoFile
-{
-	public:
-		VideoFileQT( const char* filename );
-		~VideoFileQT();
-		bool ok();
-		int64_t length();
-		int fps();
-		frame_struct* read();
-		void read( unsigned char** rows, int w, int h );
-		void seek( int64_t frame );
-	private:
-		quicktime_t* m_qt;
-		unsigned char *m_frame;
-		unsigned char **m_rows;
-		frame_struct m_framestruct;
-		bool m_ok;
-};
+const char* timestamp_to_string( int64_t timestamp );
+
 
 } /* namespace nle */
-#endif /* _VIDEO_FILE_QT_H */
+
+
+#endif /* _HELPER_H_ */
+
