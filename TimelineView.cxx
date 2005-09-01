@@ -84,13 +84,13 @@ int TimelineView::handle( int event )
 			cout << "Text: (" << Fl::event_text() << ") " << Fl::event_length() << endl;
 			cout << "X: " << Fl::event_x() << " Y: " << Fl::event_y() << endl;
 			{
-				int64_t rp = get_real_position(_x);
-				cout << "Real Position: " << rp << endl;
 				Track* t = get_track( _x, _y );
+				int64_t rp = get_real_position( _x, t->stretchFactor() );
+				cout << "Real Position: " << rp << endl;
 				if (t && !fl_filename_isdir(Fl::event_text()) ) {
 					
 					cout << "Track: " << t->num() << endl;
-					t->add( Fl::event_text(), int64_t(rp * t->stretchFactor()) );
+					t->add( Fl::event_text(), rp );
 					redraw();
 				}
 			}
@@ -248,9 +248,9 @@ void TimelineView::add_video( int track, int y, const char* filename )
 {
 	//m_timeline->add_video( track, get_real_position( y ), filename );
 }
-int64_t TimelineView::get_real_position( int p )
+int64_t TimelineView::get_real_position( int p, float stretchFactor )
 {
-	return int64_t( float(p - LEFT_TRACK_SPACING) / SwitchBoard::i()->zoom() ) + m_scrollPosition;
+	return int64_t( ( ( float(p - LEFT_TRACK_SPACING) / SwitchBoard::i()->zoom() ) + m_scrollPosition ) * stretchFactor );
 }
 int TimelineView::get_screen_position( int64_t p, float stretchFactor )
 {
@@ -349,7 +349,11 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 	if (!new_tr || new_tr->type() != old_tr->type() ) {
 		return;
 	}
-	clip->position( int64_t( get_real_position( _x - offset ) * clip->track()->stretchFactor() ) );
+	int64_t new_position = get_real_position( _x - offset, clip->track()->stretchFactor() );
+	new_position = new_tr->getSnapA( clip, new_position );
+	new_position = new_tr->getSnapB( clip, new_position );
+	clip->position( new_position );
+	//clip->position( int64_t( get_real_position( _x - offset, clip->track()->stretchFactor() ) ) );
 	if ( new_tr == old_tr ) {
 		return;
 	}
@@ -360,10 +364,10 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 void TimelineView::trim_clip( Clip* clip, int _x, bool trimRight )
 {
 	if (trimRight) {
-		clip->trimB( int64_t( ( clip->position() + clip->length() ) - ( get_real_position(_x) * clip->track()->stretchFactor() ) ) );
+		clip->trimB( int64_t( ( clip->position() + clip->length() ) - ( get_real_position(_x, clip->track()->stretchFactor()) ) ) );
 		return;
 	}
-	clip->trimA( int64_t( get_real_position(_x) * clip->track()->stretchFactor() - clip->position() ) );
+	clip->trimA( int64_t( get_real_position(_x, clip->track()->stretchFactor())  - clip->position() ) );
 }
 void TimelineView::move_cursor( int64_t position )
 {

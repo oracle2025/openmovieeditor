@@ -13,7 +13,7 @@ FilmStrip::FilmStrip( IVideoFile* vfile )
 	unsigned char **rows  = new (unsigned char*)[PIC_HEIGHT];
 	m_count = vfile->length() / 100;
 	m_pics = new pic_struct[m_count];
-	for ( int i = 0; i < m_count; i++ ) {
+	for ( unsigned int i = 0; i < m_count; i++ ) {
 		vfile->seek( i * 100 );
 		m_pics[i].data = new unsigned char[PIC_WIDTH * PIC_HEIGHT * 3];
 		m_pics[i].w = PIC_WIDTH;
@@ -26,7 +26,7 @@ FilmStrip::FilmStrip( IVideoFile* vfile )
 }
 FilmStrip::~FilmStrip()
 {
-	for ( int i = 0; i < m_count; i++ ) {
+	for ( unsigned int i = 0; i < m_count; i++ ) {
 		delete [] m_pics[i].data;
 	}
 	delete [] m_pics;

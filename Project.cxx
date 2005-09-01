@@ -156,8 +156,9 @@ void Project::read_project()
 {
 	const char filename[] = "/home/oracle/video_project_file";
 	int fd;
-	char pstr[1024];
-	sexp_t *sx, *param;
+	//char pstr[1024];
+	//sexp_t *param;
+	sexp_t *sx;
 	sexp_iowrap_t *iow;
 
 	fd = open(filename,O_RDONLY);

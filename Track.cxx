@@ -18,6 +18,9 @@
  */
 
 #include <algorithm>
+#include <iostream>
+
+using namespace std;
 
 #include "Track.H"
 #include "Clip.H"
@@ -58,5 +61,35 @@ void Track::reset()
 {
 	for_each( m_clips.begin(), m_clips.end(), reset_helper );
 }
+#define SNAP_TOLERANCE 10
+bool is_in_tolerance( int64_t A, int64_t B, unsigned int tolerance )
+{
+	return ( B - tolerance <= A && B + tolerance >= A );
+}
+int64_t Track::getSnapA( Clip* clip, int64_t A )
+{
+	std::list< Clip* >::iterator j;
+	for ( j = m_clips.begin(); j != m_clips.end(); j++ ) {
+		Clip* current = *j;
+		int64_t B = current->B();
+		if ( current != clip && is_in_tolerance( A, B, (unsigned int)(SNAP_TOLERANCE * stretchFactor()) ) ) {
+			return B + 1;
+		}
+	}
+	return A;
+}
+int64_t Track::getSnapB( Clip* clip, int64_t B )
+{
+	std::list< Clip* >::iterator j;
+	for ( j = m_clips.begin(); j != m_clips.end(); j++ ) {
+		Clip* current = *j;
+		int64_t A = current->position();
+		if ( current != clip && is_in_tolerance( B + clip->length(), A, (unsigned int)(SNAP_TOLERANCE * stretchFactor()) ) ) {
+			return A - 1 - clip->length();
+		}
+	}
+	return B;
+}
+
 	
 } /* namespace nle */

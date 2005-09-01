@@ -31,6 +31,7 @@ namespace nle
 class Track;
 class VideoTrack;
 class AudioTrack;
+class TrackOverlap;
 
 class Timeline
 {
@@ -58,6 +59,7 @@ class Timeline
 		std::list< Track* > m_allTracks;
 		std::list< VideoTrack* > m_videoTracks;
 		std::list< AudioTrack* > m_audioTracks;
+		std::list< TrackOverlap* > m_trackOverlaps;
 		int64_t m_seekPosition;
 };
 	

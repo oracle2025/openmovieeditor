@@ -102,6 +102,7 @@ int64_t VideoFileQT::length()
 }
 int VideoFileQT::fps()
 {
+	return 25; //FIXME
 }
 frame_struct* VideoFileQT::read()
 {

@@ -55,7 +55,8 @@ frame_struct* VideoTrack::getFrame( int64_t position )
 {
 	frame_struct* res = NULL;
 	for ( std::list< Clip* >::iterator j = m_clips.begin(); j != m_clips.end(); j++ ) {
-		if ( res = ((VideoClip*)(*j))->getFrame( position ) )
+		res = ((VideoClip*)(*j))->getFrame( position );
+		if ( res )
 			return res;
 	}
 	return NULL;

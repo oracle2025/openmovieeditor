@@ -27,6 +27,7 @@
 #include "Track.H"
 #include "SwitchBoard.H"
 #include "Renderer.H"
+#include "TrackOverlap.H"
 
 
 using namespace std;
@@ -108,7 +109,8 @@ frame_struct* Timeline::getFrame( int64_t position )
 	frame_struct* tmp = NULL;
 	for ( std::list< VideoTrack* >::iterator i = m_videoTracks.begin(); i != m_videoTracks.end(); i++ ) {
 		VideoTrack* current = *i;
-		if ( tmp = current->getFrame( position ) )
+		tmp = current->getFrame( position );
+		if ( tmp )
 			return tmp;
 	}
 	return res;
@@ -119,7 +121,8 @@ frame_struct* Timeline::nextFrame()
 	m_playPosition++;
 	for ( std::list< VideoTrack* >::iterator i = m_videoTracks.begin(); i != m_videoTracks.end(); i++ ) {
 		VideoTrack* current = *i;
-		if ( res = current->getFrame( m_playPosition - 1 ) )
+		res = current->getFrame( m_playPosition - 1 );
+		if ( res )
 			return res;
 	}
 	return res;

@@ -1,14 +1,16 @@
 # pkg-config gavl --cflags
 # pkg-config gavl --libs
 
+
 PROF_FLAGS = '-pg'
 DEBUG_FLAGS = '-ggdb -I./sexpr_1.0.0/src'
 LIBS = ['sexp']
 LIBPATH = ['./sexpr_1.0.0/lib']
 
+
 env = Environment( CC = 'g++',
-	CXXFLAGS = "-Iicons/ " + DEBUG_FLAGS,
-	LINKFLAGS = ' -lportaudio -ggdb',
+	CXXFLAGS = "-Wall -Iicons/ " + DEBUG_FLAGS,
+	LINKFLAGS = '-ggdb',
 	LIBS = LIBS,
 	LIBPATH = LIBPATH
 	)
@@ -44,5 +46,7 @@ src_list = Split("""Clip.cxx
 	Renderer.cxx
 	Flmm_Scalebar.cxx
   Texter.cxx""")
+
+src_list.append( SConscript(['portaudio/SConscript']) )
 
 env.Program('nle', src_list )

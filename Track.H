@@ -43,6 +43,8 @@ class Track
 		virtual void add( const char* filename, int64_t position )=0;
 		void remove( Clip* clip );
 		int num() { return m_num; }
+		int64_t getSnapB( Clip* clip, int64_t a );
+		int64_t getSnapA( Clip* clip, int64_t a );
 	protected:
 		Track( int num );
 		std::list< Clip* > m_clips;

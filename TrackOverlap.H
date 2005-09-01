@@ -1,4 +1,4 @@
-/*  Sound.H
+/*  TrackOverlap.H
  *
  *  Copyright (C) 2003 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,32 +17,24 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _SOUND_H_
-#define _SOUND_H_
-
+#ifndef _TRACK_OVERLAP_H_
+#define _TRACK_OVERLAP_H_
 namespace nle
 {
 
-class NextFrameListener;
-class Timeline;
-
-class Sound
-{
+class TrackOverlap {
 	public:
-		Sound( NextFrameListener *nfl );
-		~Sound();
-		void Play();
-		void Stop();
-		unsigned int  fillBuffer( float* output, unsigned long frames );
+		TrackOverlap( int64_t start, int64_t end )
+			{ m_start = start; m_end = m_end; }
+		void get( int64_t& start, int64_t& end )
+			{ start = m_start; end = m_end; }
 	private:
-		NextFrameListener *m_nfl;
-		Timeline *m_tl;
-		int64_t m_soundSamples;
-		int64_t m_videoFrames;
+		int64_t m_start;
+		int64_t m_end;
 };
 
 
 } /* namespace nle */
 
-#endif /* _SOUND_H_ */
+#endif /* _TRACK_OVERLAP_H_ */
 

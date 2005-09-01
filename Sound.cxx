@@ -19,7 +19,7 @@
 
 #include <iostream>
 
-#include <portaudio.h>
+#include "portaudio/portaudio.h"
 
 #include "Sound.H"
 #include "NextFrameListener.H"
@@ -36,13 +36,23 @@ namespace nle
 {
 
 static PortAudioStream* stream;
+//static PaStream* stream;
 
 static int callback( void *inputBuffer, void *outputBuffer,
 		unsigned long framesPerBuffer, PaTimestamp outTime,
 		void *userData )
+//static int callback( const void *inputBuffer, void *outputBuffer,
+//		unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo,
+//		PaStreamCallbackFlags statusFlags,
+//		void *userData )
 {
 	Sound* snd = (Sound*)userData;
 	return ( framesPerBuffer != snd->fillBuffer( (float*)outputBuffer, framesPerBuffer ) );
+	/*if ( framesPerBuffer == snd->fillBuffer( (float*)outputBuffer, framesPerBuffer ) ) {
+		return paContinue;
+	} else {
+		return paComplete;
+	}*/
 }
 
 Sound::Sound( NextFrameListener *nfl )
@@ -61,12 +71,17 @@ void Sound::Play()
 	m_videoFrames = 0;
 
 	PortAudioCallback *cb = (PortAudioCallback*)callback;
+	//PaStreamCallback *cb = (PaStreamCallback*)callback;
 	PaError err;
 	err = Pa_Initialize();
+	cout << "Pa_Initialize done" << endl;
 	if ( err != paNoError ) goto error;
 	err = Pa_OpenDefaultStream( &stream, 0, 2, paFloat32, 48000, 256, 0, cb, this );
+	//err = Pa_OpenDefaultStream( &stream, 0, 2, paFloat32, 48000, 256, cb, this );
+	cout << "Pa_OpenDefaultStream done" << endl;
 	if( err != paNoError ) goto error;
 	err = Pa_StartStream( stream );
+	cout << "Pa_StartStream done" << endl;
 	if( err != paNoError ) goto error;
 	cout << "Sound::Play" << endl;
 	return;
@@ -91,7 +106,7 @@ void Sound::Stop()
 
 }
 
-int Sound::fillBuffer( float* output, unsigned long frames )
+unsigned int Sound::fillBuffer( float* output, unsigned long frames )
 {
 	//irgendwie den GUI Thread wecken wenn nächstes Bild fällig wird.
 	// und wann ist das? nach 44100/25 (48000/29.97)Samples?
