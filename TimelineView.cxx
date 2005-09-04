@@ -353,7 +353,6 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 	new_position = new_tr->getSnapA( clip, new_position );
 	new_position = new_tr->getSnapB( clip, new_position );
 	clip->position( new_position );
-	//clip->position( int64_t( get_real_position( _x - offset, clip->track()->stretchFactor() ) ) );
 	if ( new_tr == old_tr ) {
 		return;
 	}

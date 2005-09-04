@@ -74,47 +74,6 @@ GLuint video_canvas[10];
 #define T_H_F 1024.0
 #define T_W 1024 
 #define T_H 1024
-#if 0
-static void draw_track_helper( VideoTrack* track )
-{
-	if ( texture_counter >= 1 )
-		return;
-	frame_struct *fs = track->nextFrame();
-	if (!fs)
-		return;
-	glBindTexture ( GL_TEXTURE_2D, video_canvas[texture_counter] );
-	texture_counter++;
-	glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs->w, fs->h, GL_RGB, GL_UNSIGNED_BYTE, fs->RGB );
-	GLenum e = glGetError();
-	while ( e != GL_NO_ERROR ) {
-		switch (e) {
-			case GL_INVALID_ENUM:
-				cerr << "GL_INVALID_ENUM" << endl;
-				break;
-			case GL_INVALID_VALUE:
-				cerr << "GL_INVALID_VALUE" << endl;
-				break;
-			case GL_INVALID_OPERATION:
-				cerr << "GL_INVALID_OPERATION" << endl;
-				break;
-			case GL_STACK_OVERFLOW:
-				cerr << "GL_STACK_OVERFLOW" << endl;
-				break;
-			case GL_STACK_UNDERFLOW:
-				cerr << "GL_STACK_UNDERFLOW" << endl;
-				break;
-			case GL_OUT_OF_MEMORY:
-				cerr << "GL_OUT_OF_MEMORY" << endl;
-				break;
-			case GL_TABLE_TOO_LARGE:
-				cerr << "GL_TABLE_TOO_LARGE" << endl;
-				break;
-		}
-		e = glGetError();
-	}
-	// TODO geht das so überhaupt? sollte man nicht mehrere Texturen initialisieren
-}
-#endif
 void VideoViewGL::draw()
 {
 	if ( !valid() ) {
@@ -258,6 +217,10 @@ void VideoViewGL::draw()
 	}
 	{
 		glBindTexture (GL_TEXTURE_2D, video_canvas[1] );
+		
+		glEnable(GL_BLEND); /* Transparenz */
+		glColor4f(1.0f,1.0f,1.0f,0.5f);
+		
 		glBegin (GL_QUADS);
 		glTexCoord2f (  0.0,      0.0 );
 		glVertex3f   (  gl_x,      gl_y, 0.0 );
@@ -268,6 +231,8 @@ void VideoViewGL::draw()
 		glTexCoord2f (  0.0,      0.46875 );
 		glVertex3f   (  gl_x,     gl_y + gl_h, 0.0 );
 		glEnd ();
+
+		glDisable(GL_BLEND);
 	}
 	/*
 	glTexSubImage2D
