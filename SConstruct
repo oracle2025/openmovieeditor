@@ -9,11 +9,12 @@ LIBPATH = ['./sexpr_1.0.0/lib']
 
 
 env = Environment( CC = 'g++',
-	CXXFLAGS = "-Wall -Iicons/ " + DEBUG_FLAGS,
+	CXXFLAGS = "-Wall -Werror -Iicons/ " + DEBUG_FLAGS,
 	LINKFLAGS = '-ggdb',
 	LIBS = LIBS,
 	LIBPATH = LIBPATH
 	)
+env.ParseConfig( 'pkg-config gavl --cflags --libs' )
 env.ParseConfig( 'pkg-config libquicktime --cflags --libs' )
 env.ParseConfig( 'fltk-config --cxxflags --ldflags --use-gl' )
 env.ParseConfig( 'Magick++-config --cppflags --ldflags --libs' )

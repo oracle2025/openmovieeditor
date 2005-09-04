@@ -123,9 +123,9 @@ void Project::write_project()
 
 	stylus_list->next          = video_tracks_list;
 
-	list<VideoTrack*> *vt = g_timeline->getVideoTracks();
+	vector<VideoTrack*> *vt = g_timeline->getVideoTracks();
 
-	for ( list<VideoTrack*>::iterator i = vt->begin(); i != vt->end(); i++ ) {
+	for ( vector<VideoTrack*>::iterator i = vt->begin(); i != vt->end(); i++ ) {
 		VideoTrack* current = *i;
 		append_track( current, video_tracks );
 		video_tracks = video_tracks->next;

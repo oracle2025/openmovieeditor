@@ -21,6 +21,7 @@
 #define _TIMELINE_H_
 
 #include <list>
+#include <vector>
 #include <stdint.h>
 
 #include "frame_struct.h"
@@ -52,12 +53,12 @@ class Timeline
 /*		void add_video( int track, int64_t position, const char* filename ); //TODO: für undo redo wär das aber doch besser als direkt auf dem Track zu basteln
 		void add_audio( int track, int64_t position, const char* filename );*/
 		std::list< Track* >* getTracks() { return &m_allTracks; }
-		std::list< VideoTrack* >* getVideoTracks() { return &m_videoTracks; }
+		std::vector< VideoTrack* >* getVideoTracks() { return &m_videoTracks; }
 		std::list< AudioTrack* >* getAudioTracks() { return &m_audioTracks; }
 	private:
 		// member variable declerations
 		std::list< Track* > m_allTracks;
-		std::list< VideoTrack* > m_videoTracks;
+		std::vector< VideoTrack* > m_videoTracks;
 		std::list< AudioTrack* > m_audioTracks;
 		std::list< TrackOverlap* > m_trackOverlaps;
 		int64_t m_seekPosition;

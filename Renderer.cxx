@@ -81,6 +81,11 @@ void Renderer::go()
 	float left_buffer[128];
 	float right_buffer[128];
 	float *buffer_p[2] = { left_buffer, right_buffer };
+
+/*
+gavl_video_frame_t * f
+lqt_decode_video(e->file, f->planes,  e->video_streams[stream].quicktime_index);
+ */
 	
 #if 0
 	while ( frame_struct *fs = g_timeline->nextFrame() ) {

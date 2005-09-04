@@ -34,6 +34,7 @@ namespace nle
 
 VideoFileQT::VideoFileQT( const char* filename )
 {
+	m_scaler = NULL;
 	m_ok = false;
 	m_qt = NULL;
 	m_frame = NULL;
@@ -94,13 +95,45 @@ VideoFileQT::~VideoFileQT()
 		delete [] m_rows;
 	if ( m_qt )
 		quicktime_close( m_qt );
+	if ( m_scaler )
+		gavl_video_scaler_destroy( m_scaler );
+}
+void VideoFileQT::initScaler( unsigned int w, unsigned int h )
+{
+	m_scaled_w = w;
+	m_scaled_h = h;
+/*	if ( !m_scaler ) {
+		m_scaler = gavl_video_scaler_create();
+	} else {
+		gavl_video_scaler_destroy( m_scaler );
+		m_scaler = gavl_video_scaler_create();
+	}
+	gavl_video_format_t src_format;
+	gavl_video_format_t dst_format;
+	gavl_rectangle_t src_rect;
+	gavl_rectangle_t dst_rect;
+	src_rect.w = src_format.frame_width = w; //TODO: no no
+	src_rect.h = src_format.frame_height = h;
+	src_rect.x = src_rect.y = dst_rect.x = dst_rect.y = 0;
+	dst_rect.w = dst_format.frame_width = w;
+	dst_rect.h = dst_format.frame_height = h;
+	src_format.colorspace = dst_format.colorspace = GAVL_RGB_24;
+	gavl_video_scaler_init( m_scaler, GAVL_RGB_24, &src_rect, &dst_rect, &src_format, &dst_format);*/
+}
+void VideoFileQT::readScaled( unsigned char** rows )
+{
+/*	gavl_video_format_t dst_format;
+	gavl_video_frame_t* src = gavl_video_frame_create( 0 );
+	gavl_video_frame_t* dst = gavl_video_frame_create( 0 );
+	return (frame_struct*)0;*/
+	quicktime_decode_scaled( m_qt, 0, 0, m_width, m_height, m_scaled_w, m_scaled_h, BC_RGB888, rows, 0 );
 }
 bool VideoFileQT::ok() { return m_ok; }
 int64_t VideoFileQT::length()
 {
 	return quicktime_video_length( m_qt, 0 );
 }
-int VideoFileQT::fps()
+double VideoFileQT::fps()
 {
 	return quicktime_frame_rate( m_qt, 0 ); 
 }

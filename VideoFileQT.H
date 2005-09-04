@@ -20,8 +20,8 @@
 #ifndef _VIDEO_FILE_QT_H
 #define _VIDEO_FILE_QT_H
 
-//#include <quicktime/lqt.h>
 #include <lqt.h>
+#include <gavl/gavl.h>
 
 #include "IVideoFile.H"
 #include "frame_struct.h"
@@ -36,8 +36,10 @@ class VideoFileQT : public IVideoFile
 		~VideoFileQT();
 		bool ok();
 		int64_t length();
-		int fps();
+		double fps();
 		frame_struct* read();
+		void initScaler( unsigned int w, unsigned int h );
+		void readScaled( unsigned char** rows );
 		void read( unsigned char** rows, int w, int h );
 		void seek( int64_t frame );
 	private:
@@ -46,6 +48,9 @@ class VideoFileQT : public IVideoFile
 		unsigned char **m_rows;
 		frame_struct m_framestruct;
 		bool m_ok;
+		gavl_video_scaler_t* m_scaler;
+		unsigned m_scaled_w;
+		unsigned m_scaled_h;
 };
 
 } /* namespace nle */

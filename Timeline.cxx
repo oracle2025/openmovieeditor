@@ -107,7 +107,7 @@ frame_struct* Timeline::getFrame( int64_t position )
 {
 	frame_struct* res = NULL;
 	frame_struct* tmp = NULL;
-	for ( std::list< VideoTrack* >::iterator i = m_videoTracks.begin(); i != m_videoTracks.end(); i++ ) {
+	for ( std::vector< VideoTrack* >::iterator i = m_videoTracks.begin(); i != m_videoTracks.end(); i++ ) {
 		VideoTrack* current = *i;
 		tmp = current->getFrame( position );
 		if ( tmp )
@@ -119,7 +119,7 @@ frame_struct* Timeline::nextFrame()
 {
 	frame_struct* res = NULL;
 	m_playPosition++;
-	for ( std::list< VideoTrack* >::iterator i = m_videoTracks.begin(); i != m_videoTracks.end(); i++ ) {
+	for ( std::vector< VideoTrack* >::iterator i = m_videoTracks.begin(); i != m_videoTracks.end(); i++ ) {
 		VideoTrack* current = *i;
 		res = current->getFrame( m_playPosition - 1 );
 		if ( res )

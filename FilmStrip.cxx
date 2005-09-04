@@ -10,7 +10,7 @@ namespace nle
 
 FilmStrip::FilmStrip( IVideoFile* vfile )
 {
-	unsigned char **rows  = new (unsigned char*)[PIC_HEIGHT];
+	unsigned char **rows  = new unsigned char*[PIC_HEIGHT];
 	m_count = vfile->length() / 100;
 	m_pics = new pic_struct[m_count];
 	for ( unsigned int i = 0; i < m_count; i++ ) {
