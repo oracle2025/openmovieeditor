@@ -1,4 +1,4 @@
-/*  Clip.cxx
+/*  Automation.H
  *
  *  Copyright (C) 2003 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,45 +17,27 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "Clip.H"
+#ifndef _AUTOMATION_POINT_H_
+#define _AUTOMATION_POINT_H_
+
+#include <stdint.h>
+
+#include "Rect.H"
 
 namespace nle
 {
 
-Clip::Clip( Track *track, int64_t position )
+class Clip;
+
+class AutomationPoint
 {
-	m_position = position;
-	m_track = track;
-	m_trimA = 0;
-	m_trimB = 0;
-	AutomationPoint p( 100, 50 );
-	m_automation.push_back(p);
-}
-void Clip::trimA( int64_t trim )
-{
-	m_position = m_position - m_trimA;
-	m_trimA += trim;
-	if ( m_trimA < 0 )
-		m_trimA = 0;
-	m_position = m_position + m_trimA;
-}
-void Clip::trimB( int64_t trim )
-{
-	m_trimB += trim;
-	if ( m_trimB < 0 )
-		m_trimB = 0;
-}
-AutomationPoint* Clip::getAutomationRect( int x, int y )
-{
-	std::list<AutomationPoint>::iterator k;
-	for ( k = m_automation.begin(); k != m_automation.end(); k++ ) {
-		AutomationPoint *current = &(*k);
-		Rect t = current->getScreenRect( this );
-		if ( t.inside( x, y ) ) {
-			return current;
-		}
-	}
-	return 0;
-}
+	public:
+		AutomationPoint( int64_t _x, unsigned int _y ) { x = _x; y = _y; }
+		int64_t x;
+		unsigned int y; // 0 - 100, 100: opaque, 0: transparent
+		Rect getScreenRect( Clip* clip );
+};
 
 } /* namespace nle */
+#endif /* _AUTOMATION_POINT_H_ */
+

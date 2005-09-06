@@ -46,7 +46,9 @@ src_list = Split("""Clip.cxx
 	Sound.cxx
 	Renderer.cxx
 	Flmm_Scalebar.cxx
-  Texter.cxx""")
+	Texter.cxx
+	AutomationPoint.cxx
+	AutomationDragHandler.cxx""")
 
 src_list.append( SConscript(['portaudio/SConscript']) )
 

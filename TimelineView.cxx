@@ -32,6 +32,7 @@
 #include "VideoTrack.H"
 #include "MoveDragHandler.H"
 #include "TrimDragHandler.H"
+#include "AutomationDragHandler.H"
 #include "Rect.H"
 #include "events.H"
 #include "FilmStrip.H"
@@ -74,6 +75,30 @@ TimelineView::~TimelineView()
 	delete m_timeline;
 	m_timeline = NULL;
 }
+AutomationPoint *TimelineView::getAutomationPoint( Clip* clip, int x, int y )
+{
+	std::list<AutomationPoint>::iterator i;
+	std::list<AutomationPoint>* l = clip->getAutomation();
+	Rect tmp = get_clip_rect( clip );
+	//int64_t position = get_real_position( x, clip->track()->stretchFactor() );
+	//int real_y = ( TRACK_HEIGHT - ( tmp.y - y ) ) * 100 / TRACK_HEIGHT;
+	for ( i = l->begin(); i != l->end(); i++ ) {
+		AutomationPoint *current = &(*i);
+		if ( current->getScreenRect( clip ).inside( x, y ) ) {
+			return current;
+		}
+/*		int x_a = get_screen_position( current->x, clip->track()->stretchFactor() );
+		int x_b = x_a + 2;
+		x_a -= 2;
+		int y_a = ( ( 100 - current->y ) * 30 / 100 ) + tmp.y;
+		int y_b = y_a + 2;
+		y_a -= 2;
+		if ( x > x_a && x < x_b && y > y_a && y < y_b ) {
+			return current;
+		}*/
+	}
+	return 0;
+}
 int TimelineView::handle( int event )
 {
 	int _x = Fl::event_x() - x();
@@ -103,7 +128,10 @@ int TimelineView::handle( int event )
 		case FL_PUSH: {
 				Clip* cl = get_clip( _x, _y );
 				if (cl) {
-					if ( _x < get_screen_position( cl->position(), cl->track()->stretchFactor() ) + 8 ) {
+					AutomationPoint* tmp_pnt = cl->getAutomationRect( _x, _y );
+					if ( tmp_pnt ) {
+						m_dragHandler = new AutomationDragHandler( cl, tmp_pnt,get_clip_rect( cl, true ) );
+					} else if ( _x < get_screen_position( cl->position(), cl->track()->stretchFactor() ) + 8 ) {
 						m_dragHandler = new TrimDragHandler(
 								this, cl, cl->track()->num(),
 								0, 0, false );
@@ -230,10 +258,30 @@ void TimelineView::draw()
 				Draw::triangle( (p + l) / 1601.6, TRACK_HEIGHT/2, false );
 			}
 		}*/
+		for ( std::list< Clip* >::iterator j = vcl->begin(); j != vcl->end(); j++ ) {
+			std::list<AutomationPoint>::iterator k;
+			std::list<AutomationPoint>* l = (*j)->getAutomation();
+			for ( k = l->begin(); k != l->end(); k++ ) {
+				AutomationPoint *current = &(*k);
+				Rect t = current->getScreenRect( *j );
+				fl_draw_box( FL_UP_BOX,t.x + x(), t.y + y(), t.w, t.h, FL_GREEN );
+			}
+		}
 		fl_pop_clip();
 		fl_pop_matrix();
+
+
+
+
+		
 		cnt++;
 	}
+
+
+
+
+
+	
 	fl_pop_clip();
 	fl_overlay_rect( get_screen_position(m_stylusPosition), y(), 1, h() );
 	
@@ -317,12 +365,12 @@ Rect TimelineView::get_clip_rect( Clip* clip, bool clipping )
 			TRACK_HEIGHT
 		);
 	if ( clipping ) {
-		if ( tmp.x < 0 ) {
-			tmp.w += tmp.x;
-			tmp.x = 0;
+		if ( tmp.x < LEFT_TRACK_SPACING ) {
+			tmp.w -= tmp.x - LEFT_TRACK_SPACING;
+			tmp.x = LEFT_TRACK_SPACING;
 		}
-		if ( tmp.w > w() - 2 * TRACK_SPACING ) {
-			tmp.w = w() - 2 * TRACK_SPACING;
+		if ( tmp.w + tmp.x > w() - ( TRACK_SPACING ) ) {
+			tmp.w = (w() - ( TRACK_SPACING )) - tmp.x;
 		}
 	}
 	return tmp;

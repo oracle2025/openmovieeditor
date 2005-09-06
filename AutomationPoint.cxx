@@ -1,4 +1,4 @@
-/*  Clip.cxx
+/*  Automation.cxx
  *
  *  Copyright (C) 2003 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,45 +17,24 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "AutomationPoint.H"
 #include "Clip.H"
+#include "Track.H"
+#include "TimelineView.H"
+#include "globals.H"
 
 namespace nle
 {
 
-Clip::Clip( Track *track, int64_t position )
+Rect AutomationPoint::getScreenRect( Clip* clip )
 {
-	m_position = position;
-	m_track = track;
-	m_trimA = 0;
-	m_trimB = 0;
-	AutomationPoint p( 100, 50 );
-	m_automation.push_back(p);
-}
-void Clip::trimA( int64_t trim )
-{
-	m_position = m_position - m_trimA;
-	m_trimA += trim;
-	if ( m_trimA < 0 )
-		m_trimA = 0;
-	m_position = m_position + m_trimA;
-}
-void Clip::trimB( int64_t trim )
-{
-	m_trimB += trim;
-	if ( m_trimB < 0 )
-		m_trimB = 0;
-}
-AutomationPoint* Clip::getAutomationRect( int x, int y )
-{
-	std::list<AutomationPoint>::iterator k;
-	for ( k = m_automation.begin(); k != m_automation.end(); k++ ) {
-		AutomationPoint *current = &(*k);
-		Rect t = current->getScreenRect( this );
-		if ( t.inside( x, y ) ) {
-			return current;
-		}
-	}
-	return 0;
+	Rect tmp = g_timelineView->get_clip_rect( clip );
+	int x_a = g_timelineView->get_screen_position( x + clip->position(), clip->track()->stretchFactor() );
+	x_a -= 4;
+	int y_a = ( ( 100 - y ) * 30 / 100 ) + tmp.y;
+	y_a -= 4;
+	Rect res( x_a, y_a, 8, 8 );
+	return res;
 }
 
 } /* namespace nle */

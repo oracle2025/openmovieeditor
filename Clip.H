@@ -20,7 +20,10 @@
 #ifndef _CLIP_H_
 #define _CLIP_H_
 
+#include <list>
 #include <stdint.h>
+
+#include "AutomationPoint.H"
 
 namespace nle
 {
@@ -44,12 +47,15 @@ class Clip
 		virtual const char* filename()=0;
 		inline int64_t A() { return position(); }
 		inline int64_t B() { return m_position + length(); }
+		std::list<AutomationPoint>* getAutomation() { return &m_automation; }
+		AutomationPoint* getAutomationRect( int x, int y );
 	protected:
 		Clip( Track *track, int64_t position );
 		int64_t m_position;
 		Track* m_track;
 		int64_t m_trimA;
 		int64_t m_trimB; // wird von hinten gemessen.
+		std::list<AutomationPoint> m_automation;
 };
 
 } /* namespace nle */

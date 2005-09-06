@@ -1,4 +1,4 @@
-/*  Clip.cxx
+/*  AutomationDragHandler.H
  *
  *  Copyright (C) 2003 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,45 +17,35 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "Clip.H"
+#ifndef _AUTOMATION_DRAG_HANDLER_H_
+#define _AUTOMATION_DRAG_HANDLER_H_
+
+#include <list>
+
+#include "DragHandler.H"
+#include "Rect.H"
+#include "DragHandler.H"
 
 namespace nle
 {
 
-Clip::Clip( Track *track, int64_t position )
+class AutomationPoint;
+
+class AutomationDragHandler : public DragHandler
 {
-	m_position = position;
-	m_track = track;
-	m_trimA = 0;
-	m_trimB = 0;
-	AutomationPoint p( 100, 50 );
-	m_automation.push_back(p);
-}
-void Clip::trimA( int64_t trim )
-{
-	m_position = m_position - m_trimA;
-	m_trimA += trim;
-	if ( m_trimA < 0 )
-		m_trimA = 0;
-	m_position = m_position + m_trimA;
-}
-void Clip::trimB( int64_t trim )
-{
-	m_trimB += trim;
-	if ( m_trimB < 0 )
-		m_trimB = 0;
-}
-AutomationPoint* Clip::getAutomationRect( int x, int y )
-{
-	std::list<AutomationPoint>::iterator k;
-	for ( k = m_automation.begin(); k != m_automation.end(); k++ ) {
-		AutomationPoint *current = &(*k);
-		Rect t = current->getScreenRect( this );
-		if ( t.inside( x, y ) ) {
-			return current;
-		}
-	}
-	return 0;
-}
+	public:
+		AutomationDragHandler( Clip* clip, AutomationPoint* aPoint, const Rect& rect );
+		~AutomationDragHandler();
+		void OnDrag( int x, int y );
+		void OnDrop( int x, int y );
+	private:
+		AutomationPoint *m_aPoint;
+		std::list<Rect*> m_rects;
+		Rect* m_activeRect;
+		Clip *m_clip;
+		Rect m_outline;
+};
 
 } /* namespace nle */
+#endif /* _AUTOMATION_DRAG_HANDLER_H_ */
+
