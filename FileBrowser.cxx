@@ -34,8 +34,8 @@ FileBrowser::FileBrowser( int x, int y, int w, int h, const char *l )
 	: Fl_File_Browser( x, y, w, h, l )
 {
 	type( 1 );
-	m_path = "/home/oracle/tmp/nle";
-	//m_path = "/";
+	//m_path = "/home/oracle/tmp/nle";
+	m_path = "/";
 	//filter("???");
 	load( m_path.c_str() );
 }
