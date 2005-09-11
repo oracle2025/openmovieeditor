@@ -58,7 +58,7 @@ VideoFileQT::VideoFileQT( const char* filename )
 	m_width = quicktime_video_width( m_qt, 0 );
 	m_height = quicktime_video_height( m_qt, 0 );
 	m_frame = new unsigned char[m_width * m_height * 3];
-	m_rows = new (unsigned char*)[m_height];
+	m_rows = new unsigned char*[m_height];
 	for (int i = 0; i < m_height; i++) {
                 m_rows[i] = m_frame + m_width * 3 * i;
 	}
