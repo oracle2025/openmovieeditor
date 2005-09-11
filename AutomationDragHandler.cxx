@@ -73,7 +73,24 @@ void AutomationDragHandler::OnDrag( int x, int y )
 	//drawWithRects( clip, m_rects);
 	g_timelineView->window()->make_current();
 	fl_draw_box( FL_UP_BOX, g_timelineView->x() + m_outline.x, g_timelineView->y() + m_outline.y, m_outline.w, m_outline.h, FL_GRAY );
-	fl_draw_box( FL_UP_BOX, g_timelineView->x() + m_activeRect->x, g_timelineView->y() + m_activeRect->y, m_activeRect->w, m_activeRect->h, FL_GREEN );
+
+	std::list<Rect*>::iterator i;
+	int xx = -1;
+	int yy = -1;
+	fl_color(FL_WHITE);
+	fl_line_style(FL_SOLID);
+	for ( i = m_rects.begin(); i != m_rects.end(); i++ ) {
+		Rect *current = *i;
+		if ( xx > 0 && yy > 0 ) {
+			fl_line( xx, yy, g_timelineView->x() + current->x + 4, g_timelineView->y() + current->y + 4 );
+		}
+		xx  = g_timelineView->x() + current->x + 4;
+		yy  = g_timelineView->y() + current->y + 4;
+	}
+	for ( i = m_rects.begin(); i != m_rects.end(); i++ ) {
+		Rect *current = *i;
+		fl_draw_box( FL_UP_BOX, g_timelineView->x() + current->x, g_timelineView->y() + current->y, current->w, current->h, FL_GREEN );
+	}
 }
 void AutomationDragHandler::OnDrop( int x, int y )
 {

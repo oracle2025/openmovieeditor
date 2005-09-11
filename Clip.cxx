@@ -30,6 +30,8 @@ Clip::Clip( Track *track, int64_t position )
 	m_trimB = 0;
 	AutomationPoint p( 100, 50 );
 	m_automation.push_back(p);
+	p = AutomationPoint( 10, 50 );
+	m_automation.push_back(p);
 }
 void Clip::trimA( int64_t trim )
 {

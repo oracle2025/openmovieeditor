@@ -1,0 +1,11 @@
+env = Environment( CFLAGS = "-Wall" )
+
+src_list = Split("""cstring.c
+	sexp_ops.c
+	sexp.c
+	faststack.c
+	io.c
+	parser.c""")
+
+sexpr = env.Library('sexpr', src_list)
+Return('sexpr')

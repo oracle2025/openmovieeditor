@@ -19,6 +19,8 @@
 
 #include <iostream>
 
+#include <math.h>
+
 #include <FL/Fl.H>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Window.H>
@@ -261,6 +263,19 @@ void TimelineView::draw()
 		for ( std::list< Clip* >::iterator j = vcl->begin(); j != vcl->end(); j++ ) {
 			std::list<AutomationPoint>::iterator k;
 			std::list<AutomationPoint>* l = (*j)->getAutomation();
+			int xx = -1;
+			int yy = -1;
+			fl_color(FL_WHITE);
+			fl_line_style(FL_SOLID);
+			for ( k = l->begin(); k != l->end(); k++ ) {
+				AutomationPoint *current = &(*k);
+				Rect t = current->getScreenRect( *j );
+				if ( xx > 0 && yy > 0 ) {
+					fl_line( xx, yy, t.x + x() + 4, t.y + y() + 4 );
+				}
+				xx = t.x + x() + 4;
+				yy = t.y + y() + 4;
+			}
 			for ( k = l->begin(); k != l->end(); k++ ) {
 				AutomationPoint *current = &(*k);
 				Rect t = current->getScreenRect( *j );

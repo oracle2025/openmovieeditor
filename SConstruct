@@ -3,8 +3,8 @@
 
 
 PROF_FLAGS = '-pg'
-DEBUG_FLAGS = '-ggdb -I./sexpr_1.0.0/src'
-LIBS = ['sexp']
+DEBUG_FLAGS = '-ggdb -I./sexpr'
+LIBS = []
 LIBPATH = ['./sexpr_1.0.0/lib']
 
 
@@ -51,5 +51,6 @@ src_list = Split("""Clip.cxx
 	AutomationDragHandler.cxx""")
 
 src_list.append( SConscript(['portaudio/SConscript']) )
+src_list.append( SConscript(['sexpr/SConscript']) )
 
 env.Program('nle', src_list )
