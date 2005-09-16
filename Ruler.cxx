@@ -18,7 +18,7 @@
  */
 
 
-#include <FL/Fl.h>
+#include <FL/Fl.H>
 #include <FL/fl_draw.H>
 
 #include "Ruler.H"

@@ -5,7 +5,7 @@
 PROF_FLAGS = '-pg'
 DEBUG_FLAGS = '-ggdb -I./sexpr'
 LIBS = []
-LIBPATH = ['./sexpr_1.0.0/lib']
+LIBPATH = []
 
 
 env = Environment( CC = 'g++',
@@ -14,7 +14,7 @@ env = Environment( CC = 'g++',
 	LIBS = LIBS,
 	LIBPATH = LIBPATH
 	)
-env.ParseConfig( 'pkg-config gavl --cflags --libs' )
+#env.ParseConfig( 'pkg-config gavl --cflags --libs' )
 env.ParseConfig( 'pkg-config libquicktime --cflags --libs' )
 env.ParseConfig( 'fltk-config --cxxflags --ldflags --use-gl' )
 env.ParseConfig( 'Magick++-config --cppflags --ldflags --libs' )

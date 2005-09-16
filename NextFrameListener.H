@@ -28,6 +28,7 @@ namespace nle
 class NextFrameListener
 {
 	public:
+		virtual ~NextFrameListener() {}
 		virtual void nextFrame( int64_t frame ) = 0;
 };
 
