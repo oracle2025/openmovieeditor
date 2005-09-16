@@ -44,6 +44,8 @@ static void vv_callback( void* )
 {
 	if ( !vv_play )
 		return;
+	if ( !g_sound->stillPlaying() )
+		return;
 	SwitchBoard::i()->move_cursor();
 	Fl::repeat_timeout( LEN_TIMEOUT, vv_callback );
 }
@@ -263,6 +265,8 @@ void VideoViewGL::seek( int64_t position )
 }
 void VideoViewGL::play()
 {
+	if ( m_playing )
+		return;
 	m_playing = true;
 	m_playingPosition = 0;
 	g_timeline->reset();
@@ -272,6 +276,8 @@ void VideoViewGL::play()
 }
 void VideoViewGL::stop()
 {
+	if ( !m_playing )
+		return;
 	cout << "A: " << m_A << " B: " << m_B << " C: " << m_C << endl;
 	m_playing = false;
 	m_snd->Stop();

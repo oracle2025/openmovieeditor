@@ -56,6 +56,7 @@ TimelineView* g_timelineView = 0;
 TimelineView::TimelineView( int x, int y, int w, int h, const char *label )
 	: Fl_Widget( x, y, w, h, label )//, Flu_DND("DND_Timeline")
 {
+	g_timelineView = this;
 	m_dragHandler = NULL;
 	m_timeline = new Timeline();
 	
@@ -66,7 +67,6 @@ TimelineView::TimelineView( int x, int y, int w, int h, const char *label )
 	m_scrollPosition = 0;
 	m_stylusPosition = 0;
 	SwitchBoard::i()->timelineView(this);
-	g_timelineView = this;
 
 	Project::write_project();
 	

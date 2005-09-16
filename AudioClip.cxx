@@ -54,9 +54,12 @@ int AudioClip::fillBuffer( float* output, unsigned long frames, int64_t position
 	int *b = (int*)&a; //FIXME This is a goddamn evil hack
 	if ( m_position + length() < position ) { return 0; }
 	if ( m_position > position ) {
-		memset( (void*)output, *b, sizeof(float) *
-				( m_position - position ) < frames ? ( m_position - position ) : frames  );
-		frames_written += ( m_position - position ) < frames ? ( m_position - position ) : frames;
+		unsigned long empty_frames = ( m_position - position ) < frames ? ( m_position - position ) : frames;
+		memset( (void*)output, *b, sizeof(float) * empty_frames * 2 );
+		frames_written += empty_frames;
+		if ( empty_frames == frames ) {
+			return frames_written;
+		}
 	}
 	if ( m_lastSamplePosition + frames != position ) {
 		m_audioFile->seek( position - frames_written - m_position + m_trimA );

@@ -30,12 +30,14 @@ class Timeline;
 class Flmm_Scalebar;
 class Ruler;
 class VideoViewGL;
+class Sound;
 
 extern TimelineView* g_timelineView;
 extern Timeline* g_timeline;
 //extern Flmm_Scalebar* g_scrollBar;
 extern Ruler* g_ruler;
 extern VideoViewGL* g_videoView;
+extern Sound* g_sound;
 
 } /* namespace nle */
 

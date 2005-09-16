@@ -34,7 +34,7 @@ namespace nle
 
 VideoFileQT::VideoFileQT( const char* filename )
 {
-	m_scaler = NULL;
+	//m_scaler = NULL;
 	m_ok = false;
 	m_qt = NULL;
 	m_frame = NULL;
@@ -95,8 +95,8 @@ VideoFileQT::~VideoFileQT()
 		delete [] m_rows;
 	if ( m_qt )
 		quicktime_close( m_qt );
-	if ( m_scaler )
-		gavl_video_scaler_destroy( m_scaler );
+/*	if ( m_scaler )
+		gavl_video_scaler_destroy( m_scaler ); */
 }
 void VideoFileQT::initScaler( unsigned int w, unsigned int h )
 {

@@ -34,11 +34,13 @@ class Sound
 		void Play();
 		void Stop();
 		unsigned int  fillBuffer( float* output, unsigned long frames );
+		bool stillPlaying();
 	private:
 		NextFrameListener *m_nfl;
 		Timeline *m_tl;
 		int64_t m_soundSamples;
 		int64_t m_videoFrames;
+		bool m_playing;
 };
 
 

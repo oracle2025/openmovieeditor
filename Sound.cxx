@@ -54,10 +54,12 @@ static int callback( void *inputBuffer, void *outputBuffer,
 		return paComplete;
 	}*/
 }
-
+Sound* g_sound;
 Sound::Sound( NextFrameListener *nfl )
 	: m_nfl(nfl)
 {
+	g_sound = this;
+	m_playing = false;
 }
 
 Sound::~Sound()
@@ -66,6 +68,8 @@ Sound::~Sound()
 
 void Sound::Play()
 {
+	if ( m_playing )
+		return;
 	m_tl = SwitchBoard::i()->timeline();
 	m_soundSamples = 0;
 	m_videoFrames = 0;
@@ -84,6 +88,7 @@ void Sound::Play()
 	cout << "Pa_StartStream done" << endl;
 	if( err != paNoError ) goto error;
 	cout << "Sound::Play" << endl;
+	m_playing = true;
 	return;
 	error:
 	cerr << "Soundoutput failed: " << Pa_GetErrorText( err ) << endl;
@@ -92,12 +97,15 @@ void Sound::Play()
 }
 void Sound::Stop()
 {
+	if ( !m_playing )
+		return;
 	PaError err;
 	err = Pa_StopStream( stream );
 	if( err != paNoError ) goto error;
 	err = Pa_CloseStream( stream );
 	if( err != paNoError ) goto error;
 	Pa_Terminate();
+	m_playing = false;
 	cout << "Sound::Stop" << endl;
 	return;
 	error:
@@ -123,6 +131,10 @@ unsigned int Sound::fillBuffer( float* output, unsigned long frames )
 	return res;
 }
 
+bool Sound::stillPlaying()
+{
+	return Pa_StreamActive( stream ) == 1;
+}
 
 	
 } /* namespace nle */
