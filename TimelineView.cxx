@@ -415,6 +415,9 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 	int64_t new_position = get_real_position( _x - offset, clip->track()->stretchFactor() );
 	new_position = new_tr->getSnapA( clip, new_position );
 	new_position = new_tr->getSnapB( clip, new_position );
+	if ( new_position < 0 ) {
+		new_position = 0;
+	}
 	clip->position( new_position );
 	if ( new_tr == old_tr ) {
 		return;
@@ -426,7 +429,8 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 void TimelineView::trim_clip( Clip* clip, int _x, bool trimRight )
 {
 	if (trimRight) {
-		clip->trimB( int64_t( ( clip->position() + clip->length() ) - ( get_real_position(_x, clip->track()->stretchFactor()) ) ) );
+		int64_t trimv = int64_t( ( clip->position() + clip->length() ) - ( get_real_position(_x, clip->track()->stretchFactor()) ) );
+		clip->trimB( trimv );
 		return;
 	}
 	clip->trimA( int64_t( get_real_position(_x, clip->track()->stretchFactor())  - clip->position() ) );
