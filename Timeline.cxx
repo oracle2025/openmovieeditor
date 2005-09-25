@@ -100,7 +100,7 @@ void reset_helper( Track* track ) { track->reset(); }
 void Timeline::reset()
 {
 	m_playPosition = m_seekPosition;
-	m_samplePosition = int64_t( m_seekPosition * ( 48000 / 29.97 ) );
+	m_samplePosition = int64_t( m_seekPosition * ( 48000 / g_fps ) );
 	for_each( m_allTracks.begin(), m_allTracks.end(), reset_helper );
 }
 frame_struct* Timeline::getFrame( int64_t position )
@@ -117,6 +117,7 @@ frame_struct* Timeline::getFrame( int64_t position )
 }
 frame_struct* Timeline::nextFrame()
 {
+	//cout << "Timeline::nextFrame" << endl;
 	frame_struct* res = NULL;
 	m_playPosition++;
 	for ( std::vector< VideoTrack* >::iterator i = m_videoTracks.begin(); i != m_videoTracks.end(); i++ ) {

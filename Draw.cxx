@@ -22,6 +22,7 @@
 
 #include "Draw.H"
 #include "SwitchBoard.H"
+#include "globals.H"
 
 namespace nle
 {
@@ -51,7 +52,7 @@ void Draw::triangle( float x, float y, bool direction )
 	float _x;
 	float zoom = SwitchBoard::i()->zoom();
 	if (USING_AUDIO) {
-		_x = direction ? 8 * ( 48000 / 29.97 ) : - 8 * ( 48000 / 29.97 );
+		_x = direction ? 8 * ( 48000 / g_fps ) : - 8 * ( 48000 / g_fps );
 	} else {
 		_x = direction ? 8 : -8;
 	}

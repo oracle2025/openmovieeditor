@@ -30,3 +30,9 @@ http://invisible-island.net/bcpp/ in build process einbauen (http://www.mrunix.d
 
 
   - restrict Fileformats temporarily to 25 FPS and 48000  
+	/*
+	glTexSubImage2D
+	http://www.gamedev.net/reference/articles/article947.asp
+	http://developer.apple.com/samplecode/OpenGL_Movie/listing4.html
+	 */
+

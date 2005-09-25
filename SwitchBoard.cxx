@@ -51,11 +51,7 @@ void SwitchBoard::zoom( float zoom )
 }
 float SwitchBoard::zoom()
 {
-	/*if (USING_AUDIO) {
-		return m_zoom / ( 48000 / 29.97 );
-	} else {*/
-		return m_zoom;
-//	}
+	return m_zoom;
 }
 void SwitchBoard::timeline( Timeline* tl )
 {

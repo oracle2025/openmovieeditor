@@ -50,12 +50,15 @@ void AudioClip::reset()
 int AudioClip::fillBuffer( float* output, unsigned long frames, int64_t position )
 {
 	unsigned int frames_written = 0;
-	float a = 0;
-	int *b = (int*)&a; //FIXME This is a goddamn evil hack
+	// float a = 0;
+	// int *b = (int*)&a; //FIXME This is a goddamn evil hack
 	if ( m_position + length() < position ) { return 0; }
 	if ( m_position > position ) {
 		unsigned long empty_frames = ( m_position - position ) < frames ? ( m_position - position ) : frames;
-		memset( (void*)output, *b, sizeof(float) * empty_frames * 2 );
+		//memset( (void*)output, *b, sizeof(float) * empty_frames * 2 );
+		for ( unsigned long i = 0; i < frames * 2; i++ ) { //TODO eingentlich sollten nur empty_frames geschrieben werden
+			output[i] = 0.0;
+		}
 		frames_written += empty_frames;
 		if ( empty_frames == frames ) {
 			return frames_written;

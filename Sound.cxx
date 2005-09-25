@@ -127,6 +127,7 @@ unsigned int Sound::fillBuffer( float* output, unsigned long frames )
 	if ( m_soundSamples / ( 48000 / g_fps ) > m_videoFrames ) {
 		m_videoFrames++;
 		m_nfl->nextFrame( m_videoFrames );
+	//	cout << "Frame: " << m_videoFrames << " Samples: " << m_soundSamples << endl;
 	}
 	return res;
 }

@@ -68,7 +68,6 @@ VideoViewGL::~VideoViewGL()
 	delete m_snd;
 	m_snd = NULL;
 }
-static int texture_counter;
 GLuint video_canvas[10];
 //#define T_W 368
 //#define T_H 240
@@ -115,38 +114,19 @@ void VideoViewGL::draw()
 		{
 			Texter te;
 			glBindTexture( GL_TEXTURE_2D, video_canvas[1] );
-			//glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 512, 512, GL_RGB, GL_UNSIGNED_BYTE, te.generateText(512, 512,"SUNFUN") );
-			
-			/*
-			//Image model( "512x512", Color( MaxRGB, 0, MaxRGB, 0 ) );
-			Image model("out.png");
-			//Image model( 512, 512, "RGBA", CharPixel, p );
-			
-			Blob blob;
-			model.fontPointsize( 50 );
-			model.font( "Helvetica" );
-			model.strokeColor( Color() );                                                                    
-			model.fillColor( "black" );
-			model.annotate( "OpenGL", "+0+20", NorthGravity );
-
-			model.magick( "RGBA" );
-			model.write( &blob );
-			
-			glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, blob.data() );*/
 			glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, te.generateText(512, 512,"SUNFUN") );
 		}
 		once = false;
 	}
-	texture_counter = 0;
 	static frame_struct *fs = 0;
 	if (m_seek) {
 		m_seek = false;
 		fs = g_timeline->getFrame( m_seekPosition );
 		if ( fs ) {
-			glBindTexture( GL_TEXTURE_2D, video_canvas[texture_counter] );
+			glBindTexture( GL_TEXTURE_2D, video_canvas[0] );
 			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs->w, fs->h, GL_RGB, GL_UNSIGNED_BYTE, fs->RGB );
 		} else {
-			glBindTexture( GL_TEXTURE_2D, video_canvas[texture_counter] );
+			glBindTexture( GL_TEXTURE_2D, video_canvas[0] );
 			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, T_W, T_H, GL_RGB, GL_UNSIGNED_BYTE, p );
 		}
 
@@ -163,15 +143,14 @@ void VideoViewGL::draw()
 		//for_each( g_timeline->getVideoTracks()->begin(), g_timeline->getVideoTracks()->end(), draw_track_helper );
 		fs = g_timeline->nextFrame();
 		if ( fs ) {
-			glBindTexture( GL_TEXTURE_2D, video_canvas[texture_counter] );
+			glBindTexture( GL_TEXTURE_2D, video_canvas[0] );
 			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs->w, fs->h, GL_RGB, GL_UNSIGNED_BYTE, fs->RGB );
 		} else {
-			glBindTexture( GL_TEXTURE_2D, video_canvas[texture_counter] );
+			glBindTexture( GL_TEXTURE_2D, video_canvas[0] );
 			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, T_W, T_H, GL_RGB, GL_UNSIGNED_BYTE, p );
 		}
 	} else {
 	}
-	//texture_counter++;
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	static float gl_x, gl_y, gl_w, gl_h;
 	if (fs) { //TODO: Optimize ?
@@ -201,9 +180,8 @@ void VideoViewGL::draw()
 		}
 	}
 	
-//	for ( int i = 0; i < texture_counter; i++ ) {
 	if (fs) {
-		glBindTexture (GL_TEXTURE_2D, video_canvas[texture_counter] );
+		glBindTexture (GL_TEXTURE_2D, video_canvas[0] );
 		glBegin (GL_QUADS);
 		float ww = fs->w / T_W_F;
 		float hh = fs->h / T_H_F;
@@ -217,10 +195,10 @@ void VideoViewGL::draw()
 		glVertex3f   (  gl_x,     gl_y + gl_h, 0.0 );
 		glEnd ();
 	}
-	{
+/*	{       // Titel Overlay
 		glBindTexture (GL_TEXTURE_2D, video_canvas[1] );
 		
-		glEnable(GL_BLEND); /* Transparenz */
+		glEnable(GL_BLEND); // Transparenz
 		glColor4f(1.0f,1.0f,1.0f,0.5f);
 		
 		glBegin (GL_QUADS);
@@ -235,12 +213,8 @@ void VideoViewGL::draw()
 		glEnd ();
 
 		glDisable(GL_BLEND);
-	}
-	/*
-	glTexSubImage2D
-	http://www.gamedev.net/reference/articles/article947.asp
-	http://developer.apple.com/samplecode/OpenGL_Movie/listing4.html
-	 */
+	}*/
+
 }
 
 void VideoViewGL::nextFrame( int64_t frame )
