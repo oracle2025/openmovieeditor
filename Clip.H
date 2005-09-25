@@ -37,7 +37,7 @@ class Clip
 		virtual int64_t length() = 0;
 		virtual void reset() = 0;
 		void position( int64_t position ) { m_position = position; }
-		int64_t position() { return m_position; }
+		const int64_t position() { return m_position; }
 		Track* track() { return m_track; }
 		void track( Track* track ) { m_track = track; }
 		void trimA( int64_t trim );

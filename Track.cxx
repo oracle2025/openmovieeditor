@@ -25,9 +25,18 @@ using namespace std;
 #include "Track.H"
 #include "Clip.H"
 
+
+
+
 namespace nle
 {
 
+template <class P>
+class ptr_less : public binary_function<P, P, bool>
+{
+  bool operator()(P p1, P p2) const { return p1->position() < p2->position(); }
+
+};
 
 Track::Track( int num )
 {
@@ -59,6 +68,8 @@ void Track::remove( Clip* clip )
 void reset_helper( Clip* clip ) { clip->reset(); }
 void Track::reset()
 {
+	m_clips.sort( ptr_less<Clip*>());
+	
 	for_each( m_clips.begin(), m_clips.end(), reset_helper );
 }
 #define SNAP_TOLERANCE 10

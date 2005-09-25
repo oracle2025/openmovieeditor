@@ -52,5 +52,6 @@ src_list = Split("""Clip.cxx
 
 src_list.append( SConscript(['portaudio/SConscript']) )
 src_list.append( SConscript(['sexpr/SConscript']) )
+src_list.append( SConscript(['sl/SConscript']) )
 
 env.Program('nle', src_list )

@@ -34,6 +34,8 @@ private:
   static Fl_Menu_Item menu_[];
   inline void cb_Save_i(Fl_Menu_*, void*);
   static void cb_Save(Fl_Menu_*, void*);
+  inline void cb_Render_i(Fl_Menu_*, void*);
+  static void cb_Render(Fl_Menu_*, void*);
 public:
   nle::VideoViewGL *m_videoView;
 private:
@@ -69,7 +71,14 @@ public:
   EncodeDialog();
 private:
   Fl_Double_Window *encodeDialog;
-  static Fl_Menu_Item menu_Audio[];
+  inline void cb_Cancel_i(Fl_Button*, void*);
+  static void cb_Cancel(Fl_Button*, void*);
+  static Fl_Menu_Item menu_Samplerate[];
+  static Fl_Menu_Item menu_Framerate[];
+  static Fl_Menu_Item menu_Framesize[];
+public:
+  void show();
+  int shown();
 };
 
 class ChangesDialog {
