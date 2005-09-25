@@ -21,10 +21,16 @@
 #define _TRACK_H_
 
 #include <list>
+#include "sl/sl.h"
 
 namespace nle
 {
 class Clip;
+
+typedef struct clip_node_ {
+	struct clip_node_ *next;
+	Clip* clip;
+} clip_node;
 
 enum Track_Types {
 	TRACK_TYPE_VIDEO = 0,
@@ -35,19 +41,19 @@ class Track
 {
 	public:
 		virtual ~Track();
-		std::list< Clip* >* getClips() { return &m_clips; }
+		clip_node* getClips() { return m_clips; }
 		virtual int type() = 0;
 		virtual float stretchFactor() = 0;
 		virtual void reset();
 		void add( Clip* clip );
-		virtual void add( const char* filename, int64_t position )=0;
+		virtual void addFile( const char* filename, int64_t position )=0;
 		void remove( Clip* clip );
 		int num() { return m_num; }
 		int64_t getSnapB( Clip* clip, int64_t a );
 		int64_t getSnapA( Clip* clip, int64_t a );
 	protected:
 		Track( int num );
-		std::list< Clip* > m_clips;
+		clip_node* m_clips;
 	private:
 		int m_num;
 };

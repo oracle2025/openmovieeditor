@@ -33,7 +33,7 @@ AudioTrack::AudioTrack( int num )
 AudioTrack::~AudioTrack()
 {
 }
-void AudioTrack::add( const char* filename, int64_t position )
+void AudioTrack::addFile( const char* filename, int64_t position )
 {
 	AudioFileQT *af = new AudioFileQT( filename );
 	if ( !af->ok() ) {
@@ -41,11 +41,12 @@ void AudioTrack::add( const char* filename, int64_t position )
 		std::cerr << "Error: AudioTrack::add_audio" << std::endl;
 		return;
 	}
-	m_clips.push_back( new AudioClip( this, position, af ) );
+	Clip *clp = new AudioClip( this, position, af );
+	add( clp );
 }
 void AudioTrack::reset()
 {
-	m_current = m_clips.begin();
+	m_current = m_clips;
 	Track::reset();
 }
 int AudioTrack::fillBuffer( float* output, unsigned long frames, int64_t position )
@@ -55,15 +56,15 @@ int AudioTrack::fillBuffer( float* output, unsigned long frames, int64_t positio
 	unsigned long emptyItems = 0;
 	float* incBuffer = output;
 //	ASSERT(m_current)
-	while( written < frames && m_current != m_clips.end() ) {
-		inc = ((AudioClip*)(*m_current))->fillBuffer( incBuffer,
+	while( written < frames && m_current ) {
+		inc = ((AudioClip*)(m_current->clip))->fillBuffer( incBuffer,
 				 frames - written, position + written
 				);
 		written += inc;
 		incBuffer += inc;
-		if ( written < frames ) { m_current++; }
+		if ( written < frames ) { m_current = m_current->next; }
 	}
-	if ( m_current == m_clips.end() ) {
+	if ( m_current == 0 ) {
 		while( written < frames ) {
 			*incBuffer = 0;
 			written++;

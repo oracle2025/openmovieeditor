@@ -31,46 +31,62 @@ using namespace std;
 namespace nle
 {
 
-template <class P>
-class ptr_less : public binary_function<P, P, bool>
-{
-  bool operator()(P p1, P p2) const { return p1->position() < p2->position(); }
-
-};
-
 Track::Track( int num )
 {
 	m_num = num;
+	m_clips = 0;
 }
 Track::~Track()
 {
-	Clip *clip;
-	while( m_clips.size() ) {
-		clip = *m_clips.end();
-		m_clips.pop_back();
-		delete clip;
+	clip_node* node;
+	while ( ( node = (clip_node*)sl_pop( &m_clips ) ) ) {
+		delete node->clip;
+		delete node;
 	}
 }
 void Track::add( Clip* clip )
 {
-	m_clips.push_back( clip );
+	clip_node* node = new clip_node;
+	node->clip = clip;
+	m_clips = (clip_node*)sl_push( m_clips, node );
+}
+int find_clip( void* p, void* data )
+{
+	Clip* clip = (Clip*)data;
+	clip_node* node = (clip_node*)p;
+	if ( node->next && node->next->clip == clip ) {
+		return 1;
+	}
+	return 0;
 }
 void Track::remove( Clip* clip )
 {
-	std::list< Clip* >::iterator j;
-	for ( j = m_clips.begin(); j != m_clips.end(); j++ ) {
-		if ( *j == clip ) {
-			m_clips.erase(j);
-			return;
-		}
+	clip_node* node = (clip_node*)sl_map( m_clips, find_clip, clip );
+	if ( node ) {
+		clip_node* p = node->next;
+		delete p->clip;
+		node->next = p->next;
+		delete p;
 	}
 }
-void reset_helper( Clip* clip ) { clip->reset(); }
+int reset_clip( void* p, void* data )
+{
+	clip_node* node = (clip_node*)p;
+	node->clip->reset();
+	return 0;
+}
+int cmp_clip(void *p1, void *p2)
+{
+        clip_node *q1 = (clip_node*)p1, *q2 = (clip_node*)p2;
+        return q1->clip->position() - q2->clip->position();
+}       
 void Track::reset()
 {
-	m_clips.sort( ptr_less<Clip*>());
-	
-	for_each( m_clips.begin(), m_clips.end(), reset_helper );
+	m_clips = (clip_node*)sl_mergesort( m_clips, cmp_clip );
+	sl_map( m_clips, reset_clip, 0 );
+	for ( clip_node* p = m_clips; p; p = p->next ) {
+		cout << "POSITION: " << p->clip->position() << endl;
+	}
 }
 #define SNAP_TOLERANCE 10
 bool is_in_tolerance( int64_t A, int64_t B, unsigned int tolerance )
@@ -79,9 +95,8 @@ bool is_in_tolerance( int64_t A, int64_t B, unsigned int tolerance )
 }
 int64_t Track::getSnapA( Clip* clip, int64_t A )
 {
-	std::list< Clip* >::iterator j;
-	for ( j = m_clips.begin(); j != m_clips.end(); j++ ) {
-		Clip* current = *j;
+	for ( clip_node *p = m_clips; p; p = p->next ) {
+		Clip* current = p->clip;
 		int64_t B = current->B();
 		if ( current != clip && is_in_tolerance( A, B, (unsigned int)(SNAP_TOLERANCE * stretchFactor()) ) ) {
 			return B + 1;
@@ -91,9 +106,8 @@ int64_t Track::getSnapA( Clip* clip, int64_t A )
 }
 int64_t Track::getSnapB( Clip* clip, int64_t B )
 {
-	std::list< Clip* >::iterator j;
-	for ( j = m_clips.begin(); j != m_clips.end(); j++ ) {
-		Clip* current = *j;
+	for ( clip_node *p = m_clips; p; p = p->next ) {
+		Clip* current = p->clip;
 		int64_t A = current->position();
 		if ( current != clip && is_in_tolerance( B + clip->length(), A, (unsigned int)(SNAP_TOLERANCE * stretchFactor()) ) ) {
 			return A - 1 - clip->length();

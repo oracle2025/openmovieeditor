@@ -1,0 +1,6 @@
+env = Environment( CFLAGS ="-Wall" )
+src_list = ["sl.c"]
+
+sl = env.Library( 'sl', src_list )
+Return('sl')
+

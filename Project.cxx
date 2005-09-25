@@ -83,10 +83,8 @@ static void append_track( Track* t, sexp_t* s )
 
 	s->next            = track_list;
 
-	list< Clip* >* cps = t->getClips();
-
-	for ( list<Clip*>::iterator i = cps->begin(); i != cps->end(); i++ ) {
-		Clip* current = *i;
+	for ( clip_node* p = t->getClips(); p; p = p->next ) {
+		Clip* current = p->clip;
 		append_clip( current, track );
 		track = track->next;
 	}

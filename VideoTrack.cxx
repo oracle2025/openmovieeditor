@@ -40,7 +40,7 @@ void VideoTrack::reset()
 	Track::reset();
 	m_playPosition = 0;
 }
-void VideoTrack::add( const char* filename, int64_t position ) //FIXME: use IVideoFile here??
+void VideoTrack::addFile( const char* filename, int64_t position ) //FIXME: use IVideoFile here??
 {
 	VideoFileQT *vf = new VideoFileQT( filename );
 	
@@ -49,13 +49,14 @@ void VideoTrack::add( const char* filename, int64_t position ) //FIXME: use IVid
 		delete vf;
 		return;
 	}
-	m_clips.push_back( new VideoClip( this, position, vf ) );
+	add( new VideoClip( this, position, vf ) );
 }
 frame_struct* VideoTrack::getFrame( int64_t position )
 {
 	frame_struct* res = NULL;
-	for ( std::list< Clip* >::iterator j = m_clips.begin(); j != m_clips.end(); j++ ) {
-		res = ((VideoClip*)(*j))->getFrame( position );
+	for ( clip_node *p = m_clips; p; p = p->next ) {
+		VideoClip* current = (VideoClip*)p->clip;
+		res = current->getFrame( position );
 		if ( res )
 			return res;
 	}

@@ -117,7 +117,7 @@ int TimelineView::handle( int event )
 				if (t && !fl_filename_isdir(Fl::event_text()) ) {
 					
 					cout << "Track: " << t->num() << endl;
-					t->add( Fl::event_text(), rp );
+					t->addFile( Fl::event_text(), rp );
 					redraw();
 				}
 			}
@@ -182,7 +182,7 @@ void TimelineView::draw()
 	
 
 	std::list< Track* >* vtl = m_timeline->getTracks();
-	std::list< Clip* >* vcl;
+	clip_node* vcl;
 	float l, p;
 	int cnt = 0;
 
@@ -230,20 +230,20 @@ void TimelineView::draw()
 		fl_scale( SwitchBoard::i()->zoom() / (*i)->stretchFactor(), 1.0 );
 		fl_translate( - (m_scrollPosition * (*i)->stretchFactor()), 0.0 );
 		//if ( (*i)->type() == TRACK_TYPE_VIDEO ) {
-			for ( std::list< Clip* >::iterator j = vcl->begin(); j != vcl->end(); j++ ) {
-				p = float( (*j)->position() );
-				l = float( (*j)->length() );
+			for ( clip_node* j = vcl; j; j = j->next ) {
+				p = (float)j->clip->position();
+				l = (float)j->clip->length();
 				Draw::box( p, 0, l, TRACK_HEIGHT, FL_DARK3 );
 				if ( (*i)->type() == TRACK_TYPE_VIDEO ) {
 					int _x, _y;
-					VideoClip* vc = ((VideoClip*)(*j));
+					VideoClip* vc = ((VideoClip*)j->clip);
 					_y = y() + TRACK_SPACING + cnt * (TRACK_HEIGHT + TRACK_SPACING);
 					FilmStrip* fs = vc->getFilmStrip();
 					int s = vc->trimA() / 100;
 					int e = ( vc->length() / 100 ) + s;
 					int off = vc->trimA() % 100;
 					for ( int k = s; k < e; k++ ) {
-						_x = get_screen_position( (*j)->position() + (k - s) * 100, (*i)->stretchFactor()  ) - off;
+						_x = get_screen_position( j->clip->position() + (k - s) * 100, (*i)->stretchFactor()  ) - off;
 						pic_struct* f = fs->get_pic(k);
 						fl_draw_image( f->data, _x, _y, f->w, f->h );
 					}
@@ -260,16 +260,16 @@ void TimelineView::draw()
 				Draw::triangle( (p + l) / 1601.6, TRACK_HEIGHT/2, false );
 			}
 		}*/
-		for ( std::list< Clip* >::iterator j = vcl->begin(); j != vcl->end(); j++ ) {
+		for ( clip_node* p = vcl; p; p = p->next ) {
 			std::list<AutomationPoint>::iterator k;
-			std::list<AutomationPoint>* l = (*j)->getAutomation();
+			std::list<AutomationPoint>* l = p->clip->getAutomation();
 			int xx = -1;
 			int yy = -1;
 			fl_color(FL_WHITE);
 			fl_line_style(FL_SOLID);
 			for ( k = l->begin(); k != l->end(); k++ ) {
 				AutomationPoint *current = &(*k);
-				Rect t = current->getScreenRect( *j );
+				Rect t = current->getScreenRect( p->clip );
 				if ( xx > 0 && yy > 0 ) {
 					fl_line( xx, yy, t.x + x() + 4, t.y + y() + 4 );
 				}
@@ -278,7 +278,7 @@ void TimelineView::draw()
 			}
 			for ( k = l->begin(); k != l->end(); k++ ) {
 				AutomationPoint *current = &(*k);
-				Rect t = current->getScreenRect( *j );
+				Rect t = current->getScreenRect( p->clip );
 				fl_draw_box( FL_UP_BOX,t.x + x(), t.y + y(), t.w, t.h, FL_GREEN );
 			}
 		}
@@ -351,12 +351,11 @@ Clip* TimelineView::get_clip( int _x, int _y )
 	Track *tr = get_track( _x, _y );
 	if (!tr)
 		return NULL;
-	std::list< Clip* >* vcl = tr->getClips();
-	for ( std::list< Clip* >::iterator j = vcl->begin(); j != vcl->end(); j++ ) {
-		Rect tmp = get_clip_rect(*j);
+	for ( clip_node* p = tr->getClips(); p; p = p->next ) {
+		Rect tmp = get_clip_rect( p->clip );
 		if ( !tmp.inside( _x, _y ) )
 			continue;
-		return *j;
+		return p->clip;
 	}
 	return NULL;
 }
