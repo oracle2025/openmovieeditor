@@ -117,6 +117,13 @@ public:
   Fl_Box *codec_label;
   Fl_Hold_Browser *parameters_browser;
 private:
+  inline void cb_parameters_browser_i(Fl_Hold_Browser*, void*);
+  static void cb_parameters_browser(Fl_Hold_Browser*, void*);
+public:
+  Fl_Value_Input *parameter_int_input;
+  Fl_Input *parameter_string_input;
+  Fl_Choice *parameter_stringlist_input;
+private:
   inline void cb_Cancel1_i(Fl_Button*, void*);
   static void cb_Cancel1(Fl_Button*, void*);
 };

@@ -32,15 +32,13 @@ using namespace std;
 namespace nle
 {
 
+
 void setAudioCodecMenu( Fl_Choice* menu )
 {
 	lqt_codec_info_t** info = g_audio_codec_info;
 	menu->clear();
 	for ( int i = 0; info[i]; i++ ) {
 		menu->add( info[i]->long_name, 0, 0, info[i] );
-		for ( int j = 0; j < info[i]->num_encoding_parameters; j++ ) {
-			cout << info[i]->name << ": \"" << info[i]->encoding_parameters[j].real_name << "\"" << endl;
-		}
 	}
 }
 void setVideoCodecMenu( Fl_Choice* menu )
@@ -49,20 +47,74 @@ void setVideoCodecMenu( Fl_Choice* menu )
 	menu->clear();
 	for ( int i = 0; info[i]; i++ ) {
 		menu->add( info[i]->long_name, 0, 0, info[i] );
-		for ( int j = 0; j < info[i]->num_encoding_parameters; j++ ) {
-			cout << info[i]->name << ": \"" << info[i]->encoding_parameters[j].real_name << "\"" << endl;
-		}
 	}
 }
 
-void setCodecParameters( CodecOptions* dialog, void* data )
+void setCodecInfo( CodecOptions* dialog, void* data )
 {
 	lqt_codec_info_t* info = (lqt_codec_info_t*)data;
+	dialog->codec_label->label( info->long_name );
 	dialog->parameters_browser->clear();
 	for ( int j = 0; j < info->num_encoding_parameters; j++ ) {
-		dialog->parameters_browser->add( info->encoding_parameters[j].real_name );
+		if ( info->encoding_parameters[j].type == LQT_PARAMETER_SECTION )
+			continue;
+		dialog->parameters_browser->add( info->encoding_parameters[j].real_name, &(info->encoding_parameters[j]) );
 	}
 
+}
+
+void setCodecParameter( CodecOptions* dialog, void* data )
+{
+	lqt_parameter_info_t* info = (lqt_parameter_info_t*)data;
+	switch ( info->type ) {
+		case LQT_PARAMETER_INT:
+		{
+			dialog->parameter_string_input->deactivate();
+			dialog->parameter_stringlist_input->deactivate();
+			Fl_Value_Input* o = dialog->parameter_int_input;
+			o->activate();
+			o->minimum( info->val_min );
+			o->maximum( info->val_max );
+			if ( info->val_min == info->val_max && info->val_max == 0 ) {
+				o->step(0);
+			} else {
+				o->step(1);
+			}
+			o->value( info->val_default.val_int );
+		}
+			break;
+		case LQT_PARAMETER_STRING:
+		{
+			dialog->parameter_int_input->deactivate();
+			dialog->parameter_stringlist_input->deactivate();
+			Fl_Input* o = dialog->parameter_string_input;
+			o->activate();
+			o->value( info->val_default.val_string );
+		}
+			break;
+		case LQT_PARAMETER_STRINGLIST:
+		{
+			dialog->parameter_int_input->deactivate();
+			dialog->parameter_string_input->deactivate();
+			Fl_Choice* o = dialog->parameter_stringlist_input;
+			o->activate();
+			o->clear();
+			for ( int i = 0; i < info->num_stringlist_options; i++ ) {
+				o->add( info->stringlist_options[i] );
+				if ( strcmp( info->stringlist_options[i], info->val_default.val_string ) == 0 ) {
+					o->value( i );
+				}
+			}
+		}
+			break;
+		case LQT_PARAMETER_SECTION:
+		default:
+			dialog->parameter_int_input->deactivate();
+			dialog->parameter_string_input->deactivate();
+			dialog->parameter_stringlist_input->deactivate();
+			break;
+	}
+	
 }
 
 } /* namespace nle */

@@ -31,7 +31,9 @@ namespace nle
 void setAudioCodecMenu( Fl_Choice* menu );
 void setVideoCodecMenu( Fl_Choice* menu );
 
-void setCodecParameters( CodecOptions* dialog, void* data );
+void setCodecInfo( CodecOptions* dialog, void* data );
+
+void setCodecParameter( CodecOptions* dialog, void* data );
 
 } /* namespace nle */
 
