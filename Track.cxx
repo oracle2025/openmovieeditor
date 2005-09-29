@@ -50,7 +50,7 @@ void Track::add( Clip* clip )
 	node->clip = clip;
 	m_clips = (clip_node*)sl_push( m_clips, node );
 }
-int find_clip( void* p, void* data )
+static int find_clip( void* p, void* data )
 {
 	Clip* clip = (Clip*)data;
 	clip_node* node = (clip_node*)p;
@@ -69,13 +69,13 @@ void Track::remove( Clip* clip )
 		delete p;
 	}
 }
-int reset_clip( void* p, void* data )
+static int reset_clip( void* p, void* data )
 {
 	clip_node* node = (clip_node*)p;
 	node->clip->reset();
 	return 0;
 }
-int cmp_clip(void *p1, void *p2)
+static int cmp_clip(void *p1, void *p2)
 {
         clip_node *q1 = (clip_node*)p1, *q2 = (clip_node*)p2;
         return q1->clip->position() - q2->clip->position();
@@ -89,7 +89,7 @@ void Track::reset()
 	}
 }
 #define SNAP_TOLERANCE 10
-bool is_in_tolerance( int64_t A, int64_t B, unsigned int tolerance )
+static bool is_in_tolerance( int64_t A, int64_t B, unsigned int tolerance )
 {
 	return ( B - tolerance <= A && B + tolerance >= A );
 }

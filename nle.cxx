@@ -400,6 +400,20 @@ void EncodeDialog::cb_Cancel(Fl_Button* o, void* v) {
   ((EncodeDialog*)(o->parent()->user_data()))->cb_Cancel_i(o,v);
 }
 
+inline void EncodeDialog::cb_audio_codec_menu_i(Fl_Choice* o, void*) {
+  audio_codec = o->menu()[o->value()].user_data();
+}
+void EncodeDialog::cb_audio_codec_menu(Fl_Choice* o, void* v) {
+  ((EncodeDialog*)(o->parent()->user_data()))->cb_audio_codec_menu_i(o,v);
+}
+
+inline void EncodeDialog::cb_video_codec_menu_i(Fl_Choice* o, void*) {
+  video_codec = o->menu()[o->value()].user_data();
+}
+void EncodeDialog::cb_video_codec_menu(Fl_Choice* o, void* v) {
+  ((EncodeDialog*)(o->parent()->user_data()))->cb_video_codec_menu_i(o,v);
+}
+
 Fl_Menu_Item EncodeDialog::menu_Samplerate[] = {
  {"48000", 0,  0, 0, 0, 0, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0}
@@ -415,20 +429,50 @@ Fl_Menu_Item EncodeDialog::menu_Framesize[] = {
  {0,0,0,0,0,0,0,0,0}
 };
 
+inline void EncodeDialog::cb_audio_options_i(Fl_Button*, void*) {
+  if ( audio_codec ) {
+	Fl_Group::current( encodeDialog );
+	CodecOptions dlg;
+	nle::setCodecParameters( &dlg, audio_codec );
+	dlg.codecOptions->show();
+	while (dlg.codecOptions->shown())
+		Fl::wait();
+};
+}
+void EncodeDialog::cb_audio_options(Fl_Button* o, void* v) {
+  ((EncodeDialog*)(o->parent()->user_data()))->cb_audio_options_i(o,v);
+}
+
+inline void EncodeDialog::cb_video_options_i(Fl_Button*, void*) {
+  if ( video_codec ) {
+	Fl_Group::current( encodeDialog );
+	CodecOptions dlg;
+	nle::setCodecParameters( &dlg, video_codec );
+	dlg.codecOptions->show();
+	while (dlg.codecOptions->shown())
+		Fl::wait();
+};
+}
+void EncodeDialog::cb_video_options(Fl_Button* o, void* v) {
+  ((EncodeDialog*)(o->parent()->user_data()))->cb_video_options_i(o,v);
+}
+
 EncodeDialog::EncodeDialog() {
   Fl_Double_Window* w;
-  { Fl_Double_Window* o = encodeDialog = new Fl_Double_Window(325, 245, "Render");
+  { Fl_Double_Window* o = encodeDialog = new Fl_Double_Window(360, 240, "Render");
     w = o;
     o->user_data((void*)(this));
-    new Fl_Return_Button(170, 205, 140, 25, "Encode");
-    { Fl_Button* o = new Fl_Button(15, 205, 140, 25, "Cancel");
+    new Fl_Return_Button(185, 205, 140, 25, "Encode");
+    { Fl_Button* o = new Fl_Button(30, 205, 140, 25, "Cancel");
       o->callback((Fl_Callback*)cb_Cancel);
     }
-    { Fl_Choice* o = new Fl_Choice(140, 40, 120, 25, "Audio Codec");
+    { Fl_Choice* o = audio_codec_menu = new Fl_Choice(140, 40, 120, 25, "Audio Codec");
       o->down_box(FL_BORDER_BOX);
+      o->callback((Fl_Callback*)cb_audio_codec_menu);
     }
-    { Fl_Choice* o = new Fl_Choice(140, 70, 120, 25, "Video Codec");
+    { Fl_Choice* o = video_codec_menu = new Fl_Choice(140, 70, 120, 25, "Video Codec");
       o->down_box(FL_BORDER_BOX);
+      o->callback((Fl_Callback*)cb_video_codec_menu);
     }
     { Fl_Choice* o = new Fl_Choice(140, 100, 120, 25, "Samplerate");
       o->down_box(FL_BORDER_BOX);
@@ -446,13 +490,23 @@ EncodeDialog::EncodeDialog() {
       o->labelfont(1);
       o->labelsize(16);
     }
+    { Fl_Button* o = audio_options = new Fl_Button(265, 40, 75, 25, "Options...");
+      o->callback((Fl_Callback*)cb_audio_options);
+    }
+    { Fl_Button* o = video_options = new Fl_Button(265, 70, 75, 25, "Options...");
+      o->callback((Fl_Callback*)cb_video_options);
+    }
     o->set_modal();
     o->end();
   }
 }
 
 void EncodeDialog::show() {
-  encodeDialog->show();
+  audio_codec = 0;
+video_codec = 0;
+nle::setAudioCodecMenu( audio_codec_menu );
+nle::setVideoCodecMenu( video_codec_menu );
+encodeDialog->show();
 }
 
 int EncodeDialog::shown() {
@@ -473,3 +527,58 @@ ChangesDialog::ChangesDialog() {
 }
 Fl_Box *g_trashCan;
 float g_fps;
+
+inline void CodecOptions::cb_Cancel1_i(Fl_Button* o, void*) {
+  o->window()->hide();
+}
+void CodecOptions::cb_Cancel1(Fl_Button* o, void* v) {
+  ((CodecOptions*)(o->parent()->parent()->user_data()))->cb_Cancel1_i(o,v);
+}
+
+CodecOptions::CodecOptions() {
+  Fl_Double_Window* w;
+  { Fl_Double_Window* o = codecOptions = new Fl_Double_Window(345, 305, "Codec Options");
+    w = o;
+    o->user_data((void*)(this));
+    { Fl_Box* o = codec_label = new Fl_Box(0, 0, 345, 35, "Codec");
+      o->labelfont(1);
+      o->labelsize(16);
+    }
+    { Fl_Group* o = new Fl_Group(0, 35, 345, 230);
+      { Fl_Hold_Browser* o = parameters_browser = new Fl_Hold_Browser(5, 40, 165, 220);
+        o->box(FL_NO_BOX);
+        o->color(FL_BACKGROUND2_COLOR);
+        o->selection_color(FL_SELECTION_COLOR);
+        o->labeltype(FL_NORMAL_LABEL);
+        o->labelfont(0);
+        o->labelsize(14);
+        o->labelcolor(FL_BLACK);
+        o->align(FL_ALIGN_BOTTOM);
+        o->when(FL_WHEN_RELEASE_ALWAYS);
+        Fl_Group::current()->resizable(o);
+      }
+      { Fl_Group* o = new Fl_Group(170, 35, 175, 230);
+        new Fl_Value_Input(175, 40, 165, 25);
+        new Fl_Input(175, 70, 165, 25);
+        { Fl_Choice* o = new Fl_Choice(175, 100, 165, 25);
+          o->down_box(FL_BORDER_BOX);
+        }
+        { Fl_Box* o = new Fl_Box(230, 175, 25, 25);
+          Fl_Group::current()->resizable(o);
+        }
+        o->end();
+      }
+      o->end();
+      Fl_Group::current()->resizable(o);
+    }
+    { Fl_Group* o = new Fl_Group(0, 265, 345, 40);
+      { Fl_Button* o = new Fl_Button(20, 275, 140, 25, "Cancel");
+        o->callback((Fl_Callback*)cb_Cancel1);
+      }
+      new Fl_Return_Button(185, 275, 140, 25, "Ok");
+      o->end();
+    }
+    o->set_modal();
+    o->end();
+  }
+}

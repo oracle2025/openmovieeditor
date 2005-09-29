@@ -1,4 +1,4 @@
-/*  globals.H
+/*  Codecs.H
  *
  *  Copyright (C) 2003 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,36 +17,24 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _GLOBALS_H_
-#define _GLOBALS_H_
 
-#define STR_LEN 512
+#ifndef _CODECS_H_
+#define _CODECS_H_
 
-#include <lqt.h>
+#include "nle.h"
+
+class CodecOptions;
 
 namespace nle
 {
 
-class TimelineView;
-class Timeline;
-class Flmm_Scalebar;
-class Ruler;
-class VideoViewGL;
-class Sound;
+void setAudioCodecMenu( Fl_Choice* menu );
+void setVideoCodecMenu( Fl_Choice* menu );
 
-extern TimelineView* g_timelineView;
-extern Timeline* g_timeline;
-//extern Flmm_Scalebar* g_scrollBar;
-extern Ruler* g_ruler;
-extern VideoViewGL* g_videoView;
-extern Sound* g_sound;
-
-extern lqt_codec_info_t** g_audio_codec_info;
-extern lqt_codec_info_t** g_video_codec_info;
+void setCodecParameters( CodecOptions* dialog, void* data );
 
 } /* namespace nle */
 
-extern float g_fps;
 
-#endif /* _GLOBALS_H_ */
+#endif /* _CODECS_H_ */
 

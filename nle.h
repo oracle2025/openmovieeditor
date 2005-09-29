@@ -65,6 +65,7 @@ public:
 };
 extern Flmm_Scalebar* g_scrollBar;
 #include <FL/Fl_Return_Button.H>
+#include "Codecs.H"
 
 class EncodeDialog {
 public:
@@ -73,12 +74,31 @@ private:
   Fl_Double_Window *encodeDialog;
   inline void cb_Cancel_i(Fl_Button*, void*);
   static void cb_Cancel(Fl_Button*, void*);
+public:
+  Fl_Choice *audio_codec_menu;
+private:
+  inline void cb_audio_codec_menu_i(Fl_Choice*, void*);
+  static void cb_audio_codec_menu(Fl_Choice*, void*);
+public:
+  Fl_Choice *video_codec_menu;
+private:
+  inline void cb_video_codec_menu_i(Fl_Choice*, void*);
+  static void cb_video_codec_menu(Fl_Choice*, void*);
   static Fl_Menu_Item menu_Samplerate[];
   static Fl_Menu_Item menu_Framerate[];
   static Fl_Menu_Item menu_Framesize[];
+  Fl_Button *audio_options;
+  inline void cb_audio_options_i(Fl_Button*, void*);
+  static void cb_audio_options(Fl_Button*, void*);
+  Fl_Button *video_options;
+  inline void cb_video_options_i(Fl_Button*, void*);
+  static void cb_video_options(Fl_Button*, void*);
 public:
   void show();
   int shown();
+private:
+  void *audio_codec;
+  void* video_codec;
 };
 
 class ChangesDialog {
@@ -87,4 +107,17 @@ public:
 };
 extern Fl_Box *g_trashCan;
 extern float g_fps;
+#include <FL/Fl_Hold_Browser.H>
+#include <FL/Fl_Input.H>
+
+class CodecOptions {
+public:
+  CodecOptions();
+  Fl_Double_Window *codecOptions;
+  Fl_Box *codec_label;
+  Fl_Hold_Browser *parameters_browser;
+private:
+  inline void cb_Cancel1_i(Fl_Button*, void*);
+  static void cb_Cancel1(Fl_Button*, void*);
+};
 #endif

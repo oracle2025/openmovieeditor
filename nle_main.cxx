@@ -19,7 +19,15 @@
 
 #include <FL/Fl.H>
 
+#include <lqt.h>
+
 #include "nle.h"
+
+namespace nle 
+{
+lqt_codec_info_t** g_audio_codec_info;
+lqt_codec_info_t** g_video_codec_info;
+} /* namespace nle */
 
 int main( int argc, char** argv )
 {
@@ -33,6 +41,8 @@ int main( int argc, char** argv )
 
 	Fl::lock();
 	
+	nle::g_audio_codec_info = lqt_query_registry( 1, 0, 1, 0 );
+	nle::g_video_codec_info = lqt_query_registry( 0, 1, 1, 0 );
 	  
 	nui.show( argc, argv );
 	return Fl::run();

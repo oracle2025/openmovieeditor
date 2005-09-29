@@ -29,6 +29,7 @@ src_list = Split("""Clip.cxx
 	SwitchBoard.cxx
 	TimelineView.cxx
 	VideoClip.cxx
+	Codecs.cxx
 	VideoViewGL.cxx
 	FilmStrip.cxx
 	Draw.cxx
