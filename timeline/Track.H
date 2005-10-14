@@ -44,10 +44,16 @@ class Track
 		clip_node* getClips() { return m_clips; }
 		virtual int type() = 0;
 		virtual float stretchFactor() = 0;
-		virtual void reset();
-		void add( Clip* clip );
-		virtual void addFile( const char* filename, int64_t position )=0;
-		void remove( Clip* clip );
+		virtual void sort();
+		virtual void addFile( int64_t position, const char* filename ) = 0;
+		
+		void addClip( int64_t position, Clip* clip );
+		void removeClip( Clip* clip );
+		Clip* find( int64_t position );
+		int64_t length(); // <= normalized to stretch factor, therefore not accurate
+
+
+	//	void remove( Clip* clip );
 		int num() { return m_num; }
 		int64_t getSnapB( Clip* clip, int64_t a );
 		int64_t getSnapA( Clip* clip, int64_t a );

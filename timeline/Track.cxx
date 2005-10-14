@@ -44,9 +44,10 @@ Track::~Track()
 		delete node;
 	}
 }
-void Track::add( Clip* clip )
+void Track::addClip( int64_t position, Clip* clip )
 {
 	clip_node* node = new clip_node;
+	clip->position( position );
 	node->clip = clip;
 	m_clips = (clip_node*)sl_push( m_clips, node );
 }
@@ -69,6 +70,36 @@ void Track::remove( Clip* clip )
 		delete p;
 	}
 }
+static int remove_clip_helper( void* p, void* data )
+{
+	Clip* clip = (Clip*)data;
+	clip_node* node = (clip_node*)p;
+	if ( p->clip == clip ) {
+		return 1;
+	} else {
+		return 0;
+	}
+}
+void Track::removeClip( Clip* clip )
+{
+	sl_remove( &m_clips, remove_clip_helper, clip );
+}
+static int find_clip_helper( void* p, void* data )
+{
+	clip_node* node = (clip_node*)p;
+	Clip* clip = node->clip;
+	int64_t position = *((int64_t*)data);
+	if ( clip->A() <= position && clip->B() >= position ) {
+		return 1;
+	} else {
+		return 0;
+	}
+}
+Clip *Track::find( int64_t position )
+{
+	clip_node* node = (clip_node*)sl_map( m_clips, find_clip_helper, &position );
+	return node->clip;
+}
 static int reset_clip( void* p, void* data )
 {
 	clip_node* node = (clip_node*)p;
@@ -80,13 +111,10 @@ static int cmp_clip(void *p1, void *p2)
         clip_node *q1 = (clip_node*)p1, *q2 = (clip_node*)p2;
         return q1->clip->position() - q2->clip->position();
 }       
-void Track::reset()
+void Track::sort()
 {
 	m_clips = (clip_node*)sl_mergesort( m_clips, cmp_clip );
 	sl_map( m_clips, reset_clip, 0 );
-	for ( clip_node* p = m_clips; p; p = p->next ) {
-		cout << "POSITION: " << p->clip->position() << endl;
-	}
 }
 #define SNAP_TOLERANCE 10
 static bool is_in_tolerance( int64_t A, int64_t B, unsigned int tolerance )

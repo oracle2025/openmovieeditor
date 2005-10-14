@@ -39,6 +39,7 @@ namespace nle
 Timeline* g_timeline = 0;
 
 Timeline::Timeline()
+	: TimelineBase()
 {
 	VideoTrack *vt;
 	AudioTrack *at;

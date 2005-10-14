@@ -1,0 +1,63 @@
+/*  TimelineBase.H
+ *
+ *  Copyright (C) 2003 Richard Spindler <richard.spindler AT gmail.com>
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
+#ifndef _TIMELINE_BASE_H_
+#define _TIMELINE_BASE_H_
+
+#include <stdint.h>
+
+namespace nle
+{
+
+class Track;
+
+typedef struct _track_list_node {
+	struct _track_list_node *next;
+	Track *track;
+} track_node;
+
+class TimelineBase
+{
+	public:
+		// constructors and destructors
+		TimelineBase();
+		virtual ~TimelineBase();
+
+		// method declerations
+		void sort();
+		inline void seek( int64_t position ) { m_seekPosition = position; }
+		void addClip( int track, int64_t position, Clip *clip );
+		void addFile( int track, int64_t position, const char* filename );
+		void removeClip( int track, Clip *clip );
+		void addTrack( Track* track );
+		void removeTrack( int track );
+		void moveClip( int srcTrack, Clip *srcClip, int dstTrack, int64_t dstPosition );
+		Clip* find( int track, int64_t position );
+		int64_t length();
+		inline track_node* getTracks() { return m_allTracks; }
+	protected:
+		Track* getTrack( int track );
+		// member variable declerations
+		track_node* m_allTracks;
+		int64_t m_seekPosition;
+};
+	
+} /* namespace nle */
+
+#endif /* _TIMELINE_BASE_H_ */
