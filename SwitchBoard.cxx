@@ -22,6 +22,7 @@
 #include "SwitchBoard.H"
 #include "Timeline.H"
 #include "TimelineView.H"
+#include "globals.H"
 
 using namespace std;
 
@@ -53,21 +54,13 @@ float SwitchBoard::zoom()
 {
 	return m_zoom;
 }
-void SwitchBoard::timeline( Timeline* tl )
-{
-	m_timeline = tl;
-}
 void SwitchBoard::timelineView( TimelineView* tlv )
 {
 	m_tlv = tlv;
 }
-Timeline* SwitchBoard::timeline()
-{
-	return m_timeline;
-}
 void SwitchBoard::move_cursor()
 {
-	m_tlv->move_cursor( m_timeline->m_playPosition );
+	m_tlv->move_cursor( g_timeline->m_playPosition );
 }
 
 } /* namespace nle */

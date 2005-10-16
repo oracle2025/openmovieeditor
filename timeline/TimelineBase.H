@@ -55,7 +55,6 @@ class TimelineBase
 		Track* getTrack( int track );
 		// member variable declerations
 		track_node* m_allTracks;
-		int64_t m_seekPosition;
 };
 	
 } /* namespace nle */

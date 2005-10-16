@@ -20,7 +20,7 @@
 #ifndef _VIDEO_TRACK_H_
 #define _VIDEO_TRACK_H_
 
-#include "Track.H"
+#include "timeline/Track.H"
 #include "frame_struct.h"
 
 namespace nle

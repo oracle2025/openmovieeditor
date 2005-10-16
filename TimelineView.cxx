@@ -54,15 +54,12 @@ bool USING_AUDIO = 0;
 TimelineView* g_timelineView = 0;
 
 TimelineView::TimelineView( int x, int y, int w, int h, const char *label )
-	: Fl_Widget( x, y, w, h, label )//, Flu_DND("DND_Timeline")
+	: Fl_Widget( x, y, w, h, label )
 {
 	g_timelineView = this;
 	m_dragHandler = NULL;
 	m_timeline = new Timeline();
 	
-//	m_timeline->add_video( 0, 30, "/home/oracle/tmp/test3.mov" );
-//	m_timeline->add_video( 1, 100, "/home/oracle/tmp/test3.mov" );
-//	m_timeline->add_audio( 2, 0, "/home/oracle/tmp/test3.mov" );
 
 	m_scrollPosition = 0;
 	m_stylusPosition = 0;
@@ -130,10 +127,10 @@ int TimelineView::handle( int event )
 		case FL_PUSH: {
 				Clip* cl = get_clip( _x, _y );
 				if (cl) {
-					AutomationPoint* tmp_pnt = cl->getAutomationRect( _x, _y );
+					/*AutomationPoint* tmp_pnt = cl->getAutomationRect( _x, _y );
 					if ( tmp_pnt ) {
 						m_dragHandler = new AutomationDragHandler( cl, tmp_pnt,get_clip_rect( cl, true ) );
-					} else if ( _x < get_screen_position( cl->position(), cl->track()->stretchFactor() ) + 8 ) {
+					} else*/ if ( _x < get_screen_position( cl->position(), cl->track()->stretchFactor() ) + 8 ) {
 						m_dragHandler = new TrimDragHandler(
 								this, cl, cl->track()->num(),
 								0, 0, false );
@@ -181,15 +178,15 @@ void TimelineView::draw()
 	fl_draw_box( FL_FLAT_BOX, x(), y(), w(), h(), FL_BACKGROUND_COLOR );
 	
 
-	std::list< Track* >* vtl = m_timeline->getTracks();
+	track_node* vtl = m_timeline->getTracks();
 	clip_node* vcl;
 	float l, p;
 	int cnt = 0;
 
 
-	for ( std::list< Track* >::iterator i = vtl->begin(); i != vtl->end(); i++ ) {
-		vcl = (*i)->getClips();
-		USING_AUDIO = (*i)->type() == TRACK_TYPE_AUDIO;
+	for ( track_node* i = vtl; i; i = i->next ) {
+		vcl = i->track->getClips();
+		USING_AUDIO = i->track->type() == TRACK_TYPE_AUDIO;
 		
 		fl_push_matrix();
 		
@@ -227,14 +224,14 @@ void TimelineView::draw()
 				y() + TRACK_SPACING + cnt * (TRACK_HEIGHT + TRACK_SPACING),
 				w() - TRACK_SPACING - LEFT_TRACK_SPACING,
 				TRACK_HEIGHT );
-		fl_scale( SwitchBoard::i()->zoom() / (*i)->stretchFactor(), 1.0 );
-		fl_translate( - (m_scrollPosition * (*i)->stretchFactor()), 0.0 );
+		fl_scale( SwitchBoard::i()->zoom() / i->track->stretchFactor(), 1.0 );
+		fl_translate( - (m_scrollPosition * i->track->stretchFactor()), 0.0 );
 		//if ( (*i)->type() == TRACK_TYPE_VIDEO ) {
 			for ( clip_node* j = vcl; j; j = j->next ) {
 				p = (float)j->clip->position();
 				l = (float)j->clip->length();
 				Draw::box( p, 0, l, TRACK_HEIGHT, FL_DARK3 );
-				if ( (*i)->type() == TRACK_TYPE_VIDEO ) {
+				if ( i->track->type() == TRACK_TYPE_VIDEO ) {
 					int _x, _y;
 					VideoClip* vc = ((VideoClip*)j->clip);
 					_y = y() + TRACK_SPACING + cnt * (TRACK_HEIGHT + TRACK_SPACING);
@@ -243,7 +240,7 @@ void TimelineView::draw()
 					int e = ( vc->length() / 100 ) + s;
 					int off = vc->trimA() % 100;
 					for ( int k = s; k < e; k++ ) {
-						_x = get_screen_position( j->clip->position() + (k - s) * 100, (*i)->stretchFactor()  ) - off;
+						_x = get_screen_position( j->clip->position() + (k - s) * 100, i->track->stretchFactor()  ) - off;
 						pic_struct* f = fs->get_pic(k);
 						fl_draw_image( f->data, _x, _y, f->w, f->h );
 					}
@@ -338,11 +335,10 @@ void TimelineView::zoom( float zoom )
 }
 Track* TimelineView::get_track( int _x, int _y )
 {
-	std::list< Track* >* vtl = m_timeline->getTracks();
-	for ( std::list< Track* >::iterator i = vtl->begin(); i != vtl->end(); i++ ) {
-		if ( !get_track_rect(*i).inside( _x, _y ) )
+	for ( track_node* o = m_timeline->getTracks(); o; o = o->next ) {
+		if ( !get_track_rect( o->track ).inside( _x, _y ) )
 			continue;
-		return *i;
+		return o->track;
 	}
 	return NULL;
 }

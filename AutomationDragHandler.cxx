@@ -22,7 +22,7 @@
 
 #include "AutomationDragHandler.H"
 #include "AutomationPoint.H"
-#include "Clip.H"
+#include "timeline/Clip.H"
 #include "globals.H"
 #include "TimelineView.H"
 

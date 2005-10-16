@@ -34,6 +34,7 @@ class Timeline : public TimelineBase
 		// constructors and destructors
 		Timeline();
 		~Timeline();
+		void sort();
 
 		int64_t m_playPosition;
 		int64_t m_samplePosition;
@@ -41,6 +42,8 @@ class Timeline : public TimelineBase
 		frame_struct* nextFrame();
 		frame_struct* getFrame( int64_t position );
 		int fillBuffer( float* output, unsigned long frames );
+	private:
+		int64_t m_seekPosition;
 };
 
 } /* namespace nle */

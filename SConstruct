@@ -20,8 +20,7 @@ env.ParseConfig( 'fltk-config --cxxflags --ldflags --use-gl' )
 env.ParseConfig( 'Magick++-config --cppflags --ldflags --libs' )
 #env.ParseConfig( 'flu-config --cxxflags --ldflags' )
 
-src_list = Split("""Clip.cxx
-	nle.cxx
+src_list = Split("""nle.cxx
 	helper.cxx
 	Timeline.cxx
 	VideoTrack.cxx
@@ -35,7 +34,6 @@ src_list = Split("""Clip.cxx
 	Draw.cxx
 	Project.cxx
 	Ruler.cxx
-	Track.cxx
 	Rect.cxx
 	MoveDragHandler.cxx
 	TrimDragHandler.cxx
@@ -54,5 +52,10 @@ src_list = Split("""Clip.cxx
 src_list.append( SConscript(['portaudio/SConscript']) )
 src_list.append( SConscript(['sexpr/SConscript']) )
 src_list.append( SConscript(['sl/SConscript']) )
+
+Export( 'env' )
+src_list.append( SConscript(['timeline/SConscript']) )
+
+
 
 env.Program('nle', src_list )

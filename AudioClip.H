@@ -20,7 +20,7 @@
 #ifndef _AUDIO_CLIP_H_
 #define _AUDIO_CLIP_H_
 
-#include "Clip.H"
+#include "timeline/Clip.H"
 
 namespace nle
 {

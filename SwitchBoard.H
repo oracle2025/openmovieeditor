@@ -35,14 +35,11 @@ class SwitchBoard
 		}
 		void zoom( float zoom );
 		float zoom();
-		void timeline( Timeline* tl );
 		void timelineView( TimelineView* tlv );
-		Timeline* timeline();
 		void move_cursor();
 	private:
 		SwitchBoard();
 		float m_zoom; // = 1.0;
-		Timeline *m_timeline;
 		TimelineView *m_tlv;
 };
 

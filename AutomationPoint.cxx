@@ -18,8 +18,8 @@
  */
 
 #include "AutomationPoint.H"
-#include "Clip.H"
-#include "Track.H"
+#include "timeline/Clip.H"
+#include "timeline/Track.H"
 #include "TimelineView.H"
 #include "globals.H"
 

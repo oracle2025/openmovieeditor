@@ -22,7 +22,7 @@
 
 #include <stdint.h>
 
-#include "Clip.H"
+#include "timeline/Clip.H"
 #include "frame_struct.h"
 
 namespace nle

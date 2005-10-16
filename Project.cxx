@@ -33,9 +33,9 @@
 
 #include "Project.H"
 #include "globals.H"
-#include "Track.H"
+#include "timeline/Track.H"
 #include "Timeline.H"
-#include "Clip.H"
+#include "timeline/Clip.H"
 #include "VideoTrack.H"
 #include "AudioTrack.H"
 

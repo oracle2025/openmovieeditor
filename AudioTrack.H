@@ -20,7 +20,7 @@
 #ifndef _AUDIO_TRACK_H_
 #define _AUDIO_TRACK_H_
 
-#include "Track.H"
+#include "timeline/Track.H"
 #include "globals.H"
 
 namespace nle

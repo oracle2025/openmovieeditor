@@ -34,9 +34,6 @@ TimelineBase* g_timeline = 0;
 
 TimelineBase::TimelineBase()
 {
-	m_playPosition = 0;
-	m_samplePosition = 0;
-	m_seekPosition = 0;
 	m_allTracks = 0;
 }
 TimelineBase::~TimelineBase()

@@ -1,0 +1,8 @@
+Import('env')
+src_list = Split("""Clip.cxx
+  TimelineBase.cxx
+  Track.cxx""")
+
+timeline = env.Library( 'timeline', src_list )
+Return( 'timeline' )
+

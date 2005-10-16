@@ -17,7 +17,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <string>
 #include <iostream>
 
 #include "Timeline.H"
@@ -44,85 +43,56 @@ Timeline::Timeline()
 	VideoTrack *vt;
 	AudioTrack *at;
 	vt = new VideoTrack( 0 );
-	m_allTracks.push_back( vt );
-	m_videoTracks.push_back( vt );
+	addTrack( vt );
 	vt = new VideoTrack( 1 );
-	m_allTracks.push_back( vt );
-	m_videoTracks.push_back( vt );
+	addTrack( vt );
 	at = new AudioTrack( 2 );
-	m_allTracks.push_back( at );
-	m_audioTracks.push_back( at );
+	addTrack( at );
 	at = new AudioTrack( 3 );
-	m_allTracks.push_back( at );
-	m_audioTracks.push_back( at );
-	SwitchBoard::i()->timeline( this );
+	addTrack( at );
 	m_playPosition = 0;
 	m_samplePosition = 0;
 
 	g_timeline = this; //Singleton sucks, this is better :)
 
 	m_seekPosition = 0;
-	
-//	Renderer a("h");
-	
 }
 Timeline::~Timeline()
 {
 	g_timeline = NULL;
-	m_videoTracks.clear();
-	m_audioTracks.clear();
-	Track *track;
-	while( m_allTracks.size() ) {
-		track = *m_allTracks.end();
-		m_allTracks.pop_back();
-		delete track;
-	}
 }
-
-/*void Timeline::add_video( int track, int64_t position, const char* filename )
-{
-	std::list< Track* >::iterator i = m_allTracks.begin();
-	for ( int j = 0; j < track; j++ )
-		i++;
-	((VideoTrack*)(*i))->add_video( position, filename );
-}
-void Timeline::add_audio( int track, int64_t position, const char* filename )
-{
-	std::list< AudioTrack* >::iterator iter = m_audioTracks.begin();
-	while ( iter!= m_audioTracks.end() ) {
-		if ( (*iter)->num() == track ) {
-			break;
-		}
-		iter++;
-	}
-	(*iter)->add_audio( position, filename );
-}*/
 void reset_helper( Track* track ) { track->reset(); }
-void Timeline::reset()
+void Timeline::sort()
 {
+	TimelineBase::sort();
 	m_playPosition = m_seekPosition;
 	m_samplePosition = int64_t( m_seekPosition * ( 48000 / g_fps ) );
-	for_each( m_allTracks.begin(), m_allTracks.end(), reset_helper );
 }
 frame_struct* Timeline::getFrame( int64_t position )
 {
-	frame_struct* res = NULL;
+	//TODO: seek if neccessary ??
 	frame_struct* tmp = NULL;
-	for ( std::vector< VideoTrack* >::iterator i = m_videoTracks.begin(); i != m_videoTracks.end(); i++ ) {
-		VideoTrack* current = *i;
+	for ( track_node *p = m_allTracks; p; p = p->next ) {
+		if ( *p->track->type() != TRACK_TYPE_VIDEO ) {
+			continue;
+		}
+		VideoTrack* current = (VideoTrack*)p->track;
 		tmp = current->getFrame( position );
-		if ( tmp )
+		if ( tmp ) {
 			return tmp;
+		}
 	}
-	return res;
+	return 0;
 }
 frame_struct* Timeline::nextFrame()
 {
-	//cout << "Timeline::nextFrame" << endl;
 	frame_struct* res = NULL;
 	m_playPosition++;
-	for ( std::vector< VideoTrack* >::iterator i = m_videoTracks.begin(); i != m_videoTracks.end(); i++ ) {
-		VideoTrack* current = *i;
+	for ( track_node *p = m_allTracks; p; p = p->next ) {
+		if ( *p->track->type() != TRACK_TYPE_VIDEO ) {
+			continue;
+		}
+		VideoTrack* current = (VideoTrack*)p->track;
 		res = current->getFrame( m_playPosition - 1 );
 		if ( res )
 			return res;
@@ -131,24 +101,30 @@ frame_struct* Timeline::nextFrame()
 }
 
 unsigned int mixChannels( float *A, float *B, float* out, unsigned int frames )
-	// Mix function for (-1)-(1) float audio (2 Channels)
 {
-	unsigned int i;
 	float *p_output = out;
 	float *p_A = A;
 	float *p_B = B;
-	for ( i = frames * 2; i > 0; i-- ){
-		if ( *p_A < 0 && *p_B < 0 ) {
-			*p_output = ( *p_A + 1 ) * ( *p_B + 1 ) - 1;
-		} else {
-			*p_output = 2 * ( *p_A + *p_B + 2 ) - ( *p_A + 1 ) * ( *p_B + 1) - 3;
-		}
+	for ( unsigned int i = frames * 2; i > 0; i-- ){
+		*p_output = *p_A + *p_B;
 		p_output++;
 		p_A++;
 		p_B++;
 
 	}
 	return frames;
+}
+
+static track_node* next_audio_track( track_node* node )
+{
+	track_node* next = node;
+	while ( next ) {
+		if ( next->track->type() == TRACK_TYPE_AUDIO ) {
+			return next;
+		}
+		next = next->next;
+	}
+	return 0;
 }
 
 #define FRAMES_PER_BUFFER 256
@@ -158,13 +134,15 @@ int Timeline::fillBuffer( float* output, unsigned long frames )
 	static float buffer2[FRAMES_PER_BUFFER*2] = {0};
 	int rv;
 	int max_frames = 0;
-	std::list< AudioTrack* >::iterator iter = m_audioTracks.begin();
-	if ( iter == m_audioTracks.end() )
+	track_node* p = m_allTracks;
+	p = next_audio_track( p );
+	if ( !p )
 		return 0;
-	rv = (*iter)->fillBuffer( buffer1, frames, m_samplePosition );
+	rv = ((AudioTrack*)p->track)->fillBuffer( buffer1, frames, m_samplePosition );
 	max_frames = rv;
-	iter++;
-	if ( iter == m_audioTracks.end() ) { //Only one Track
+	p = p->next;
+	p = next_audio_track( p );
+	if ( !p ) { //Only one Track
 		for ( unsigned long i = 0; i < frames; i++ ) {
 			output[i] = buffer1[i];
 			output[i+1] = buffer1[i+1];
@@ -172,15 +150,17 @@ int Timeline::fillBuffer( float* output, unsigned long frames )
 		m_samplePosition += max_frames;
 		return max_frames;
 	}
-	rv = (*iter)->fillBuffer( buffer2, frames, m_samplePosition );
+	rv = ((AudioTrack*)p->track)->fillBuffer( buffer2, frames, m_samplePosition );
 	max_frames = rv > max_frames ? rv : max_frames;
 	mixChannels( buffer1, buffer2, output, frames);
-	iter++;
-	while ( iter != m_audioTracks.end() ) {
-		rv = (*iter)->fillBuffer( buffer1, frames, m_samplePosition );
+	p = p->next;
+	p = next_audio_track( p );
+	while ( p ) {
+		rv = ((AudioTrack*)p->track)->fillBuffer( buffer1, frames, m_samplePosition );
 		max_frames = rv > max_frames ? rv : max_frames;
 		mixChannels( output, buffer1, output, frames );
-		iter++;
+		p = p->next;
+		p = next_audio_track( p );
 	}
 	m_samplePosition += max_frames;
 	return max_frames;
