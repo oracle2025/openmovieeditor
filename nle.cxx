@@ -3,8 +3,7 @@
 #include "nle.h"
 
 inline void NleUI::cb_Save_i(Fl_Menu_*, void*) {
-  nle::Project::write_project();
-nle::Renderer a("/home/oracle/t.mov");
+  nle::Renderer a("/home/oracle/t.mov");
 a.go();
 }
 void NleUI::cb_Save(Fl_Menu_* o, void* v) {

@@ -37,9 +37,9 @@ class AudioTrack : public Track
 
 		// method declerations
 		int fillBuffer( float* output, unsigned long frames, int64_t position );
-		void addFile( const char* filename, int64_t position );
+		void addFile( int64_t position, const char* filename );
 		int type() { return TRACK_TYPE_AUDIO; }
-		void reset();
+		void sort();
 		float stretchFactor() { return ( 48000 / g_fps ); }
 	private:
 		// member variable declerations

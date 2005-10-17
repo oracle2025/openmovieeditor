@@ -51,30 +51,11 @@ void Track::addClip( int64_t position, Clip* clip )
 	node->clip = clip;
 	m_clips = (clip_node*)sl_push( m_clips, node );
 }
-static int find_clip( void* p, void* data )
-{
-	Clip* clip = (Clip*)data;
-	clip_node* node = (clip_node*)p;
-	if ( node->next && node->next->clip == clip ) {
-		return 1;
-	}
-	return 0;
-}
-void Track::remove( Clip* clip )
-{
-	clip_node* node = (clip_node*)sl_map( m_clips, find_clip, clip );
-	if ( node ) {
-		clip_node* p = node->next;
-		delete p->clip;
-		node->next = p->next;
-		delete p;
-	}
-}
 static int remove_clip_helper( void* p, void* data )
 {
 	Clip* clip = (Clip*)data;
 	clip_node* node = (clip_node*)p;
-	if ( p->clip == clip ) {
+	if ( node->clip == clip ) {
 		return 1;
 	} else {
 		return 0;
@@ -142,6 +123,10 @@ int64_t Track::getSnapB( Clip* clip, int64_t B )
 		}
 	}
 	return B;
+}
+int64_t Track::length()
+{
+	return 100;
 }
 
 	

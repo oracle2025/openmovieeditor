@@ -70,7 +70,7 @@ void Sound::Play()
 {
 	if ( m_playing )
 		return;
-	m_tl = SwitchBoard::i()->timeline();
+	m_tl = g_timeline;
 	m_soundSamples = 0;
 	m_videoFrames = 0;
 

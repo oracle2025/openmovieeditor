@@ -20,8 +20,7 @@
 #ifndef _TRACK_H_
 #define _TRACK_H_
 
-#include <list>
-#include "sl/sl.h"
+#include <sl.h>
 
 namespace nle
 {

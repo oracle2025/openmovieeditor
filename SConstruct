@@ -9,7 +9,7 @@ LIBPATH = []
 
 
 env = Environment( CC = 'g++',
-	CXXFLAGS = "-Wall -Werror -Iicons/ " + DEBUG_FLAGS,
+	CXXFLAGS = "-Wall -Werror -Iicons/ -Isl/ " + DEBUG_FLAGS,
 	LINKFLAGS = '-ggdb',
 	LIBS = LIBS,
 	LIBPATH = LIBPATH
@@ -32,7 +32,6 @@ src_list = Split("""nle.cxx
 	VideoViewGL.cxx
 	FilmStrip.cxx
 	Draw.cxx
-	Project.cxx
 	Ruler.cxx
 	Rect.cxx
 	MoveDragHandler.cxx
@@ -45,16 +44,14 @@ src_list = Split("""nle.cxx
 	Sound.cxx
 	Renderer.cxx
 	Flmm_Scalebar.cxx
-	Texter.cxx
-	AutomationPoint.cxx
-	AutomationDragHandler.cxx""")
+	Texter.cxx""")
 
 src_list.append( SConscript(['portaudio/SConscript']) )
 src_list.append( SConscript(['sexpr/SConscript']) )
-src_list.append( SConscript(['sl/SConscript']) )
 
 Export( 'env' )
 src_list.append( SConscript(['timeline/SConscript']) )
+src_list.append( SConscript(['sl/SConscript']) )
 
 
 

@@ -30,7 +30,6 @@ using namespace std;
 namespace nle
 {
 
-TimelineBase* g_timeline = 0;
 
 TimelineBase::TimelineBase()
 {
@@ -49,6 +48,7 @@ static int sort_track_helper( void* p, void* data )
 {
 	track_node* node = (track_node*) p;
 	node->track->sort();
+	return 0;
 }
 void TimelineBase::sort()
 {
@@ -88,7 +88,7 @@ void TimelineBase::addTrack( Track* track )
 {
 	track_node* node = new track_node;
 	node->track = track;
-	m_allTracks = sl_push( m_allTracks, track );
+	m_allTracks = (track_node*)sl_push( m_allTracks, node );
 }
 static int remove_track_helper( void* p, void* data )
 {
@@ -97,14 +97,14 @@ static int remove_track_helper( void* p, void* data )
 	int* track = (int*)data;
 	if ( *track > 0 ) {
 		(*track)--;
-		return 0
+		return 0;
 	} else {
 		return 1;
 	}
 }
 void TimelineBase::removeTrack( int track )
 {
-	track_node* node = sl_remove( &m_allTracks, remove_track_helper, &track );
+	track_node* node = (track_node*)sl_remove( &m_allTracks, remove_track_helper, &track );
 	delete node->track;
 	delete node;
 }
@@ -117,14 +117,15 @@ Clip* TimelineBase::find( int track, int64_t position )
 	} else {
 		cerr << "No such track" << endl;
 	}
+	return 0;
 }
 
 static int track_length_helper( void* p, void* data )
 {
 	int64_t l;
 	int* max = (int*)data;
-	track_node *node = p;
-	l = p->track->length();
+	track_node* node = (track_node*)p;
+	l = node->track->length();
 	if ( l > *max ) {
 		*max = l;
 	}
@@ -140,6 +141,7 @@ int64_t TimelineBase::length()
 
 Track* TimelineBase::getTrack( int track )
 {
+	return 0;
 }
 
 

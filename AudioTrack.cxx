@@ -33,7 +33,7 @@ AudioTrack::AudioTrack( int num )
 AudioTrack::~AudioTrack()
 {
 }
-void AudioTrack::addFile( const char* filename, int64_t position )
+void AudioTrack::addFile( int64_t position, const char* filename )
 {
 	AudioFileQT *af = new AudioFileQT( filename );
 	if ( !af->ok() ) {
@@ -42,12 +42,12 @@ void AudioTrack::addFile( const char* filename, int64_t position )
 		return;
 	}
 	Clip *clp = new AudioClip( this, position, af );
-	add( clp );
+	addClip( position, clp );
 }
-void AudioTrack::reset()
+void AudioTrack::sort()
 {
 	m_current = m_clips;
-	Track::reset();
+	Track::sort();
 }
 int AudioTrack::fillBuffer( float* output, unsigned long frames, int64_t position )
 {

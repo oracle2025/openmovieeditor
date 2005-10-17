@@ -73,7 +73,7 @@ Renderer::~Renderer()
 void Renderer::go()
 {
 	g_timeline->seek( 0 );
-	g_timeline->reset();
+	g_timeline->sort();
 	
 	
 	int res;

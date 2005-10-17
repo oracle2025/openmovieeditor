@@ -39,7 +39,6 @@ class Track;
 class Clip;
 class Timeline;
 class DragHandler;
-class AutomationPoint;
 	
 class TimelineView : public Fl_Widget
 {
@@ -65,7 +64,7 @@ class TimelineView : public Fl_Widget
 	protected:
 		void draw();
 	private:
-		AutomationPoint *getAutomationPoint( Clip* clip, int x, int y );
+	//	AutomationPoint *getAutomationPoint( Clip* clip, int x, int y );
 		Timeline *m_timeline;
 		DragHandler *m_dragHandler;
 		int64_t m_scrollPosition;

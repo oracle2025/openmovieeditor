@@ -26,6 +26,7 @@ namespace nle
 {
 
 class Track;
+class Clip;
 
 typedef struct _track_list_node {
 	struct _track_list_node *next;
@@ -41,7 +42,6 @@ class TimelineBase
 
 		// method declerations
 		void sort();
-		inline void seek( int64_t position ) { m_seekPosition = position; }
 		void addClip( int track, int64_t position, Clip *clip );
 		void addFile( int track, int64_t position, const char* filename );
 		void removeClip( int track, Clip *clip );

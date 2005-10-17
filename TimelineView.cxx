@@ -34,11 +34,9 @@
 #include "VideoTrack.H"
 #include "MoveDragHandler.H"
 #include "TrimDragHandler.H"
-#include "AutomationDragHandler.H"
 #include "Rect.H"
 #include "events.H"
 #include "FilmStrip.H"
-#include "Project.H"
 #include "helper.H"
 
 #include "audio.xpm"
@@ -65,7 +63,6 @@ TimelineView::TimelineView( int x, int y, int w, int h, const char *label )
 	m_stylusPosition = 0;
 	SwitchBoard::i()->timelineView(this);
 
-	Project::write_project();
 	
 }
 TimelineView::~TimelineView()
@@ -74,6 +71,7 @@ TimelineView::~TimelineView()
 	delete m_timeline;
 	m_timeline = NULL;
 }
+/*
 AutomationPoint *TimelineView::getAutomationPoint( Clip* clip, int x, int y )
 {
 	std::list<AutomationPoint>::iterator i;
@@ -86,18 +84,9 @@ AutomationPoint *TimelineView::getAutomationPoint( Clip* clip, int x, int y )
 		if ( current->getScreenRect( clip ).inside( x, y ) ) {
 			return current;
 		}
-/*		int x_a = get_screen_position( current->x, clip->track()->stretchFactor() );
-		int x_b = x_a + 2;
-		x_a -= 2;
-		int y_a = ( ( 100 - current->y ) * 30 / 100 ) + tmp.y;
-		int y_b = y_a + 2;
-		y_a -= 2;
-		if ( x > x_a && x < x_b && y > y_a && y < y_b ) {
-			return current;
-		}*/
 	}
 	return 0;
-}
+}*/
 int TimelineView::handle( int event )
 {
 	int _x = Fl::event_x() - x();
@@ -114,7 +103,7 @@ int TimelineView::handle( int event )
 				if (t && !fl_filename_isdir(Fl::event_text()) ) {
 					
 					cout << "Track: " << t->num() << endl;
-					t->addFile( Fl::event_text(), rp );
+					t->addFile( rp, Fl::event_text() );
 					redraw();
 				}
 			}
@@ -127,10 +116,7 @@ int TimelineView::handle( int event )
 		case FL_PUSH: {
 				Clip* cl = get_clip( _x, _y );
 				if (cl) {
-					/*AutomationPoint* tmp_pnt = cl->getAutomationRect( _x, _y );
-					if ( tmp_pnt ) {
-						m_dragHandler = new AutomationDragHandler( cl, tmp_pnt,get_clip_rect( cl, true ) );
-					} else*/ if ( _x < get_screen_position( cl->position(), cl->track()->stretchFactor() ) + 8 ) {
+					if ( _x < get_screen_position( cl->position(), cl->track()->stretchFactor() ) + 8 ) {
 						m_dragHandler = new TrimDragHandler(
 								this, cl, cl->track()->num(),
 								0, 0, false );
@@ -257,7 +243,7 @@ void TimelineView::draw()
 				Draw::triangle( (p + l) / 1601.6, TRACK_HEIGHT/2, false );
 			}
 		}*/
-		for ( clip_node* p = vcl; p; p = p->next ) {
+/*		for ( clip_node* p = vcl; p; p = p->next ) {
 			std::list<AutomationPoint>::iterator k;
 			std::list<AutomationPoint>* l = p->clip->getAutomation();
 			int xx = -1;
@@ -278,7 +264,7 @@ void TimelineView::draw()
 				Rect t = current->getScreenRect( p->clip );
 				fl_draw_box( FL_UP_BOX,t.x + x(), t.y + y(), t.w, t.h, FL_GREEN );
 			}
-		}
+		}*/
 		fl_pop_clip();
 		fl_pop_matrix();
 
@@ -400,7 +386,7 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 	Track *new_tr = get_track( _x, _y );
 	Track *old_tr = clip->track();
 	if ( inside_widget( g_trashCan, x() + _x, y() + _y ) ) {
-		old_tr->remove( clip );
+		old_tr->removeClip( clip );
 		delete clip;
 		return;
 	}
@@ -417,9 +403,9 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 	if ( new_tr == old_tr ) {
 		return;
 	}
-	old_tr->remove( clip );
+	old_tr->removeClip( clip );
 	clip->track( new_tr );
-	new_tr->add( clip );
+	new_tr->addClip( clip->position(), clip );
 }
 void TimelineView::trim_clip( Clip* clip, int _x, bool trimRight )
 {

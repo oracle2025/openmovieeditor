@@ -24,7 +24,7 @@
 
 #include "MoveDragHandler.H"
 #include "TimelineView.H"
-#include "Track.H"
+#include "timeline/Track.H"
 
 
 namespace nle

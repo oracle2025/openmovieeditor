@@ -243,7 +243,7 @@ void VideoViewGL::play()
 		return;
 	m_playing = true;
 	m_playingPosition = 0;
-	g_timeline->reset();
+	g_timeline->sort();
 	m_snd->Play();
 	vv_play = true;
 	Fl::add_timeout( LEN_TIMEOUT, vv_callback, NULL );

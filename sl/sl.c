@@ -220,6 +220,117 @@ void *sl_map(void *root, int (*func)(void *, void *), void *data)
 	return NULL;
 }
 
+/*
+
+=item void *sl_remove(void *root, int (*func)(void *, void *), void *data)
+
+Remove a node from the list, if C<func> returns non-zero,
+this node will be removed and returned.
+
+Despite the misleading prototype, this function takes a pointer
+to a pointer to a node as its argument. C does not allow C<void
+**> to be used as a generic pointer to pointer type. However,
+since C<void *> is a generic pointer, it can also point to a
+pointer to pointer. 
+
+=cut
+
+*/
+void *sl_remove(void *root, int (*func)(void *, void *), void *data)
+{
+	struct sl_node **pp = root;
+	struct sl_node *p = *pp;
+	struct sl_node *q;
+
+	if (!p) {
+		return NULL;
+	}
+	
+	if (func(p, data)) {
+		*pp = p->next;
+		p->next = NULL;
+		return p;
+	}
+
+	while (p) {
+		q = p;
+		p = p->next;
+		if (p && func(p, data)) {
+			q->next = p->next;
+			p->next = NULL;
+			return p;
+		}
+	}
+	return NULL;
+}
+
+/*
+
+=item void *sl_filter(void *root, int (*func)(void *, void *), void *data)
+
+If C<func> returns negative when it finds a match, the element is
+removed from the list and returned immediatly. However, if C<func>
+returns positive, it returns a list of *all* values that match, and
+these elements are removed from the original list.
+
+To return only the first 5 elements maintain a counter in C<data> and
+thus return only the first 5 elements matching your criteria by
+having C<func> examine C<data> and return negative instead of
+positive on the fifth match.
+
+Despite the misleading prototype, this function takes a pointer
+to a pointer to a node as its argument. C does not allow C<void
+**> to be used as a generic pointer to pointer type. However,
+since C<void *> is a generic pointer, it can also point to a
+pointer to pointer. 
+
+=cut
+
+*/
+
+void *sl_filter(void *root, int (*func)(void *, void *), void *data)
+{
+	struct sl_node **pp = root;
+	struct sl_node *p = *pp;
+	struct sl_node *q;
+	struct sl_node *r = NULL;
+	int val;
+
+	if (!p) {
+		return NULL;
+	}
+	
+	val = func(p, data);
+	if (val < 0) {
+		return sl_pop(pp);
+	} else {
+		while (val > 0 && p) {
+			r = sl_unshift(r, sl_pop(pp));
+			p = *pp;
+			val = func(p, data);
+		}
+		if (val < 0) {
+			r = sl_unshift(r, sl_pop(pp));
+			return r;
+		}
+	}
+	while (p && p->next) {
+		q = p;
+		p = p->next;
+		val = func(p, data);
+		if (val != 0) {
+			q->next = p->next;
+			p->next = NULL;
+			r = sl_unshift(r, p);
+		}
+		if (val > 0) {
+			p = q;
+		} else if (val < 0) {
+			return r;
+		}
+	}
+	return r;
+}
 
 /*
 

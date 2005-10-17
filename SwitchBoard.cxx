@@ -43,7 +43,6 @@ SwitchBoard::SwitchBoard()
 	 * m_zoom = ( width / slider_size ) / len;
 	 */
 	m_zoom = 1.0; //0.2 -> 2.0
-	m_timeline = 0;
 }
 
 void SwitchBoard::zoom( float zoom )

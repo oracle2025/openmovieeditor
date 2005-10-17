@@ -35,12 +35,12 @@ VideoTrack::VideoTrack( int num )
 VideoTrack::~VideoTrack()
 {
 }
-void VideoTrack::reset()
+void VideoTrack::sort()
 {
-	Track::reset();
+	Track::sort();
 	m_playPosition = 0;
 }
-void VideoTrack::addFile( const char* filename, int64_t position ) //FIXME: use IVideoFile here??
+void VideoTrack::addFile( int64_t position, const char* filename )
 {
 	VideoFileQT *vf = new VideoFileQT( filename );
 	
@@ -49,7 +49,7 @@ void VideoTrack::addFile( const char* filename, int64_t position ) //FIXME: use 
 		delete vf;
 		return;
 	}
-	add( new VideoClip( this, position, vf ) );
+	addClip( position, new VideoClip( this, position, vf ) );
 }
 frame_struct* VideoTrack::getFrame( int64_t position )
 {

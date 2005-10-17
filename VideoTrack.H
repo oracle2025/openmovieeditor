@@ -36,12 +36,12 @@ class VideoTrack : public Track
 		~VideoTrack();
 
 		// method declerations
-		void addFile( const char* filename, int64_t position );
+		void addFile( int64_t position, const char* filename );
 //		void add_video( int64_t position, const char* filename );
 		int type() { return TRACK_TYPE_VIDEO; }
 		float stretchFactor() { return 1.0; }
 		frame_struct* getFrame( int64_t position );
-		void reset();
+		void sort();
 	private:
 		int64_t m_playPosition;
 		// member variable declerations

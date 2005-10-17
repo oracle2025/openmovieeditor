@@ -28,10 +28,6 @@ Clip::Clip( Track *track, int64_t position )
 	m_track = track;
 	m_trimA = 0;
 	m_trimB = 0;
-	AutomationPoint p( 100, 50 );
-	m_automation.push_back(p);
-	p = AutomationPoint( 10, 50 );
-	m_automation.push_back(p);
 }
 void Clip::trimA( int64_t trim )
 {
@@ -52,18 +48,6 @@ void Clip::trimB( int64_t trim )
 	m_trimB += trim;
 	if ( m_trimB < 0 )
 		m_trimB = 0;
-}
-AutomationPoint* Clip::getAutomationRect( int x, int y )
-{
-	std::list<AutomationPoint>::iterator k;
-	for ( k = m_automation.begin(); k != m_automation.end(); k++ ) {
-		AutomationPoint *current = &(*k);
-		Rect t = current->getScreenRect( this );
-		if ( t.inside( x, y ) ) {
-			return current;
-		}
-	}
-	return 0;
 }
 
 } /* namespace nle */

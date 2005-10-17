@@ -23,7 +23,7 @@
 #include "VideoTrack.H"
 #include "AudioTrack.H"
 #include "VideoClip.H"
-#include "Track.H"
+#include "timeline/Track.H"
 #include "SwitchBoard.H"
 #include "Renderer.H"
 #include "TrackOverlap.H"
@@ -61,7 +61,7 @@ Timeline::~Timeline()
 {
 	g_timeline = NULL;
 }
-void reset_helper( Track* track ) { track->reset(); }
+void reset_helper( Track* track ) { track->sort(); }
 void Timeline::sort()
 {
 	TimelineBase::sort();
@@ -73,7 +73,7 @@ frame_struct* Timeline::getFrame( int64_t position )
 	//TODO: seek if neccessary ??
 	frame_struct* tmp = NULL;
 	for ( track_node *p = m_allTracks; p; p = p->next ) {
-		if ( *p->track->type() != TRACK_TYPE_VIDEO ) {
+		if ( p->track->type() != TRACK_TYPE_VIDEO ) {
 			continue;
 		}
 		VideoTrack* current = (VideoTrack*)p->track;
@@ -89,7 +89,7 @@ frame_struct* Timeline::nextFrame()
 	frame_struct* res = NULL;
 	m_playPosition++;
 	for ( track_node *p = m_allTracks; p; p = p->next ) {
-		if ( *p->track->type() != TRACK_TYPE_VIDEO ) {
+		if ( p->track->type() != TRACK_TYPE_VIDEO ) {
 			continue;
 		}
 		VideoTrack* current = (VideoTrack*)p->track;
