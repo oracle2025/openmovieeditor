@@ -29,7 +29,6 @@
 #include "TimelineView.H"
 #include "Timeline.H"
 #include "SwitchBoard.H"
-#include "Draw.H"
 #include "VideoClip.H"
 #include "VideoTrack.H"
 #include "MoveDragHandler.H"
@@ -161,134 +160,90 @@ void TimelineView::draw()
 {
 	fl_overlay_clear();
 	fl_push_clip( x(), y(), w(), h() );
+
+
+//     - Draw Background
 	fl_draw_box( FL_FLAT_BOX, x(), y(), w(), h(), FL_BACKGROUND_COLOR );
-	
+// END - Draw Background
 
-	track_node* vtl = m_timeline->getTracks();
-	clip_node* vcl;
-	float l, p;
-	int cnt = 0;
-
-
-	for ( track_node* i = vtl; i; i = i->next ) {
-		vcl = i->track->getClips();
-		USING_AUDIO = i->track->type() == TRACK_TYPE_AUDIO;
+	int track_count = -1;
+	for ( track_node* i = m_timeline->getTracks(); i; i = i->next ) {
+		Track* track = i->track;
+		track_count++;
+		int y_coord = y() + TRACK_SPACING + track_count * TRACK_OFFSET;
+		int x_coord = x() + LEFT_TRACK_SPACING;
+		int w_size = w() - TRACK_SPACING - LEFT_TRACK_SPACING;
 		
-		fl_push_matrix();
+		USING_AUDIO = track->type() == TRACK_TYPE_AUDIO;
 		
-		{
-			int box_x = x() + TRACK_SPACING;
-			int box_y = y() + TRACK_SPACING + cnt * (TRACK_HEIGHT + TRACK_SPACING);
-			
-			fl_draw_box( FL_UP_BOX, box_x,
-					box_y,
-					64, TRACK_HEIGHT + 1, FL_BACKGROUND_COLOR );
-			
-			fl_color( FL_BLACK );
-			fl_font( FL_HELVETICA, 11 );
-				
-			char *s;
-			if ( USING_AUDIO ) {
-				s = "Audio";
-				fl_draw_pixmap( audio_xpm, box_x + 3,
-						box_y + 5 );
-			} else {
-				s = "Video";
-				fl_draw_pixmap( video_xpm, box_x + 6,
-						box_y + 8 );
-			}
-			
-			fl_draw( s, box_x + 23, 
-					box_y + 18);
+	//     - Draw Button
+		fl_draw_box( FL_UP_BOX, x() + TRACK_SPACING, y_coord, 64, TRACK_HEIGHT + 1, FL_BACKGROUND_COLOR );
+		fl_color( FL_BLACK );
+		fl_font( FL_HELVETICA, 11 );
+		if ( USING_AUDIO ) {
+			fl_draw( "Audio", x() + TRACK_SPACING + 23, y_coord + 18);
+			fl_draw_pixmap( audio_xpm, x() + TRACK_SPACING + 3, y_coord + 5 );
+		} else {
+			fl_draw( "Video", x() + TRACK_SPACING + 23, y_coord + 18);
+			fl_draw_pixmap( video_xpm, x() + TRACK_SPACING + 6, y_coord + 8 );
 		}
-		fl_translate( x() + LEFT_TRACK_SPACING,
-				y() + TRACK_SPACING + cnt * (TRACK_HEIGHT + TRACK_SPACING) );
-		
-		Draw::box( 0, 0, w() - TRACK_SPACING - LEFT_TRACK_SPACING, TRACK_HEIGHT, FL_DARK2 );
+	// END - Draw Button
 
-		fl_push_clip( x() + LEFT_TRACK_SPACING,
-				y() + TRACK_SPACING + cnt * (TRACK_HEIGHT + TRACK_SPACING),
-				w() - TRACK_SPACING - LEFT_TRACK_SPACING,
-				TRACK_HEIGHT );
-		fl_scale( SwitchBoard::i()->zoom() / i->track->stretchFactor(), 1.0 );
-		fl_translate( - (m_scrollPosition * i->track->stretchFactor()), 0.0 );
-		//if ( (*i)->type() == TRACK_TYPE_VIDEO ) {
-			for ( clip_node* j = vcl; j; j = j->next ) {
-				p = (float)j->clip->position();
-				l = (float)j->clip->length();
-				Draw::box( p, 0, l, TRACK_HEIGHT, FL_DARK3 );
-				if ( i->track->type() == TRACK_TYPE_VIDEO ) {
-					int _x, _y;
-					VideoClip* vc = ((VideoClip*)j->clip);
-					_y = y() + TRACK_SPACING + cnt * (TRACK_HEIGHT + TRACK_SPACING);
-					FilmStrip* fs = vc->getFilmStrip();
-					int s = vc->trimA() / 100;
-					int e = ( vc->length() / 100 ) + s;
-					int off = vc->trimA() % 100;
-					for ( int k = s; k < e; k++ ) {
-						_x = get_screen_position( j->clip->position() + (k - s) * 100, i->track->stretchFactor()  ) - off;
-						pic_struct* f = fs->get_pic(k);
-						fl_draw_image( f->data, _x, _y, f->w, f->h );
-					}
+	//     - Draw Track Background
+		fl_draw_box( FL_BORDER_BOX , x_coord, y_coord, w_size, TRACK_HEIGHT, FL_DARK2 );
+	// END - Draw Track Background
+
+		fl_push_clip( x_coord, y_coord, w_size, TRACK_HEIGHT );
+		
+		for ( clip_node* j = track->getClips(); j; j = j->next ) {
+			Clip* clip = j->clip;
+			int scr_clip_x = get_screen_position( clip->position(), track->stretchFactor() );
+			int scr_clip_y = y_coord;
+			int scr_clip_w = (int)( clip->length() * SwitchBoard::i()->zoom() / track->stretchFactor() );
+			int scr_clip_h = TRACK_HEIGHT;
+			
+			fl_draw_box( FL_BORDER_BOX , scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h, FL_DARK3 );
+			
+		//     - Draw Thumbnails
+			if ( track->type() == TRACK_TYPE_VIDEO ) {
+				fl_push_clip( scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h );
+				
+				int _x;
+				VideoClip* vc = (VideoClip*)clip;
+				FilmStrip* fs = vc->getFilmStrip();
+				int s = vc->trimA() / 100;
+				int e = ( vc->length() / 100 ) + s;
+				int off = vc->trimA() % 100;
+				for ( int k = s; k < e + 2; k++ ) {
+					_x = get_screen_position( clip->position() + (k - s) * 100, track->stretchFactor()  ) - off;
+					pic_struct* f = fs->get_pic(k);
+					if ( f )
+						fl_draw_image( f->data, _x, y_coord, f->w, f->h );
 				}
-				Draw::triangle( p, TRACK_HEIGHT/2, true );
-				Draw::triangle( p + l, TRACK_HEIGHT/2, false );
+				fl_pop_clip();
 			}
-		/*} else {
-			for ( std::list< Clip* >::iterator j = vcl->begin(); j != vcl->end(); j++ ) {
-				p = float( (*j)->position() );
-				l = float( (*j)->length() );
-				Draw::box( p / 1601.6, 0, l / 1601.6, TRACK_HEIGHT, FL_DARK3 );
-				Draw::triangle( p / 1601.6, TRACK_HEIGHT/2, true );
-				Draw::triangle( (p + l) / 1601.6, TRACK_HEIGHT/2, false );
-			}
-		}*/
-/*		for ( clip_node* p = vcl; p; p = p->next ) {
-			std::list<AutomationPoint>::iterator k;
-			std::list<AutomationPoint>* l = p->clip->getAutomation();
-			int xx = -1;
-			int yy = -1;
-			fl_color(FL_WHITE);
-			fl_line_style(FL_SOLID);
-			for ( k = l->begin(); k != l->end(); k++ ) {
-				AutomationPoint *current = &(*k);
-				Rect t = current->getScreenRect( p->clip );
-				if ( xx > 0 && yy > 0 ) {
-					fl_line( xx, yy, t.x + x() + 4, t.y + y() + 4 );
-				}
-				xx = t.x + x() + 4;
-				yy = t.y + y() + 4;
-			}
-			for ( k = l->begin(); k != l->end(); k++ ) {
-				AutomationPoint *current = &(*k);
-				Rect t = current->getScreenRect( p->clip );
-				fl_draw_box( FL_UP_BOX,t.x + x(), t.y + y(), t.w, t.h, FL_GREEN );
-			}
-		}*/
+		// END - Draw Thumbnails
+
+			fl_draw_box( FL_BORDER_FRAME, scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h, FL_DARK3 );
+			
+		//     - Draw Trim Triangles
+		     	fl_color( FL_BLACK );
+			fl_begin_polygon();
+			fl_vertex( scr_clip_x, scr_clip_y + TRACK_HEIGHT / 2 );
+			fl_vertex( scr_clip_x + 8, scr_clip_y + TRACK_HEIGHT / 2 - 5 );
+			fl_vertex( scr_clip_x + 8, scr_clip_y + TRACK_HEIGHT / 2 + 5 );
+			fl_end_polygon();
+			fl_begin_polygon();
+			fl_vertex( scr_clip_x + scr_clip_w, scr_clip_y + TRACK_HEIGHT / 2 );
+			fl_vertex( scr_clip_x + scr_clip_w - 8, scr_clip_y + TRACK_HEIGHT / 2 - 5 );
+			fl_vertex( scr_clip_x + scr_clip_w - 8, scr_clip_y + TRACK_HEIGHT / 2 + 5 );
+			fl_end_polygon();
+		// END - Draw Trim Triangles
+		}
 		fl_pop_clip();
-		fl_pop_matrix();
-
-
-
-
-		
-		cnt++;
 	}
-
-
-
-
-
-	
 	fl_pop_clip();
-	fl_overlay_rect( get_screen_position(m_stylusPosition), y(), 1, h() );
-	
-	/*
-	for i in VideoTracks:
-		draw VideoTrackBackground
-			for j in i(VideoTrack):
-				drawClip i
-	 */
+	fl_overlay_rect( get_screen_position( m_stylusPosition ), y(), 1, h() );
 }
 void TimelineView::add_video( int track, int y, const char* filename )
 {
@@ -405,7 +360,7 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 	}
 	old_tr->removeClip( clip );
 	clip->track( new_tr );
-	new_tr->addClip( clip->position(), clip );
+	new_tr->addClip( clip );
 }
 void TimelineView::trim_clip( Clip* clip, int _x, bool trimRight )
 {

@@ -44,11 +44,11 @@ Track::~Track()
 		delete node;
 	}
 }
-void Track::addClip( int64_t position, Clip* clip )
+void Track::addClip( Clip* clip )
 {
 	clip_node* node = new clip_node;
-	clip->position( position );
 	node->clip = clip;
+	node->next = 0;
 	m_clips = (clip_node*)sl_push( m_clips, node );
 }
 static int remove_clip_helper( void* p, void* data )

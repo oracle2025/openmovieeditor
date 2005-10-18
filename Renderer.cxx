@@ -22,6 +22,7 @@
 
 #include <lqt.h>
 #include <colormodels.h>
+#include <gavl.h>
 
 #include "Renderer.H"
 #include "globals.H"
@@ -34,10 +35,14 @@ namespace nle
 
 static quicktime_t *qt;
 
-Renderer::Renderer( const char* filename )
+Renderer::Renderer( const char* filename, int w, int h, int framerate, int samplerate )
 {
-	int w = 368;
-	int h = 240;
+	m_w = w;
+	m_h = h;
+	m_framerate = framerate;
+	m_samplerate = samplerate;
+/*	int w = 368;
+	int h = 240;*/
 	m_filename = strdup( filename );
 	qt = quicktime_open( m_filename, false, true );
 	lqt_codec_info_t **codecs = lqt_query_registry( 1, 0, 1, 0 );
@@ -56,7 +61,7 @@ Renderer::Renderer( const char* filename )
 		cout << "---------------------" << endl;
 	}
 	codec = codecs[10];
-	lqt_add_video_track( qt, w, h, 1001, 30000, codec );
+	lqt_add_video_track( qt, m_w, m_h, 1001, 30000, codec );
 	lqt_destroy_codec_info( codecs );
 	lqt_set_cmodel( qt, 0, BC_RGB888 );
 	//[10]jpeg
@@ -70,8 +75,67 @@ Renderer::~Renderer()
 	if (qt)
 		quicktime_close( qt );
 }
+void scale_it( frame_struct* src, frame_struct* dst )
+{
+	static int last_src_w = 0;
+	static int last_src_h = 0;
+
+	gavl_rectangle_t src_rect;
+	gavl_rectangle_t dst_rect;
+	gavl_video_format_t format_src;
+	gavl_video_format_t format_dst;
+
+	gavl_video_frame_t * frame_src, * frame_dst;
+
+
+	gavl_video_scaler_t *scaler;
+	scaler = gavl_video_scaler_create();
+	
+
+	format_dst.frame_width  = dst->w;
+	format_dst.frame_height = dst->h;
+	format_dst.image_width  = dst->w;
+	format_dst.image_height = dst->h;;
+	format_dst.pixel_width = 1;
+	format_dst.pixel_height = 1;
+	format_dst.colorspace = GAVL_RGB_24;
+	
+	format_src.frame_width  = src->w;
+	format_src.frame_height = src->h;
+	format_src.image_width  = src->w;
+	format_src.image_height = src->h;;
+	format_src.pixel_width = 1;
+	format_src.pixel_height = 1;
+	format_src.colorspace = GAVL_RGB_24;
+
+	src_rect.x = 0;
+	src_rect.y = 0;
+	src_rect.w = src->w;
+	src_rect.h = src->h;
+
+	dst_rect.x = 0;
+	dst_rect.y = 0;
+	dst_rect.w = dst->w;
+	dst_rect.h = dst->h;
+	
+	if ( gavl_video_scaler_init( scaler, GAVL_RGB_24, &src_rect, &dst_rect, &format_src, &format_dst ) < 0 ) {
+		cerr << "Video Scaler Init failed" << endl;
+	}
+
+
+	frame_src = gavl_video_frame_create( 0 );
+	frame_dst = gavl_video_frame_create( 0 );
+
+//	frame_src->planes
+//	frame_src->strides
+
+}
 void Renderer::go()
 {
+	
+
+	
+	// Ein eigener Scaler für jeden nicht passenden Clip??
 	g_timeline->seek( 0 );
 	g_timeline->sort();
 	
@@ -82,32 +146,18 @@ void Renderer::go()
 	float right_buffer[128];
 	float *buffer_p[2] = { left_buffer, right_buffer };
 
-/*
-gavl_video_frame_t * f
-lqt_decode_video(e->file, f->planes,  e->video_streams[stream].quicktime_index);
- */
-	
-#if 0
-	while ( frame_struct *fs = g_timeline->nextFrame() ) {
-		quicktime_encode_video( qt, fs->rows, 0 );
-	}
-	do {
-		res = g_timeline->fillBuffer( buffer, 128 );
-		for ( int i = 0; i < res; i++ ) {
-			left_buffer[i] = buffer[i*2];
-			right_buffer[i] = buffer[i*2+1];
-		}
-		lqt_encode_audio_track( qt, 0, buffer_p, res, 0 );
-	} while ( res == 128 );
-
-#else
-
 	int64_t fcnt = 0;
 	do {
 		if ( fcnt > 1601 ) {
 			if ( frame_struct *fs = g_timeline->nextFrame() ) {
-				// Scale to fit output size
-				quicktime_encode_video( qt, fs->rows, 0 );
+				if ( fs->w != m_w || fs->h != m_h ) {
+					if ( fs->w != last_src_w || fs->h != last_src_h ) {
+						//reinitialize scaler
+					}
+					quicktime_encode_video( qt, XXX, 0 );
+				} else {
+					quicktime_encode_video( qt, fs->rows, 0 );
+				}
 				fcnt = 0;
 			}
 		}
@@ -122,7 +172,6 @@ lqt_decode_video(e->file, f->planes,  e->video_streams[stream].quicktime_index);
 		fcnt += 128;
 
 	} while ( res == 128 );
-#endif
 }
 
 

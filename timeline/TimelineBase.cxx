@@ -55,11 +55,11 @@ void TimelineBase::sort()
 	sl_map( m_allTracks, sort_track_helper, 0 );
 }
 
-void TimelineBase::addClip( int track, int64_t position, Clip *clip )
+void TimelineBase::addClip( int track, Clip *clip )
 {
 	Track *t = getTrack( track );
 	if ( t ) {
-		t->addClip( position, clip );
+		t->addClip( clip );
 	} else {
 		cerr << "No such track" << endl;
 	}
@@ -88,7 +88,8 @@ void TimelineBase::addTrack( Track* track )
 {
 	track_node* node = new track_node;
 	node->track = track;
-	m_allTracks = (track_node*)sl_push( m_allTracks, node );
+	node->next = 0;
+	m_allTracks = (track_node*)sl_unshift( m_allTracks, node );
 }
 static int remove_track_helper( void* p, void* data )
 {
@@ -141,6 +142,14 @@ int64_t TimelineBase::length()
 
 Track* TimelineBase::getTrack( int track )
 {
+	track_node* node = (track_node*)m_allTracks;
+	while ( node && track ) {
+		node = node->next;
+		track--;
+	}
+	if ( node ) {
+		return node->track;
+	}
 	return 0;
 }
 

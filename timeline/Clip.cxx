@@ -31,7 +31,7 @@ Clip::Clip( Track *track, int64_t position )
 }
 void Clip::trimA( int64_t trim )
 {
-	if ( length() - trim - m_trimB < 0 ) {
+	if ( length() - trim < 0 ) {
 		return;
 	}
 	m_position = m_position - m_trimA;
@@ -42,7 +42,7 @@ void Clip::trimA( int64_t trim )
 }
 void Clip::trimB( int64_t trim )
 {
-	if ( length() - trim - m_trimA < 0 ) {
+	if ( length() - trim < 0 ) {
 		return;
 	}
 	m_trimB += trim;

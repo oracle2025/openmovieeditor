@@ -26,11 +26,15 @@ namespace nle
 class Renderer
 {
 	public:
-		Renderer( const char* filename );
+		Renderer( const char* filename, int w, int h, int framerate, int samplerate );
 		~Renderer();
 		void go();
 	private:
 		char* m_filename;
+		int m_w;
+		int m_h;
+		int m_framerate;
+		int m_samplerate;
 };
 
 } /* namespace nle */

@@ -46,7 +46,7 @@ class Track
 		virtual void sort();
 		virtual void addFile( int64_t position, const char* filename ) = 0;
 		
-		void addClip( int64_t position, Clip* clip );
+		void addClip( Clip* clip );
 		void removeClip( Clip* clip );
 		Clip* find( int64_t position );
 		int64_t length(); // <= normalized to stretch factor, therefore not accurate

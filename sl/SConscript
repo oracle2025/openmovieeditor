@@ -1,4 +1,4 @@
-env = Environment( CFLAGS ="-Wall" )
+env = Environment( CFLAGS ="-Wall -ggdb" )
 src_list = ["sl.c"]
 
 sl = env.Library( 'sl', src_list )

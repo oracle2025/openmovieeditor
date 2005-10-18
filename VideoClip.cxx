@@ -66,15 +66,5 @@ frame_struct* VideoClip::getFrame( int64_t position )
 	m_lastFramePosition = position;
 	return m_videoFile->read();
 }
-/*frame_struct* VideoClip::get_preview( int index )
-{
-	pic_struct *p = m_filmStrip->get_pic( index ); //data w h
-	m_previewFrame.x = 0;
-	m_previewFrame.y = 0;
-	m_previewFrame.w = p->w;
-	m_previewFrame.h = p->h;
-	m_previewFrame.RGB = p->data;
-	return &m_previewFrame;
-}*/
 	
 } /* namespace nle */

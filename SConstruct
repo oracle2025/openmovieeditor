@@ -31,7 +31,6 @@ src_list = Split("""nle.cxx
 	Codecs.cxx
 	VideoViewGL.cxx
 	FilmStrip.cxx
-	Draw.cxx
 	Ruler.cxx
 	Rect.cxx
 	MoveDragHandler.cxx

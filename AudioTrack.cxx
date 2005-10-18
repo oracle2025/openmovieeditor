@@ -42,7 +42,7 @@ void AudioTrack::addFile( int64_t position, const char* filename )
 		return;
 	}
 	Clip *clp = new AudioClip( this, position, af );
-	addClip( position, clp );
+	addClip( clp );
 }
 void AudioTrack::sort()
 {

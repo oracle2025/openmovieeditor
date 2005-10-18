@@ -49,7 +49,7 @@ void VideoTrack::addFile( int64_t position, const char* filename )
 		delete vf;
 		return;
 	}
-	addClip( position, new VideoClip( this, position, vf ) );
+	addClip( new VideoClip( this, position, vf ) );
 }
 frame_struct* VideoTrack::getFrame( int64_t position )
 {
