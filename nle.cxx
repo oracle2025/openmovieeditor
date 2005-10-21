@@ -3,7 +3,7 @@
 #include "nle.h"
 
 inline void NleUI::cb_Save_i(Fl_Menu_*, void*) {
-  nle::Renderer a("/home/oracle/t.mov");
+  nle::Renderer a("/home/oracle/t.mov", 368, 240, 25, 48000);
 a.go();
 }
 void NleUI::cb_Save(Fl_Menu_* o, void* v) {
@@ -392,6 +392,14 @@ mainWindow->show(argc, argv);
 }
 Flmm_Scalebar* g_scrollBar;
 
+inline void EncodeDialog::cb_Encode_i(Fl_Return_Button* o, void*) {
+  //nle::renderMovie();
+o->window()->hide();
+}
+void EncodeDialog::cb_Encode(Fl_Return_Button* o, void* v) {
+  ((EncodeDialog*)(o->parent()->user_data()))->cb_Encode_i(o,v);
+}
+
 inline void EncodeDialog::cb_Cancel_i(Fl_Button* o, void*) {
   o->window()->hide();
 }
@@ -425,6 +433,8 @@ Fl_Menu_Item EncodeDialog::menu_Framerate[] = {
 
 Fl_Menu_Item EncodeDialog::menu_Framesize[] = {
  {"720x576", 0,  0, 0, 0, 0, 0, 14, 56},
+ {"360x288", 0,  0, 0, 0, 0, 0, 14, 56},
+ {"180x144", 0,  0, 0, 0, 0, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0}
 };
 
@@ -458,32 +468,33 @@ void EncodeDialog::cb_video_options(Fl_Button* o, void* v) {
 
 EncodeDialog::EncodeDialog() {
   Fl_Double_Window* w;
-  { Fl_Double_Window* o = encodeDialog = new Fl_Double_Window(485, 240, "Render");
+  { Fl_Double_Window* o = encodeDialog = new Fl_Double_Window(485, 280, "Render");
     w = o;
     o->user_data((void*)(this));
-    { Fl_Return_Button* o = new Fl_Return_Button(245, 205, 205, 25, "Encode");
+    { Fl_Return_Button* o = new Fl_Return_Button(245, 240, 205, 25, "Encode");
+      o->callback((Fl_Callback*)cb_Encode);
       w->hotspot(o);
     }
-    { Fl_Button* o = new Fl_Button(30, 205, 200, 25, "Cancel");
+    { Fl_Button* o = new Fl_Button(30, 240, 200, 25, "Cancel");
       o->callback((Fl_Callback*)cb_Cancel);
     }
-    { Fl_Choice* o = audio_codec_menu = new Fl_Choice(145, 40, 205, 25, "Audio Codec");
+    { Fl_Choice* o = audio_codec_menu = new Fl_Choice(145, 75, 205, 25, "Audio Codec");
       o->down_box(FL_BORDER_BOX);
       o->callback((Fl_Callback*)cb_audio_codec_menu);
     }
-    { Fl_Choice* o = video_codec_menu = new Fl_Choice(145, 70, 205, 25, "Video Codec");
+    { Fl_Choice* o = video_codec_menu = new Fl_Choice(145, 105, 205, 25, "Video Codec");
       o->down_box(FL_BORDER_BOX);
       o->callback((Fl_Callback*)cb_video_codec_menu);
     }
-    { Fl_Choice* o = new Fl_Choice(145, 100, 205, 25, "Samplerate");
+    { Fl_Choice* o = new Fl_Choice(145, 135, 205, 25, "Samplerate");
       o->down_box(FL_BORDER_BOX);
       o->menu(menu_Samplerate);
     }
-    { Fl_Choice* o = new Fl_Choice(145, 130, 205, 25, "Framerate");
+    { Fl_Choice* o = new Fl_Choice(145, 165, 205, 25, "Framerate");
       o->down_box(FL_BORDER_BOX);
       o->menu(menu_Framerate);
     }
-    { Fl_Choice* o = new Fl_Choice(145, 160, 205, 25, "Framesize");
+    { Fl_Choice* o = new Fl_Choice(145, 195, 205, 25, "Framesize");
       o->down_box(FL_BORDER_BOX);
       o->menu(menu_Framesize);
     }
@@ -491,12 +502,14 @@ EncodeDialog::EncodeDialog() {
       o->labelfont(1);
       o->labelsize(16);
     }
-    { Fl_Button* o = audio_options = new Fl_Button(355, 40, 75, 25, "Options...");
+    { Fl_Button* o = audio_options = new Fl_Button(355, 75, 75, 25, "Options...");
       o->callback((Fl_Callback*)cb_audio_options);
     }
-    { Fl_Button* o = video_options = new Fl_Button(355, 70, 75, 25, "Options...");
+    { Fl_Button* o = video_options = new Fl_Button(355, 105, 75, 25, "Options...");
       o->callback((Fl_Callback*)cb_video_options);
     }
+    new Fl_File_Input(145, 35, 205, 35, "Filename");
+    new Fl_Button(355, 45, 75, 25, "File...");
     o->set_modal();
     o->end();
   }

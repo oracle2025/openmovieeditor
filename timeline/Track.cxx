@@ -124,9 +124,22 @@ int64_t Track::getSnapB( Clip* clip, int64_t B )
 	}
 	return B;
 }
+static int clip_length_helper( void* p, void* data )
+{
+	int64_t l;
+	int64_t* max = (int64_t*)data;
+	clip_node* node = (clip_node*)p;
+	l = node->clip->length() + node->clip->position();
+	if ( l > *max ) {
+		*max = l;
+	}
+	return 0;
+}
 int64_t Track::length()
 {
-	return 100;
+	int64_t max = 0;
+	sl_map( m_clips, clip_length_helper, &max );
+	return (int64_t)( max / stretchFactor() );
 }
 
 	

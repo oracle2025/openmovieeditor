@@ -124,7 +124,7 @@ Clip* TimelineBase::find( int track, int64_t position )
 static int track_length_helper( void* p, void* data )
 {
 	int64_t l;
-	int* max = (int*)data;
+	int64_t* max = (int64_t*)data;
 	track_node* node = (track_node*)p;
 	l = node->track->length();
 	if ( l > *max ) {

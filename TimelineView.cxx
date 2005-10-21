@@ -103,6 +103,7 @@ int TimelineView::handle( int event )
 					
 					cout << "Track: " << t->num() << endl;
 					t->addFile( rp, Fl::event_text() );
+					adjustScrollbar();
 					redraw();
 				}
 			}
@@ -355,12 +356,21 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 		new_position = 0;
 	}
 	clip->position( new_position );
+	adjustScrollbar();
 	if ( new_tr == old_tr ) {
 		return;
 	}
 	old_tr->removeClip( clip );
 	clip->track( new_tr );
 	new_tr->addClip( clip );
+
+}
+void TimelineView::adjustScrollbar()
+{
+	int64_t l = m_timeline->length();
+	if ( l > g_scrollBar->slider_size_i() ) {
+		g_scrollBar->slider_size_i( l );
+	}
 }
 void TimelineView::trim_clip( Clip* clip, int _x, bool trimRight )
 {

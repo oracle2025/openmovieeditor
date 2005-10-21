@@ -22,7 +22,7 @@
 
 #include <lqt.h>
 #include <colormodels.h>
-#include <gavl.h>
+//#include <gavl.h>
 
 #include "Renderer.H"
 #include "globals.H"
@@ -77,7 +77,7 @@ Renderer::~Renderer()
 }
 void scale_it( frame_struct* src, frame_struct* dst )
 {
-	static int last_src_w = 0;
+/*	static int last_src_w = 0;
 	static int last_src_h = 0;
 
 	gavl_rectangle_t src_rect;
@@ -124,7 +124,7 @@ void scale_it( frame_struct* src, frame_struct* dst )
 
 
 	frame_src = gavl_video_frame_create( 0 );
-	frame_dst = gavl_video_frame_create( 0 );
+	frame_dst = gavl_video_frame_create( 0 );*/
 
 //	frame_src->planes
 //	frame_src->strides
@@ -151,10 +151,6 @@ void Renderer::go()
 		if ( fcnt > 1601 ) {
 			if ( frame_struct *fs = g_timeline->nextFrame() ) {
 				if ( fs->w != m_w || fs->h != m_h ) {
-					if ( fs->w != last_src_w || fs->h != last_src_h ) {
-						//reinitialize scaler
-					}
-					quicktime_encode_video( qt, XXX, 0 );
 				} else {
 					quicktime_encode_video( qt, fs->rows, 0 );
 				}

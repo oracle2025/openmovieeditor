@@ -66,12 +66,15 @@ public:
 extern Flmm_Scalebar* g_scrollBar;
 #include <FL/Fl_Return_Button.H>
 #include "Codecs.H"
+#include <FL/Fl_File_Input.H>
 
 class EncodeDialog {
 public:
   EncodeDialog();
 private:
   Fl_Double_Window *encodeDialog;
+  inline void cb_Encode_i(Fl_Return_Button*, void*);
+  static void cb_Encode(Fl_Return_Button*, void*);
   inline void cb_Cancel_i(Fl_Button*, void*);
   static void cb_Cancel(Fl_Button*, void*);
 public:

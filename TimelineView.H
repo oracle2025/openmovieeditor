@@ -65,6 +65,7 @@ class TimelineView : public Fl_Widget
 	protected:
 		void draw();
 	private:
+		void adjustScrollbar();
 	//	AutomationPoint *getAutomationPoint( Clip* clip, int x, int y );
 		Timeline *m_timeline;
 		DragHandler *m_dragHandler;

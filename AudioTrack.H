@@ -41,6 +41,7 @@ class AudioTrack : public Track
 		int type() { return TRACK_TYPE_AUDIO; }
 		void sort();
 		float stretchFactor() { return ( 48000 / g_fps ); }
+		int64_t soundLength();
 	private:
 		// member variable declerations
 		clip_node* m_current;

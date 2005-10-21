@@ -56,17 +56,54 @@ Timeline::Timeline()
 	g_timeline = this; //Singleton sucks, this is better :)
 
 	m_seekPosition = 0;
+	m_soundLength = 0;
 }
 Timeline::~Timeline()
 {
 	g_timeline = NULL;
 }
 void reset_helper( Track* track ) { track->sort(); }
+static int video_length_helper( void* p, void* data )
+{
+	int64_t l;
+	int64_t* max = (int64_t*)data;
+	track_node* node = (track_node*)p;
+	if ( node->track->type() == TRACK_TYPE_VIDEO ) {
+		l = node->track->length();
+		if ( l > *max ) {
+			*max = l;
+		}
+	}
+	return 0;
+}
+static int audio_length_helper( void* p, void* data )
+{
+	int64_t l;
+	int64_t* max = (int64_t*)data;
+	track_node* node = (track_node*)p;
+	if ( node->track->type() == TRACK_TYPE_AUDIO ) {
+		l = ((AudioTrack*)node->track)->soundLength();
+		if ( l > *max ) {
+			*max = l;
+		}
+	}
+	return 0;
+}
 void Timeline::sort()
 {
 	TimelineBase::sort();
 	m_playPosition = m_seekPosition;
 	m_samplePosition = int64_t( m_seekPosition * ( 48000 / g_fps ) );
+	// TODO set m_soundLength
+	// Check AudioTracks, compare to Video Tracks
+	{
+		int64_t audio_max = 0;
+		int64_t video_max = 0;
+		sl_map( m_allTracks, audio_length_helper, &audio_max );
+		sl_map( m_allTracks, video_length_helper, &video_max );
+		video_max = (int64_t)( video_max * ( 48000 / g_fps ) );
+		m_soundLength = video_max > audio_max ? video_max : audio_max;
+	}
 }
 frame_struct* Timeline::getFrame( int64_t position )
 {
@@ -132,8 +169,8 @@ int Timeline::fillBuffer( float* output, unsigned long frames )
 {
 	static float buffer1[FRAMES_PER_BUFFER*2] = {0};
 	static float buffer2[FRAMES_PER_BUFFER*2] = {0};
-	int rv;
-	int max_frames = 0;
+	unsigned int rv;
+	unsigned int max_frames = 0;
 	track_node* p = m_allTracks;
 	p = next_audio_track( p );
 	if ( !p )
@@ -146,6 +183,10 @@ int Timeline::fillBuffer( float* output, unsigned long frames )
 		for ( unsigned long i = 0; i < frames; i++ ) {
 			output[i] = buffer1[i];
 			output[i+1] = buffer1[i+1];
+		}
+		while ( max_frames < frames && m_samplePosition + max_frames < m_soundLength ) {
+			output[max_frames] = 0.0;
+			max_frames++;
 		}
 		m_samplePosition += max_frames;
 		return max_frames;
@@ -161,6 +202,10 @@ int Timeline::fillBuffer( float* output, unsigned long frames )
 		mixChannels( output, buffer1, output, frames );
 		p = p->next;
 		p = next_audio_track( p );
+	}
+	while ( max_frames < frames && m_samplePosition + max_frames < m_soundLength ) {
+		output[max_frames] = 0.0;
+		max_frames++;
 	}
 	m_samplePosition += max_frames;
 	return max_frames;

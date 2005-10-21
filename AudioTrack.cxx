@@ -74,6 +74,23 @@ int AudioTrack::fillBuffer( float* output, unsigned long frames, int64_t positio
 	}
 	return written - emptyItems;
 }
+static int audio_track_sound_length_helper( void* p, void* data )
+{
+	int64_t l;
+	int64_t* max = (int64_t*)data;
+	clip_node* node = (clip_node*)p;
+	l = node->clip->length() + node->clip->position();
+	if ( l > *max ) {
+		*max = l;
+	}
+	return 0;
+}
+int64_t AudioTrack::soundLength()
+{
+	int64_t max = 0;
+	sl_map( m_clips, audio_track_sound_length_helper, &max );
+	return max;
+}
 
 
 
