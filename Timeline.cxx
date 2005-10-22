@@ -121,10 +121,16 @@ frame_struct* Timeline::getFrame( int64_t position )
 	}
 	return 0;
 }
-frame_struct* Timeline::nextFrame()
+frame_struct* Timeline::nextFrame( int64_t position )
 {
+	static int64_t last_frame = -1;
 	frame_struct* res = NULL;
-	m_playPosition++;
+	if ( position < 0 || last_frame < 0 || last_frame + 1 == position ) {
+		m_playPosition++;
+	} else {
+		m_playPosition = position;
+	}
+	last_frame = m_playPosition;
 	for ( track_node *p = m_allTracks; p; p = p->next ) {
 		if ( p->track->type() != TRACK_TYPE_VIDEO ) {
 			continue;

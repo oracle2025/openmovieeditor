@@ -44,8 +44,10 @@ static void vv_callback( void* )
 {
 	if ( !vv_play )
 		return;
-	if ( !g_sound->stillPlaying() )
+	if ( !g_sound->stillPlaying() ) {
+		g_videoView->stop();
 		return;
+	}
 	SwitchBoard::i()->move_cursor();
 	Fl::repeat_timeout( LEN_TIMEOUT, vv_callback );
 }
@@ -141,7 +143,7 @@ void VideoViewGL::draw()
 			last_frame = m_playingPosition;
 		}
 		//for_each( g_timeline->getVideoTracks()->begin(), g_timeline->getVideoTracks()->end(), draw_track_helper );
-		fs = g_timeline->nextFrame();
+		fs = g_timeline->nextFrame( m_playingPosition );
 		if ( fs ) {
 			glBindTexture( GL_TEXTURE_2D, video_canvas[0] );
 			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs->w, fs->h, GL_RGB, GL_UNSIGNED_BYTE, fs->RGB );

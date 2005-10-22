@@ -290,7 +290,7 @@ Clip* TimelineView::get_clip( int _x, int _y )
 	if (!tr)
 		return NULL;
 	for ( clip_node* p = tr->getClips(); p; p = p->next ) {
-		Rect tmp = get_clip_rect( p->clip );
+		Rect tmp = get_clip_rect( p->clip, true );
 		if ( !tmp.inside( _x, _y ) )
 			continue;
 		return p->clip;
@@ -318,7 +318,7 @@ Rect TimelineView::get_clip_rect( Clip* clip, bool clipping )
 		);
 	if ( clipping ) {
 		if ( tmp.x < LEFT_TRACK_SPACING ) {
-			tmp.w -= tmp.x - LEFT_TRACK_SPACING;
+			tmp.w += tmp.x - LEFT_TRACK_SPACING;
 			tmp.x = LEFT_TRACK_SPACING;
 		}
 		if ( tmp.w + tmp.x > w() - ( TRACK_SPACING ) ) {

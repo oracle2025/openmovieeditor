@@ -1,5 +1,4 @@
   - Decode Video in a seperate Thread to avoid GUI-Blocking??
-  - bei Sound-Ende stoppen
   - sexpr FileFormat
   - load Project from File
   - Final Render to File
