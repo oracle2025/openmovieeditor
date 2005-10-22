@@ -17,6 +17,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <stdlib.h>
 #include <strlcpy.h>
 
 #include <tinyxml.h>
@@ -28,12 +29,19 @@ namespace nle
 {
 
 Prefs* g_preferences;
+static char preferences_filename[1024];
 
 Prefs::Prefs()
 {
+	strcpy( preferences_filename, "" );
+	if ( !getenv("HOME") ) {
+		return;
+	}
+	strlcpy( preferences_filename, getenv("HOME"), sizeof(preferences_filename) );
+	strncat( preferences_filename, "/.openme.prefs", sizeof(preferences_filename) - strlen(preferences_filename) - 1 );
 	g_preferences = this;
-	strcpy( m_browserFolder, "/" );
-	TiXmlDocument doc( "openme.prefs" );
+	strlcpy( m_browserFolder, getenv("HOME"), sizeof(m_browserFolder) );
+	TiXmlDocument doc( preferences_filename );
 	if ( !doc.LoadFile() ) {
 		return;
 	}
@@ -48,7 +56,10 @@ Prefs::Prefs()
 
 Prefs::~Prefs()
 {
-	TiXmlDocument doc( "openme.prefs" );
+	if ( strlen( preferences_filename ) == 0 ) {
+		return;
+	}
+	TiXmlDocument doc( preferences_filename );
 	TiXmlDeclaration *dec = new TiXmlDeclaration( "1.0", "", "no" );
 	doc.LinkEndChild(dec);
 	
