@@ -9,7 +9,7 @@ LIBPATH = []
 
 
 env = Environment( CC = 'g++',
-	CXXFLAGS = "-Wall -Werror -Iicons/ -Isl/ " + DEBUG_FLAGS,
+	CXXFLAGS = "-Wall -Werror -Iicons/ -Isl/ -Itinyxml/ " + DEBUG_FLAGS,
 	LINKFLAGS = '-ggdb',
 	LIBS = LIBS,
 	LIBPATH = LIBPATH
@@ -33,6 +33,7 @@ src_list = Split("""nle.cxx
 	FilmStrip.cxx
 	Ruler.cxx
 	Rect.cxx
+	Prefs.cxx
 	MoveDragHandler.cxx
 	TrimDragHandler.cxx
 	FileBrowser.cxx
@@ -51,6 +52,7 @@ src_list.append( SConscript(['sexpr/SConscript']) )
 Export( 'env' )
 src_list.append( SConscript(['timeline/SConscript']) )
 src_list.append( SConscript(['sl/SConscript']) )
+src_list.append( SConscript(['tinyxml/SConscript']) )
 
 
 

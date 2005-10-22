@@ -17,33 +17,63 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <sl.h>
+#include <tinyxml.h>
 
 #include "Prefs.H"
+#include "globals.H"
+
+namespace nle
+{
+
+Prefs* g_preferences;
 
 Prefs::Prefs()
 {
-	m_pref_list = 0;
-	//Read Prefs from TinyXML
-	TiXmlDocument doc( "~/.openme.prefs" );
-	doc.LoadFile();
-	node = doc.FirstChild( "prefs" );
-	todoElement = node->ToElement();
-	node = todoElement->FirstChildElement();
-	itemElement = node->ToElement();
-	TiXmlText text( "Talk to:" );
+	g_preferences = this;
+	strcpy( m_browserFolder, "/" );
+	TiXmlDocument doc( "openme.prefs" );
+	if ( !doc.LoadFile() ) {
+		return;
+	}
+
+	TiXmlHandle docH( &doc );
+	TiXmlText* text = docH.FirstChildElement( "browserFolder" ).Child( 0 ).Text();
+	if ( text ) {
+		strncpy( m_browserFolder, text->Value(), sizeof(m_browserFolder) - 1 );
+		m_browserFolder[sizeof(m_browserFolder)-1] = '\0';
+		// ^ strncpy is obviously broken, get strlcpy !
+	}
+
 }
 
 Prefs::~Prefs()
 {
+	TiXmlDocument doc( "openme.prefs" );
+	TiXmlDeclaration *dec = new TiXmlDeclaration( "1.0", "", "no" );
+	doc.LinkEndChild(dec);
+	
+	TiXmlElement *item = new TiXmlElement( "version" );
+	doc.LinkEndChild( item );
+	TiXmlText* text = new TiXmlText( OME_VERSION );
+	item->LinkEndChild( text );
+	
+	item = new TiXmlElement( "browserFolder" );
+	doc.LinkEndChild( item );
+	text = new TiXmlText( m_browserFolder );
+	item->LinkEndChild( text );
+
+	doc.SaveFile();
+}
+const char* Prefs::getBrowserFolder()
+{
+	return m_browserFolder;
+}
+void Prefs::setBrowserFolder( const char* filename )
+{
+	strncpy( m_browserFolder, filename, sizeof(m_browserFolder) - 1 );
+	m_browserFolder[sizeof(m_browserFolder)-1] = '\0';
+	// ^ strncpy is obviously broken, get strlcpy !
 }
 
-const char* Prefs::get( const char* key )
-{
-	static char value[256];
-}
-
-void Prefs::set( const char* key, const char* value )
-{
-}
+} /* namespace nle */
 

@@ -27,22 +27,16 @@
 namespace nle
 {
 
-typedef struct key_value_node_s {
-	struct key_value_node_s *next;
-	char key[KEY_STRING_LEN];
-	char value[VALUE_STRING_LEN];
-} key_value_node;
-
 
 class Prefs
 {
 	public:
 		Prefs();
 		~Prefs();
-		const char* get( const char* key );
-		void set( const char* key, const char* value );
+		const char* getBrowserFolder();
+		void setBrowserFolder( const char* filename );
 	private:
-		key_value_node *m_pref_list;
+		char m_browserFolder[1024];
 		
 };
 

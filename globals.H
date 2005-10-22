@@ -21,6 +21,7 @@
 #define _GLOBALS_H_
 
 #define STR_LEN 512
+#define OME_VERSION "0.0.0"
 
 #include <lqt.h>
 
@@ -33,6 +34,7 @@ class Flmm_Scalebar;
 class Ruler;
 class VideoViewGL;
 class Sound;
+class Prefs;
 
 extern TimelineView* g_timelineView;
 extern Timeline* g_timeline;
@@ -40,6 +42,7 @@ extern Timeline* g_timeline;
 extern Ruler* g_ruler;
 extern VideoViewGL* g_videoView;
 extern Sound* g_sound;
+extern Prefs* g_preferences;
 
 extern lqt_codec_info_t** g_audio_codec_info;
 extern lqt_codec_info_t** g_video_codec_info;

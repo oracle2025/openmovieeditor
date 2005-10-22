@@ -23,6 +23,8 @@
 #include <FL/filename.H>
 
 #include "FileBrowser.H"
+#include "Prefs.H"
+#include "globals.H"
 
 
 using namespace std;
@@ -34,7 +36,8 @@ FileBrowser::FileBrowser( int x, int y, int w, int h, const char *l )
 	: Fl_File_Browser( x, y, w, h, l )
 {
 	type( 1 );
-	m_path = "/home/oracle/tmp";
+	m_path = g_preferences->getBrowserFolder();
+	//m_path = "/home/oracle/tmp";
 	//m_path = "/";
 	//filter("???");
 	load( m_path.c_str() );
@@ -92,6 +95,7 @@ void FileBrowser::load_rel()
 	if ( fl_filename_isdir( new_path.c_str() ) ) {
 		load( new_path.c_str() );
 		m_path = new_path;
+		g_preferences->setBrowserFolder( m_path.c_str() );
 	}
 }
 

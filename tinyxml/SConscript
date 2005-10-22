@@ -1,0 +1,9 @@
+Import('env')
+src_list = Split("""tinystr.cpp
+	tinyxml.cpp
+	tinyxmlerror.cpp
+	tinyxmlparser.cpp""")
+
+tinyxml = env.Library( 'tinyxml', src_list )
+Return( 'tinyxml' )
+
