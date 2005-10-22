@@ -17,6 +17,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <iostream>
 
 #include <FL/Fl.H>
 #include <FL/fl_draw.H>
@@ -25,7 +26,9 @@
 #include "globals.H"
 #include "TimelineView.H"
 #include "helper.H"
+#include "SwitchBoard.H"
 
+using namespace std;
 
 namespace nle
 {
@@ -55,7 +58,15 @@ void Ruler::draw()
 
 	fl_color(FL_FOREGROUND_COLOR);
 	fl_font( FL_HELVETICA, 11 );
-	fl_draw( timestamp_to_string(g_timelineView->get_real_position(200)), x() + 200, y() + 14 );
+	int pixel_start = - (int)( g_timelineView->scrollPosition() * SwitchBoard::i()->zoom() );
+	pixel_start = pixel_start % 100;
+	int pixel_step = 100;
+	int pixel_count = w() / 100 + 2;
+	for ( int i = 0; i < pixel_count; i++ ) {
+		int off = pixel_start + pixel_step * i;
+		fl_draw( timestamp_to_string( g_timelineView->get_real_position( off ) ), x() + off, y() + 14 );
+		fl_line( x() + off, y() + 20, x() + off, y() + h() );
+	}
 	
 	fl_draw_box( FL_DIAMOND_UP_BOX, x() + m_stylus.x, y() + m_stylus.y, m_stylus.w, m_stylus.h, FL_BACKGROUND_COLOR );
 		
