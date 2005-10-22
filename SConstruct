@@ -9,7 +9,7 @@ LIBPATH = []
 
 
 env = Environment( CC = 'g++',
-	CXXFLAGS = "-Wall -Werror -Iicons/ -Isl/ -Itinyxml/ " + DEBUG_FLAGS,
+	CXXFLAGS = "-Wall -Werror -Iicons/ -Isl/ -Itinyxml/ -I./ " + DEBUG_FLAGS,
 	LINKFLAGS = '-ggdb',
 	LIBS = LIBS,
 	LIBPATH = LIBPATH
@@ -53,6 +53,10 @@ Export( 'env' )
 src_list.append( SConscript(['timeline/SConscript']) )
 src_list.append( SConscript(['sl/SConscript']) )
 src_list.append( SConscript(['tinyxml/SConscript']) )
+
+strlcpy_env = Environment( CFLAGS ="-Wall -Werror -ggdb" )
+strlcpy = strlcpy_env.Library( 'strlcpy', "strlcpy.c" )
+src_list.append( strlcpy )
 
 
 

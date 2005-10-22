@@ -17,6 +17,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <strlcpy.h>
+
 #include <tinyxml.h>
 
 #include "Prefs.H"
@@ -39,9 +41,7 @@ Prefs::Prefs()
 	TiXmlHandle docH( &doc );
 	TiXmlText* text = docH.FirstChildElement( "browserFolder" ).Child( 0 ).Text();
 	if ( text ) {
-		strncpy( m_browserFolder, text->Value(), sizeof(m_browserFolder) - 1 );
-		m_browserFolder[sizeof(m_browserFolder)-1] = '\0';
-		// ^ strncpy is obviously broken, get strlcpy !
+		strlcpy( m_browserFolder, text->Value(), sizeof(m_browserFolder) );
 	}
 
 }
