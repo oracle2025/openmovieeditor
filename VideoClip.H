@@ -41,10 +41,13 @@ class VideoClip : public Clip
 		inline FilmStrip* getFilmStrip() { return m_filmStrip; }
 		const char* filename();
 	private:
-		IVideoFile *m_videoFile;
-		FilmStrip *m_filmStrip;
+		IVideoFile* m_videoFile;
+		FilmStrip* m_filmStrip;
 		frame_struct m_previewFrame;
 		int64_t m_lastFramePosition;
+
+		int64_t m_audioPosition;
+		bool m_noAudio;
 };
 
 } /* namespace nle */

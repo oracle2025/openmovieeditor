@@ -1,4 +1,4 @@
-/*  AudioClip.H
+/*  AudioClipBase.H
  *
  *  Copyright (C) 2003 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,28 +17,41 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _AUDIO_CLIP_H_
-#define _AUDIO_CLIP_H_
+#ifndef _AUDIO_CLIP_BASE_H_
+#define _AUDIO_CLIP_BASE_H_
 
-#include "AudioClipBase.H"
+#include "timeline/Clip.H"
 
 namespace nle
 {
 
-class AudioClip : public AudioClipBase
+class AudioFileQT;
+
+/*
+ * This is the base class for both, Audio and Video Clips,
+ * because Video Clips can handle Audio as well, since most
+ * Video Files contain Audio as well, and this should be played
+ * back seamlessly.
+ */
+class AudioClipBase : public Clip
 {
 	public:
-		AudioClip( Track *track, int64_t position, AudioFileQT* af );
-		~AudioClip();
-		int64_t length();
-		const char* filename();
+		virtual ~AudioClipBase();
+		int fillBuffer( float* output, unsigned long frames, int64_t position );
+		virtual void reset();
 	protected:
-		int64_t audioTrimA();
-		int64_t audioTrimB();
-		int64_t audioPosition();
+		AudioClipBase( Track *track, int64_t audioPosition, AudioFileQT* af = 0 );
+		virtual int64_t audioTrimA() = 0;
+		virtual int64_t audioTrimB() = 0;
+		virtual int64_t audioLength();
+		virtual int64_t audioPosition() = 0;
+		const char* audioFilename();
+	private:
+		int64_t m_lastSamplePosition;
+		AudioFileQT* m_audioFile;
 };
-
 
 } /* namespace nle */
 
-#endif /* _AUDIO_CLIP_H_ */
+
+#endif /* _AUDIO_CLIP_BASE_H_ */

@@ -26,51 +26,31 @@ namespace nle
 {
 
 AudioClip::AudioClip( Track *track, int64_t position, AudioFileQT* af )
-	: Clip( track, position )
+	: AudioClipBase( track, position, af )
 {
-	m_audioFile = af;
 }
 AudioClip::~AudioClip()
 {
-	delete m_audioFile;
 }
 int64_t AudioClip::length()
 {
-	return m_audioFile->length() - ( m_trimA + m_trimB );
+	return audioLength();
 }
 const char* AudioClip::filename()
 {
-	return m_audioFile->filename();
+	return audioFilename();
 }
-void AudioClip::reset()
+int64_t AudioClip::audioTrimA()
 {
-	m_audioFile->seek( m_trimA );
-	m_lastSamplePosition = -256; //FIXME no nummber!
+	return m_trimA;
 }
-int AudioClip::fillBuffer( float* output, unsigned long frames, int64_t position )
+int64_t AudioClip::audioTrimB()
 {
-	unsigned int frames_written = 0;
-	// float a = 0;
-	// int *b = (int*)&a; //FIXME This is a goddamn evil hack
-	if ( m_position + length() < position ) { return 0; }
-	if ( m_position > position ) {
-		unsigned long empty_frames = ( m_position - position ) < frames ? ( m_position - position ) : frames;
-		//memset( (void*)output, *b, sizeof(float) * empty_frames * 2 );
-		for ( unsigned long i = 0; i < frames * 2; i++ ) { //TODO eingentlich sollten nur empty_frames geschrieben werden
-			output[i] = 0.0;
-		}
-		frames_written += empty_frames;
-		if ( empty_frames == frames ) {
-			return frames_written;
-		}
-	}
-	if ( m_lastSamplePosition + frames != position ) {
-		m_audioFile->seek( position - frames_written - m_position + m_trimA );
-	}
-	m_lastSamplePosition += frames;
-	return frames_written + m_audioFile->fillBuffer(
-			&output[frames_written], frames - frames_written
-			);
+	return m_trimB;
+}
+int64_t AudioClip::audioPosition()
+{
+	return position();
 }
 
 } /* namespace nle */

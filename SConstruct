@@ -40,6 +40,7 @@ src_list = Split("""nle.cxx
 	VideoFileQT.cxx
 	AudioTrack.cxx
 	AudioClip.cxx
+	AudioClipBase.cxx
 	AudioFileQT.cxx
 	Sound.cxx
 	Renderer.cxx
