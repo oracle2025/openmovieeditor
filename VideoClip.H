@@ -22,7 +22,7 @@
 
 #include <stdint.h>
 
-#include "timeline/Clip.H"
+#include "AudioClipBase.H"
 #include "frame_struct.h"
 
 namespace nle
@@ -30,7 +30,7 @@ namespace nle
 class IVideoFile;
 class FilmStrip;
 
-class VideoClip : public Clip
+class VideoClip : public AudioClipBase
 {
 	public:
 		VideoClip( Track *track, int64_t position, IVideoFile *vf );
@@ -40,6 +40,10 @@ class VideoClip : public Clip
 		frame_struct* getFrame( int64_t position );
 		inline FilmStrip* getFilmStrip() { return m_filmStrip; }
 		const char* filename();
+	protected:
+		int64_t audioTrimA();
+		int64_t audioTrimB();
+		int64_t audioPosition();
 	private:
 		IVideoFile* m_videoFile;
 		FilmStrip* m_filmStrip;

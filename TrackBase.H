@@ -1,6 +1,6 @@
-/*  VideoTrack.H
+/*  Track.H
  *
- *  Copyright (C) 2003 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,38 +17,19 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _VIDEO_TRACK_H_
-#define _VIDEO_TRACK_H_
+#ifndef _TRACK_BASE_H_
+#define _TRACK_BASE_H_
 
 #include "timeline/Track.H"
-#include "frame_struct.h"
 
 namespace nle
 {
 
-class VideoClip;
-
-class VideoTrack : public Track
+class TrackBase
 {
-	public:
-		// constructors and destructors
-		VideoTrack( int num );
-		~VideoTrack();
-
-		// method declerations
-		void addFile( int64_t position, const char* filename );
-//		void add_video( int64_t position, const char* filename );
-		int type() { return TRACK_TYPE_VIDEO; }
-		float stretchFactor() { return 1.0; }
-		frame_struct* getFrame( int64_t position );
-		void sort();
-		int fillBuffer( float* output, unsigned long frames, int64_t position );
-	private:
-		int64_t m_playPosition;
-		clip_node* m_current;
-		// member variable declerations
 };
-	
+
 } /* namespace nle */
 
-#endif /* _VIDEO_TRACK_H_ */
+
+#endif /* _TRACK_BASE_H_ */

@@ -40,15 +40,15 @@ class AudioClipBase : public Clip
 		int fillBuffer( float* output, unsigned long frames, int64_t position );
 		virtual void reset();
 	protected:
-		AudioClipBase( Track *track, int64_t audioPosition, AudioFileQT* af = 0 );
+		AudioClipBase( Track *track, int64_t position, AudioFileQT* af = 0 );
 		virtual int64_t audioTrimA() = 0;
 		virtual int64_t audioTrimB() = 0;
-		virtual int64_t audioLength();
+		int64_t audioLength();
 		virtual int64_t audioPosition() = 0;
 		const char* audioFilename();
+		AudioFileQT* m_audioFile;
 	private:
 		int64_t m_lastSamplePosition;
-		AudioFileQT* m_audioFile;
 };
 
 } /* namespace nle */

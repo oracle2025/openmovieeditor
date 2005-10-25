@@ -30,11 +30,18 @@ namespace nle
 {
 	
 VideoClip::VideoClip( Track *track, int64_t position, IVideoFile *vf )
-	: Clip( track, position )
+	: AudioClipBase( track, position )
 {
 	m_videoFile = vf;
 	m_filmStrip = new FilmStrip( vf );
 	m_lastFramePosition = -1;
+	AudioFileQT* af = new AudioFileQT( m_videoFile->filename() );
+	if ( af->ok ) {
+		m_audioFile = af;
+	} else {
+		delete af;
+		af = 0;
+	}
 }
 VideoClip::~VideoClip()
 {
@@ -48,6 +55,18 @@ const char* VideoClip::filename()
 int64_t VideoClip::length()
 {
 	return m_videoFile->length() - ( m_trimA + m_trimB );
+}
+int64_t VideoClip::audioTrimA()
+{
+	return m_trimA * ( 48000 / g_fps );
+}
+int64_t VideoClip::audioTrimB()
+{
+	return m_trimB * ( 48000 / g_fps );
+}
+int64_t VideoClip::audioPosition()
+{
+	return m_position * ( 48000 / g_fps );
 }
 void VideoClip::reset()
 {

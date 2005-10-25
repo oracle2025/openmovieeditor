@@ -46,8 +46,8 @@ void AudioTrack::addFile( int64_t position, const char* filename )
 }
 void AudioTrack::sort()
 {
-	m_current = m_clips;
 	Track::sort();
+	m_current = m_clips;
 }
 int AudioTrack::fillBuffer( float* output, unsigned long frames, int64_t position )
 {
