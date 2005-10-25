@@ -1,6 +1,6 @@
 /*  AudioTrack.H
  *
- *  Copyright (C) 2003 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 #ifndef _AUDIO_TRACK_H_
 #define _AUDIO_TRACK_H_
 
-#include "timeline/Track.H"
+#include "TrackBase.H"
 #include "globals.H"
 
 namespace nle
@@ -28,7 +28,7 @@ namespace nle
 
 class AudioClip;
 
-class AudioTrack : public Track
+class AudioTrack : public TrackBase
 {
 	public:
 		// constructors and destructors
@@ -42,9 +42,6 @@ class AudioTrack : public Track
 		void sort();
 		float stretchFactor() { return ( 48000 / g_fps ); }
 		int64_t soundLength();
-	private:
-		// member variable declerations
-		clip_node* m_current;
 };
 	
 } /* namespace nle */

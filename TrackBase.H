@@ -25,8 +25,12 @@
 namespace nle
 {
 
-class TrackBase
+class TrackBase : public Track
 {
+		int fillBuffer( float* output, unsigned long frames, int64_t position );
+	protected:
+		TrackBase( int num );
+		clip_node* m_current;
 };
 
 } /* namespace nle */
