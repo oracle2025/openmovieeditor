@@ -28,7 +28,7 @@ namespace nle
 class AudioClip : public AudioClipBase
 {
 	public:
-		AudioClip( Track *track, int64_t position, AudioFileQT* af );
+		AudioClip( Track *track, int64_t position, IAudioFile* af );
 		~AudioClip();
 		int64_t length();
 		const char* filename();

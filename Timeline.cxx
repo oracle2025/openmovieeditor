@@ -19,6 +19,8 @@
 
 #include <iostream>
 
+#include <cmath>
+
 #include "Timeline.H"
 #include "VideoTrack.H"
 #include "AudioTrack.H"
@@ -153,7 +155,6 @@ unsigned int mixChannels( float *A, float *B, float* out, unsigned int frames )
 		p_output++;
 		p_A++;
 		p_B++;
-
 	}
 	return frames;
 }
@@ -181,7 +182,7 @@ int Timeline::fillBuffer( float* output, unsigned long frames )
 	p = next_audio_track( p );
 	if ( !p )
 		return 0;
-	rv = ((AudioTrack*)p->track)->fillBuffer( buffer1, frames, m_samplePosition );
+	rv = ((TrackBase*)p->track)->fillBuffer( buffer1, frames, m_samplePosition );
 	max_frames = rv;
 	p = p->next;
 	p = next_audio_track( p );
@@ -197,13 +198,13 @@ int Timeline::fillBuffer( float* output, unsigned long frames )
 		m_samplePosition += max_frames;
 		return max_frames;
 	}
-	rv = ((AudioTrack*)p->track)->fillBuffer( buffer2, frames, m_samplePosition );
+	rv = ((TrackBase*)p->track)->fillBuffer( buffer2, frames, m_samplePosition );
 	max_frames = rv > max_frames ? rv : max_frames;
 	mixChannels( buffer1, buffer2, output, frames);
 	p = p->next;
 	p = next_audio_track( p );
 	while ( p ) {
-		rv = ((AudioTrack*)p->track)->fillBuffer( buffer1, frames, m_samplePosition );
+		rv = ((TrackBase*)p->track)->fillBuffer( buffer1, frames, m_samplePosition );
 		max_frames = rv > max_frames ? rv : max_frames;
 		mixChannels( output, buffer1, output, frames );
 		p = p->next;

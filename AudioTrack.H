@@ -36,7 +36,6 @@ class AudioTrack : public TrackBase
 		~AudioTrack();
 
 		// method declerations
-		int fillBuffer( float* output, unsigned long frames, int64_t position );
 		void addFile( int64_t position, const char* filename );
 		int type() { return TRACK_TYPE_AUDIO; }
 		void sort();

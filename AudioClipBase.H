@@ -25,7 +25,7 @@
 namespace nle
 {
 
-class AudioFileQT;
+class IAudioFile;
 
 /*
  * This is the base class for both, Audio and Video Clips,
@@ -40,13 +40,13 @@ class AudioClipBase : public Clip
 		int fillBuffer( float* output, unsigned long frames, int64_t position );
 		virtual void reset();
 	protected:
-		AudioClipBase( Track *track, int64_t position, AudioFileQT* af = 0 );
+		AudioClipBase( Track *track, int64_t position, IAudioFile* af = 0 );
 		virtual int64_t audioTrimA() = 0;
 		virtual int64_t audioTrimB() = 0;
 		int64_t audioLength();
 		virtual int64_t audioPosition() = 0;
 		const char* audioFilename();
-		AudioFileQT* m_audioFile;
+		IAudioFile* m_audioFile;
 	private:
 		int64_t m_lastSamplePosition;
 };

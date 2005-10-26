@@ -49,6 +49,7 @@ AudioFileQT::AudioFileQT( const char* filename )
 	strncpy(m_filename, filename, STR_LEN);
 	m_ok = true;
 	m_oneShot = true;
+	avg_cnt = 0;
 }
 AudioFileQT::~AudioFileQT()
 {
@@ -65,7 +66,7 @@ int AudioFileQT::fillBuffer( float* output, unsigned long frames )
 {
 	static float left_buffer[FRAMES_PER_BUFFER];
 	static float right_buffer[FRAMES_PER_BUFFER];
-	static float *buf_pointer[2] = { left_buffer, right_buffer };
+	float *buf_pointer[2] = { left_buffer, right_buffer };
 	if ( frames > FRAMES_PER_BUFFER ) {
 		return 0;
 	}
@@ -80,11 +81,22 @@ int AudioFileQT::fillBuffer( float* output, unsigned long frames )
 		output[i*2] = left_buffer[i]; // use left shift for *2 ??
 		output[i*2+1] = right_buffer[i];
 	}
+	for ( unsigned long i = 0; i < frames*2; i++ ) {
+		avg1 = output[i] > avg1 ? output[i] : avg1;
+		avg2 = output[i] < avg2 ? output[i] : avg2;
+	}
+	if (avg_cnt % 100 == 0) {
+		cout << " MAX: " << avg1 << endl;
+		cout << " MIN: " << avg2 << endl;
+		avg_cnt = 0;
+		avg1 = 0.0;
+		avg2 = 0.0;
+	}
+	avg_cnt++;
 //	cout << "AudioFileQT::fillBuffer " << diff << endl;
 	return diff;
 }
 
-bool AudioFileQT::ok() { return m_ok; }
 
 
 

@@ -1,4 +1,4 @@
-/*  AudioClip.cxx
+/*  IAudioFile.H
  *
  *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,40 +17,33 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <iostream>
+#ifndef _I_AUDIO_FILE_H_
+#define _I_AUDIO_FILE_H_
 
-#include "AudioClip.H"
-#include "IAudioFile.H"
+#include <stdint.h>
+
+#include "globals.H"
 
 namespace nle
 {
 
-AudioClip::AudioClip( Track *track, int64_t position, IAudioFile* af )
-	: AudioClipBase( track, position, af )
+class IAudioFile
 {
-}
-AudioClip::~AudioClip()
-{
-}
-int64_t AudioClip::length()
-{
-	return audioLength();
-}
-const char* AudioClip::filename()
-{
-	return audioFilename();
-}
-int64_t AudioClip::audioTrimA()
-{
-	return m_trimA;
-}
-int64_t AudioClip::audioTrimB()
-{
-	return m_trimB;
-}
-int64_t AudioClip::audioPosition()
-{
-	return position();
-}
+	public:
+		virtual ~IAudioFile() {}
+		inline bool ok() { return m_ok; }
+		inline int64_t length() { return m_length; } // <= number of floats: 2 * length (left, right)
+		virtual void seek( int64_t sample ) = 0;
+		virtual int fillBuffer( float* output, unsigned long frames ) = 0;
+			//sizof(output) = frames * 2
+			//File Format: 48000 stereo interleaved
+		inline const char* filename() { return m_filename; }
+	protected:
+		int64_t m_length;
+		bool m_ok;
+		char m_filename[STR_LEN];
+};
 
 } /* namespace nle */
+
+#endif /* _I_AUDIO_FILE_H_ */

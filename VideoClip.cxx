@@ -23,6 +23,7 @@
 #include "VideoClip.H"
 #include "IVideoFile.H"
 #include "FilmStrip.H"
+#include "AudioFileQT.H"
 
 using namespace std;
 
@@ -35,8 +36,8 @@ VideoClip::VideoClip( Track *track, int64_t position, IVideoFile *vf )
 	m_videoFile = vf;
 	m_filmStrip = new FilmStrip( vf );
 	m_lastFramePosition = -1;
-	AudioFileQT* af = new AudioFileQT( m_videoFile->filename() );
-	if ( af->ok ) {
+	IAudioFile* af = new AudioFileQT( m_videoFile->filename() );
+	if ( af->ok() ) {
 		m_audioFile = af;
 	} else {
 		delete af;
@@ -58,18 +59,19 @@ int64_t VideoClip::length()
 }
 int64_t VideoClip::audioTrimA()
 {
-	return m_trimA * ( 48000 / g_fps );
+	return m_trimA * (int64_t)( 48000 / g_fps );
 }
 int64_t VideoClip::audioTrimB()
 {
-	return m_trimB * ( 48000 / g_fps );
+	return m_trimB * (int64_t)( 48000 / g_fps );
 }
 int64_t VideoClip::audioPosition()
 {
-	return m_position * ( 48000 / g_fps );
+	return m_position * (int64_t)( 48000 / g_fps );
 }
 void VideoClip::reset()
 {
+	AudioClipBase::reset();
 	m_videoFile->seek( m_trimA );//FIXME noch nötig??
 	/*evtl. damit nicht bei jedem Abspiel vorgang für jeden Clip geseekt werden muss*/
 }

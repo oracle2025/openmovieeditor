@@ -38,6 +38,7 @@ src_list = Split("""nle.cxx
 	TrimDragHandler.cxx
 	FileBrowser.cxx
 	VideoFileQT.cxx
+	TrackBase.cxx
 	AudioTrack.cxx
 	AudioClip.cxx
 	AudioClipBase.cxx

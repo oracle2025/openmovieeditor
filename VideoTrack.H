@@ -42,7 +42,6 @@ class VideoTrack : public TrackBase
 		float stretchFactor() { return 1.0; }
 		frame_struct* getFrame( int64_t position );
 		void sort();
-		int fillBuffer( float* output, unsigned long frames, int64_t position );
 	private:
 		int64_t m_playPosition;
 		// member variable declerations

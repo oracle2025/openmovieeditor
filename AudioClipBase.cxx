@@ -17,21 +17,27 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <iostream>
 
 #include "AudioClipBase.H"
-#include "AudioFileQT.H"
+#include "IAudioFile.H"
+
+using namespace std;
 
 namespace nle
 {
 
-AudioClipBase::AudioClipBase( Track *track, int64_t position, AudioFileQT* af )
+AudioClipBase::AudioClipBase( Track *track, int64_t position, IAudioFile* af )
 	: Clip( track, position )
 {
 	m_audioFile = af;
 }
 AudioClipBase::~AudioClipBase()
 {
-	delete m_audioFile;
+	if ( m_audioFile ) {
+		delete m_audioFile;
+		m_audioFile = 0;
+	}
 }
 
 void AudioClipBase::reset()

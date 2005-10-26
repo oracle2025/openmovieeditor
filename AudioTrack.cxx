@@ -35,7 +35,7 @@ AudioTrack::~AudioTrack()
 }
 void AudioTrack::addFile( int64_t position, const char* filename )
 {
-	AudioFileQT *af = new AudioFileQT( filename );
+	IAudioFile *af = new AudioFileQT( filename );
 	if ( !af->ok() ) {
 		delete af;
 		std::cerr << "Error: AudioTrack::add_audio" << std::endl;
@@ -48,31 +48,6 @@ void AudioTrack::sort()
 {
 	Track::sort();
 	m_current = m_clips;
-}
-int AudioTrack::fillBuffer( float* output, unsigned long frames, int64_t position )
-{
-	unsigned long inc;
-	unsigned long written = 0;
-	unsigned long emptyItems = 0;
-	float* incBuffer = output;
-//	ASSERT(m_current)
-	while( written < frames && m_current ) {
-		inc = ((AudioClip*)(m_current->clip))->fillBuffer( incBuffer,
-				 frames - written, position + written
-				);
-		written += inc;
-		incBuffer += inc;
-		if ( written < frames ) { m_current = m_current->next; }
-	}
-	if ( m_current == 0 ) {
-		while( written < frames ) {
-			*incBuffer = 0;
-			written++;
-			incBuffer++;
-			emptyItems++;
-		}
-	}
-	return written - emptyItems;
 }
 static int audio_track_sound_length_helper( void* p, void* data )
 {

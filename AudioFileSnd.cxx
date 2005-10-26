@@ -1,4 +1,4 @@
-/*  AudioClip.cxx
+/*  AudioFileSnd.cxx
  *
  *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,40 +17,5 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <iostream>
 
-#include "AudioClip.H"
-#include "IAudioFile.H"
 
-namespace nle
-{
-
-AudioClip::AudioClip( Track *track, int64_t position, IAudioFile* af )
-	: AudioClipBase( track, position, af )
-{
-}
-AudioClip::~AudioClip()
-{
-}
-int64_t AudioClip::length()
-{
-	return audioLength();
-}
-const char* AudioClip::filename()
-{
-	return audioFilename();
-}
-int64_t AudioClip::audioTrimA()
-{
-	return m_trimA;
-}
-int64_t AudioClip::audioTrimB()
-{
-	return m_trimB;
-}
-int64_t AudioClip::audioPosition()
-{
-	return position();
-}
-
-} /* namespace nle */

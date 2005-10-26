@@ -20,6 +20,7 @@
 #ifndef _TRACK_H_
 #define _TRACK_H_
 
+#include <stdint.h>
 #include <sl.h>
 
 namespace nle

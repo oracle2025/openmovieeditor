@@ -29,7 +29,7 @@ namespace nle
 {
 
 VideoTrack::VideoTrack( int num )
-	: Track( num )
+	: TrackBase( num )
 {
 }
 VideoTrack::~VideoTrack()
@@ -63,31 +63,6 @@ frame_struct* VideoTrack::getFrame( int64_t position )
 	}
 	return NULL;
 
-}
-int VideoTrack::fillBuffer( float* output, unsigned long frames, int64_t position )
-{
-	unsigned long inc;
-	unsigned long written = 0;
-	unsigned long emptyItems = 0;
-	float* incBuffer = output;
-//	ASSERT(m_current)
-	while( written < frames && m_current ) {
-		inc = ((VideoClip*)(m_current->clip))->fillBuffer( incBuffer,
-				 frames - written, position + written
-				);
-		written += inc;
-		incBuffer += inc;
-		if ( written < frames ) { m_current = m_current->next; }
-	}
-	if ( m_current == 0 ) {
-		while( written < frames ) {
-			*incBuffer = 0;
-			written++;
-			incBuffer++;
-			emptyItems++;
-		}
-	}
-	return written - emptyItems;
 }
 	
 } /* namespace nle */

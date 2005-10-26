@@ -18,7 +18,15 @@
  */
 
 #include "TrackBase.H"
+#include "AudioClipBase.H"
 
+namespace nle
+{
+
+TrackBase::TrackBase( int num )
+	: Track( num )
+{
+}
 int TrackBase::fillBuffer( float* output, unsigned long frames, int64_t position )
 {
 	unsigned long inc;
@@ -36,7 +44,7 @@ int TrackBase::fillBuffer( float* output, unsigned long frames, int64_t position
 	}
 	if ( m_current == 0 ) {
 		while( written < frames ) {
-			*incBuffer = 0;
+			*incBuffer = 0.0;
 			written++;
 			incBuffer++;
 			emptyItems++;
@@ -45,3 +53,4 @@ int TrackBase::fillBuffer( float* output, unsigned long frames, int64_t position
 	return written - emptyItems;
 }
 
+} /* namespace nle */
