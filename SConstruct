@@ -15,6 +15,7 @@ env = Environment( CC = 'g++',
 	LIBPATH = LIBPATH
 	)
 #env.ParseConfig( 'pkg-config gavl --cflags --libs' )
+env.ParseConfig( 'pkg-config sndfile --cflags --libs' )
 env.ParseConfig( 'pkg-config libquicktime --cflags --libs' )
 env.ParseConfig( 'fltk-config --cxxflags --ldflags --use-gl' )
 env.ParseConfig( 'Magick++-config --cppflags --ldflags --libs' )
@@ -42,6 +43,7 @@ src_list = Split("""nle.cxx
 	AudioTrack.cxx
 	AudioClip.cxx
 	AudioClipBase.cxx
+	AudioFileSnd.cxx
 	AudioFileQT.cxx
 	Sound.cxx
 	Renderer.cxx

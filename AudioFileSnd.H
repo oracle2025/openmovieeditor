@@ -17,4 +17,30 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#ifndef _AUDIO_FILE_SND_H_
+#define _AUDIO_FILE_SND_H_
+
+#include <sndfile.h>
+
+#include "IAudioFile.H"
+
+namespace nle
+{
+
+class AudioFileSnd : public IAudioFile
+{
+	public:
+		AudioFileSnd( const char* filename );
+		~AudioFileSnd();
+		void seek( int64_t sample );
+		int fillBuffer( float* output, unsigned long frames );
+	private:
+		SNDFILE *m_sndfile;
+
+};
+
+} /* namespace nle */
+
+
+#endif /* _AUDIO_FILE_SND_H_ */
 

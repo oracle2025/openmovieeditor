@@ -21,6 +21,8 @@
 
 #include <string.h>
 
+#include "strlcpy.h"
+
 #include "AudioFileQT.H"
 
 using namespace std;
@@ -46,10 +48,9 @@ AudioFileQT::AudioFileQT( const char* filename )
 	m_length = quicktime_audio_length( m_qt, 0 );
 	//check samplerate
 	//check channels
-	strncpy(m_filename, filename, STR_LEN);
+	strlcpy( m_filename, filename, STR_LEN );
 	m_ok = true;
 	m_oneShot = true;
-	avg_cnt = 0;
 }
 AudioFileQT::~AudioFileQT()
 {
@@ -81,18 +82,6 @@ int AudioFileQT::fillBuffer( float* output, unsigned long frames )
 		output[i*2] = left_buffer[i]; // use left shift for *2 ??
 		output[i*2+1] = right_buffer[i];
 	}
-	for ( unsigned long i = 0; i < frames*2; i++ ) {
-		avg1 = output[i] > avg1 ? output[i] : avg1;
-		avg2 = output[i] < avg2 ? output[i] : avg2;
-	}
-	if (avg_cnt % 100 == 0) {
-		cout << " MAX: " << avg1 << endl;
-		cout << " MIN: " << avg2 << endl;
-		avg_cnt = 0;
-		avg1 = 0.0;
-		avg2 = 0.0;
-	}
-	avg_cnt++;
 //	cout << "AudioFileQT::fillBuffer " << diff << endl;
 	return diff;
 }

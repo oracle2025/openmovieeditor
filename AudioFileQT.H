@@ -43,9 +43,6 @@ class AudioFileQT : public IAudioFile
 	private:
 		quicktime_t* m_qt;
 		bool m_oneShot;
-		int avg_cnt;
-		float avg1;
-		float avg2;
 };
 
 }
