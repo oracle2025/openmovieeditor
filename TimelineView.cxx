@@ -341,7 +341,7 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 {
 	Track *new_tr = get_track( _x, _y );
 	Track *old_tr = clip->track();
-	if ( inside_widget( g_trashCan, x() + _x, y() + _y ) ) {
+	if ( inside_widget( g_trashCan, _x, y() + _y ) ) {
 		old_tr->removeClip( clip );
 		delete clip;
 		return;

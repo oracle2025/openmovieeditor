@@ -23,6 +23,7 @@
 
 #include "nle.h"
 #include "Prefs.H"
+#include "WavArtist.H"
 
 namespace nle 
 {
@@ -33,6 +34,7 @@ lqt_codec_info_t** g_video_codec_info;
 int main( int argc, char** argv )
 {
 	nle::Prefs preferences;
+	nle::WavArtist wavArtist;
 	NleUI nui;
 	Fl::visual(FL_DOUBLE|FL_RGB);
 

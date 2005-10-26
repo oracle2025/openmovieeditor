@@ -21,6 +21,7 @@
 
 #include "AudioClip.H"
 #include "IAudioFile.H"
+#include "WavArtist.H"
 
 namespace nle
 {
@@ -28,9 +29,11 @@ namespace nle
 AudioClip::AudioClip( Track *track, int64_t position, IAudioFile* af )
 	: AudioClipBase( track, position, af )
 {
+	g_wavArtist->add( af );
 }
 AudioClip::~AudioClip()
 {
+	g_wavArtist->remove( m_audioFile->filename() );
 }
 int64_t AudioClip::length()
 {

@@ -17,6 +17,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <iostream>
 #include <cstring>
 
 #include <sl.h>
@@ -24,6 +25,8 @@
 
 #include "WavArtist.H"
 #include "IAudioFile.H"
+
+using namespace std;
 
 namespace nle
 {
@@ -73,6 +76,7 @@ void WavArtist::add( IAudioFile* file )
 	strlcpy( node->filename, file->filename(), STR_LEN );
 	node->refCount = 1;
 	m_peaks = (peakfile_node*)sl_push( m_peaks, node );
+	cout << "WavArtist: Added" << endl;
 }
 static int remove_peakfile_helper( void* p, void* data )
 {
@@ -92,6 +96,7 @@ void WavArtist::remove( const char* filename )
 	if ( node ) {
 		delete [] node->peaks;
 		delete node;
+		cout << "WavArtist: Deleted" << endl;
 	}
 }
 
