@@ -33,6 +33,7 @@ class IAudioFile;
 typedef struct _peakfile_node {
 	struct _peakfile_node *next;
 	float* peaks;
+	int64_t peak_length;
 	char filename[STR_LEN];
 	int refCount;
 } peakfile_node;
@@ -44,7 +45,7 @@ class WavArtist
 		~WavArtist();
 		void add( IAudioFile* file );
 		void remove( const char* filename );
-		void render( Rect& rect, int64_t start, int64_t stop );
+		void render( const char* filename, Rect& rect, int64_t start, int64_t stop );
 	private:
 		peakfile_node* m_peaks;
 };

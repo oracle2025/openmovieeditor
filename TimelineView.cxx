@@ -36,6 +36,7 @@
 #include "Rect.H"
 #include "events.H"
 #include "FilmStrip.H"
+#include "WavArtist.H"
 #include "helper.H"
 
 #include "audio.xpm"
@@ -224,6 +225,11 @@ void TimelineView::draw()
 				fl_pop_clip();
 			}
 		// END - Draw Thumbnails
+			fl_color( FL_GREEN );
+			if ( track->type() == TRACK_TYPE_AUDIO ) {
+				Rect r( scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h );
+				g_wavArtist->render( clip->filename(), r, clip->trimA(), clip->trimA() + clip->length() );
+			}
 
 			fl_draw_box( FL_BORDER_FRAME, scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h, FL_DARK3 );
 			

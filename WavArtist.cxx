@@ -20,6 +20,8 @@
 #include <iostream>
 #include <cstring>
 
+#include <FL/fl_draw.H>
+
 #include <sl.h>
 #include "strlcpy.h"
 
@@ -64,11 +66,12 @@ void WavArtist::add( IAudioFile* file )
 	unsigned long range;
 	float max;
 	node->peaks = peaks;
+	node->peak_length = len;
 	file->seek( 0 );
-	for ( int64_t i = 0; i > len; i-- ) {
+	for ( int64_t i = 0; i < len; i++ ) {
 		range = file->fillBuffer( buffer, PEAK_RANGE );
 		max = 0;
-		for ( unsigned long j = 0; j < range; j++ ) {
+		for ( int j = 0; j < (int)(range - 1) * 2; j++ ) {
 			max = buffer[j] > max ? buffer[j] : max;
 		}
 		peaks[i] = max;
@@ -99,9 +102,33 @@ void WavArtist::remove( const char* filename )
 		cout << "WavArtist: Deleted" << endl;
 	}
 }
-
-void WavArtist::render( Rect& rect, int64_t start, int64_t stop )
+static int find_peakfile_helper( void* p, void* data )
 {
+	peakfile_node* node = (peakfile_node*)p;
+	const char* filename = (const char*)data;
+	if ( strcmp( node->filename, filename ) == 0 ) {
+		return 1;
+	}
+	return 0;
+}
+void WavArtist::render( const char* filename, Rect& rect, int64_t start, int64_t stop )
+{
+	peakfile_node* node = (peakfile_node*)sl_map( m_peaks, find_peakfile_helper, (void*)filename );
+	if ( !node ) {
+		return;
+	}
+	int64_t first = start / PEAK_RANGE;
+	int64_t last = stop / PEAK_RANGE;
+	float factor = (float)( last - first ) / rect.w;
+	int y;
+	int h2 = rect.y + rect.h / 2;
+	for ( int i = 0; i < rect.w; i++ ) {
+		y = first + (int)( i * factor );
+		y = y < node->peak_length ? y : node->peak_length - 1;
+		int h = (int)( rect.h / 2 * node->peaks[y] );
+		fl_line( rect.x + i, h2 - h, rect.x + i, h2 + h );
+	}
+	
 }
 
 

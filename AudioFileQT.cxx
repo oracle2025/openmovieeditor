@@ -65,13 +65,16 @@ void AudioFileQT::seek( int64_t sample )
 }
 int AudioFileQT::fillBuffer( float* output, unsigned long frames )
 {
-	static float left_buffer[FRAMES_PER_BUFFER];
-	static float right_buffer[FRAMES_PER_BUFFER];
-	float *buf_pointer[2] = { left_buffer, right_buffer };
-	if ( frames > FRAMES_PER_BUFFER ) {
-		return 0;
-	}
+	static float l_buffer[FRAMES_PER_BUFFER];
+	static float r_buffer[FRAMES_PER_BUFFER];
+	float *left_buffer = l_buffer;
+	float *right_buffer = r_buffer;
 	int64_t diff = lqt_last_audio_position( m_qt, 0 );
+	if ( frames > FRAMES_PER_BUFFER ) {
+		left_buffer = new float[frames];
+		right_buffer = new float[frames];
+	}
+	float *buf_pointer[2] = { left_buffer, right_buffer };
 	lqt_decode_audio_track( m_qt, NULL, buf_pointer, frames, 0 );
 	diff = lqt_last_audio_position( m_qt, 0 ) - diff;
 	if ( m_oneShot ) {
@@ -81,6 +84,10 @@ int AudioFileQT::fillBuffer( float* output, unsigned long frames )
 	for ( int i = 0; i < diff; i++ ) {
 		output[i*2] = left_buffer[i]; // use left shift for *2 ??
 		output[i*2+1] = right_buffer[i];
+	}
+	if ( frames > FRAMES_PER_BUFFER ) {
+		delete [] left_buffer;
+		delete [] right_buffer;
 	}
 //	cout << "AudioFileQT::fillBuffer " << diff << endl;
 	return diff;
