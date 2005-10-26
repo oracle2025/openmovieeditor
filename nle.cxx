@@ -227,10 +227,10 @@ NleUI::NleUI() {
           o->end();
         }
         { Fl_Group* o = new Fl_Group(0, 25, 275, 250);
-          { Fl_Tabs* o = new Fl_Tabs(0, 25, 275, 205);
+          { Fl_Tabs* o = new Fl_Tabs(0, 25, 275, 250);
             o->box(FL_UP_BOX);
             o->labelcolor(FL_GRAY0);
-            { Fl_Group* o = new Fl_Group(0, 50, 275, 180, "Project");
+            { Fl_Group* o = new Fl_Group(0, 50, 275, 225, "Project");
               { Fl_Value_Input* o = new Fl_Value_Input(55, 60, 100, 25, "Width");
                 o->maximum(1024);
                 o->step(1);
@@ -258,9 +258,9 @@ NleUI::NleUI() {
               o->end();
               Fl_Group::current()->resizable(o);
             }
-            { Fl_Group* o = new Fl_Group(0, 50, 275, 180, "Files");
+            { Fl_Group* o = new Fl_Group(0, 50, 275, 225, "Files");
               o->hide();
-              { nle::FileBrowser* o = fileBrowser = new nle::FileBrowser(5, 55, 265, 170);
+              { nle::FileBrowser* o = fileBrowser = new nle::FileBrowser(5, 55, 265, 210);
                 o->box(FL_NO_BOX);
                 o->color(FL_BACKGROUND2_COLOR);
                 o->selection_color(FL_SELECTION_COLOR);
@@ -275,7 +275,7 @@ NleUI::NleUI() {
               }
               o->end();
             }
-            { Fl_Group* o = new Fl_Group(0, 50, 275, 180, "Object Inspector");
+            { Fl_Group* o = new Fl_Group(0, 50, 275, 225, "Object Inspector");
               o->hide();
               { Fl_Menu_Button* o = new Fl_Menu_Button(80, 55, 190, 25, "Font");
                 o->align(FL_ALIGN_LEFT);
@@ -284,7 +284,7 @@ NleUI::NleUI() {
                 o->maximum(40);
                 o->step(1);
               }
-              { Fl_Text_Editor* o = new Fl_Text_Editor(80, 115, 190, 110, "Text");
+              { Fl_Text_Editor* o = new Fl_Text_Editor(80, 115, 190, 155, "Text");
                 o->align(FL_ALIGN_LEFT);
                 Fl_Group::current()->resizable(o);
               }
@@ -293,60 +293,64 @@ NleUI::NleUI() {
             o->end();
             Fl_Group::current()->resizable(o);
           }
-          { Fl_Group* o = new Fl_Group(0, 230, 275, 45);
-            o->box(FL_UP_BOX);
-            o->labelsize(12);
-            { Fl_Box* o = new Fl_Box(50, 235, 66, 35);
-              o->box(FL_DOWN_BOX);
-            }
-            { Fl_Button* o = new Fl_Button(52, 237, 31, 31);
-              o->tooltip("Positioning");
-              o->type(102);
-              o->value(1);
-              o->image(image_tool_positioning);
-              o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
-            }
-            { Fl_Button* o = new Fl_Button(83, 237, 31, 31);
-              o->tooltip("Automations");
-              o->type(102);
-              o->image(image_tool_automations);
-              o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
-            }
-            { Fl_Box* o = new Fl_Box(175, 240, 25, 25);
-              Fl_Group::current()->resizable(o);
-            }
-            { Fl_Box* o = new Fl_Box(0, 245, 50, 15, "Tools");
-              o->labelsize(12);
-            }
-            o->end();
-          }
           o->end();
         }
         o->end();
       }
       { Fl_Group* o = new Fl_Group(0, 275, 515, 160);
-        { nle::Ruler* o = new nle::Ruler(0, 275, 515, 25, "Ruler");
-          o->box(FL_UP_BOX);
-          o->color(FL_BACKGROUND_COLOR);
-          o->selection_color(FL_BACKGROUND_COLOR);
-          o->labeltype(FL_NORMAL_LABEL);
-          o->labelfont(0);
-          o->labelsize(14);
-          o->labelcolor(FL_BLACK);
-          o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
-          o->when(FL_WHEN_RELEASE);
-        }
-        { nle::TimelineView* o = m_timelineView = new nle::TimelineView(0, 300, 515, 135);
-          o->box(FL_NO_BOX);
-          o->color(FL_BACKGROUND_COLOR);
-          o->selection_color(FL_BACKGROUND_COLOR);
-          o->labeltype(FL_NORMAL_LABEL);
-          o->labelfont(0);
-          o->labelsize(14);
-          o->labelcolor(FL_BLACK);
-          o->align(FL_ALIGN_CENTER);
-          o->when(2);
+        { Fl_Group* o = new Fl_Group(50, 275, 465, 160);
+          { nle::Ruler* o = new nle::Ruler(50, 275, 465, 25, "Ruler");
+            o->box(FL_UP_BOX);
+            o->color(FL_BACKGROUND_COLOR);
+            o->selection_color(FL_BACKGROUND_COLOR);
+            o->labeltype(FL_NORMAL_LABEL);
+            o->labelfont(0);
+            o->labelsize(14);
+            o->labelcolor(FL_BLACK);
+            o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
+            o->when(FL_WHEN_RELEASE);
+          }
+          { nle::TimelineView* o = m_timelineView = new nle::TimelineView(50, 300, 465, 135);
+            o->box(FL_NO_BOX);
+            o->color(FL_BACKGROUND_COLOR);
+            o->selection_color(FL_BACKGROUND_COLOR);
+            o->labeltype(FL_NORMAL_LABEL);
+            o->labelfont(0);
+            o->labelsize(14);
+            o->labelcolor(FL_BLACK);
+            o->align(FL_ALIGN_CENTER);
+            o->when(2);
+            Fl_Group::current()->resizable(o);
+          }
+          o->end();
           Fl_Group::current()->resizable(o);
+        }
+        { Fl_Group* o = new Fl_Group(0, 275, 50, 160);
+          o->box(FL_UP_BOX);
+          o->labelsize(12);
+          { Fl_Box* o = new Fl_Box(5, 300, 39, 74);
+            o->box(FL_DOWN_BOX);
+          }
+          { Fl_Button* o = new Fl_Button(7, 302, 35, 35);
+            o->tooltip("Positioning");
+            o->type(102);
+            o->value(1);
+            o->image(image_tool_positioning);
+            o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
+          }
+          { Fl_Button* o = new Fl_Button(7, 337, 35, 35);
+            o->tooltip("Automations");
+            o->type(102);
+            o->image(image_tool_automations);
+            o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
+          }
+          { Fl_Box* o = new Fl_Box(15, 380, 17, 55);
+            Fl_Group::current()->resizable(o);
+          }
+          { Fl_Box* o = new Fl_Box(0, 275, 50, 25, "Tools");
+            o->labelsize(12);
+          }
+          o->end();
         }
         o->end();
       }

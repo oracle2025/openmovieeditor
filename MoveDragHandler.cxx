@@ -43,7 +43,7 @@ MoveDragHandler::MoveDragHandler( TimelineView *tlv,
 }
 void MoveDragHandler::OnDrag( int x, int y )
 {
-	Rect tmp( m_tlv->x() + x - ( m_x - m_rect.x ),
+	Rect tmp( x - ( m_x - m_rect.x ),
 			m_tlv->y() + y - ( m_y - m_rect.y ),
 			m_rect.w, m_rect.h );
 	Track *tr = m_tlv->get_track( x, y );

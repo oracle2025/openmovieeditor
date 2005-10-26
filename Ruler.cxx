@@ -39,7 +39,7 @@ Ruler* g_ruler;
 Ruler::Ruler( int x, int y, int w, int h, const char *label )
 	: Fl_Widget( x, y, w, h, label )
 {
-	m_stylus.x = LEFT_TRACK_SPACING - 12;
+	m_stylus.x = LEFT_TRACK_SPACING - 12 + x;
 	m_stylus.y = 0;
 	m_stylus.w = 25;
 	m_stylus.h = 25;
@@ -58,17 +58,17 @@ void Ruler::draw()
 
 	fl_color(FL_FOREGROUND_COLOR);
 	fl_font( FL_HELVETICA, 11 );
-	int pixel_start = - (int)( g_timelineView->scrollPosition() * SwitchBoard::i()->zoom() );
+	int pixel_start = - (int)( g_timelineView->scrollPosition() * SwitchBoard::i()->zoom() ) - 100 + LEFT_TRACK_SPACING;
 	pixel_start = pixel_start % 100;
 	int pixel_step = 100;
 	int pixel_count = w() / 100 + 2;
 	for ( int i = 0; i < pixel_count; i++ ) {
-		int off = pixel_start + pixel_step * i;
-		fl_draw( timestamp_to_string( g_timelineView->get_real_position( off ) ), x() + off, y() + 14 );
-		fl_line( x() + off, y() + 20, x() + off, y() + h() );
+		int off = x() + pixel_start + pixel_step * i;
+		fl_draw( timestamp_to_string( g_timelineView->get_real_position( off ) ), off, y() + 14 );
+		fl_line( off, y() + 20, off, y() + h() );
 	}
 	
-	fl_draw_box( FL_DIAMOND_UP_BOX, x() + m_stylus.x, y() + m_stylus.y, m_stylus.w, m_stylus.h, FL_BACKGROUND_COLOR );
+	fl_draw_box( FL_DIAMOND_UP_BOX, m_stylus.x, y() + m_stylus.y, m_stylus.w, m_stylus.h, FL_BACKGROUND_COLOR );
 		
 	fl_pop_clip();
 }
@@ -76,7 +76,7 @@ void Ruler::draw()
 int Ruler::handle( int event )
 {
 	static int __x = 0;
-	int _x = Fl::event_x() - x();
+	int _x = Fl::event_x();
 	int _y = Fl::event_y() - y();
 	switch ( event ) {
 		case FL_PUSH:
@@ -90,7 +90,7 @@ int Ruler::handle( int event )
 				break;
 			{
 				long new_x = _x - __x;
-				g_timelineView->stylus( x() + new_x + ( m_stylus.w / 2 ) );
+				g_timelineView->stylus( new_x + ( m_stylus.w / 2 ) );
 				return 1;
 			}
 		case FL_RELEASE:

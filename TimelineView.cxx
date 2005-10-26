@@ -88,7 +88,7 @@ AutomationPoint *TimelineView::getAutomationPoint( Clip* clip, int x, int y )
 }*/
 int TimelineView::handle( int event )
 {
-	int _x = Fl::event_x() - x();
+	int _x = Fl::event_x();
 	int _y = Fl::event_y() - y();
 	switch ( event ) {
 		case FL_PASTE:
@@ -252,11 +252,11 @@ void TimelineView::add_video( int track, int y, const char* filename )
 }
 int64_t TimelineView::get_real_position( int p, float stretchFactor )
 {
-	return int64_t( ( ( float(p - LEFT_TRACK_SPACING) / SwitchBoard::i()->zoom() ) + m_scrollPosition ) * stretchFactor );
+	return int64_t( ( ( float(p - LEFT_TRACK_SPACING - x() ) / SwitchBoard::i()->zoom() ) + m_scrollPosition ) * stretchFactor );
 }
 int TimelineView::get_screen_position( int64_t p, float stretchFactor )
 {
-	return int ( float( p - ( m_scrollPosition * stretchFactor ) ) * SwitchBoard::i()->zoom() / stretchFactor ) + LEFT_TRACK_SPACING;
+	return int ( float( p - ( m_scrollPosition * stretchFactor ) ) * SwitchBoard::i()->zoom() / stretchFactor ) + LEFT_TRACK_SPACING + x();
 
 }
 void TimelineView::scroll( int64_t position )
