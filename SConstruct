@@ -27,6 +27,7 @@ src_list = Split("""nle.cxx
 	VideoTrack.cxx
 	nle_main.cxx
 	SwitchBoard.cxx
+	WavArtist.cxx
 	TimelineView.cxx
 	VideoClip.cxx
 	Codecs.cxx

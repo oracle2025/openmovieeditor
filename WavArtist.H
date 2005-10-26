@@ -1,4 +1,4 @@
-/*  globals.H
+/*  WavArtist.H
  *
  *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,41 +17,39 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _GLOBALS_H_
-#define _GLOBALS_H_
+#ifndef _WAV_ARTIST_H_
+#define _WAV_ARTIST_H_
 
-#define STR_LEN 512
-#define OME_VERSION "0.0.0"
+#include "globals.H"
+#include "Rect.H"
 
-#include <lqt.h>
+#define PEAK_RANGE 1000
 
 namespace nle
 {
 
-class TimelineView;
-class Timeline;
-class Flmm_Scalebar;
-class Ruler;
-class VideoViewGL;
-class Sound;
-class Prefs;
-class WavArtist;
+class IAudioFile;
 
-extern TimelineView* g_timelineView;
-extern Timeline* g_timeline;
-//extern Flmm_Scalebar* g_scrollBar;
-extern Ruler* g_ruler;
-extern VideoViewGL* g_videoView;
-extern Sound* g_sound;
-extern Prefs* g_preferences;
-extern WavArtist* g_wavArtist;
+typedef struct _peakfile_node {
+	struct _peakfile_node *next;
+	float* peaks;
+	char filename[STR_LEN];
+	int refCount;
+} peakfile_node;
 
-extern lqt_codec_info_t** g_audio_codec_info;
-extern lqt_codec_info_t** g_video_codec_info;
+class WavArtist
+{
+	public:
+		WavArtist();
+		~WavArtist();
+		void add( IAudioFile* file );
+		void remove( const char* filename );
+		void render( Rect& rect, int64_t start, int64_t stop );
+	private:
+		peakfile_node* m_peaks;
+};
 
 } /* namespace nle */
 
-extern float g_fps;
 
-#endif /* _GLOBALS_H_ */
-
+#endif /* _WAV_ARTIST_H_ */
