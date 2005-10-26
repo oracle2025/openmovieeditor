@@ -159,18 +159,6 @@ unsigned int mixChannels( float *A, float *B, float* out, unsigned int frames )
 	return frames;
 }
 
-static track_node* next_audio_track( track_node* node )
-{
-	track_node* next = node;
-	while ( next ) {
-		if ( next->track->type() == TRACK_TYPE_AUDIO ) {
-			return next;
-		}
-		next = next->next;
-	}
-	return 0;
-}
-
 #define FRAMES_PER_BUFFER 256
 int Timeline::fillBuffer( float* output, unsigned long frames )
 {
@@ -179,13 +167,11 @@ int Timeline::fillBuffer( float* output, unsigned long frames )
 	unsigned int rv;
 	unsigned int max_frames = 0;
 	track_node* p = m_allTracks;
-	p = next_audio_track( p );
 	if ( !p )
 		return 0;
 	rv = ((TrackBase*)p->track)->fillBuffer( buffer1, frames, m_samplePosition );
 	max_frames = rv;
 	p = p->next;
-	p = next_audio_track( p );
 	if ( !p ) { //Only one Track
 		for ( unsigned long i = 0; i < frames; i++ ) {
 			output[i] = buffer1[i];
@@ -202,13 +188,11 @@ int Timeline::fillBuffer( float* output, unsigned long frames )
 	max_frames = rv > max_frames ? rv : max_frames;
 	mixChannels( buffer1, buffer2, output, frames);
 	p = p->next;
-	p = next_audio_track( p );
 	while ( p ) {
 		rv = ((TrackBase*)p->track)->fillBuffer( buffer1, frames, m_samplePosition );
 		max_frames = rv > max_frames ? rv : max_frames;
 		mixChannels( output, buffer1, output, frames );
 		p = p->next;
-		p = next_audio_track( p );
 	}
 	while ( max_frames < frames && m_samplePosition + max_frames < m_soundLength ) {
 		output[max_frames] = 0.0;

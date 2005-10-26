@@ -36,8 +36,8 @@ AudioTrack::~AudioTrack()
 }
 void AudioTrack::addFile( int64_t position, const char* filename )
 {
-	IAudioFile *af = new AudioFileSnd( filename );
-//	IAudioFile *af = new AudioFileQT( filename );
+//	IAudioFile *af = new AudioFileSnd( filename );
+	IAudioFile *af = new AudioFileQT( filename );
 	if ( !af->ok() ) {
 		delete af;
 		std::cerr << "Error: AudioTrack::add_audio" << std::endl;
