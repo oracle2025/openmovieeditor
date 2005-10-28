@@ -24,6 +24,7 @@
 #include "nle.h"
 #include "Prefs.H"
 #include "WavArtist.H"
+#include "Project.H"
 
 namespace nle 
 {
@@ -47,7 +48,10 @@ int main( int argc, char** argv )
 	
 	nle::g_audio_codec_info = lqt_query_registry( 1, 0, 1, 0 );
 	nle::g_video_codec_info = lqt_query_registry( 0, 1, 1, 0 );
-	  
+	
 	nui.show( argc, argv );
-	return Fl::run();
+	nle::Project::read_project();
+	int r = Fl::run();
+	nle::Project::write_project();
+	return r;
 }

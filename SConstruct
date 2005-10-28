@@ -36,6 +36,7 @@ src_list = Split("""nle.cxx
 	Ruler.cxx
 	Rect.cxx
 	Prefs.cxx
+	Project.cxx
 	MoveDragHandler.cxx
 	TrimDragHandler.cxx
 	FileBrowser.cxx

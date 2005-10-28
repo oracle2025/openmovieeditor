@@ -51,6 +51,7 @@ class TimelineBase
 		Clip* find( int track, int64_t position );
 		int64_t length();
 		inline track_node* getTracks() { return m_allTracks; }
+		void clear();
 	protected:
 		Track* getTrack( int track );
 		// member variable declerations

@@ -37,6 +37,10 @@ TimelineBase::TimelineBase()
 }
 TimelineBase::~TimelineBase()
 {
+	clear();
+}
+void TimelineBase::clear()
+{
 	track_node* node;
 	while ( ( node = (track_node*)sl_pop( &m_allTracks ) ) ) {
 		delete node->track;

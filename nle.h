@@ -32,6 +32,8 @@ public:
 private:
   Fl_Double_Window *mainWindow;
   static Fl_Menu_Item menu_[];
+  inline void cb_Open_i(Fl_Menu_*, void*);
+  static void cb_Open(Fl_Menu_*, void*);
   inline void cb_Save_i(Fl_Menu_*, void*);
   static void cb_Save(Fl_Menu_*, void*);
   inline void cb_Render_i(Fl_Menu_*, void*);

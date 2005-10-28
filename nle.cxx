@@ -2,9 +2,18 @@
 
 #include "nle.h"
 
+inline void NleUI::cb_Open_i(Fl_Menu_*, void*) {
+  nle::Project::read_project();
+mainWindow->redraw();
+}
+void NleUI::cb_Open(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_Open_i(o,v);
+}
+
 inline void NleUI::cb_Save_i(Fl_Menu_*, void*) {
-  nle::Renderer a("/home/oracle/t.mov", 368, 240, 25, 48000);
-a.go();
+  //nle::Renderer a("/home/oracle/t.mov", 368, 240, 25, 48000);
+//a.go();
+nle::Project::write_project();
 }
 void NleUI::cb_Save(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Save_i(o,v);
@@ -24,7 +33,7 @@ void NleUI::cb_Render(Fl_Menu_* o, void* v) {
 Fl_Menu_Item NleUI::menu_[] = {
  {"&File", 0,  0, 0, 64, 0, 0, 14, 56},
  {"New", 0,  0, 0, 0, 0, 0, 14, 56},
- {"Open...", 0,  0, 0, 128, 0, 0, 14, 56},
+ {"Open...", 0,  (Fl_Callback*)NleUI::cb_Open, 0, 128, 0, 0, 14, 56},
  {"Save", 0,  (Fl_Callback*)NleUI::cb_Save, 0, 0, 0, 0, 14, 56},
  {"Save as...", 0,  0, 0, 128, 0, 0, 14, 56},
  {"Render...", 0,  (Fl_Callback*)NleUI::cb_Render, 0, 128, 0, 0, 14, 56},

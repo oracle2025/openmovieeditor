@@ -23,34 +23,186 @@
 
 #include <iostream>
 #include <cstring>
-#include <inttypes.h>
+#include "strlcpy.h"
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
+#include <tinyxml.h>
 
 #include "Project.H"
 #include "globals.H"
 #include "timeline/Track.H"
 #include "Timeline.H"
 #include "timeline/Clip.H"
-#include "VideoTrack.H"
 #include "AudioTrack.H"
-
+#include "VideoTrack.H"
+#include "VideoFileQT.H"
+#include "AudioFileQT.H"
+#include "AudioFileSnd.H"
+#include "VideoClip.H"
+#include "AudioClip.H"
 
 using namespace std;
 
 namespace nle
 {
+static char project_filename[1024];
 
 void Project::write_project()
 {
+	strcpy( project_filename, "" );
+	if ( !getenv("HOME") ) {
+		return;
+	}
+	strlcpy( project_filename, getenv("HOME"), sizeof(project_filename) );
+	strncat( project_filename, "/.openme.project", sizeof(project_filename) - strlen( project_filename ) - 1 );
 	
+	TiXmlDocument doc( project_filename );
+	TiXmlDeclaration* dec = new TiXmlDeclaration( "1.0", "", "no" );
+	doc.LinkEndChild( dec );
+
+	TiXmlElement* project = new TiXmlElement( "open_movie_editor_project" );
+	doc.LinkEndChild( project );
+
+	TiXmlElement* item = new TiXmlElement( "version" );
+	project->LinkEndChild( item );
+	TiXmlText* text = new TiXmlText( OME_VERSION );
+	item->LinkEndChild( text );
+
+	item = new TiXmlElement( "zoom" );
+	item->SetDoubleAttribute( "value", 1.0 );
+	project->LinkEndChild( item );
+
+	item = new TiXmlElement( "scroll" );
+	item->SetAttribute( "value", 0 );
+	project->LinkEndChild( item );
+
+	item = new TiXmlElement( "stylus" );
+	item->SetAttribute( "value", 0 );
+	project->LinkEndChild( item );
+
+	TiXmlElement* video_tracks = new TiXmlElement( "video_tracks" );
+	project->LinkEndChild( video_tracks );
+	
+	TiXmlElement* audio_tracks = new TiXmlElement( "audio_tracks" );
+	project->LinkEndChild( audio_tracks );
+
+	track_node* node = g_timeline->getTracks();
+
+	TiXmlElement* track;
+	TiXmlElement* clip;
+	while ( node ) {
+		track = new TiXmlElement( "track" );
+		if ( node->track->type() == TRACK_TYPE_VIDEO ) {
+			video_tracks->LinkEndChild( track );
+		} else if ( node->track->type() == TRACK_TYPE_AUDIO ) {
+			audio_tracks->LinkEndChild( track );
+		}
+		clip_node* cn = node->track->getClips();
+		while ( cn ) {
+			clip = new TiXmlElement( "clip" );
+			track->LinkEndChild( clip );
+			clip->SetAttribute( "filename", cn->clip->filename() );
+			clip->SetAttribute( "position", cn->clip->position() );
+			clip->SetAttribute( "trimA", cn->clip->trimA() );
+			clip->SetAttribute( "trimB", cn->clip->trimB() );
+			cn = cn->next;
+		}
+		node = node->next;
+	}
+
+	
+	doc.SaveFile();
 	
 }
 
 void Project::read_project()
 {
+	g_timeline->clear();
+
+	strcpy( project_filename, "" );
+	if ( !getenv("HOME") ) {
+		return;
+	}
+	strlcpy( project_filename, getenv("HOME"), sizeof(project_filename) );
+	strncat( project_filename, "/.openme.project", sizeof(project_filename) - strlen( project_filename ) - 1 );
+	
+	TiXmlDocument doc( project_filename );
+	if ( !doc.LoadFile() ) {
+		return;
+	}
+	TiXmlHandle docH( &doc );
+	//TiXmlElement* video_tracks = docH.FirstChildElement( "open_movie_editor_project" ).FirstChildElement( "video_tracks" );
+	TiXmlElement* track = docH.FirstChild( "open_movie_editor_project" ).FirstChild( "video_tracks" ).FirstChild( "track" ).Element();
+	
+	int i = 0;
+	
+	for ( ; track; track = track->NextSiblingElement( "track" ) ) {
+		Track *tr = new VideoTrack( i );
+		g_timeline->addTrack( tr );
+		
+		TiXmlElement* j = TiXmlHandle( track ).FirstChildElement( "clip" ).Element();
+		for ( ; j; j = j->NextSiblingElement( "clip" ) ) {
+			int position;
+			int trimA;
+			int trimB;
+			char filename[1024];
+			if ( ! j->Attribute( "position", &position ) )
+				continue;
+			if ( ! j->Attribute( "trimA", &trimA ) )
+				continue;
+			if ( ! j->Attribute( "trimB", &trimB ) )
+				continue;
+			strlcpy( filename, j->Attribute( "filename" ), sizeof(filename) );
+			if ( ! filename )
+				continue;
+			VideoFileQT* vf = new VideoFileQT( filename );
+			if ( !vf->ok() ) {
+				delete vf;
+				continue;
+			}
+			Clip* clip = new VideoClip( tr, position, vf );
+			clip->trimA( trimA );
+			clip->trimB( trimB );
+			g_timeline->addClip( i, clip );
+		}
+		i++;
+	}
+	track = docH.FirstChild( "open_movie_editor_project" ).FirstChild( "audio_tracks" ).FirstChild( "track" ).Element();
+	for ( ; track; track = track->NextSiblingElement( "track" ) ) {
+		Track *tr = new AudioTrack( i );
+		g_timeline->addTrack( tr );
+		
+		TiXmlElement* j = TiXmlHandle( track ).FirstChildElement( "clip" ).Element();
+		for ( ; j; j = j->NextSiblingElement( "clip" ) ) {
+			int position;
+			int trimA;
+			int trimB;
+			char filename[1024];
+			if ( ! j->Attribute( "position", &position ) )
+				continue;
+			if ( ! j->Attribute( "trimA", &trimA ) )
+				continue;
+			if ( ! j->Attribute( "trimB", &trimB ) )
+				continue;
+			strlcpy( filename, j->Attribute( "filename" ), sizeof(filename) );
+			if ( ! filename )
+				continue;
+			IAudioFile *af = new AudioFileSnd( filename );
+			if ( !af->ok() ) {
+				delete af;
+				af = new AudioFileQT( filename );
+			}
+			if ( !af->ok() ) {
+				delete af;
+				continue;
+			}
+			Clip* clip = new AudioClip( tr, position, af );
+			clip->trimA( trimA );
+			clip->trimB( trimB );
+			g_timeline->addClip( i, clip );
+		}
+		i++;
+	}
+
 
 }
 

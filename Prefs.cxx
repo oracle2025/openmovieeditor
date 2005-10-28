@@ -61,7 +61,7 @@ Prefs::~Prefs()
 	}
 	TiXmlDocument doc( preferences_filename );
 	TiXmlDeclaration *dec = new TiXmlDeclaration( "1.0", "", "no" );
-	doc.LinkEndChild(dec);
+	doc.LinkEndChild( dec );
 	
 	TiXmlElement *item = new TiXmlElement( "version" );
 	doc.LinkEndChild( item );

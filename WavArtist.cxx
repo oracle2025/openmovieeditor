@@ -38,6 +38,7 @@ WavArtist* g_wavArtist;
 WavArtist::WavArtist()
 {
 	g_wavArtist = this;
+	m_peaks = 0;
 }
 
 WavArtist::~WavArtist()
