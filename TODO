@@ -1,6 +1,4 @@
   - Decode Video in a seperate Thread to avoid GUI-Blocking??
-  - sexpr FileFormat
-  - load Project from File
   - Final Render to File
   - Realtime Preview Render to OpenGL
     - Transparenzy
@@ -8,7 +6,7 @@
   - Video Automations ?
   - Audio Automations !! ( Volume / Balance )
   - Status Zeile für Automation Zahlenparameter
-  - Video Clip can contain Audio, can be splitted (Context Menü für Tracks)
+  - Video/AudioClip can be splitted (Context Menü für Tracks)
   - Umschalten zwischen Dateiliste und Thumbnails per Contextmenü
   - Titelgenerator
     - statischer Text
@@ -23,8 +21,6 @@
   - Fehlermeldung wenn die FrameRate nicht PAL ist (25fps??) und Audio nicht 48000 Samples hat.
 
 
-Ruler: 00:10:00  |  00:20:00  |  00:30:00 
-  - eine eigene Klasse, die nur den Hintergrund vom Ruler malt.
 http://invisible-island.net/bcpp/ in build process einbauen (http://www.mrunix.de/forums/showthread.php?t=40602)
 
 
