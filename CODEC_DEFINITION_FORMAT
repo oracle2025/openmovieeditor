@@ -1,0 +1,28 @@
+<?xml version="1.0" standalone="no" ?>
+<lqt_codec_definition>
+  <codec name="FFMPEG_DV" type="123">
+    <parameter type="INT" name="" value="" />
+    <parameter type="STRING" name="" value="" />
+    <parameter type="STRINGLIST" name="" value="" />
+  </codec>
+  <codec name="FFMPEG_DV_NTSC" type="1234">
+  </codec>
+</lqt_codec_definition>
+<video_settings>
+  <width>640</width>
+  <height>480</width>
+  <fps>25</fps>
+  <codec>FFMPEG</codec>
+</video_settings>
+<audio_settings>
+  <samplerate>48000</samplerate>
+  <codec type="1234">MP3</codec>
+</audio_settings>
+
+<presets>
+  <preset name="DIVX 4">
+    <codec name="FFMPEG_DIVX4" type="123">
+      <parameter ... />
+    </codec>
+  </preset>
+</presets>
