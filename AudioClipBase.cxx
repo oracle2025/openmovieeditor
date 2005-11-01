@@ -86,7 +86,7 @@ int AudioClipBase::fillBuffer( float* output, unsigned long frames, int64_t posi
 			&output[frames_written], frames - frames_written
 			);
 }
-const char* AudioClipBase::audioFilename()
+string AudioClipBase::audioFilename()
 {
 	return m_audioFile->filename();
 }

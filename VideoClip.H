@@ -39,7 +39,7 @@ class VideoClip : public AudioClipBase
 		void reset();
 		frame_struct* getFrame( int64_t position );
 		inline FilmStrip* getFilmStrip() { return m_filmStrip; }
-		const char* filename();
+		string filename();
 	protected:
 		int64_t audioTrimA();
 		int64_t audioTrimB();

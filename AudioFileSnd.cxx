@@ -28,11 +28,11 @@ using namespace std;
 namespace nle
 {
 
-AudioFileSnd::AudioFileSnd( const char* filename )
+AudioFileSnd::AudioFileSnd( string filename )
 {
 	m_ok = false;
 	SF_INFO sfinfo;
-	m_sndfile = sf_open( filename, SFM_READ, &sfinfo );	
+	m_sndfile = sf_open( filename.c_str(), SFM_READ, &sfinfo );	
 	if ( SF_ERR_NO_ERROR != sf_error( m_sndfile ) ) {
 		cerr << "Could not open Soundfile" << endl;
 		sf_close( m_sndfile );
@@ -58,7 +58,7 @@ AudioFileSnd::AudioFileSnd( const char* filename )
 		return;
 	}
 	m_length = sfinfo.frames;
-	strlcpy( m_filename, filename, STR_LEN );
+	m_filename = filename;
 	m_ok = true;
 }
 AudioFileSnd::~AudioFileSnd()

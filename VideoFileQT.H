@@ -23,6 +23,7 @@
 #include <lqt.h>
 /*#include <gavl/gavl.h>*/
 
+#include "global_includes.H"
 #include "IVideoFile.H"
 #include "frame_struct.h"
 
@@ -32,7 +33,7 @@ namespace nle
 class VideoFileQT : public IVideoFile
 {
 	public:
-		VideoFileQT( const char* filename );
+		VideoFileQT( string filename );
 		~VideoFileQT();
 		bool ok();
 		int64_t length();

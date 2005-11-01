@@ -22,6 +22,8 @@
 
 #include "timeline/Clip.H"
 
+#include "global_includes.H"
+
 namespace nle
 {
 
@@ -45,7 +47,7 @@ class AudioClipBase : public Clip
 		virtual int64_t audioTrimB() = 0;
 		int64_t audioLength();
 		virtual int64_t audioPosition() = 0;
-		const char* audioFilename();
+		string audioFilename();
 		IAudioFile* m_audioFile;
 	private:
 		int64_t m_lastSamplePosition;

@@ -100,7 +100,7 @@ void Project::write_project()
 		while ( cn ) {
 			clip = new TiXmlElement( "clip" );
 			track->LinkEndChild( clip );
-			clip->SetAttribute( "filename", cn->clip->filename() );
+			clip->SetAttribute( "filename", cn->clip->filename().c_str() );
 			clip->SetAttribute( "position", cn->clip->position() );
 			clip->SetAttribute( "trimA", cn->clip->trimA() );
 			clip->SetAttribute( "trimB", cn->clip->trimB() );

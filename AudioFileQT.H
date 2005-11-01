@@ -25,6 +25,7 @@
 //#include <quicktime/lqt.h>
 #include <lqt.h>
 
+#include "global_includes.H"
 #include "IAudioFile.H"
 #include "globals.H"
 
@@ -34,7 +35,7 @@ namespace nle
 class AudioFileQT : public IAudioFile
 {
 	public:
-		AudioFileQT( const char* filename );
+		AudioFileQT( string filename );
 		~AudioFileQT();
 		void seek( int64_t sample );
 		int fillBuffer( float* output, unsigned long frames );

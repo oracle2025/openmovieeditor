@@ -20,6 +20,8 @@
 #ifndef _TRACK_H_
 #define _TRACK_H_
 
+#include <string>
+
 #include <stdint.h>
 #include <sl.h>
 
@@ -45,7 +47,7 @@ class Track
 		virtual int type() = 0;
 		virtual float stretchFactor() = 0;
 		virtual void sort();
-		virtual void addFile( int64_t position, const char* filename ) = 0;
+		virtual void addFile( int64_t position, std::string filename ) = 0;
 		
 		void addClip( Clip* clip );
 		void removeClip( Clip* clip );

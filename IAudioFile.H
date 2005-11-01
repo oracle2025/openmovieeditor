@@ -23,6 +23,7 @@
 #include <stdint.h>
 
 #include "globals.H"
+#include "global_includes.H"
 
 namespace nle
 {
@@ -37,11 +38,11 @@ class IAudioFile
 		virtual int fillBuffer( float* output, unsigned long frames ) = 0;
 			//sizof(output) = frames * 2
 			//File Format: 48000 stereo interleaved
-		inline const char* filename() { return m_filename; }
+		inline string filename() { return m_filename; }
 	protected:
 		int64_t m_length;
 		bool m_ok;
-		char m_filename[STR_LEN];
+		string m_filename;
 };
 
 } /* namespace nle */

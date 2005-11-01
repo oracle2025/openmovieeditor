@@ -35,7 +35,7 @@ namespace nle
 
 static quicktime_t *qt;
 
-Renderer::Renderer( const char* filename, int w, int h, int framerate, int samplerate )
+Renderer::Renderer( string filename, int w, int h, int framerate, int samplerate )
 {
 	m_w = w;
 	m_h = h;
@@ -43,8 +43,8 @@ Renderer::Renderer( const char* filename, int w, int h, int framerate, int sampl
 	m_samplerate = samplerate;
 /*	int w = 368;
 	int h = 240;*/
-	m_filename = strdup( filename );
-	qt = quicktime_open( m_filename, false, true );
+	m_filename = filename;
+	qt = quicktime_open( m_filename.c_str(), false, true );
 	lqt_codec_info_t **codecs = lqt_query_registry( 1, 0, 1, 0 );
 	for ( int i = 0; codecs[i]; i++ ) {
 		cout << "[" << i << "]" << codecs[i]->name << endl;
@@ -70,8 +70,6 @@ Renderer::Renderer( const char* filename, int w, int h, int framerate, int sampl
 }
 Renderer::~Renderer()
 {
-	if ( m_filename )
-		delete [] m_filename;
 	if (qt)
 		quicktime_close( qt );
 }

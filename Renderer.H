@@ -20,17 +20,19 @@
 #ifndef _RENDERER_H_
 #define _RENDERER_H_
 
+#include "global_includes.H"
+
 namespace nle
 {
 
 class Renderer
 {
 	public:
-		Renderer( const char* filename, int w, int h, int framerate, int samplerate );
+		Renderer( string filename, int w, int h, int framerate, int samplerate );
 		~Renderer();
 		void go();
 	private:
-		char* m_filename;
+		string m_filename;
 		int m_w;
 		int m_h;
 		int m_framerate;

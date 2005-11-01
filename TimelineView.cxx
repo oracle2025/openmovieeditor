@@ -252,7 +252,7 @@ void TimelineView::draw()
 	fl_pop_clip();
 	fl_overlay_rect( get_screen_position( m_stylusPosition ), y(), 1, h() );
 }
-void TimelineView::add_video( int track, int y, const char* filename )
+void TimelineView::add_video( int track, int y, string filename )
 {
 	//m_timeline->add_video( track, get_real_position( y ), filename );
 }

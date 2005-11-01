@@ -41,7 +41,7 @@ void VideoTrack::sort()
 	m_current = m_clips;
 	m_playPosition = 0;
 }
-void VideoTrack::addFile( int64_t position, const char* filename )
+void VideoTrack::addFile( int64_t position, string filename )
 {
 	VideoFileQT *vf = new VideoFileQT( filename );
 	

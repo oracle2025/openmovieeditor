@@ -26,6 +26,7 @@
 #include <FL/Fl_Widget.H>
 
 #include "Rect.H"
+#include "global_includes.H"
 #include "NextFrameListener.H"
 
 namespace nle
@@ -48,7 +49,7 @@ class TimelineView : public Fl_Widget
 		virtual ~TimelineView();
 		int handle( int event );
 		void resize(int x, int y, int w, int h);
-		void add_video( int track, int y, const char* filename ); /*remove me!*/
+		void add_video( int track, int y, string filename ); /*remove me!*/
 		void scroll( int64_t position );
 		Track* get_track( int _x, int _y);
 		Clip* get_clip( int _x, int _y );

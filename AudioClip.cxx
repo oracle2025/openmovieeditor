@@ -39,7 +39,7 @@ int64_t AudioClip::length()
 {
 	return audioLength();
 }
-const char* AudioClip::filename()
+string AudioClip::filename()
 {
 	return audioFilename();
 }

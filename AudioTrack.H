@@ -22,6 +22,7 @@
 
 #include "TrackBase.H"
 #include "globals.H"
+#include "global_includes.H"
 
 namespace nle
 {
@@ -36,7 +37,7 @@ class AudioTrack : public TrackBase
 		~AudioTrack();
 
 		// method declerations
-		void addFile( int64_t position, const char* filename );
+		void addFile( int64_t position, string filename );
 		int type() { return TRACK_TYPE_AUDIO; }
 		void sort();
 		float stretchFactor() { return ( 48000 / g_fps ); }

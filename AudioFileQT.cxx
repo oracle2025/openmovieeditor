@@ -32,11 +32,11 @@ using namespace std;
 namespace nle
 {
 
-AudioFileQT::AudioFileQT( const char* filename )
+AudioFileQT::AudioFileQT( string filename )
 {
 	m_ok = false;
 	m_qt = NULL;
-	char *lqt_sucks_filename = strdup( filename );
+	char *lqt_sucks_filename = strdup( filename.c_str() );
 	if ( !quicktime_check_sig( lqt_sucks_filename ) )
 		return;
 	m_qt = quicktime_open( lqt_sucks_filename, true, false );
@@ -48,7 +48,7 @@ AudioFileQT::AudioFileQT( const char* filename )
 	m_length = quicktime_audio_length( m_qt, 0 );
 	//check samplerate
 	//check channels
-	strlcpy( m_filename, filename, STR_LEN );
+	m_filename = filename;
 	m_ok = true;
 	m_oneShot = true;
 }

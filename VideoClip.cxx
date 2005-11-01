@@ -49,7 +49,7 @@ VideoClip::~VideoClip()
 	delete m_filmStrip;
 	delete m_videoFile;
 }
-const char* VideoClip::filename()
+string VideoClip::filename()
 {
 	return m_videoFile->filename();
 }

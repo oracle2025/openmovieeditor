@@ -22,6 +22,7 @@
 
 #include "frame_struct.h"
 #include "globals.H"
+#include "global_includes.H"
 
 namespace nle
 {
@@ -39,11 +40,11 @@ class IVideoFile
 		virtual void readScaled( unsigned char** rows ) = 0; //For Final Rendering
 		virtual void read( unsigned char** rows, int w, int h ) = 0; //For Timeline Picture Preview
 		virtual void seek( int64_t frame ) = 0;
-		const char* filename() { return m_filename; }
+		string filename() { return m_filename; }
 	protected:
 		int m_width;
 		int m_height;
-		char m_filename[STR_LEN];
+		string m_filename;
 };
 
 } /* namespace nle */

@@ -20,6 +20,8 @@
 #ifndef _TIMELINE_BASE_H_
 #define _TIMELINE_BASE_H_
 
+#include <string>
+
 #include <stdint.h>
 
 namespace nle
@@ -43,7 +45,7 @@ class TimelineBase
 		// method declerations
 		void sort();
 		void addClip( int track, Clip *clip );
-		void addFile( int track, int64_t position, const char* filename );
+		void addFile( int track, int64_t position, std::string filename );
 		void removeClip( int track, Clip *clip );
 		void addTrack( Track* track );
 		void removeTrack( int track );

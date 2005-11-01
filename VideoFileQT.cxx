@@ -32,14 +32,14 @@ using namespace std;
 namespace nle
 {
 
-VideoFileQT::VideoFileQT( const char* filename )
+VideoFileQT::VideoFileQT( string filename )
 {
 	//m_scaler = NULL;
 	m_ok = false;
 	m_qt = NULL;
 	m_frame = NULL;
 	m_rows = NULL;
-	char *lqt_sucks_filename = strdup( filename );
+	char *lqt_sucks_filename = strdup( filename.c_str() );
 	if ( !quicktime_check_sig( lqt_sucks_filename ) ) {
 		cerr << "Check Sig failed" << endl;
 		return;
@@ -78,7 +78,7 @@ VideoFileQT::VideoFileQT( const char* filename )
 	cout << "Video Timescale: " << lqt_video_time_scale( m_qt, 0 ) << endl;
 	cout << "Audio Length: " << quicktime_audio_length( m_qt, 0 ) << endl;
 	cout << "Audio Samplerate: " << quicktime_sample_rate( m_qt, 0 ) << endl;
-	strncpy(m_filename, filename, STR_LEN);
+	m_filename = filename;
 	m_ok = true;
 /*	unsigned char p[25*25*3];
 	unsigned char* ro[25];

@@ -29,19 +29,19 @@ namespace nle
 {
 
 Prefs* g_preferences;
-static char preferences_filename[1024];
+static string preferences_filename;
 
 Prefs::Prefs()
 {
-	strcpy( preferences_filename, "" );
+	preferences_filename = "";
 	if ( !getenv("HOME") ) {
 		return;
 	}
-	strlcpy( preferences_filename, getenv("HOME"), sizeof(preferences_filename) );
-	strncat( preferences_filename, "/.openme.prefs", sizeof(preferences_filename) - strlen(preferences_filename) - 1 );
+	preferences_filename += getenv( "HOME" );
+	preferences_filename += "/.openme.prefs";
 	g_preferences = this;
-	strlcpy( m_browserFolder, getenv("HOME"), sizeof(m_browserFolder) );
-	TiXmlDocument doc( preferences_filename );
+	m_browserFolder = getenv( "HOME" );
+	TiXmlDocument doc( preferences_filename.c_str() );
 	if ( !doc.LoadFile() ) {
 		return;
 	}
@@ -49,17 +49,17 @@ Prefs::Prefs()
 	TiXmlHandle docH( &doc );
 	TiXmlText* text = docH.FirstChildElement( "browserFolder" ).Child( 0 ).Text();
 	if ( text ) {
-		strlcpy( m_browserFolder, text->Value(), sizeof(m_browserFolder) );
+		m_browserFolder = text->Value();
 	}
 
 }
 
 Prefs::~Prefs()
 {
-	if ( strlen( preferences_filename ) == 0 ) {
+	if ( preferences_filename.length() == 0 ) {
 		return;
 	}
-	TiXmlDocument doc( preferences_filename );
+	TiXmlDocument doc( preferences_filename.c_str() );
 	TiXmlDeclaration *dec = new TiXmlDeclaration( "1.0", "", "no" );
 	doc.LinkEndChild( dec );
 	
@@ -70,20 +70,18 @@ Prefs::~Prefs()
 	
 	item = new TiXmlElement( "browserFolder" );
 	doc.LinkEndChild( item );
-	text = new TiXmlText( m_browserFolder );
+	text = new TiXmlText( m_browserFolder.c_str() );
 	item->LinkEndChild( text );
 
 	doc.SaveFile();
 }
-const char* Prefs::getBrowserFolder()
+string Prefs::getBrowserFolder()
 {
 	return m_browserFolder;
 }
-void Prefs::setBrowserFolder( const char* filename )
+void Prefs::setBrowserFolder( string filename )
 {
-	strncpy( m_browserFolder, filename, sizeof(m_browserFolder) - 1 );
-	m_browserFolder[sizeof(m_browserFolder)-1] = '\0';
-	// ^ strncpy is obviously broken, get strlcpy !
+	m_browserFolder = filename;
 }
 
 } /* namespace nle */

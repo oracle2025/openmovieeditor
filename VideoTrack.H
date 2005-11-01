@@ -22,6 +22,7 @@
 
 #include "TrackBase.H"
 #include "frame_struct.h"
+#include "global_includes.H"
 
 namespace nle
 {
@@ -36,7 +37,7 @@ class VideoTrack : public TrackBase
 		~VideoTrack();
 
 		// method declerations
-		void addFile( int64_t position, const char* filename );
+		void addFile( int64_t position, string filename );
 //		void add_video( int64_t position, const char* filename );
 		int type() { return TRACK_TYPE_VIDEO; }
 		float stretchFactor() { return 1.0; }

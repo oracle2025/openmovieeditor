@@ -44,7 +44,7 @@ Texter::~Texter()
 {
 	delete m_blob;
 }
-void *Texter::generateText( unsigned int w, unsigned int h, const char* text )
+void *Texter::generateText( unsigned int w, unsigned int h, string text )
 {
 	char buf[255];
 	snprintf( buf, 255, "%dx%d", w, h );

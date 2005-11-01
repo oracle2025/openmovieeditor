@@ -23,6 +23,7 @@
 #define KEY_STRING_LEN   50
 #define VALUE_STRING_LEN 256
 
+#include "global_includes.H"
 
 namespace nle
 {
@@ -33,10 +34,10 @@ class Prefs
 	public:
 		Prefs();
 		~Prefs();
-		const char* getBrowserFolder();
-		void setBrowserFolder( const char* filename );
+		string getBrowserFolder();
+		void setBrowserFolder( string filename );
 	private:
-		char m_browserFolder[1024];
+		string m_browserFolder;
 		
 };
 

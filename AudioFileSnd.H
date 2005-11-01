@@ -22,6 +22,7 @@
 
 #include <sndfile.h>
 
+#include "global_includes.H"
 #include "IAudioFile.H"
 
 namespace nle
@@ -30,7 +31,7 @@ namespace nle
 class AudioFileSnd : public IAudioFile
 {
 	public:
-		AudioFileSnd( const char* filename );
+		AudioFileSnd( string filename );
 		~AudioFileSnd();
 		void seek( int64_t sample );
 		int fillBuffer( float* output, unsigned long frames );

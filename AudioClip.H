@@ -22,6 +22,8 @@
 
 #include "AudioClipBase.H"
 
+#include "global_includes.H"
+
 namespace nle
 {
 
@@ -31,7 +33,7 @@ class AudioClip : public AudioClipBase
 		AudioClip( Track *track, int64_t position, IAudioFile* af );
 		~AudioClip();
 		int64_t length();
-		const char* filename();
+		string filename();
 	protected:
 		int64_t audioTrimA();
 		int64_t audioTrimB();

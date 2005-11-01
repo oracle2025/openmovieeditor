@@ -54,7 +54,7 @@ void WavArtist::add( IAudioFile* file )
 {
 	peakfile_node* node = m_peaks;
 	while ( node ) {
-		if ( strcmp( node->filename, file->filename() ) == 0 ) {
+		if ( node->filename == file->filename() ) {
 			node->refCount++;
 			return;
 		}
@@ -77,7 +77,7 @@ void WavArtist::add( IAudioFile* file )
 		}
 		peaks[i] = max;
 	}
-	strlcpy( node->filename, file->filename(), STR_LEN );
+	node->filename = file->filename();
 	node->refCount = 1;
 	m_peaks = (peakfile_node*)sl_push( m_peaks, node );
 	cout << "WavArtist: Added" << endl;
@@ -86,7 +86,7 @@ static int remove_peakfile_helper( void* p, void* data )
 {
 	peakfile_node* node = (peakfile_node*)p;
 	const char* filename = (const char*)data;
-	if ( strcmp( node->filename, filename ) == 0 ) {
+	if ( strcmp( node->filename.c_str(), filename ) == 0 ) {
 		node->refCount--;
 		if ( node->refCount == 0 ) {
 			return 1;
@@ -94,9 +94,9 @@ static int remove_peakfile_helper( void* p, void* data )
 	}
 	return 0;
 }
-void WavArtist::remove( const char* filename )
+void WavArtist::remove( string filename )
 {
-	peakfile_node* node = (peakfile_node*)sl_remove( &m_peaks, remove_peakfile_helper, (void*)filename );
+	peakfile_node* node = (peakfile_node*)sl_remove( &m_peaks, remove_peakfile_helper, (void*)filename.c_str() );
 	if ( node ) {
 		delete [] node->peaks;
 		delete node;
@@ -107,14 +107,14 @@ static int find_peakfile_helper( void* p, void* data )
 {
 	peakfile_node* node = (peakfile_node*)p;
 	const char* filename = (const char*)data;
-	if ( strcmp( node->filename, filename ) == 0 ) {
+	if ( strcmp( node->filename.c_str(), filename ) == 0 ) {
 		return 1;
 	}
 	return 0;
 }
-void WavArtist::render( const char* filename, Rect& rect, int64_t start, int64_t stop )
+void WavArtist::render( string filename, Rect& rect, int64_t start, int64_t stop )
 {
-	peakfile_node* node = (peakfile_node*)sl_map( m_peaks, find_peakfile_helper, (void*)filename );
+	peakfile_node* node = (peakfile_node*)sl_map( m_peaks, find_peakfile_helper, (void*)filename.c_str() );
 	if ( !node ) {
 		return;
 	}

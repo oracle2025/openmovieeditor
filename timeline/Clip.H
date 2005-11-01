@@ -20,8 +20,9 @@
 #ifndef _CLIP_H_
 #define _CLIP_H_
 
-#include <stdint.h>
+#include <string>
 
+#include <stdint.h>
 
 namespace nle
 {
@@ -42,7 +43,7 @@ class Clip
 		inline int64_t trimA() { return m_trimA; }
 		void trimB( int64_t trim );
 		inline int64_t trimB() { return m_trimB; }
-		virtual const char* filename()=0;
+		virtual std::string filename()=0;
 		inline int64_t A() { return position(); }
 		inline int64_t B() { return m_position + length(); }
 	protected:

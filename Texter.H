@@ -21,6 +21,7 @@
 #define _TEXTER_H_
 
 #include <Magick++.h>
+#include "global_includes.H"
 
 namespace nle
 {
@@ -30,7 +31,7 @@ class Texter
 	public:
 		Texter();
 		~Texter();
-		void *generateText( unsigned int w, unsigned int h, const char* text );
+		void *generateText( unsigned int w, unsigned int h, string text );
 	private:
 		Magick::Blob* m_blob;
 };
