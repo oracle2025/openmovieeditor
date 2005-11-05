@@ -35,6 +35,8 @@ union semun {
 
 namespace nle
 {
+class PlaybackCore;
+extern PlaybackCore* g_playbackCore;
 
 class IAudioReader;
 class IVideoReader;
@@ -51,7 +53,9 @@ class PlaybackCore
 		unsigned long fillBuffer( float* output, unsigned long frames );
 		void videoThread();
 		void audioThread();
+		inline bool active() { return m_active; }
 	private:
+		bool m_stop;
 		bool m_active;
 		bool m_stop_playback;
 		bool m_stop_playback_gui;

@@ -39,11 +39,12 @@ using namespace std;
 
 #define FRAMES 256
 
-#define DEFAULT_RB_SIZE ( 16384 * 5 )           /* ringbuffer size in frames */
+#define DEFAULT_RB_SIZE ( 16384 * 10 )           /* ringbuffer size in frames */
 
 namespace nle
 {
 
+PlaybackCore* g_playbackCore;
 static PortAudioStream* stream;
 
 static int callback( void *input, void *output, unsigned long frames, PaTimestamp time, void* data )
@@ -78,6 +79,8 @@ static void* audio( void* data )
 
 PlaybackCore::PlaybackCore( IAudioReader* audioReader, IVideoReader* videoReader, IVideoWriter* videoWriter )
 {
+	m_stop = true;
+	g_playbackCore = this;
 	m_audioReader = audioReader;
 	m_videoReader = videoReader;
 	m_videoWriter = videoWriter;
@@ -154,6 +157,13 @@ void PlaybackCore::play()
 	m_videoFrames_protected = 0;
 	m_xruns = 0;
 	m_active = false;
+
+	m_stop = false;
+
+	pthread_mutex_lock( &m_audio_lock );
+	pthread_cond_signal( &m_audio_ready );
+	pthread_mutex_unlock( &m_audio_lock );
+	
 
 	PortAudioCallback *cb = (PortAudioCallback*)callback;
 	PaError err;
@@ -282,7 +292,7 @@ void PlaybackCore::audioThread()
 	pthread_setcanceltype( PTHREAD_CANCEL_ASYNCHRONOUS, NULL );
 	pthread_mutex_lock( &m_audio_lock );
 	while ( 1 ) {
-		if ( ( jack_ringbuffer_write_space( m_rb ) >= ( sizeof(float) * FRAMES * 2 ) ) && rt == FRAMES ) {
+		if ( ( jack_ringbuffer_write_space( m_rb ) >= ( sizeof(float) * FRAMES * 2 ) ) && rt == FRAMES && !m_stop ) {
 			rt = m_audioReader->fillBuffer( buffer, FRAMES );
 			cout << "Ringbuffer write: " << ( sizeof(float) * rt * 2 ) << endl;
 			jack_ringbuffer_write( m_rb, (char*)buffer, sizeof(float) * rt * 2 );

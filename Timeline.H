@@ -24,11 +24,13 @@
 
 #include "timeline/TimelineBase.H"
 #include "frame_struct.h"
+#include "IAudioReader.H"
+#include "IVideoReader.H"
 
 namespace nle
 {
 
-class Timeline : public TimelineBase
+class Timeline : public TimelineBase, public IAudioReader, public IVideoReader
 {
 	public:
 		// constructors and destructors

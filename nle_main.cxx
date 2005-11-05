@@ -25,6 +25,10 @@
 #include "Prefs.H"
 #include "WavArtist.H"
 #include "Project.H"
+#include "PlaybackCore.H"
+#include "globals.H"
+#include "Timeline.H"
+#include "VideoViewGL.H"
 
 namespace nle 
 {
@@ -37,6 +41,8 @@ int main( int argc, char** argv )
 	nle::Prefs preferences;
 	nle::WavArtist wavArtist;
 	NleUI nui;
+	nle::PlaybackCore playbackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
+	
 	Fl::visual(FL_DOUBLE|FL_RGB);
 
 	Fl::background2( 34, 52, 103 );

@@ -109,7 +109,9 @@ void Timeline::sort()
 }
 frame_struct* Timeline::getFrame( int64_t position )
 {
+	return nextFrame( position );
 	//TODO: seek if neccessary ??
+#if 0
 	frame_struct* tmp = NULL;
 	for ( track_node *p = m_allTracks; p; p = p->next ) {
 		if ( p->track->type() != TRACK_TYPE_VIDEO ) {
@@ -122,6 +124,7 @@ frame_struct* Timeline::getFrame( int64_t position )
 		}
 	}
 	return 0;
+#endif
 }
 frame_struct* Timeline::nextFrame( int64_t position )
 {

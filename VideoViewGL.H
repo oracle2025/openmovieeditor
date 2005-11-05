@@ -25,31 +25,25 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Gl_Window.H>
 
-#include "NextFrameListener.H"
+#include "IVideoWriter.H"
 #include "frame_struct.h"
 
 namespace nle
 {
 
 class Timeline;
-class Sound;
 
-class VideoViewGL : public Fl_Gl_Window, NextFrameListener
+class VideoViewGL : public Fl_Gl_Window, public IVideoWriter
 {
 	public:
 		VideoViewGL( int x, int y, int w, int h, const char *l = 0 );
 		~VideoViewGL();
 		void draw();
+		void pushFrame( frame_struct* fs );
 		void nextFrame( int64_t frame );
 		void seek( int64_t position );
 		void play();
 		void stop();
-	private:
-		Sound *m_snd;
-		bool m_playing;
-		bool m_seek;
-		int64_t m_seekPosition;
-		int64_t m_playingPosition;
 };
 
 } /* namespace nle */
