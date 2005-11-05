@@ -3,7 +3,7 @@
 #ifndef nle_h
 #define nle_h
 #include <FL/Fl.H>
-#include <FL/Fl_Window.H>
+#include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Menu_Bar.H>
 #include "Project.H"
 #include "Renderer.H"
@@ -30,7 +30,7 @@ class NleUI {
 public:
   NleUI();
 private:
-  Fl_Window *mainWindow;
+  Fl_Double_Window *mainWindow;
   static Fl_Menu_Item menu_[];
   inline void cb_Open_i(Fl_Menu_*, void*);
   static void cb_Open(Fl_Menu_*, void*);
@@ -66,7 +66,6 @@ public:
   void show( int argc, char **argv );
 };
 extern Flmm_Scalebar* g_scrollBar;
-#include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Return_Button.H>
 #include "Codecs.H"
 #include <FL/Fl_File_Input.H>

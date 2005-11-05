@@ -116,7 +116,6 @@ void Project::write_project()
 
 void Project::read_project()
 {
-	g_timeline->clear();
 
 	strcpy( project_filename, "" );
 	if ( !getenv("HOME") ) {
@@ -129,6 +128,7 @@ void Project::read_project()
 	if ( !doc.LoadFile() ) {
 		return;
 	}
+	g_timeline->clear();
 	TiXmlHandle docH( &doc );
 	//TiXmlElement* video_tracks = docH.FirstChildElement( "open_movie_editor_project" ).FirstChildElement( "video_tracks" );
 	TiXmlElement* track = docH.FirstChild( "open_movie_editor_project" ).FirstChild( "video_tracks" ).FirstChild( "track" ).Element();

@@ -58,7 +58,8 @@ static GLuint video_canvas[10];
 void VideoViewGL::pushFrame( frame_struct* fs )
 {
 	make_overlay_current();
-	SwitchBoard::i()->move_cursor();
+	fl_draw_box( FL_DIAMOND_UP_BOX, 0, 0, 25, 25, FL_BACKGROUND_COLOR );
+	//SwitchBoard::i()->move_cursor();
 	make_current();
 	if ( !valid() ) {
 		glLoadIdentity(); glViewport( 0, 0, w(), h() ); // glViewport( _x, _y, _w, _h );

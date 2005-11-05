@@ -103,7 +103,7 @@ PlaybackCore::PlaybackCore( IAudioReader* audioReader, IVideoReader* videoReader
 	key_t key;
 	union semun arg;
 	key = ftok( "/openmovieeditor", 'E' );
-	m_semid = semget( key, 2, 0600 | IPC_EXCL | IPC_CREAT );
+	m_semid = semget( key, 2, 0600 |  IPC_CREAT );
 	if ( !m_semid ) {
 		perror( "PlaybackCore" );
 	}

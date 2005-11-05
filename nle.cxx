@@ -203,8 +203,8 @@ static const char *idata_trash[] = {
 static Fl_Pixmap image_trash(idata_trash);
 
 NleUI::NleUI() {
-  Fl_Window* w;
-  { Fl_Window* o = mainWindow = new Fl_Window(515, 475, "MovieEditor");
+  Fl_Double_Window* w;
+  { Fl_Double_Window* o = mainWindow = new Fl_Double_Window(515, 475, "MovieEditor");
     w = o;
     o->user_data((void*)(this));
     { Fl_Menu_Bar* o = new Fl_Menu_Bar(0, 0, 515, 25);
