@@ -20,6 +20,8 @@
 #ifndef _FRAME_STRUCT_H_
 #define _FRAME_STRUCT_H_
 
+#include <stdint.h>
+
 namespace nle
 {
 
@@ -29,6 +31,7 @@ typedef struct
 	unsigned char *RGB;
 	unsigned char *YUV;
 	unsigned char **rows;
+	int64_t nr;
 } frame_struct;
 
 } /* namespace nle */

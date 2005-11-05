@@ -26,12 +26,20 @@
 #include <sys/ipc.h>
 #include <sys/sem.h>
 #include <unistd.h>
-#include <jack/ringbuffer.h>
+
+#include <FL/Fl.H>
+
+#include "portaudio/portaudio.h"
+#include "PlaybackCore.H"
+#include "IAudioReader.H"
+#include "IVideoReader.H"
+#include "IVideoWriter.H"
 
 using namespace std;
 
 #define FRAMES 256
 
+#define DEFAULT_RB_SIZE ( 16384 * 5 )           /* ringbuffer size in frames */
 
 namespace nle
 {
@@ -41,7 +49,11 @@ static PortAudioStream* stream;
 static int callback( void *input, void *output, unsigned long frames, PaTimestamp time, void* data )
 {
 	PlaybackCore* pc = (PlaybackCore*)data;
-	return ( frames != pc->fillBuffer( (float*)output, frames ) );
+	unsigned long ret = pc->fillBuffer( (float*)output, frames );
+	if ( frames != ret ) {
+		cout << "Ret final: " << ret << endl;
+	}
+	return ( frames != ret );
 }
 
 static void gui( int p, void* data )
@@ -64,10 +76,26 @@ static void* audio( void* data )
 	return 0;
 }
 
-PlaybackCore::PlaybackCore()
+PlaybackCore::PlaybackCore( IAudioReader* audioReader, IVideoReader* videoReader, IVideoWriter* videoWriter )
 {
+	m_audioReader = audioReader;
+	m_videoReader = videoReader;
+	m_videoWriter = videoWriter;
 	m_active = false;
 	m_rb = jack_ringbuffer_create( DEFAULT_RB_SIZE );
+	
+	m_soundSamples = 0;
+	m_stop_playback = 0;
+	m_stop_playback_gui = false;
+	m_videoFrames = 0;
+	m_videoFrames_protected = 0;
+	m_xruns = 0;
+
+
+	pthread_mutex_init( &m_video_lock, 0 );
+	pthread_mutex_init( &m_audio_lock, 0 );
+	pthread_cond_init( &m_audio_ready, 0 );
+	pthread_cond_init( &m_video_ready, 0 );
 
 	key_t key;
 	union semun arg;
@@ -91,6 +119,8 @@ PlaybackCore::PlaybackCore()
 }
 PlaybackCore::~PlaybackCore()
 {
+	stop();
+
 	pthread_cancel( m_video_thread );
 	pthread_cancel( m_audio_thread );
 	
@@ -115,7 +145,11 @@ void PlaybackCore::play()
 	if ( m_active ) {
 		return;
 	}
+	//empty buffers
+	cout << "PlaybackCore::play()" << endl;
 	m_soundSamples = 0;
+	m_stop_playback = 0;
+	m_stop_playback_gui = false;
 	m_videoFrames = 0;
 	m_videoFrames_protected = 0;
 	m_xruns = 0;
@@ -146,6 +180,7 @@ void PlaybackCore::stop()
 	if ( !m_active ) {
 		return;
 	}
+	cout << "XRuns: " << m_xruns << endl;
 
 	m_active = false;
 	
@@ -176,9 +211,10 @@ void PlaybackCore::flipScreen( int p )
 		perror( "flipScreen" );
 		exit( 1 );
 	}
+	if ( m_stop_playback_gui ) {
+	}
 
-	g_videoView->nextFrame( m_videoFrames_gui_thread )
-	// blit framebuffer to screen
+	m_videoWriter->pushFrame( m_fs );
 
 	if ( semop( m_semid, &sb_leave, 1) == -1 ) {
 		perror( "flipScreen" );
@@ -188,11 +224,18 @@ void PlaybackCore::flipScreen( int p )
 
 unsigned long PlaybackCore::fillBuffer( float* output, unsigned long frames )
 {
-	unsigned long rt = jack_ringbuffer_read( m_rb, (void*)output, frames );
+	cout << "Ringbuffer read: " << ( frames * sizeof(float) * 2 ) << endl;
+	unsigned long rt = jack_ringbuffer_read( m_rb, (char*)output, frames * sizeof(float) * 2 );
+	rt = rt / sizeof(float) / 2;
 	if ( rt < frames ) {
+		for ( unsigned long i = rt * 2; i < (frames * 2); i++ ) {
+			output[i] = 0.0;
+		}
 		m_xruns++;
 	}
+	cout << "trying to lock mutex" << endl;
 	if ( pthread_mutex_trylock( &m_audio_lock ) == 0 ) {
+		cout << "mutex locked in fillBuffer" << endl;
 		pthread_cond_signal( &m_audio_ready );
 		pthread_mutex_unlock( &m_audio_lock );
 	}
@@ -206,6 +249,7 @@ void PlaybackCore::videoThread()
 	struct sembuf sb_leave = { 1, 1, 0 };
 	char buf = 'b';
 	int64_t videoFrame;
+	pthread_setcanceltype( PTHREAD_CANCEL_ASYNCHRONOUS, NULL );
 	while ( 1 ) {
 		if ( semop( m_semid, &sb_enter, 1 ) == -1 ) {
 			perror( "video" );
@@ -214,17 +258,15 @@ void PlaybackCore::videoThread()
 		
 		pthread_mutex_lock( &m_video_lock );
 		pthread_cond_wait( &m_video_ready, &m_video_lock );
+
+		m_stop_playback_gui = m_stop_playback;
 		
 		videoFrame = m_videoFrames;
 		
 		pthread_mutex_unlock( &m_video_lock);
 		
-		m_videoFrames_gui_thread = videoFrame;
-		
-		//g_timeline->getFrame( videoFrame )
+		m_fs = m_videoReader->getFrame( videoFrame );
 
-		// manipulate framebuffer
-		
 		if ( semop( m_semid, &sb_leave, 1) == -1 ) {
 			perror( "disk" );
 			exit( 1 );
@@ -235,31 +277,34 @@ void PlaybackCore::videoThread()
 
 void PlaybackCore::audioThread()
 {
-	unsigned long rt;
+	unsigned long rt = FRAMES;
 	float buffer[FRAMES * 2];
+	pthread_setcanceltype( PTHREAD_CANCEL_ASYNCHRONOUS, NULL );
 	pthread_mutex_lock( &m_audio_lock );
 	while ( 1 ) {
-		if ( jack_ringbuffer_write_space( m_rb ) >= FRAMES * 2 ) {
-			rt = g_timeline->fillBuffer( buffer, FRAMES );
-			jack_ringbuffer_write( m_rb, (void*)buffer, FRAMES * 2 );
+		if ( ( jack_ringbuffer_write_space( m_rb ) >= ( sizeof(float) * FRAMES * 2 ) ) && rt == FRAMES ) {
+			rt = m_audioReader->fillBuffer( buffer, FRAMES );
+			cout << "Ringbuffer write: " << ( sizeof(float) * rt * 2 ) << endl;
+			jack_ringbuffer_write( m_rb, (char*)buffer, sizeof(float) * rt * 2 );
 
-			m_soundSamples + = rt;
+			m_soundSamples += rt;
 			if ( m_soundSamples / ( 48000 / 25 ) > m_videoFrames_protected ) {
 				pthread_mutex_lock( &m_video_lock );
 				
-				m_videFrames_protected++;
+				m_videoFrames_protected++;
 				m_videoFrames = m_videoFrames_protected;
+				cout << "notifying Video: " << m_videoFrames << endl;
 
 				pthread_cond_signal( &m_video_ready );
 				pthread_mutex_unlock( &m_video_lock );
 			}
 			
 		} else {
+			cout << "waiting" << endl;
 			pthread_cond_wait( &m_audio_ready, &m_audio_lock );
 		}
 	}
 	pthread_mutex_unlock( &m_audio_lock ); // <= can't be reached
-	return 0;
 }	
 
 } /* namespace nle */

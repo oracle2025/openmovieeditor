@@ -21,6 +21,9 @@
 #define _PLAYBACK_CORE_H_
 
 #include <stdint.h>
+#include <pthread.h>
+#include <jack/ringbuffer.h>
+#include "frame_struct.h"
 
 union semun {
 	int              val;    /* Value for SETVAL */
@@ -33,10 +36,14 @@ union semun {
 namespace nle
 {
 
+class IAudioReader;
+class IVideoReader;
+class IVideoWriter;
+
 class PlaybackCore
 {
 	public:
-		PlaybackCore();
+		PlaybackCore( IAudioReader* audioReader, IVideoReader* videoReader, IVideoWriter* videoWriter );
 		~PlaybackCore();
 		void play();
 		void stop();
@@ -46,12 +53,13 @@ class PlaybackCore
 		void audioThread();
 	private:
 		bool m_active;
+		bool m_stop_playback;
+		bool m_stop_playback_gui;
 		int64_t m_soundSamples;
 		int64_t m_videoFrames;
 		int64_t m_videoFrames_protected;
-		int64_t m_videoFrames_gui_thread;
 		int m_semid;
-		int m_xruns++;
+		int m_xruns;
 		int m_pipe[2];
 		pthread_mutex_t m_audio_lock;
 		pthread_cond_t m_audio_ready;
@@ -60,6 +68,10 @@ class PlaybackCore
 		jack_ringbuffer_t* m_rb;
 		pthread_t m_audio_thread;
 		pthread_t m_video_thread;
+		frame_struct *m_fs;
+		IAudioReader* m_audioReader;
+		IVideoReader* m_videoReader;
+		IVideoWriter* m_videoWriter;
 
 };
 

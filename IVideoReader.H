@@ -1,4 +1,4 @@
-/*  IAudioFile.H
+/* IVideoReader.H
  *
  *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,32 +17,22 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _I_AUDIO_FILE_H_
-#define _I_AUDIO_FILE_H_
+#ifndef _I_VIDEO_READER_H_
+#define _I_VIDEO_READER_H_
 
-#include <stdint.h>
-
+#include "frame_struct.h"
 
 namespace nle
 {
 
-class IAudioFile
+class IVideoReader
 {
 	public:
-		virtual ~IAudioFile() {}
-		inline bool ok() { return m_ok; }
-		inline int64_t length() { return m_length; } // <= number of floats: 2 * length (left, right)
-		virtual void seek( int64_t sample ) = 0;
-		virtual int fillBuffer( float* output, unsigned long frames ) = 0;
-			//sizof(output) = frames * 2
-			//File Format: 48000 stereo interleaved
-		inline string filename() { return m_filename; }
-	protected:
-		int64_t m_length;
-		bool m_ok;
-		string m_filename;
+		virtual ~IVideoReader() {}
+		virtual frame_struct* getFrame( int64_t position ) = 0;
 };
 
 } /* namespace nle */
 
-#endif /* _I_AUDIO_FILE_H_ */
+#endif /* _I_VIDEO_READER_H_ */
+
