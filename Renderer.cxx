@@ -24,6 +24,8 @@
 #include <colormodels.h>
 //#include <gavl.h>
 
+#include "strlcpy.h"
+
 #include "Renderer.H"
 #include "globals.H"
 #include "Timeline.H"
@@ -37,6 +39,7 @@ static quicktime_t *qt;
 
 Renderer::Renderer( string filename, int w, int h, int framerate, int samplerate )
 {
+	char buffer[1024];
 	m_w = w;
 	m_h = h;
 	m_framerate = framerate;
@@ -44,7 +47,8 @@ Renderer::Renderer( string filename, int w, int h, int framerate, int samplerate
 /*	int w = 368;
 	int h = 240;*/
 	m_filename = filename;
-	qt = quicktime_open( m_filename.c_str(), false, true );
+	strlcpy( buffer, m_filename.c_str(), sizeof(buffer) );
+	qt = quicktime_open( buffer, false, true );
 	lqt_codec_info_t **codecs = lqt_query_registry( 1, 0, 1, 0 );
 	for ( int i = 0; codecs[i]; i++ ) {
 		cout << "[" << i << "]" << codecs[i]->name << endl;
@@ -149,6 +153,7 @@ void Renderer::go()
 		if ( fcnt > 1601 ) {
 			if ( frame_struct *fs = g_timeline->nextFrame() ) {
 				if ( fs->w != m_w || fs->h != m_h ) {
+
 				} else {
 					quicktime_encode_video( qt, fs->rows, 0 );
 				}
