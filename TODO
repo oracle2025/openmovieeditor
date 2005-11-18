@@ -31,6 +31,11 @@ http://invisible-island.net/bcpp/ in build process einbauen (http://www.mrunix.d
 
 
   - restrict Fileformats temporarily to 25 FPS and 48000  
+
+  - restrict CODECS to DV-PAL
+                       24 bit PCM
+
+
 	/*
 	glTexSubImage2D
 	http://www.gamedev.net/reference/articles/article947.asp

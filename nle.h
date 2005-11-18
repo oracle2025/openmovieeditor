@@ -9,22 +9,23 @@
 #include "Renderer.H"
 #include <FL/Fl_Tile.H>
 #include <FL/Fl_Group.H>
-#include "VideoViewGL.H"
+#include "Ruler.H"
+#include "TimelineView.H"
+#include "Flmm_Scalebar.H"
+#include "globals.H"
+using namespace std;
 #include <FL/Fl_Button.H>
+#include <FL/Fl_Box.H>
+#include "VideoViewGL.H"
 #include <FL/Fl_Tabs.H>
 #include <FL/Fl_Value_Input.H>
-#include <FL/Fl_Box.H>
 #include <FL/Fl_Choice.H>
 #include <iostream>
 #include <string>
 #include "FileBrowser.H"
 #include <FL/Fl_Menu_Button.H>
 #include <FL/Fl_Text_Editor.H>
-#include "Ruler.H"
-#include "TimelineView.H"
-#include "Flmm_Scalebar.H"
-#include "globals.H"
-using namespace std;
+#include <FL/Fl_Input.H>
 
 class NleUI {
 public:
@@ -39,13 +40,16 @@ private:
   inline void cb_Render_i(Fl_Menu_*, void*);
   static void cb_Render(Fl_Menu_*, void*);
 public:
-  nle::VideoViewGL *m_videoView;
+  nle::TimelineView *m_timelineView;
 private:
-  inline void cb__i(Fl_Button*, void*);
-  static void cb_(Fl_Button*, void*);
-  inline void cb_1_i(Fl_Button*, void*);
-  static void cb_1(Fl_Button*, void*);
+  Flmm_Scalebar *scaleBar;
+  inline void cb_scaleBar_i(Flmm_Scalebar*, void*);
+  static void cb_scaleBar(Flmm_Scalebar*, void*);
+  Fl_Box *trashCan;
+public:
+  nle::VideoViewGL *m_videoView;
   static Fl_Menu_Item menu_FPS[];
+private:
   inline void cb_PAL_i(Fl_Menu_*, void*);
   static void cb_PAL(Fl_Menu_*, void*);
   inline void cb_NTSC_i(Fl_Menu_*, void*);
@@ -56,12 +60,13 @@ private:
   inline void cb_fileBrowser_i(nle::FileBrowser*, void*);
   static void cb_fileBrowser(nle::FileBrowser*, void*);
 public:
-  nle::TimelineView *m_timelineView;
+  Fl_Input *projectNameInput;
 private:
-  Flmm_Scalebar *scaleBar;
-  inline void cb_scaleBar_i(Flmm_Scalebar*, void*);
-  static void cb_scaleBar(Flmm_Scalebar*, void*);
-  Fl_Box *trashCan;
+  inline void cb__i(Fl_Button*, void*);
+  static void cb_(Fl_Button*, void*);
+  inline void cb_1_i(Fl_Button*, void*);
+  static void cb_1(Fl_Button*, void*);
+  static Fl_Menu_Item menu_1[];
 public:
   void show( int argc, char **argv );
 };
@@ -113,7 +118,6 @@ public:
 extern Fl_Box *g_trashCan;
 extern float g_fps;
 #include <FL/Fl_Hold_Browser.H>
-#include <FL/Fl_Input.H>
 
 class CodecOptions {
 public:

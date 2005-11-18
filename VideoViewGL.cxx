@@ -40,6 +40,7 @@ VideoViewGL::VideoViewGL( int x, int y, int w, int h, const char *l )
 	: Fl_Gl_Window( x, y, w, h, l )
 {
 	g_videoView = this;
+	m_seekPosition = -1;
 }
 
 VideoViewGL::~VideoViewGL()
@@ -57,8 +58,8 @@ static GLuint video_canvas[10];
 
 void VideoViewGL::pushFrame( frame_struct* fs )
 {
-	make_overlay_current();
-	fl_draw_box( FL_DIAMOND_UP_BOX, 0, 0, 25, 25, FL_BACKGROUND_COLOR );
+	//make_overlay_current();
+	//fl_draw_box( FL_DIAMOND_UP_BOX, 0, 0, 25, 25, FL_BACKGROUND_COLOR );
 	//SwitchBoard::i()->move_cursor();
 	make_current();
 	if ( !valid() ) {
@@ -141,6 +142,44 @@ void VideoViewGL::draw()
 	}
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	glBindTexture( GL_TEXTURE_2D, video_canvas[0] );
+	if ( m_seekPosition > 0 ) {
+		frame_struct* fs = g_timeline->getFrame( m_seekPosition );
+		if ( fs ) {
+			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs->w, fs->h, GL_RGB, GL_UNSIGNED_BYTE, fs->RGB );
+			float gl_x, gl_y, gl_w, gl_h;
+			{
+				float f_v = ( (float)fs->w / (float)fs->h );
+				float f_w = ( (float)w() / (float)h() );
+				float f_g = f_v / f_w;
+				if ( f_g > 1.0 ) {
+					gl_h = 10.0 / f_g;
+					gl_w = 10.0;
+				} else {
+					gl_h = 10.0;
+					gl_w = f_g * 10.0;
+				}
+				gl_x = ( 10.0 - gl_w ) / 2;
+				gl_y = ( 10.0 - gl_h ) / 2;
+
+			}
+
+			
+
+			float ww = fs->w / TEXTURE_WIDTH;
+			float hh = fs->h / TEXTURE_HEIGHT;
+			glBegin (GL_QUADS);
+				glTexCoord2f (  0.0,      0.0 );
+				glVertex3f   (  gl_x,      gl_y, 0.0 );
+				glTexCoord2f (  ww,  0.0 );  // (fs->w / 512.0)
+				glVertex3f   ( gl_x + gl_w,      gl_y, 0.0 );
+				glTexCoord2f (  ww,  hh ); // (368.0 / 512.0) (240.0 / 512.0)
+				glVertex3f   ( gl_x + gl_w,     gl_y + gl_h, 0.0 );
+				glTexCoord2f (  0.0,      hh ); // (fs->h / 512.0)
+				glVertex3f   (  gl_x,     gl_y + gl_h, 0.0 );
+			glEnd ();
+
+		}
+	}
 #if 0 
 	float gl_x, gl_y, gl_w, gl_h;
 	{
@@ -182,6 +221,7 @@ void VideoViewGL::draw()
 
 void VideoViewGL::seek( int64_t position )
 {
+	m_seekPosition = position;
 	redraw();
 }
 
@@ -190,6 +230,7 @@ void VideoViewGL::play()
 	if ( g_playbackCore->active() ) {
 		return;
 	}
+	m_seekPosition = -1;
 	g_timeline->sort();
 	g_playbackCore->play();
 }

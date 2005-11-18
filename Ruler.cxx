@@ -20,6 +20,7 @@
 #include <iostream>
 
 #include <FL/Fl.H>
+#include <FL/Fl_Window.H>
 #include <FL/fl_draw.H>
 
 #include "Ruler.H"
@@ -105,8 +106,7 @@ int Ruler::handle( int event )
 void Ruler::stylus( long stylus_pos )
 {
 	m_stylus.x = stylus_pos - ( m_stylus.w / 2 );
-	draw();
-	//redraw(); //FIXME: OpenGL Window is redrawn
+	redraw(); //FIXME: OpenGL Window is redrawn
 	// Maybe it should be somehow draw from within VideoViewGL
 }
 
