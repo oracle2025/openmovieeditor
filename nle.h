@@ -39,6 +39,8 @@ private:
   static void cb_Save(Fl_Menu_*, void*);
   inline void cb_Render_i(Fl_Menu_*, void*);
   static void cb_Render(Fl_Menu_*, void*);
+  inline void cb_About_i(Fl_Menu_*, void*);
+  static void cb_About(Fl_Menu_*, void*);
 public:
   nle::TimelineView *m_timelineView;
 private:
@@ -135,5 +137,24 @@ public:
 private:
   inline void cb_Cancel1_i(Fl_Button*, void*);
   static void cb_Cancel1(Fl_Button*, void*);
+};
+#include <FL/Fl_Progress.H>
+#include <FL/Fl_Output.H>
+
+class ProgressDialog {
+public:
+  ProgressDialog();
+};
+
+class AboutDialog {
+public:
+  AboutDialog();
+  Fl_Double_Window *aboutDialog;
+private:
+  inline void cb_Close_i(Fl_Return_Button*, void*);
+  static void cb_Close(Fl_Return_Button*, void*);
+public:
+  void show();
+  int shown();
 };
 #endif
