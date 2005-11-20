@@ -5509,6 +5509,7 @@ AboutDialog::AboutDialog() {
     new Fl_Box(0, 275, 340, 25, "http://openmovieeditor.sourceforge.net/");
     { Fl_Return_Button* o = new Fl_Return_Button(10, 335, 320, 25, "Close");
       o->callback((Fl_Callback*)cb_Close);
+      w->hotspot(o);
     }
     o->set_modal();
     o->end();
