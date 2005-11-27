@@ -17,17 +17,13 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <iostream>
-#include <string.h>
+#include <cstring>
 
 #include <FL/filename.H>
 
 #include "FileBrowser.H"
 #include "Prefs.H"
 #include "globals.H"
-
-
-using namespace std;
 
 namespace nle
 {
@@ -37,17 +33,12 @@ FileBrowser::FileBrowser( int x, int y, int w, int h, const char *l )
 {
 	type( 1 );
 	m_path = g_preferences->getBrowserFolder();
-	//m_path = "/home/oracle/tmp";
-	//m_path = "/";
-	//filter("???");
 	load( m_path.c_str() );
 }
 
 int FileBrowser::handle( int event )
 {
 	if ( event == FL_DRAG ) {
-		cout << "FileBrowser::FL_DRAG" << endl;
-		cout << "FileBrowser::Text: (" << text( value() ) << ")" << endl;
 		string s = m_path;
 		if ( text( value() )[0] != '/' && m_path.length() > 1 )
 			s += '/';
@@ -60,23 +51,24 @@ int FileBrowser::handle( int event )
 }
 void FileBrowser::load_rel()
 {
-	const char *d = text(value());
+	const char *d = text( value() );
 	char buffer[FL_PATH_MAX];
 	char *dirptr;
 	if ( d == 0 )
 		return;
 	strncpy( buffer, m_path.c_str(), sizeof(buffer) );
 	buffer[FL_PATH_MAX - 1] = '\0';
-	if ( strlen(buffer) > 1 )
-		strncat( buffer, "/", sizeof(buffer) - strlen(buffer) - 1 );
-	strncat( buffer, d, sizeof(buffer) - strlen(buffer) - 1 );
+	if ( strlen(buffer) > 1 ) {
+		strncat( buffer, "/", sizeof(buffer) - strlen( buffer ) - 1 );
+	}
+	strncat( buffer, d, sizeof(buffer) - strlen( buffer ) - 1 );
 
 	// '..' removal, shamelessly copied from fltk file-selector ;)
-	dirptr = buffer + strlen(buffer) - 1;
-	if ( (*dirptr == '/' || *dirptr == '\\' ) && dirptr > buffer )
+	dirptr = buffer + strlen( buffer ) - 1;
+	if ( ( *dirptr == '/' || *dirptr == '\\' ) && dirptr > buffer )
 		*dirptr =  '\0';
 
-	dirptr = buffer + strlen(buffer) - 3;
+	dirptr = buffer + strlen( buffer ) - 3;
 	if ( dirptr >= buffer && strcmp( dirptr, "/.." ) == 0 ) {
 		*dirptr = '\0';
 		while ( dirptr > buffer ) {

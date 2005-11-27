@@ -17,15 +17,11 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <iostream>
-
-#include <string.h>
+#include <cstring>
 
 #include "strlcpy.h"
 
 #include "AudioFileQT.H"
-
-using namespace std;
 
 #define FRAMES_PER_BUFFER 256
 
@@ -36,21 +32,29 @@ AudioFileQT::AudioFileQT( string filename )
 {
 	m_ok = false;
 	m_qt = NULL;
-	char *lqt_sucks_filename = strdup( filename.c_str() );
-	if ( !quicktime_check_sig( lqt_sucks_filename ) )
-		return;
-	m_qt = quicktime_open( lqt_sucks_filename, true, false );
-	free(lqt_sucks_filename);
-	if ( quicktime_audio_tracks( m_qt ) == 0 )
-		return;
-	if ( !quicktime_supported_audio( m_qt, 0 ) )
-		return;
-	m_length = quicktime_audio_length( m_qt, 0 );
-	//check samplerate
-	//check channels
-	m_filename = filename;
-	m_ok = true;
 	m_oneShot = true;
+	m_filename = filename;
+	char *lqt_sucks_filename = strdup( filename.c_str() );
+	if ( !quicktime_check_sig( lqt_sucks_filename ) ) {
+		return;
+	}
+	m_qt = quicktime_open( lqt_sucks_filename, true, false );
+	free( lqt_sucks_filename );
+	if ( quicktime_audio_tracks( m_qt ) == 0 ) {
+		return;
+	}
+	if ( !quicktime_supported_audio( m_qt, 0 ) ) {
+		return;
+	}
+	m_length = quicktime_audio_length( m_qt, 0 );
+	if ( quicktime_sample_rate( m_qt, 0 ) != 48000 ) {
+		cerr << "Wrong Samplerate, only 48000 allowed" << endl;
+		return;
+	}
+	if ( quicktime_track_channels( m_qt, 0 ) != 2 ) {
+		cerr << "Soundfile is not a stereo" << endl;
+	}
+	m_ok = true;
 }
 AudioFileQT::~AudioFileQT()
 {
@@ -82,14 +86,13 @@ int AudioFileQT::fillBuffer( float* output, unsigned long frames )
 		m_oneShot = false;
 	}
 	for ( int i = 0; i < diff; i++ ) {
-		output[i*2] = left_buffer[i]; // use left shift for *2 ??
-		output[i*2+1] = right_buffer[i];
+		output[i * 2] = left_buffer[i]; // use left shift for *2 ??
+		output[i * 2 + 1] = right_buffer[i];
 	}
 	if ( frames > FRAMES_PER_BUFFER ) {
 		delete [] left_buffer;
 		delete [] right_buffer;
 	}
-//	cout << "AudioFileQT::fillBuffer " << diff << endl;
 	return diff;
 }
 

@@ -17,9 +17,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <string> // declares for_each
-#include <iostream>
-
 #include <FL/gl.h>
 
 #include "VideoViewGL.H"
@@ -28,8 +25,6 @@
 #include "PlaybackCore.H"
 #include "Timeline.H"
 #include "events.H"
-
-using namespace std;
 
 namespace nle
 {

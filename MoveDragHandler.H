@@ -35,7 +35,7 @@ class MoveDragHandler : public DragHandler
 				Clip *clip,
 				int x, int y,
 				const Rect& rect );
-		~MoveDragHandler(){}
+		virtual ~MoveDragHandler() {}
 		void OnDrag( int x, int y );
 		void OnDrop( int x, int y );
 	private:

@@ -17,8 +17,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <iostream>
-
 #include "AudioTrack.H"
 #include "AudioFileQT.H"
 #include "AudioFileSnd.H"
@@ -43,7 +41,7 @@ void AudioTrack::addFile( int64_t position, string filename )
 	}
 	if ( !af->ok() ) {
 		delete af;
-		std::cerr << "Error: AudioTrack::add_audio" << std::endl;
+		cerr << "Error: AudioTrack::add_audio" << std::endl;
 		return;
 	}
 	Clip *clp = new AudioClip( this, position, af );

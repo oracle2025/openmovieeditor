@@ -17,13 +17,9 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <iostream>
-
 #include "strlcpy.h"
 
 #include "AudioFileSnd.H"
-
-using namespace std;
 
 namespace nle
 {
@@ -35,26 +31,18 @@ AudioFileSnd::AudioFileSnd( string filename )
 	m_sndfile = sf_open( filename.c_str(), SFM_READ, &sfinfo );	
 	if ( SF_ERR_NO_ERROR != sf_error( m_sndfile ) ) {
 		cerr << "Could not open Soundfile" << endl;
-		sf_close( m_sndfile );
-		m_sndfile = 0;
 		return;
 	}
 	if ( sfinfo.channels != 2 ) {
 		cerr << "Soundfile is not a stereo" << endl;
-		sf_close( m_sndfile );
-		m_sndfile = 0;
 		return;
 	}
 	if ( sfinfo.frames==0 ) {
 		cerr << "Soundfile has length zero" << endl;
-		sf_close( m_sndfile );
-		m_sndfile = 0;
 		return;
 	}
 	if ( sfinfo.samplerate != 48000 ) {
 		cerr << "Wrong Samplerate, only 48000 allowed" << endl;
-		sf_close( m_sndfile );
-		m_sndfile = 0;
 		return;
 	}
 	m_length = sfinfo.frames;

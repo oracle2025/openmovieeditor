@@ -28,9 +28,6 @@ class Draw
 	public:
 		static void box( float x, float y, float w, float h, Fl_Color c );
 		static void triangle( float x, float y, bool direction );
-/*		static void VideoClip();
-		static void VideoTrack();
-		static void VideoTrackBg();*/
 };
 
 } /* namespace nle */

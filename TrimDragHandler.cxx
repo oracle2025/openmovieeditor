@@ -31,8 +31,8 @@ namespace nle
 TrimDragHandler::TrimDragHandler( TimelineView *tlv, Clip *clip,
 		int track, int left, int right,
 		bool trimRight )
-	: DragHandler(tlv, clip), m_track(track), m_left(left),
-	m_right(right), m_trimRight(trimRight)
+	: DragHandler( tlv, clip ), m_track( track ), m_left( left ),
+	m_right( right ), m_trimRight( trimRight )
 {
 }
 void TrimDragHandler::OnDrag( int x, int y )

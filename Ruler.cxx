@@ -17,8 +17,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <iostream>
-
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include <FL/fl_draw.H>
@@ -28,8 +26,6 @@
 #include "TimelineView.H"
 #include "helper.H"
 #include "SwitchBoard.H"
-
-using namespace std;
 
 namespace nle
 {
@@ -57,7 +53,7 @@ void Ruler::draw()
 	
 	fl_draw_box( FL_UP_BOX, x(), y(), w(), h(), FL_BACKGROUND_COLOR );
 
-	fl_color(FL_FOREGROUND_COLOR);
+	fl_color( FL_FOREGROUND_COLOR );
 	fl_font( FL_HELVETICA, 11 );
 	int pixel_start = - (int)( g_timelineView->scrollPosition() * SwitchBoard::i()->zoom() ) - 100 + LEFT_TRACK_SPACING;
 	pixel_start = pixel_start % 100;

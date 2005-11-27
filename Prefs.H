@@ -20,8 +20,6 @@
 #ifndef _PREFS_H_
 #define _PREFS_H_
 
-#define KEY_STRING_LEN   50
-#define VALUE_STRING_LEN 256
 
 #include "global_includes.H"
 

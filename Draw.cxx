@@ -29,15 +29,14 @@ namespace nle
 
 void Draw::box( float x, float y, float w, float h, Fl_Color c )
 {
-//	fl_draw_box( FL_UP_BOX, g_xOrigin + x, g_yOrigin + y, w, h, c );
-	fl_color(c);
+	fl_color( c );
 	fl_begin_polygon();
 	fl_vertex( x, y );
 	fl_vertex( x, y + h);
 	fl_vertex( x + w, y + h );
 	fl_vertex( x + w, y );
 	fl_end_polygon();
-	fl_color(FL_BLACK);
+	fl_color( FL_BLACK );
 	fl_begin_loop();
 	fl_vertex( x, y );
 	fl_vertex( x, y + h);
@@ -51,7 +50,7 @@ void Draw::triangle( float x, float y, bool direction )
 {
 	float _x;
 	float zoom = SwitchBoard::i()->zoom();
-	if (USING_AUDIO) {
+	if ( USING_AUDIO ) {
 		_x = direction ? 8 * ( 48000 / g_fps ) : - 8 * ( 48000 / g_fps );
 	} else {
 		_x = direction ? 8 : -8;

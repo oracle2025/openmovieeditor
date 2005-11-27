@@ -50,8 +50,18 @@ void MoveDragHandler::OnDrag( int x, int y )
 	if ( tr ) {
 		Rect tr_rect = m_tlv->get_track_rect( tr );
 		tmp.y = m_tlv->y() + tr_rect.y;
-		tmp.x = m_tlv->get_screen_position(  tr->getSnapA( m_clip, m_tlv->get_real_position(tmp.x, tr->stretchFactor()) ), tr->stretchFactor() );
-		tmp.x = m_tlv->get_screen_position(  tr->getSnapB( m_clip, m_tlv->get_real_position(tmp.x, tr->stretchFactor()) ), tr->stretchFactor() );
+		tmp.x = m_tlv->get_screen_position(
+				tr->getSnapA(
+					m_clip, m_tlv->get_real_position( tmp.x, tr->stretchFactor() )
+					),
+				tr->stretchFactor()
+				);
+		tmp.x = m_tlv->get_screen_position(
+				tr->getSnapB(
+					m_clip, m_tlv->get_real_position( tmp.x, tr->stretchFactor() )
+					),
+				tr->stretchFactor()
+				);
 	}
 	m_tlv->window()->make_current();
 	fl_overlay_rect( tmp.x, tmp.y, tmp.w, tmp.h );

@@ -1,6 +1,5 @@
 What needs to be done for 0.1.0 ?
 
- * Scale Frames to Output Format
  * Render to different Formats
 
 
@@ -28,6 +27,7 @@ What needs to be done for 0.1.0 ?
 
 
 http://invisible-island.net/bcpp/ in build process einbauen (http://www.mrunix.de/forums/showthread.php?t=40602)
+	bcpp -nc 0 -f 2 -i 2 -s -lg -tbnl -bnl -fnc /dev/null -na -nb -nbbi -nbi -ylcnc -nq -no -qb 1345 "$f" "$TMP_FILE"
 
 
   - restrict Fileformats temporarily to 25 FPS and 48000  

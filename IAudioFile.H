@@ -31,7 +31,8 @@ class IAudioFile
 	public:
 		virtual ~IAudioFile() {}
 		inline bool ok() { return m_ok; }
-		inline int64_t length() { return m_length; } // <= number of floats: 2 * length (left, right)
+		inline int64_t length() { return m_length; }
+			// <= number of floats: 2 * length (left, right)
 		virtual void seek( int64_t sample ) = 0;
 		virtual int fillBuffer( float* output, unsigned long frames ) = 0;
 			//sizof(output) = frames * 2

@@ -30,7 +30,7 @@ namespace nle
 class IVideoFile
 {
 	public:
-		virtual ~IVideoFile(){}
+		virtual ~IVideoFile() {}
 		virtual int64_t length() = 0;
 		inline int width() { return m_width; }
 		inline int height() { return m_height; }

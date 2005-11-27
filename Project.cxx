@@ -21,7 +21,6 @@
   #define __STDC_FORMAT_MACROS
 #endif
 
-#include <iostream>
 #include <cstring>
 #include "strlcpy.h"
 
@@ -40,8 +39,6 @@
 #include "VideoClip.H"
 #include "AudioClip.H"
 
-using namespace std;
-
 namespace nle
 {
 static char project_filename[1024];
@@ -49,10 +46,10 @@ static char project_filename[1024];
 void Project::write_project()
 {
 	strcpy( project_filename, "" );
-	if ( !getenv("HOME") ) {
+	if ( !getenv( "HOME" ) ) {
 		return;
 	}
-	strlcpy( project_filename, getenv("HOME"), sizeof(project_filename) );
+	strlcpy( project_filename, getenv( "HOME" ), sizeof(project_filename) );
 	strncat( project_filename, "/.openme.project", sizeof(project_filename) - strlen( project_filename ) - 1 );
 	
 	TiXmlDocument doc( project_filename );
@@ -118,10 +115,10 @@ void Project::read_project()
 {
 
 	strcpy( project_filename, "" );
-	if ( !getenv("HOME") ) {
+	if ( !getenv( "HOME" ) ) {
 		return;
 	}
-	strlcpy( project_filename, getenv("HOME"), sizeof(project_filename) );
+	strlcpy( project_filename, getenv( "HOME" ), sizeof(project_filename) );
 	strncat( project_filename, "/.openme.project", sizeof(project_filename) - strlen( project_filename ) - 1 );
 	
 	TiXmlDocument doc( project_filename );

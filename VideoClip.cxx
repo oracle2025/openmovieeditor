@@ -17,15 +17,10 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <string>
-#include <iostream>
-
 #include "VideoClip.H"
 #include "IVideoFile.H"
 #include "FilmStrip.H"
 #include "AudioFileQT.H"
-
-using namespace std;
 
 namespace nle
 {
@@ -77,7 +72,6 @@ void VideoClip::reset()
 }
 frame_struct* VideoClip::getFrame( int64_t position )
 {
-//	m_lastFramePosition = position;
 	if ( position < m_position || position > m_position + length() )
 		return NULL;
 	if ( m_lastFramePosition + 1 != position ) {

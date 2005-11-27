@@ -27,7 +27,6 @@
 
 #include "Rect.H"
 #include "global_includes.H"
-#include "NextFrameListener.H"
 
 namespace nle
 {
@@ -68,7 +67,6 @@ class TimelineView : public Fl_Widget
 		void draw();
 	private:
 		void adjustScrollbar();
-	//	AutomationPoint *getAutomationPoint( Clip* clip, int x, int y );
 		Timeline *m_timeline;
 		DragHandler *m_dragHandler;
 		int64_t m_scrollPosition;

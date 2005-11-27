@@ -22,7 +22,6 @@
 
 #include <stdint.h>
 
-//#include <quicktime/lqt.h>
 #include <lqt.h>
 
 #include "global_includes.H"
@@ -39,8 +38,8 @@ class AudioFileQT : public IAudioFile
 		~AudioFileQT();
 		void seek( int64_t sample );
 		int fillBuffer( float* output, unsigned long frames );
-			//sizof(output) = frames * 2
-			//File Format: 44100 stereo interleaved
+			// sizof(output) == frames * 2
+			// File Format: 44100 stereo interleaved
 	private:
 		quicktime_t* m_qt;
 		bool m_oneShot;

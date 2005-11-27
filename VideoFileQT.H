@@ -21,7 +21,6 @@
 #define _VIDEO_FILE_QT_H
 
 #include <lqt.h>
-/*#include <gavl/gavl.h>*/
 
 #include "global_includes.H"
 #include "IVideoFile.H"
@@ -49,7 +48,6 @@ class VideoFileQT : public IVideoFile
 		unsigned char **m_rows;
 		frame_struct m_framestruct;
 		bool m_ok;
-//		gavl_video_scaler_t* m_scaler;
 		unsigned m_scaled_w;
 		unsigned m_scaled_h;
 };

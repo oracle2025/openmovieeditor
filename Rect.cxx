@@ -23,7 +23,7 @@ namespace nle
 {
 	
 Rect::Rect( int _x, int _y, int _w, int _h )
-	: x(_x), y(_y), w(_w), h(_h)
+	: x( _x ), y( _y ), w( _w ), h( _h )
 {
 }
 bool Rect::inside( int _x, int _y )

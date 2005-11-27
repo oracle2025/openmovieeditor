@@ -17,7 +17,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <iostream>
 #include <cstring>
 
 #include <lqt.h>
@@ -29,8 +28,6 @@
 #include "Renderer.H"
 #include "globals.H"
 #include "Timeline.H"
-
-using namespace std;
 
 namespace nle
 {
@@ -44,34 +41,33 @@ Renderer::Renderer( string filename, int w, int h, int framerate, int samplerate
 	m_h = h;
 	m_framerate = framerate;
 	m_samplerate = samplerate;
-/*	int w = 368;
-	int h = 240;*/
 	m_filename = filename;
 	strlcpy( buffer, m_filename.c_str(), sizeof(buffer) );
 	qt = quicktime_open( buffer, false, true );
 	lqt_codec_info_t **codecs = lqt_query_registry( 1, 0, 1, 0 );
+#if 0
 	for ( int i = 0; codecs[i]; i++ ) {
 		cout << "[" << i << "]" << codecs[i]->name << endl;
 		cout << codecs[i]->long_name << endl;
 		cout << "---------------------" << endl;
 	}
+#endif
 	lqt_codec_info_t *codec = codecs[7];
 	lqt_add_audio_track( qt, 2, 48000, 16, codec );
 	lqt_destroy_codec_info( codecs );
 	codecs = lqt_query_registry( 0, 1, 1, 0 );
+#if 0
 	for ( int i = 0; codecs[i]; i++ ) {
 		cout << "[" << i << "]" << codecs[i]->name << endl;
 		cout << codecs[i]->long_name << endl;
 		cout << "---------------------" << endl;
 	}
+#endif
 	codec = codecs[22];
 	lqt_add_video_track( qt, m_w, m_h, 1200, 30000, codec ); // Was bedeuted 1001 zum Teufel? => 30000 / 1001 == 29.97
 	                                                         // 30000 / 1200 == 25
 	lqt_destroy_codec_info( codecs );
 	lqt_set_cmodel( qt, 0, BC_RGB888 );
-	//[10]jpeg
-	//[3]ulaw
-	//[6]lame
 }
 Renderer::~Renderer()
 {
@@ -143,19 +139,12 @@ void scale_it( frame_struct* src, frame_struct* dst )
 
 	gavl_video_scaler_destroy( scaler );
 
-//	frame_src->planes
-//	frame_src->strides
 
 }
 void Renderer::go()
 {
-	
-
-	
-	// Ein eigener Scaler für jeden nicht passenden Clip??
 	g_timeline->seek( 0 );
 	g_timeline->sort();
-	
 	
 	int res;
 	float buffer[256];
@@ -176,8 +165,6 @@ void Renderer::go()
 	for (int i = 0; i < m_h; i++) {
                 enc_frame.rows[i] = enc_frame.RGB + m_w * 3 * i;
 	}
-
-
 	
 	do {
 		if ( fcnt > 1601 ) {
@@ -192,7 +179,6 @@ void Renderer::go()
 				fcnt = 0;
 			}
 		}
-
 		
 		res = g_timeline->fillBuffer( buffer, 128 ); //Das sollte etwas mehr als 128 sein
 		for ( int i = 0; i < res; i++ ) {

@@ -17,8 +17,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <iostream>
-
 #include <cmath>
 
 #include "Timeline.H"
@@ -29,10 +27,6 @@
 #include "SwitchBoard.H"
 #include "Renderer.H"
 #include "TrackOverlap.H"
-
-
-using namespace std;
-
 
 namespace nle
 {
@@ -96,8 +90,6 @@ void Timeline::sort()
 	TimelineBase::sort();
 	m_playPosition = m_seekPosition;
 	m_samplePosition = int64_t( m_seekPosition * ( 48000 / g_fps ) );
-	// TODO set m_soundLength
-	// Check AudioTracks, compare to Video Tracks
 	{
 		int64_t audio_max = 0;
 		int64_t video_max = 0;
@@ -110,21 +102,6 @@ void Timeline::sort()
 frame_struct* Timeline::getFrame( int64_t position )
 {
 	return nextFrame( position );
-	//TODO: seek if neccessary ??
-#if 0
-	frame_struct* tmp = NULL;
-	for ( track_node *p = m_allTracks; p; p = p->next ) {
-		if ( p->track->type() != TRACK_TYPE_VIDEO ) {
-			continue;
-		}
-		VideoTrack* current = (VideoTrack*)p->track;
-		tmp = current->getFrame( position );
-		if ( tmp ) {
-			return tmp;
-		}
-	}
-	return 0;
-#endif
 }
 frame_struct* Timeline::nextFrame( int64_t position )
 {
@@ -189,7 +166,7 @@ int Timeline::fillBuffer( float* output, unsigned long frames )
 	}
 	rv = ((TrackBase*)p->track)->fillBuffer( buffer2, frames, m_samplePosition );
 	max_frames = rv > max_frames ? rv : max_frames;
-	mixChannels( buffer1, buffer2, output, frames);
+	mixChannels( buffer1, buffer2, output, frames );
 	p = p->next;
 	while ( p ) {
 		rv = ((TrackBase*)p->track)->fillBuffer( buffer1, frames, m_samplePosition );

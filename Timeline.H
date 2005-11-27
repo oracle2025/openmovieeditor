@@ -33,14 +33,12 @@ namespace nle
 class Timeline : public TimelineBase, public IAudioReader, public IVideoReader
 {
 	public:
-		// constructors and destructors
 		Timeline();
 		~Timeline();
 		void sort();
 
 		int64_t m_playPosition;
 		int64_t m_samplePosition;
-		// method declerations
 		frame_struct* nextFrame( int64_t position = -1 );
 		frame_struct* getFrame( int64_t position );
 		int fillBuffer( float* output, unsigned long frames );

@@ -30,7 +30,7 @@ class FileBrowser : public Fl_File_Browser
 {
 	public:
 		FileBrowser( int x, int y, int w, int h, const char *l = 0 );
-		~FileBrowser() {}
+		virtual ~FileBrowser() {}
 		int handle( int event );
 		void load_rel();
 	private:

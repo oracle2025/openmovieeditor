@@ -17,8 +17,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <iostream>
-
 #include <math.h>
 
 #include <FL/Fl.H>
@@ -41,8 +39,6 @@
 
 #include "audio.xpm"
 #include "video.xpm"
-
-using namespace std;
 
 namespace nle
 {
@@ -71,38 +67,17 @@ TimelineView::~TimelineView()
 	delete m_timeline;
 	m_timeline = NULL;
 }
-/*
-AutomationPoint *TimelineView::getAutomationPoint( Clip* clip, int x, int y )
-{
-	std::list<AutomationPoint>::iterator i;
-	std::list<AutomationPoint>* l = clip->getAutomation();
-	Rect tmp = get_clip_rect( clip );
-	//int64_t position = get_real_position( x, clip->track()->stretchFactor() );
-	//int real_y = ( TRACK_HEIGHT - ( tmp.y - y ) ) * 100 / TRACK_HEIGHT;
-	for ( i = l->begin(); i != l->end(); i++ ) {
-		AutomationPoint *current = &(*i);
-		if ( current->getScreenRect( clip ).inside( x, y ) ) {
-			return current;
-		}
-	}
-	return 0;
-}*/
 int TimelineView::handle( int event )
 {
 	int _x = Fl::event_x();
 	int _y = Fl::event_y() - y();
 	switch ( event ) {
 		case FL_PASTE:
-			cout << "FL_PASTE" << endl;
-			cout << "Text: (" << Fl::event_text() << ") " << Fl::event_length() << endl;
-			cout << "X: " << Fl::event_x() << " Y: " << Fl::event_y() << endl;
 			{
 				Track* t = get_track( _x, _y );
 				int64_t rp = get_real_position( _x, t->stretchFactor() );
-				cout << "Real Position: " << rp << endl;
 				if (t && !fl_filename_isdir(Fl::event_text()) ) {
 					
-					cout << "Track: " << t->num() << endl;
 					t->addFile( rp, Fl::event_text() );
 					adjustScrollbar();
 					redraw();
@@ -390,7 +365,6 @@ void TimelineView::trim_clip( Clip* clip, int _x, bool trimRight )
 void TimelineView::move_cursor( int64_t position )
 {
 	m_stylusPosition = position;
-	//cout << timestamp_to_string( position ) << endl;
 	if ( m_stylusPosition < 0 ) {
 		m_stylusPosition = 0;
 	} else if ( m_stylusPosition > 1024 ) {

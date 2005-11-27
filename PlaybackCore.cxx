@@ -17,9 +17,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <iostream>
-
-#include <stdio.h>
+#include <cstdio>
 #include <stdlib.h>
 #include <pthread.h>
 #include <sys/types.h>
@@ -34,8 +32,7 @@
 #include "IAudioReader.H"
 #include "IVideoReader.H"
 #include "IVideoWriter.H"
-
-using namespace std;
+#include "global_includes.H"
 
 #define FRAMES 256
 
@@ -51,9 +48,6 @@ static int callback( void *input, void *output, unsigned long frames, PaTimestam
 {
 	PlaybackCore* pc = (PlaybackCore*)data;
 	unsigned long ret = pc->fillBuffer( (float*)output, frames );
-	if ( frames != ret ) {
-		cout << "Ret final: " << ret << endl;
-	}
 	return ( frames != ret );
 }
 
@@ -149,7 +143,6 @@ void PlaybackCore::play()
 		return;
 	}
 	//empty buffers
-	cout << "PlaybackCore::play()" << endl;
 	m_soundSamples = 0;
 	m_stop_playback = 0;
 	m_stop_playback_gui = false;
@@ -234,7 +227,6 @@ void PlaybackCore::flipScreen( int p )
 
 unsigned long PlaybackCore::fillBuffer( float* output, unsigned long frames )
 {
-	cout << "Ringbuffer read: " << ( frames * sizeof(float) * 2 ) << endl;
 	unsigned long rt = jack_ringbuffer_read( m_rb, (char*)output, frames * sizeof(float) * 2 );
 	rt = rt / sizeof(float) / 2;
 	if ( rt < frames ) {
@@ -243,9 +235,7 @@ unsigned long PlaybackCore::fillBuffer( float* output, unsigned long frames )
 		}
 		m_xruns++;
 	}
-	cout << "trying to lock mutex" << endl;
 	if ( pthread_mutex_trylock( &m_audio_lock ) == 0 ) {
-		cout << "mutex locked in fillBuffer" << endl;
 		pthread_cond_signal( &m_audio_ready );
 		pthread_mutex_unlock( &m_audio_lock );
 	}
@@ -294,23 +284,17 @@ void PlaybackCore::audioThread()
 	while ( 1 ) {
 		if ( ( jack_ringbuffer_write_space( m_rb ) >= ( sizeof(float) * FRAMES * 2 ) ) && rt == FRAMES && !m_stop ) {
 			rt = m_audioReader->fillBuffer( buffer, FRAMES );
-			cout << "Ringbuffer write: " << ( sizeof(float) * rt * 2 ) << endl;
 			jack_ringbuffer_write( m_rb, (char*)buffer, sizeof(float) * rt * 2 );
-
 			m_soundSamples += rt;
 			if ( m_soundSamples / ( 48000 / 25 ) > m_videoFrames_protected ) {
 				pthread_mutex_lock( &m_video_lock );
-				
 				m_videoFrames_protected++;
 				m_videoFrames = m_videoFrames_protected;
-				cout << "notifying Video: " << m_videoFrames << endl;
-
 				pthread_cond_signal( &m_video_ready );
 				pthread_mutex_unlock( &m_video_lock );
 			}
 			
 		} else {
-			cout << "waiting" << endl;
 			pthread_cond_wait( &m_audio_ready, &m_audio_lock );
 		}
 	}

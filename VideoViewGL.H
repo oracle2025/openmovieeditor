@@ -20,8 +20,6 @@
 #ifndef _VIDEO_VIEW_GL_H_
 #define _VIDEO_VIEW_GL_H_
 
-#include <list>
-
 #include <FL/Fl.H>
 #include <FL/Fl_Gl_Window.H>
 

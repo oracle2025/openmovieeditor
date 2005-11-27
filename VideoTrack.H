@@ -32,20 +32,16 @@ class VideoClip;
 class VideoTrack : public TrackBase
 {
 	public:
-		// constructors and destructors
 		VideoTrack( int num );
-		~VideoTrack();
+		virtual ~VideoTrack();
 
-		// method declerations
 		void addFile( int64_t position, string filename );
-//		void add_video( int64_t position, const char* filename );
 		int type() { return TRACK_TYPE_VIDEO; }
 		float stretchFactor() { return 1.0; }
 		frame_struct* getFrame( int64_t position );
 		void sort();
 	private:
 		int64_t m_playPosition;
-		// member variable declerations
 };
 	
 } /* namespace nle */
