@@ -203,6 +203,8 @@ void Renderer::go()
 		fcnt += 128;
 
 	} while ( res == 128 );
+	delete [] enc_frame.RGB;
+	delete [] enc_frame.rows;
 }
 
 
