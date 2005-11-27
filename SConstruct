@@ -14,7 +14,7 @@ env = Environment( CC = 'g++',
 	LIBS = LIBS,
 	LIBPATH = LIBPATH
 	)
-#env.ParseConfig( 'pkg-config gavl --cflags --libs' )
+env.ParseConfig( 'pkg-config gavl --cflags --libs' )
 env.ParseConfig( 'pkg-config sndfile --cflags --libs' )
 #env.ParseConfig( 'pkg-config libquicktime --cflags --libs' )
 env.ParseConfig( 'lqt-config --cflags --libs' )
