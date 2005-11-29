@@ -1,4 +1,4 @@
-/*  Renderer.cxx
+/*  IProgressListener.H
  *
  *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
  *

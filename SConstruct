@@ -59,6 +59,7 @@ src_list.append( SConscript(['portaudio/SConscript']) )
 
 Export( 'env' )
 src_list.append( SConscript(['timeline/SConscript']) )
+src_list.append( SConscript(['ProgressDialog/SConscript']) )
 src_list.append( SConscript(['sl/SConscript']) )
 src_list.append( SConscript(['tinyxml/SConscript']) )
 

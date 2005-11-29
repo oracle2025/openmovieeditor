@@ -5,6 +5,7 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Menu_Bar.H>
+#include "ProgressDialog/ProgressDialog.h"
 #include <FL/Fl_Tile.H>
 #include <FL/Fl_Group.H>
 #include "Ruler.H"
@@ -99,6 +100,9 @@ public:
 private:
   void *audio_codec;
   void* video_codec;
+public:
+  bool go;
+  ~EncodeDialog();
 };
 
 class ChangesDialog {
@@ -127,25 +131,6 @@ private:
   inline void cb_Cancel1_i(Fl_Button*, void*);
   static void cb_Cancel1(Fl_Button*, void*);
 };
-#include "IProgressListener.H"
-#include <FL/Fl_Progress.H>
-#include <FL/Fl_Output.H>
-
-class ProgressDialog : public nle::IProgressListener {
-public:
-  ProgressDialog();
-  Fl_Button *cancel_button;
-private:
-  inline void cb_cancel_button_i(Fl_Button*, void*);
-  static void cb_cancel_button(Fl_Button*, void*);
-public:
-  Fl_Progress *progress_bar;
-  bool progress( int percent );
-  void start();
-  void end();
-private:
-  bool cancel;
-};
 
 class AboutDialog {
 public:
@@ -157,6 +142,7 @@ private:
 public:
   void show();
   int shown();
+  ~AboutDialog();
 };
 #include <FL/Fl_Text_Display.H>
 

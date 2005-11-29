@@ -5,6 +5,7 @@
 inline void ProgressDialog::cb_cancel_button_i(Fl_Button*, void*) {
   cancel = true;
 cancel_button->deactivate();
+progressDialog->hide(); //REMOVE ME;
 }
 void ProgressDialog::cb_cancel_button(Fl_Button* o, void* v) {
   ((ProgressDialog*)(o->parent()->user_data()))->cb_cancel_button_i(o,v);
@@ -12,7 +13,7 @@ void ProgressDialog::cb_cancel_button(Fl_Button* o, void* v) {
 
 ProgressDialog::ProgressDialog() {
   Fl_Double_Window* w;
-  { Fl_Double_Window* o = new Fl_Double_Window(335, 145, "Progress Dialog");
+  { Fl_Double_Window* o = progressDialog = new Fl_Double_Window(335, 145, "Progress Dialog");
     w = o;
     o->user_data((void*)(this));
     { Fl_Button* o = cancel_button = new Fl_Button(240, 115, 90, 25, "Cancel");
@@ -33,6 +34,9 @@ ProgressDialog::ProgressDialog() {
     o->set_modal();
     o->end();
   }
+  progress_bar->minimum( 0.0 );
+progress_bar->maximum( 100.0 );
+progress_bar->value( 0.0 );
 }
 
 bool ProgressDialog::progress( int percent ) {
@@ -46,4 +50,8 @@ void ProgressDialog::start() {
 }
 
 void ProgressDialog::end() {
+}
+
+ProgressDialog::~ProgressDialog() {
+  delete progressDialog;
 }

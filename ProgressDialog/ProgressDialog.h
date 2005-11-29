@@ -13,6 +13,7 @@
 class ProgressDialog : public nle::IProgressListener {
 public:
   ProgressDialog();
+  Fl_Double_Window *progressDialog;
   Fl_Button *cancel_button;
 private:
   inline void cb_cancel_button_i(Fl_Button*, void*);
@@ -24,5 +25,7 @@ public:
   void end();
 private:
   bool cancel;
+public:
+  ~ProgressDialog();
 };
 #endif

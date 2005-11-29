@@ -18,6 +18,15 @@ EncodeDialog dlg;
 dlg.show();
 while (dlg.shown())
   Fl::wait();
+
+if ( dlg.go ) {
+	ProgressDialog pDlg;
+	pDlg.progress( 10 );
+	pDlg.progressDialog->show();
+	while ( pDlg.progressDialog->shown() )
+		Fl::wait();
+	pDlg.progressDialog->hide();
+};
 }
 void NleUI::cb_Render(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Render_i(o,v);
@@ -936,6 +945,7 @@ Flmm_Scalebar* g_scrollBar;
 
 inline void EncodeDialog::cb_Encode_i(Fl_Return_Button* o, void*) {
   //nle::renderMovie();
+go = true;
 o->window()->hide();
 }
 void EncodeDialog::cb_Encode(Fl_Return_Button* o, void* v) {
@@ -943,7 +953,8 @@ void EncodeDialog::cb_Encode(Fl_Return_Button* o, void* v) {
 }
 
 inline void EncodeDialog::cb_Cancel_i(Fl_Button* o, void*) {
-  o->window()->hide();
+  go = false;
+o->window()->hide();
 }
 void EncodeDialog::cb_Cancel(Fl_Button* o, void* v) {
   ((EncodeDialog*)(o->parent()->user_data()))->cb_Cancel_i(o,v);
@@ -1088,6 +1099,10 @@ int EncodeDialog::shown() {
   return encodeDialog->shown();
 }
 
+EncodeDialog::~EncodeDialog() {
+  delete encodeDialog;
+}
+
 ChangesDialog::ChangesDialog() {
   Fl_Double_Window* w;
   { Fl_Double_Window* o = new Fl_Double_Window(410, 80, "Unsaved changes!");
@@ -1174,52 +1189,6 @@ CodecOptions::CodecOptions() {
     o->set_modal();
     o->end();
   }
-}
-
-inline void ProgressDialog::cb_cancel_button_i(Fl_Button*, void*) {
-  cancel = true;
-cancel_button->deactivate();
-}
-void ProgressDialog::cb_cancel_button(Fl_Button* o, void* v) {
-  ((ProgressDialog*)(o->parent()->user_data()))->cb_cancel_button_i(o,v);
-}
-
-ProgressDialog::ProgressDialog() {
-  Fl_Double_Window* w;
-  { Fl_Double_Window* o = new Fl_Double_Window(335, 145, "Progress Dialog");
-    w = o;
-    o->user_data((void*)(this));
-    { Fl_Button* o = cancel_button = new Fl_Button(240, 115, 90, 25, "Cancel");
-      o->callback((Fl_Callback*)cb_cancel_button);
-      w->hotspot(o);
-    }
-    { Fl_Progress* o = progress_bar = new Fl_Progress(40, 75, 255, 25);
-      o->selection_color((Fl_Color)5);
-    }
-    { Fl_Box* o = new Fl_Box(0, 5, 335, 30, "Loading Project...");
-      o->labelfont(1);
-      o->labelsize(16);
-    }
-    { Fl_Output* o = new Fl_Output(10, 40, 315, 25);
-      o->box(FL_FLAT_BOX);
-      o->color(FL_BACKGROUND_COLOR);
-    }
-    o->set_modal();
-    o->end();
-  }
-}
-
-bool ProgressDialog::progress( int percent ) {
-  progress_bar->value( percent );
-Fl::wait( 0.0 );
-return cancel;
-}
-
-void ProgressDialog::start() {
-  cancel = false;
-}
-
-void ProgressDialog::end() {
 }
 
 static const char *idata_logo[] = {
@@ -6054,6 +6023,10 @@ void AboutDialog::show() {
 
 int AboutDialog::shown() {
   return aboutDialog->shown();
+}
+
+AboutDialog::~AboutDialog() {
+  delete aboutDialog;
 }
 
 static const char *idata_dialog[] = {
