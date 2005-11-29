@@ -5,8 +5,6 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Menu_Bar.H>
-#include "Project.H"
-#include "Renderer.H"
 #include <FL/Fl_Tile.H>
 #include <FL/Fl_Group.H>
 #include "Ruler.H"
@@ -18,14 +16,11 @@ using namespace std;
 #include <FL/Fl_Box.H>
 #include "VideoViewGL.H"
 #include <FL/Fl_Tabs.H>
-#include <FL/Fl_Value_Input.H>
-#include <FL/Fl_Choice.H>
 #include <iostream>
 #include <string>
 #include "FileBrowser.H"
-#include <FL/Fl_Menu_Button.H>
-#include <FL/Fl_Text_Editor.H>
 #include <FL/Fl_Input.H>
+#include <FL/Fl_Choice.H>
 
 class NleUI {
 public:
@@ -33,8 +28,6 @@ public:
 private:
   Fl_Double_Window *mainWindow;
   static Fl_Menu_Item menu_[];
-  inline void cb_Open_i(Fl_Menu_*, void*);
-  static void cb_Open(Fl_Menu_*, void*);
   inline void cb_Save_i(Fl_Menu_*, void*);
   static void cb_Save(Fl_Menu_*, void*);
   inline void cb_Render_i(Fl_Menu_*, void*);
@@ -50,13 +43,6 @@ private:
   Fl_Box *trashCan;
 public:
   nle::VideoViewGL *m_videoView;
-  static Fl_Menu_Item menu_FPS[];
-private:
-  inline void cb_PAL_i(Fl_Menu_*, void*);
-  static void cb_PAL(Fl_Menu_*, void*);
-  inline void cb_NTSC_i(Fl_Menu_*, void*);
-  static void cb_NTSC(Fl_Menu_*, void*);
-public:
   nle::FileBrowser *fileBrowser;
 private:
   inline void cb_fileBrowser_i(nle::FileBrowser*, void*);
@@ -66,8 +52,6 @@ public:
 private:
   inline void cb__i(Fl_Button*, void*);
   static void cb_(Fl_Button*, void*);
-  inline void cb_1_i(Fl_Button*, void*);
-  static void cb_1(Fl_Button*, void*);
   static Fl_Menu_Item menu_1[];
 public:
   void show( int argc, char **argv );
@@ -76,6 +60,8 @@ extern Flmm_Scalebar* g_scrollBar;
 #include <FL/Fl_Return_Button.H>
 #include "Codecs.H"
 #include <FL/Fl_File_Input.H>
+#include <stdlib.h>
+#include <FL/Fl_File_Chooser.H>
 
 class EncodeDialog {
 public:
@@ -105,6 +91,8 @@ private:
   Fl_Button *video_options;
   inline void cb_video_options_i(Fl_Button*, void*);
   static void cb_video_options(Fl_Button*, void*);
+  inline void cb_File_i(Fl_Button*, void*);
+  static void cb_File(Fl_Button*, void*);
 public:
   void show();
   int shown();
@@ -120,6 +108,7 @@ public:
 extern Fl_Box *g_trashCan;
 extern float g_fps;
 #include <FL/Fl_Hold_Browser.H>
+#include <FL/Fl_Value_Input.H>
 
 class CodecOptions {
 public:
@@ -138,12 +127,24 @@ private:
   inline void cb_Cancel1_i(Fl_Button*, void*);
   static void cb_Cancel1(Fl_Button*, void*);
 };
+#include "IProgressListener.H"
 #include <FL/Fl_Progress.H>
 #include <FL/Fl_Output.H>
 
-class ProgressDialog {
+class ProgressDialog : public nle::IProgressListener {
 public:
   ProgressDialog();
+  Fl_Button *cancel_button;
+private:
+  inline void cb_cancel_button_i(Fl_Button*, void*);
+  static void cb_cancel_button(Fl_Button*, void*);
+public:
+  Fl_Progress *progress_bar;
+  bool progress( int percent );
+  void start();
+  void end();
+private:
+  bool cancel;
 };
 
 class AboutDialog {
@@ -153,6 +154,26 @@ public:
 private:
   inline void cb_Close_i(Fl_Return_Button*, void*);
   static void cb_Close(Fl_Return_Button*, void*);
+public:
+  void show();
+  int shown();
+};
+#include <FL/Fl_Text_Display.H>
+
+class ErrorDialog {
+public:
+  ErrorDialog();
+};
+
+class SaveAsDialog {
+public:
+  SaveAsDialog();
+  Fl_Double_Window *saveAsDialog;
+private:
+  inline void cb_Ok_i(Fl_Return_Button*, void*);
+  static void cb_Ok(Fl_Return_Button*, void*);
+  inline void cb_Cancel2_i(Fl_Button*, void*);
+  static void cb_Cancel2(Fl_Button*, void*);
 public:
   void show();
   int shown();

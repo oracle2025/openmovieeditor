@@ -1,4 +1,4 @@
-/*  Renderer.H
+/*  Renderer.cxx
  *
  *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,30 +17,22 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _RENDERER_H_
-#define _RENDERER_H_
-
-#include "global_includes.H"
+#ifndef _I_PROGRESS_LISTENER_H_
+#define _I_PROGRESS_LISTENER_H_
 
 namespace nle
 {
 
-class IProgressListener;
-
-class Renderer
+class IProgressListener
 {
 	public:
-		Renderer( string filename, int w, int h, int framerate, int samplerate );
-		~Renderer();
-		void go( IProgressListener* l = 0 );
-	private:
-		string m_filename;
-		int m_w;
-		int m_h;
-		int m_framerate;
-		int m_samplerate;
+		virtual ~IProgressListener() {}
+		virtual bool progress( int percent ) = 0;
+		virtual void start() = 0;
+		virtual void end() = 0;
 };
 
 } /* namespace nle */
-#endif /* _RENDERER_H_ */
+
+#endif /* _I_PROGRESS_LISTENER_H_ */
 

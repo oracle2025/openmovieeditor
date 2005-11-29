@@ -18,6 +18,7 @@
  */
 
 #include <FL/Fl.H>
+#include <FL/Fl_Tooltip.H>
 
 #include <lqt.h>
 
@@ -45,6 +46,7 @@ int main( int argc, char** argv )
 	
 	Fl::visual(FL_DOUBLE|FL_RGB);
 
+	Fl_Tooltip::color( fl_rgb_color( 0, 0, 1 ) );
 	Fl::background2( 34, 52, 103 );
 	Fl::background( 93, 93, 114 );
 	Fl::foreground( 255, 255, 255 );
@@ -54,7 +56,7 @@ int main( int argc, char** argv )
 	
 	nle::g_audio_codec_info = lqt_query_registry( 1, 0, 1, 0 );
 	nle::g_video_codec_info = lqt_query_registry( 0, 1, 1, 0 );
-	
+
 	nui.show( argc, argv );
 	nle::Project::read_project();
 	int r = Fl::run();

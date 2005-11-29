@@ -141,7 +141,7 @@ void scale_it( frame_struct* src, frame_struct* dst )
 
 
 }
-void Renderer::go()
+void Renderer::go( IProgressListener* l )
 {
 	g_timeline->seek( 0 );
 	g_timeline->sort();

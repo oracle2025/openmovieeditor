@@ -10,7 +10,7 @@ LIBPATH = []
 
 env = Environment( CC = 'g++',
 	CXXFLAGS = "-Wall -Werror -Iicons/ -Isl/ -Itinyxml/ -I./ " + DEBUG_FLAGS,
-	LINKFLAGS = '-ggdb ',
+	LINKFLAGS = '-ggdb',
 	LIBS = LIBS,
 	LIBPATH = LIBPATH
 	)

@@ -42,3 +42,7 @@ http://invisible-island.net/bcpp/ in build process einbauen (http://www.mrunix.d
 	http://developer.apple.com/samplecode/OpenGL_Movie/listing4.html
 	 */
 
+
+redirect cout:
+
+	std::streambuf* old = std::cout.rdbuf( &my_custom_streambuf_instance);

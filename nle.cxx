@@ -2,18 +2,11 @@
 
 #include "nle.h"
 
-inline void NleUI::cb_Open_i(Fl_Menu_*, void*) {
-  nle::Project::read_project();
-mainWindow->redraw();
-}
-void NleUI::cb_Open(Fl_Menu_* o, void* v) {
-  ((NleUI*)(o->parent()->user_data()))->cb_Open_i(o,v);
-}
-
 inline void NleUI::cb_Save_i(Fl_Menu_*, void*) {
-  //nle::Renderer a("/home/oracle/t.mov", 368, 240, 25, 48000);
-//a.go();
-nle::Project::write_project();
+  SaveAsDialog dlg;
+dlg.show();
+while (dlg.shown())
+  Fl::wait();
 }
 void NleUI::cb_Save(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Save_i(o,v);
@@ -42,12 +35,13 @@ void NleUI::cb_About(Fl_Menu_* o, void* v) {
 
 Fl_Menu_Item NleUI::menu_[] = {
  {"&File", 0,  0, 0, 64, 0, 0, 14, 56},
- {"New", 0,  0, 0, 0, 0, 0, 14, 56},
- {"Open...", 0,  (Fl_Callback*)NleUI::cb_Open, 0, 128, 0, 0, 14, 56},
- {"Save", 0,  (Fl_Callback*)NleUI::cb_Save, 0, 0, 0, 0, 14, 56},
- {"Save as...", 0,  0, 0, 128, 0, 0, 14, 56},
+ {"New Project", 0,  0, 0, 0, 0, 0, 14, 56},
+ {"Save as...", 0,  (Fl_Callback*)NleUI::cb_Save, 0, 128, 0, 0, 14, 56},
  {"Render...", 0,  (Fl_Callback*)NleUI::cb_Render, 0, 128, 0, 0, 14, 56},
  {"Quit", 0,  0, 0, 0, 0, 0, 14, 56},
+ {0,0,0,0,0,0,0,0,0},
+ {"&View", 0,  0, 0, 64, 0, 0, 14, 56},
+ {"Fullscreen", 0,  0, 0, 0, 0, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0},
  {"&Help", 0,  0, 0, 64, 0, 0, 14, 56},
  {"About...", 0,  (Fl_Callback*)NleUI::cb_About, 0, 0, 0, 0, 14, 56},
@@ -146,52 +140,600 @@ static const char *idata_tool_automations[] = {
 };
 static Fl_Pixmap image_tool_automations(idata_tool_automations);
 
-static const char *idata_trash[] = {
-"16 16 4 1",
-" \tc None",
-".\tc #000000",
-"+\tc #B3B3B3",
-"@\tc #404040",
-"     .......    ",
-"   ...+++++...  ",
-"  ..+++...+++.. ",
-" ..+++.+++.+++..",
-" ..+++++++++++..",
-"  ..+++++++++.. ",
-"  ....+++++.... ",
-"  .++.......++. ",
-"  .++@++@++@++. ",
-"  .++@++@++@++. ",
-"  .++@++@++@++. ",
-"  .++@++@++@++. ",
-"  .++@++@++@++. ",
-"  ..+@++@++@+.. ",
-"   ...++@++...  ",
-"     .......    "
+static const char *idata_trash_2[] = {
+"37 37 553 2",
+"  \tc None",
+". \tc #5D5D72",
+"+ \tc #5C5C71",
+"@ \tc #5B5B70",
+"# \tc #5B5B6F",
+"$ \tc #6D6D7E",
+"% \tc #81818E",
+"& \tc #8F8F97",
+"* \tc #9A9AA0",
+"= \tc #9B9BA0",
+"- \tc #9E9EA2",
+"; \tc #A2A3A6",
+"> \tc #A3A6A7",
+", \tc #A8A8AB",
+"\' \tc #9C9DA0",
+") \tc #929397",
+"! \tc #84858C",
+"~ \tc #767680",
+"{ \tc #686976",
+"] \tc #5D5D70",
+"^ \tc #59596D",
+"/ \tc #5A5A6E",
+"( \tc #5A5A6F",
+"_ \tc #666679",
+": \tc #8B8C96",
+"< \tc #909195",
+"[ \tc #9FA2A3",
+"} \tc #ABADAE",
+"| \tc #B3B3B5",
+"1 \tc #BCBCBC",
+"2 \tc #B9B9B9",
+"3 \tc #86888A",
+"4 \tc #707476",
+"5 \tc #696D6F",
+"6 \tc #777A7C",
+"7 \tc #A2A4A7",
+"8 \tc #9FA1A3",
+"9 \tc #929595",
+"0 \tc #85898B",
+"a \tc #7C7E7F",
+"b \tc #6A6C70",
+"c \tc #6B6D74",
+"d \tc #5C5C6D",
+"e \tc #57576B",
+"f \tc #58586C",
+"g \tc #727280",
+"h \tc #B8B8B6",
+"i \tc #C4C4C1",
+"j \tc #C7C5C2",
+"k \tc #C8C7C5",
+"l \tc #BCBBB9",
+"m \tc #B6B5B5",
+"n \tc #A5A6A6",
+"o \tc #7F8386",
+"p \tc #616568",
+"q \tc #5C6065",
+"r \tc #6C7174",
+"s \tc #85898C",
+"t \tc #989B9E",
+"u \tc #898D90",
+"v \tc #7E8184",
+"w \tc #868789",
+"x \tc #737578",
+"y \tc #737779",
+"z \tc #6D7172",
+"A \tc #535461",
+"B \tc #545467",
+"C \tc #56566A",
+"D \tc #58586D",
+"E \tc #636569",
+"F \tc #9C9D9C",
+"G \tc #9E9E9C",
+"H \tc #858685",
+"I \tc #838583",
+"J \tc #949592",
+"K \tc #898A88",
+"L \tc #828484",
+"M \tc #727577",
+"N \tc #747879",
+"O \tc #808485",
+"P \tc #797D80",
+"Q \tc #7A7E80",
+"R \tc #74787A",
+"S \tc #6B6F71",
+"T \tc #696C6F",
+"U \tc #686C6F",
+"V \tc #585D5F",
+"W \tc #4A4E51",
+"X \tc #626768",
+"Y \tc #515556",
+"Z \tc #41464B",
+"` \tc #4E4E5F",
+" .\tc #515164",
+"..\tc #555568",
+"+.\tc #484B51",
+"@.\tc #484E50",
+"#.\tc #5A5F60",
+"$.\tc #8B8D8A",
+"%.\tc #A0A09F",
+"&.\tc #878788",
+"*.\tc #818383",
+"=.\tc #818483",
+"-.\tc #858785",
+";.\tc #878887",
+">.\tc #868686",
+",.\tc #797B7A",
+"\'.\tc #727473",
+").\tc #6B6E6D",
+"!.\tc #676969",
+"~.\tc #656967",
+"{.\tc #4D5255",
+"].\tc #313B40",
+"^.\tc #2F393F",
+"/.\tc #2C3137",
+"(.\tc #464656",
+"_.\tc #4B4B5C",
+":.\tc #505063",
+"<.\tc #555569",
+"[.\tc #58596A",
+"}.\tc #4A5152",
+"|.\tc #63696A",
+"1.\tc #737979",
+"2.\tc #808384",
+"3.\tc #8A8D8D",
+"4.\tc #828687",
+"5.\tc #75797B",
+"6.\tc #696C6C",
+"7.\tc #636666",
+"8.\tc #4D5151",
+"9.\tc #525759",
+"0.\tc #505453",
+"a.\tc #4B4F4F",
+"b.\tc #494D4E",
+"c.\tc #474F53",
+"d.\tc #4A5359",
+"e.\tc #495155",
+"f.\tc #4D5050",
+"g.\tc #454747",
+"h.\tc #2C3236",
+"i.\tc #3A3A46",
+"j.\tc #3F3F4E",
+"k.\tc #454555",
+"l.\tc #4C4C5D",
+"m.\tc #525265",
+"n.\tc #3D4548",
+"o.\tc #4E5658",
+"p.\tc #686D6C",
+"q.\tc #969795",
+"r.\tc #C4C4C2",
+"s.\tc #E1E2E0",
+"t.\tc #EAEAEA",
+"u.\tc #E2E2E2",
+"v.\tc #B0B2B3",
+"w.\tc #7A7D7F",
+"x.\tc #636667",
+"y.\tc #565A5B",
+"z.\tc #606362",
+"A.\tc #686A66",
+"B.\tc #656662",
+"C.\tc #636561",
+"D.\tc #5C5E5C",
+"E.\tc #555654",
+"F.\tc #484D4E",
+"G.\tc #323B41",
+"H.\tc #373743",
+"I.\tc #3A3A47",
+"J.\tc #414150",
+"K.\tc #494959",
+"L.\tc #505062",
+"M.\tc #565669",
+"N.\tc #4E5456",
+"O.\tc #4A5051",
+"P.\tc #666D6E",
+"Q.\tc #8C9192",
+"R.\tc #C1C2C0",
+"S.\tc #CECFCB",
+"T.\tc #D4D2CF",
+"U.\tc #C9C7C4",
+"V.\tc #AAA9A6",
+"W.\tc #8B8B89",
+"X.\tc #7A7C79",
+"Y.\tc #6F716E",
+"Z.\tc #797975",
+"`.\tc #7E7E78",
+" +\tc #7E7C77",
+".+\tc #7A7972",
+"++\tc #73726C",
+"@+\tc #6B6A65",
+"#+\tc #525453",
+"$+\tc #35393D",
+"%+\tc #33333F",
+"&+\tc #373744",
+"*+\tc #3F3F4D",
+"=+\tc #474757",
+"-+\tc #4F4F61",
+";+\tc #555A5C",
+">+\tc #676C6C",
+",+\tc #616767",
+"\'+\tc #B4B4B0",
+")+\tc #D3D2CE",
+"!+\tc #E6E5E2",
+"~+\tc #E4E2DF",
+"{+\tc #C0C0BD",
+"]+\tc #898E8E",
+"^+\tc #6E7474",
+"/+\tc #676B6A",
+"(+\tc #7F807C",
+"_+\tc #85837E",
+":+\tc #7D7A75",
+"<+\tc #797671",
+"[+\tc #6C6B66",
+"}+\tc #63635D",
+"|+\tc #545651",
+"1+\tc #34393D",
+"2+\tc #31313C",
+"3+\tc #3E3E4C",
+"4+\tc #54575F",
+"5+\tc #5A5D5E",
+"6+\tc #575D5D",
+"7+\tc #8A8D8B",
+"8+\tc #A1A2A0",
+"9+\tc #C1C0BF",
+"0+\tc #CAC9C6",
+"a+\tc #BDBDBB",
+"b+\tc #A5A5A2",
+"c+\tc #7B7D7C",
+"d+\tc #707270",
+"e+\tc #626360",
+"f+\tc #6C6C67",
+"g+\tc #6D6C67",
+"h+\tc #716F6A",
+"i+\tc #6D6B66",
+"j+\tc #676661",
+"k+\tc #61615C",
+"l+\tc #535552",
+"m+\tc #34393E",
+"n+\tc #484858",
+"o+\tc #545862",
+"p+\tc #545A5B",
+"q+\tc #5E6464",
+"r+\tc #7F8382",
+"s+\tc #949594",
+"t+\tc #AAABA8",
+"u+\tc #BDBDB9",
+"v+\tc #ACABA8",
+"w+\tc #9F9F9A",
+"x+\tc #9A9A95",
+"y+\tc #7D7D78",
+"z+\tc #777772",
+"A+\tc #706F6A",
+"B+\tc #696863",
+"C+\tc #65645F",
+"D+\tc #60605B",
+"E+\tc #525351",
+"F+\tc #373A40",
+"G+\tc #31313D",
+"H+\tc #383844",
+"I+\tc #40404E",
+"J+\tc #515163",
+"K+\tc #57576A",
+"L+\tc #565764",
+"M+\tc #555B5D",
+"N+\tc #626969",
+"O+\tc #747978",
+"P+\tc #939493",
+"Q+\tc #A5A6A2",
+"R+\tc #B8B9B4",
+"S+\tc #AFAEA9",
+"T+\tc #A3A29D",
+"U+\tc #A09F9A",
+"V+\tc #81807B",
+"W+\tc #807F7A",
+"X+\tc #71706A",
+"Y+\tc #686863",
+"Z+\tc #62625C",
+"`+\tc #525352",
+" @\tc #383A40",
+".@\tc #32323E",
+"+@\tc #383845",
+"@@\tc #4A4A5B",
+"#@\tc #595A69",
+"$@\tc #585E5E",
+"%@\tc #646969",
+"&@\tc #727675",
+"*@\tc #999B97",
+"=@\tc #A9A9A4",
+"-@\tc #BFBEB9",
+";@\tc #B8B7B2",
+">@\tc #A7A6A1",
+",@\tc #8C8984",
+"\'@\tc #8A8984",
+")@\tc #71716B",
+"!@\tc #666762",
+"~@\tc #6F6C67",
+"{@\tc #696762",
+"]@\tc #64645F",
+"^@\tc #515353",
+"/@\tc #36383F",
+"(@\tc #393947",
+"_@\tc #424251",
+":@\tc #535365",
+"<@\tc #5B5C6D",
+"[@\tc #5F6363",
+"}@\tc #696D6C",
+"|@\tc #737675",
+"1@\tc #A1A29B",
+"2@\tc #B0AFAA",
+"3@\tc #C5C4BF",
+"4@\tc #C1BDB9",
+"5@\tc #B0ACA8",
+"6@\tc #B0ACA7",
+"7@\tc #96918D",
+"8@\tc #95908C",
+"9@\tc #74736E",
+"0@\tc #6E6C67",
+"a@\tc #666661",
+"b@\tc #4F5453",
+"c@\tc #35363E",
+"d@\tc #434352",
+"e@\tc #535366",
+"f@\tc #626565",
+"g@\tc #707371",
+"h@\tc #777876",
+"i@\tc #9E9F99",
+"j@\tc #ACACA7",
+"k@\tc #C1C0BB",
+"l@\tc #C2BEBA",
+"m@\tc #BAB5B0",
+"n@\tc #B8B2AD",
+"o@\tc #9D9893",
+"p@\tc #9B9692",
+"q@\tc #797873",
+"r@\tc #73706B",
+"s@\tc #6E6D68",
+"t@\tc #33353E",
+"u@\tc #343440",
+"v@\tc #3B3B48",
+"w@\tc #444454",
+"x@\tc #4D4D5E",
+"y@\tc #6B6D6D",
+"z@\tc #7B7B78",
+"A@\tc #969791",
+"B@\tc #A7A6A0",
+"C@\tc #C6C2BB",
+"D@\tc #C9C4BF",
+"E@\tc #C1BCB6",
+"F@\tc #BDB8B2",
+"G@\tc #A5A09B",
+"H@\tc #A29D98",
+"I@\tc #8A8681",
+"J@\tc #86827D",
+"K@\tc #7D7974",
+"L@\tc #7C7973",
+"M@\tc #73716D",
+"N@\tc #6A6A65",
+"O@\tc #505353",
+"P@\tc #33343E",
+"Q@\tc #3C3C4A",
+"R@\tc #454554",
+"S@\tc #545468",
+"T@\tc #6F7072",
+"U@\tc #7D7D7B",
+"V@\tc #7D7E7A",
+"W@\tc #959690",
+"X@\tc #A7A5A0",
+"Y@\tc #CCC7C1",
+"Z@\tc #CEC8C2",
+"`@\tc #C4BEB8",
+" #\tc #C0BBB6",
+".#\tc #AAA5A1",
+"+#\tc #A8A39D",
+"@#\tc #918C86",
+"##\tc #8E8984",
+"$#\tc #827D79",
+"%#\tc #7F7C77",
+"&#\tc #767570",
+"*#\tc #6B6B67",
+"=#\tc #4C504F",
+"-#\tc #33333E",
+";#\tc #353541",
+">#\tc #3D3D4B",
+",#\tc #4E4E60",
+"\'#\tc #6D6E72",
+")#\tc #80817C",
+"!#\tc #7B7C79",
+"~#\tc #989792",
+"{#\tc #A8A6A1",
+"]#\tc #D0C9C3",
+"^#\tc #D3CCC6",
+"/#\tc #C7C1BB",
+"(#\tc #C3BEB8",
+"_#\tc #AEA9A3",
+":#\tc #ACA7A1",
+"<#\tc #96918B",
+"[#\tc #948F89",
+"}#\tc #88837D",
+"|#\tc #83807B",
+"1#\tc #7A7974",
+"2#\tc #6F6D69",
+"3#\tc #484B4C",
+"4#\tc #30303B",
+"5#\tc #363642",
+"6#\tc #63636C",
+"7#\tc #797A75",
+"8#\tc #7F817B",
+"9#\tc #9A9994",
+"0#\tc #ABA8A3",
+"a#\tc #D5CEC8",
+"b#\tc #C7C2BC",
+"c#\tc #C4BFB9",
+"d#\tc #B1ACA6",
+"e#\tc #9B9690",
+"f#\tc #99948E",
+"g#\tc #8C8781",
+"h#\tc #89847E",
+"i#\tc #807D76",
+"j#\tc #716F6B",
+"k#\tc #444749",
+"l#\tc #60606B",
+"m#\tc #73746F",
+"n#\tc #858580",
+"o#\tc #9B9994",
+"p#\tc #D8D1CB",
+"q#\tc #B2ADA7",
+"r#\tc #B0ABA5",
+"s#\tc #9D9892",
+"t#\tc #9C9791",
+"u#\tc #8B8681",
+"v#\tc #848079",
+"w#\tc #70706B",
+"x#\tc #414447",
+"y#\tc #484859",
+"z#\tc #60606D",
+"A#\tc #777872",
+"B#\tc #888883",
+"C#\tc #9E9B97",
+"D#\tc #D6CFC9",
+"E#\tc #DAD3CD",
+"F#\tc #B3AEA8",
+"G#\tc #AFAAA4",
+"H#\tc #A09B95",
+"I#\tc #9E9993",
+"J#\tc #908B85",
+"K#\tc #8D8884",
+"L#\tc #86827C",
+"M#\tc #6F6F6B",
+"N#\tc #3D3F44",
+"O#\tc #40404F",
+"P#\tc #4A4A5A",
+"Q#\tc #525264",
+"R#\tc #5F5F6F",
+"S#\tc #7C7E77",
+"T#\tc #8B8A85",
+"U#\tc #9E9C97",
+"V#\tc #ABA9A4",
+"W#\tc #DCD4CF",
+"X#\tc #C4C0BA",
+"Y#\tc #A19C96",
+"Z#\tc #938E88",
+"`#\tc #908B86",
+" $\tc #87837D",
+".$\tc #6E6E6A",
+"+$\tc #3A3C41",
+"@$\tc #393946",
+"#$\tc #5C5C6F",
+"$$\tc #82817D",
+"%$\tc #8D8C87",
+"&$\tc #9D9B96",
+"*$\tc #ADAAA5",
+"=$\tc #D2CCC6",
+"-$\tc #DDD6D0",
+";$\tc #A39E98",
+">$\tc #97928C",
+",$\tc #928D87",
+"\'$\tc #88847D",
+")$\tc #6B6C68",
+"!$\tc #383A41",
+"~$\tc #858481",
+"{$\tc #8F8E89",
+"]$\tc #9C9A95",
+"^$\tc #AEABA6",
+"/$\tc #DDD5D0",
+"($\tc #C2BEB7",
+"_$\tc #BFBAB4",
+":$\tc #A49F99",
+"<$\tc #A29D97",
+"[$\tc #9A958F",
+"}$\tc #6B6A67",
+"|$\tc #373840",
+"1$\tc #34343F",
+"2$\tc #434353",
+"3$\tc #878686",
+"4$\tc #92918C",
+"5$\tc #C6C1BB",
+"6$\tc #DBD3CE",
+"7$\tc #A5A09A",
+"8$\tc #676765",
+"9$\tc #33343D",
+"0$\tc #3B3B49",
+"a$\tc #4D4D5F",
+"b$\tc #858385",
+"c$\tc #94938E",
+"d$\tc #BFBBB5",
+"e$\tc #C0BAB4",
+"f$\tc #BCB7B1",
+"g$\tc #A6A19B",
+"h$\tc #95908A",
+"i$\tc #8B8881",
+"j$\tc #5A5B59",
+"k$\tc #77777A",
+"l$\tc #979690",
+"m$\tc #9C9B96",
+"n$\tc #B0ADA8",
+"o$\tc #BDB9B4",
+"p$\tc #D3CBC6",
+"q$\tc #BEB9B3",
+"r$\tc #BBB6B0",
+"s$\tc #A7A29C",
+"t$\tc #8C8881",
+"u$\tc #464748",
+"v$\tc #5B5B6B",
+"w$\tc #888884",
+"x$\tc #A09E98",
+"y$\tc #AFAAA6",
+"z$\tc #BDB6B0",
+"A$\tc #D0C8C3",
+"B$\tc #BAB5AF",
+"C$\tc #7E7A76",
+"D$\tc #34353B",
+"E$\tc #575768",
+"F$\tc #7C7C7D",
+"G$\tc #A7A39D",
+"H$\tc #C1BAB5",
+"I$\tc #D0C8C1",
+"J$\tc #BDB8B3",
+"K$\tc #B5B0AB",
+"L$\tc #AAA59F",
+"M$\tc #9E9A93",
+"N$\tc #777571",
+"O$\tc #3D3D43",
+"P$\tc #424250",
+"Q$\tc #545461",
+"R$\tc #79777D",
+"S$\tc #9D9998",
+"T$\tc #A3A09E",
+"U$\tc #9F9B99",
+"V$\tc #999591",
+"W$\tc #8D8B86",
+"X$\tc #797876",
+"Y$\tc #5C595C",
+"Z$\tc #3E3D44",
+"`$\tc #49495A",
+" %\tc #4C4C5E",
+". . . . . . . . . . . . . . + + + + + + + + + + + + + + . . . . . . . . . ",
+". . . . . . . . . . . + + + + @ @ @ @ # # # # # @ @ @ @ + + + . . . . . . ",
+". . . . . . . . . + . $ % & * = - ; > , \' ) ! ~ { ] ^ / ( # @ + + . . . . ",
+". . . . . . . + _ : < [ } | 1 2 3 4 5 6 7 8 9 0 a b c d e f / # @ + + . . ",
+". . . . . . . g h i j k l m 2 n o p q r s t u v w x y z A B C D ( @ + . . ",
+". . . . . . + E F G H I J K L M N O P Q R S T U V W X Y Z `  ...f ( @ + . ",
+". . . . . . + +.@.#.$.%.&.*.=.-.;.>.,.,.\'.).!.~.!.{.].^./.(._.:.<.D @ + + ",
+". . . . . + + [.}.|.1.2.3.4.5.6.7.8.9.0.a.b.c.d.e.f.g.h.i.j.k.l.m.e ( + + ",
+". . . . . + @ / n.o.p.q.r.s.t.u.v.w.x.y.z.A.B.C.D.E.F.G.H.I.J.K.L.M./ @ + ",
+". . . . . + @ # N.O.P.Q.R.S.T.U.V.W.X.Y.Z.`. +.+++@+#+$+%+&+*+=+-+<./ @ + ",
+". . . . . + @ / ;+>+,+=.\'+)+!+~+{+]+^+/+(+_+:+<+[+}+|+1+2+H.3+=+-+M./ @ + ",
+". . . . . + @ / 4+5+6+7+8+9+0+a+b+c+d+e+f+g+h+i+j+k+l+m+2+H.*+n+L.C / @ + ",
+". . . . . + + ( o+p+q+r+s+t+u+v+w+x+y+z+A+B+@+[+C+D+E+F+G+H+I+K.J+K+( + + ",
+". . . . . . + # L+M+N+O+P+Q+R+S+T+U+V+W+X+Y+@+[+j+Z+`+ @.@+@J.@@m.e # + . ",
+". . . . . . + # #@$@%@&@*@=@-@;@>@>@,@\'@)@!@B+~@{@]@^@/@%+(@_@_.:@f # + . ",
+". . . . . . + @ <@[@}@|@1@2@3@4@5@6@7@8@9@[+B+0@@+a@b@c@%+I.d@l.e@f @ + . ",
+". . . . . . + @ # f@g@h@i@j@k@l@m@n@o@p@ +q@h+r@s@Y+0.t@u@v@w@x@B D @ + . ",
+". . . . . . + @ / y@h@z@A@B@C@D@E@F@G@H@I@J@K@L@M@N@O@P@u@Q@R@` S@^ @ + . ",
+". . . . . . + @ / T@U@V@W@X@Y@Z@`@ #.#+#@###$#%#&#*#=#-#;#>#(.,#<.^ @ + . ",
+". . . . . . + + ( \'#)#!#~#{#]#^#/#(#_#:#<#[#}#|#1#2#3#4#5#3+=+-+M./ @ + . ",
+". . . . . . . + ( 6#7#8#9#0#^#a#b#c#d#_#e#f#g#h#i#j#k#2+H.3+n+L.C / + + . ",
+". . . . . . . + # l#m#n#o#0#a#p#b#(#q#r#s#t###u#v#w#x#2+H.j.y#J+K+( + + . ",
+". . . . . . . + @ z#A#B#C#0#D#E#C@c#F#G#H#I#J#K#L#M#N#G+H+O#P#Q#e ( + . . ",
+". . . . . . . + @ R#S#T#U#V#D#W#X#(#F#G#Y#I#Z#`# $.$+$.@@$J.@@m.f # + . . ",
+". . . . . . . + @ #$$$%$&$*$=$-$c#E@F#G#;$Y#>$,$\'$)$!$%+(@_@_.e@f # + . . ",
+". . . . . . . + @ / ~${$]$^$Y@/$($_$q#G#:$<$[$[#u#}$|$1$v@2$l.e@D @ + . . ",
+". . . . . . . + @ / 3$4$o#^$5$6$E@F@d#_#7$<$e#Z#u#8$9$u@0$w@a$B D @ + . . ",
+". . . . . . . + + / b$c$o#^$d$D#e$f$d#_#g$;$s#h$i$j$2+;#Q@k.,#..^ @ + . . ",
+". . . . . . . + + ( k$l$m$n$o$p$q$r$d#G#s$;$I#>$t$u$2+5#3+=+-+<./ @ + . . ",
+". . . . . . . . + # v$w$x$y$z$A$f$B$q#_#+#:$Y#[$C$D$G+&+*+n+L.C / @ + . . ",
+". . . . . . . . + @ D E$F$G$H$I$J$K$q#:#L$7$M$N$O$4#1$(@P$@@Q#e ( + + . . ",
+". . . . . . . . + @ ^ <.-+Q$R$S$T$U$V$W$X$Y$Z$2+2+%+&+3+R@x@e@f # + . . . ",
+". . . . . . . . + + ( e m.l.k.*+I.H.u@%+-#-#%+u@5#@$>#d@P#L.M.^ @ + . . . ",
+". . . . . . . . . + @ ^ M.J+_.(.J.3+0$I.@$@$(@v@>#O#w@`$-+B f ( + + . . . ",
+". . . . . . . . . + + ( f <. .a$P#(.w@d@P$P$_@2$k.n+l.L.B e / @ + . . . . ",
+". . . . . . . . . . + @ ( D C B J+-+x@_._._._. %,#L.m.<.f / @ + + . . . . ",
+". . . . . . . . . . . + @ # / f K+..B e@m.m.e@e@S@M.e ^ ( @ + + . . . . . "
 };
-static Fl_Pixmap image_trash(idata_trash);
-
-inline void NleUI::cb_PAL_i(Fl_Menu_*, void*) {
-  g_fps = 25.0;
-std::cout << "PAL" << std::endl;
-}
-void NleUI::cb_PAL(Fl_Menu_* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_PAL_i(o,v);
-}
-
-inline void NleUI::cb_NTSC_i(Fl_Menu_*, void*) {
-  g_fps = 29.97;
-std::cout << "NTSC" << std::endl;
-}
-void NleUI::cb_NTSC(Fl_Menu_* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_NTSC_i(o,v);
-}
-
-Fl_Menu_Item NleUI::menu_FPS[] = {
- {"PAL 25", 0,  (Fl_Callback*)NleUI::cb_PAL, 0, 0, 0, 0, 14, 56},
- {"NTSC 29.97", 0,  (Fl_Callback*)NleUI::cb_NTSC, 0, 0, 0, 0, 14, 56},
- {0,0,0,0,0,0,0,0,0}
-};
+static Fl_Pixmap image_trash_2(idata_trash_2);
 
 inline void NleUI::cb_fileBrowser_i(nle::FileBrowser* o, void*) {
   nle::FileBrowser *fb = (nle::FileBrowser*)o;
@@ -201,18 +743,17 @@ void NleUI::cb_fileBrowser(nle::FileBrowser* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_fileBrowser_i(o,v);
 }
 
-inline void NleUI::cb__i(Fl_Button*, void*) {
-  m_videoView->play();
+inline void NleUI::cb__i(Fl_Button* o, void*) {
+  if ( strcmp( o->label(), "@>" ) == 0 ) {
+	o->label( "@||" );
+	m_videoView->play();
+} else {
+	o->label( "@>" );
+	m_videoView->stop();
+};
 }
 void NleUI::cb_(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb__i(o,v);
-}
-
-inline void NleUI::cb_1_i(Fl_Button*, void*) {
-  m_videoView->stop();
-}
-void NleUI::cb_1(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_1_i(o,v);
 }
 
 Fl_Menu_Item NleUI::menu_1[] = {
@@ -223,15 +764,15 @@ Fl_Menu_Item NleUI::menu_1[] = {
 
 NleUI::NleUI() {
   Fl_Double_Window* w;
-  { Fl_Double_Window* o = mainWindow = new Fl_Double_Window(515, 455, "MovieEditor");
+  { Fl_Double_Window* o = mainWindow = new Fl_Double_Window(515, 465, "MovieEditor");
     w = o;
     o->user_data((void*)(this));
     { Fl_Menu_Bar* o = new Fl_Menu_Bar(0, 0, 345, 25);
       o->menu(menu_);
     }
-    { Fl_Tile* o = new Fl_Tile(0, 25, 515, 430);
-      { Fl_Group* o = new Fl_Group(0, 275, 515, 180);
-        { Fl_Group* o = new Fl_Group(40, 275, 475, 180);
+    { Fl_Tile* o = new Fl_Tile(0, 25, 515, 440);
+      { Fl_Group* o = new Fl_Group(0, 275, 515, 190);
+        { Fl_Group* o = new Fl_Group(40, 275, 475, 190);
           { nle::Ruler* o = new nle::Ruler(40, 275, 475, 25, "Ruler");
             o->box(FL_UP_BOX);
             o->color(FL_BACKGROUND_COLOR);
@@ -243,7 +784,7 @@ NleUI::NleUI() {
             o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
             o->when(FL_WHEN_RELEASE);
           }
-          { nle::TimelineView* o = m_timelineView = new nle::TimelineView(40, 300, 475, 135);
+          { nle::TimelineView* o = m_timelineView = new nle::TimelineView(40, 300, 475, 145);
             o->box(FL_NO_BOX);
             o->color(FL_BACKGROUND_COLOR);
             o->selection_color(FL_BACKGROUND_COLOR);
@@ -255,7 +796,7 @@ NleUI::NleUI() {
             o->when(2);
             Fl_Group::current()->resizable(o);
           }
-          { Flmm_Scalebar* o = scaleBar = new Flmm_Scalebar(40, 435, 475, 20);
+          { Flmm_Scalebar* o = scaleBar = new Flmm_Scalebar(40, 445, 475, 20);
             o->type(1);
             o->box(FL_FLAT_BOX);
             o->color(FL_DARK2);
@@ -273,7 +814,7 @@ NleUI::NleUI() {
           o->end();
           Fl_Group::current()->resizable(o);
         }
-        { Fl_Group* o = new Fl_Group(0, 275, 40, 180);
+        { Fl_Group* o = new Fl_Group(0, 275, 40, 190);
           o->labelsize(12);
           { Fl_Button* o = new Fl_Button(0, 300, 40, 40);
             o->tooltip("Positioning");
@@ -287,8 +828,9 @@ NleUI::NleUI() {
             o->type(102);
             o->image(image_tool_automations);
             o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
+            o->hide();
           }
-          { Fl_Box* o = new Fl_Box(0, 380, 40, 35);
+          { Fl_Box* o = new Fl_Box(0, 340, 40, 85);
             o->box(FL_THIN_UP_BOX);
             Fl_Group::current()->resizable(o);
           }
@@ -296,10 +838,10 @@ NleUI::NleUI() {
             o->box(FL_UP_BOX);
             o->labelsize(12);
           }
-          { Fl_Box* o = trashCan = new Fl_Box(0, 415, 40, 40);
+          { Fl_Box* o = trashCan = new Fl_Box(0, 425, 40, 40);
             o->tooltip("Trash");
             o->box(FL_UP_BOX);
-            o->image(image_trash);
+            o->image(image_trash_2);
           }
           o->end();
         }
@@ -325,35 +867,6 @@ NleUI::NleUI() {
           { Fl_Tabs* o = new Fl_Tabs(0, 50, 280, 185);
             o->box(FL_UP_BOX);
             o->labelcolor(FL_GRAY0);
-            { Fl_Group* o = new Fl_Group(0, 75, 280, 160, "Project");
-              o->hide();
-              { Fl_Value_Input* o = new Fl_Value_Input(55, 85, 100, 25, "Width");
-                o->maximum(1024);
-                o->step(1);
-                o->value(640);
-              }
-              { Fl_Value_Input* o = new Fl_Value_Input(55, 115, 100, 25, "Height");
-                o->maximum(768);
-                o->step(1);
-                o->value(480);
-              }
-              { Fl_Box* o = new Fl_Box(180, 207, 80, 13);
-                Fl_Group::current()->resizable(o);
-              }
-              { Fl_Choice* o = new Fl_Choice(55, 145, 100, 25, "FPS");
-                o->down_box(FL_BORDER_BOX);
-                o->menu(menu_FPS);
-              }
-              { Fl_Value_Input* o = new Fl_Value_Input(55, 175, 100, 25, "Rate");
-                o->minimum(32000);
-                o->maximum(48000);
-                o->step(1);
-                o->value(48000);
-                o->deactivate();
-              }
-              o->end();
-              Fl_Group::current()->resizable(o);
-            }
             { Fl_Group* o = new Fl_Group(0, 75, 280, 160, "Files");
               { nle::FileBrowser* o = fileBrowser = new nle::FileBrowser(5, 80, 270, 150);
                 o->box(FL_NO_BOX);
@@ -369,21 +882,7 @@ NleUI::NleUI() {
                 Fl_Group::current()->resizable(o);
               }
               o->end();
-            }
-            { Fl_Group* o = new Fl_Group(0, 75, 280, 160, "Object Inspector");
-              o->hide();
-              { Fl_Menu_Button* o = new Fl_Menu_Button(80, 80, 195, 25, "Font");
-                o->align(FL_ALIGN_LEFT);
-              }
-              { Fl_Value_Input* o = new Fl_Value_Input(80, 110, 195, 25, "Font Size");
-                o->maximum(40);
-                o->step(1);
-              }
-              { Fl_Text_Editor* o = new Fl_Text_Editor(80, 140, 195, 90, "Text");
-                o->align(FL_ALIGN_LEFT);
-                Fl_Group::current()->resizable(o);
-              }
-              o->end();
+              Fl_Group::current()->resizable(o);
             }
             o->end();
             Fl_Group::current()->resizable(o);
@@ -405,7 +904,6 @@ NleUI::NleUI() {
           }
           { Fl_Button* o = new Fl_Button(50, 235, 50, 40, "@<|");
             o->tooltip("Skip Frame backwards");
-            o->callback((Fl_Callback*)cb_1);
           }
           { Fl_Button* o = new Fl_Button(180, 235, 50, 40, "@|>");
             o->tooltip("Skip Frame forward");
@@ -413,13 +911,13 @@ NleUI::NleUI() {
           o->end();
         }
         o->end();
+        Fl_Group::current()->resizable(o);
       }
       o->end();
       Fl_Group::current()->resizable(o);
     }
     { Fl_Choice* o = new Fl_Choice(345, 0, 170, 25);
       o->down_box(FL_BORDER_BOX);
-      o->deactivate();
       o->menu(menu_1);
     }
     o->end();
@@ -510,6 +1008,13 @@ void EncodeDialog::cb_video_options(Fl_Button* o, void* v) {
   ((EncodeDialog*)(o->parent()->user_data()))->cb_video_options_i(o,v);
 }
 
+inline void EncodeDialog::cb_File_i(Fl_Button*, void*) {
+  fl_file_chooser( "Set Export Filename", 0, 0 );
+}
+void EncodeDialog::cb_File(Fl_Button* o, void* v) {
+  ((EncodeDialog*)(o->parent()->user_data()))->cb_File_i(o,v);
+}
+
 EncodeDialog::EncodeDialog() {
   Fl_Double_Window* w;
   { Fl_Double_Window* o = encodeDialog = new Fl_Double_Window(485, 340, "Render");
@@ -553,7 +1058,9 @@ EncodeDialog::EncodeDialog() {
       o->callback((Fl_Callback*)cb_video_options);
     }
     new Fl_File_Input(145, 35, 205, 35, "Filename");
-    new Fl_Button(355, 45, 75, 25, "File...");
+    { Fl_Button* o = new Fl_Button(355, 45, 75, 25, "File...");
+      o->callback((Fl_Callback*)cb_File);
+    }
     { Fl_Box* o = new Fl_Box(35, 95, 415, 95, "Video");
       o->box(FL_ENGRAVED_FRAME);
       o->labelfont(1);
@@ -669,13 +1176,24 @@ CodecOptions::CodecOptions() {
   }
 }
 
+inline void ProgressDialog::cb_cancel_button_i(Fl_Button*, void*) {
+  cancel = true;
+cancel_button->deactivate();
+}
+void ProgressDialog::cb_cancel_button(Fl_Button* o, void* v) {
+  ((ProgressDialog*)(o->parent()->user_data()))->cb_cancel_button_i(o,v);
+}
+
 ProgressDialog::ProgressDialog() {
   Fl_Double_Window* w;
   { Fl_Double_Window* o = new Fl_Double_Window(335, 145, "Progress Dialog");
     w = o;
     o->user_data((void*)(this));
-    new Fl_Button(240, 115, 90, 25, "Cancel");
-    { Fl_Progress* o = new Fl_Progress(40, 75, 255, 25);
+    { Fl_Button* o = cancel_button = new Fl_Button(240, 115, 90, 25, "Cancel");
+      o->callback((Fl_Callback*)cb_cancel_button);
+      w->hotspot(o);
+    }
+    { Fl_Progress* o = progress_bar = new Fl_Progress(40, 75, 255, 25);
       o->selection_color((Fl_Color)5);
     }
     { Fl_Box* o = new Fl_Box(0, 5, 335, 30, "Loading Project...");
@@ -686,8 +1204,22 @@ ProgressDialog::ProgressDialog() {
       o->box(FL_FLAT_BOX);
       o->color(FL_BACKGROUND_COLOR);
     }
+    o->set_modal();
     o->end();
   }
+}
+
+bool ProgressDialog::progress( int percent ) {
+  progress_bar->value( percent );
+Fl::wait( 0.0 );
+return cancel;
+}
+
+void ProgressDialog::start() {
+  cancel = false;
+}
+
+void ProgressDialog::end() {
 }
 
 static const char *idata_logo[] = {
@@ -5522,4 +6054,578 @@ void AboutDialog::show() {
 
 int AboutDialog::shown() {
   return aboutDialog->shown();
+}
+
+static const char *idata_dialog[] = {
+"48 48 408 2",
+"  \tc None",
+". \tc #5D5D72",
+"+ \tc #615669",
+"@ \tc #8B1C23",
+"# \tc #9E0203",
+"$ \tc #9C0506",
+"% \tc #802C36",
+"& \tc #5D5B70",
+"* \tc #5D5C71",
+"= \tc #941115",
+"- \tc #C03132",
+"; \tc #E06B6B",
+"> \tc #DC6464",
+", \tc #AE1D1E",
+"\' \tc #812B35",
+") \tc #753A47",
+"! \tc #AC1A1B",
+"~ \tc #E26F6F",
+"{ \tc #D01515",
+"] \tc #D42828",
+"^ \tc #DE6666",
+"/ \tc #A00707",
+"( \tc #645265",
+"_ \tc #5E5B6F",
+": \tc #9B0809",
+"< \tc #D86060",
+"[ \tc #D52D2D",
+"} \tc #CC0000",
+"| \tc #DB4C4C",
+"1 \tc #C33939",
+"2 \tc #8A1F26",
+"3 \tc #773542",
+"4 \tc #B32A2A",
+"5 \tc #E06363",
+"6 \tc #CC0101",
+"7 \tc #CF0F0F",
+"8 \tc #E06868",
+"9 \tc #A20B0C",
+"0 \tc #684D5E",
+"a \tc #5F596D",
+"b \tc #9C0608",
+"c \tc #DB6464",
+"d \tc #D32424",
+"e \tc #D94040",
+"f \tc #CA3F3F",
+"g \tc #8F181D",
+"h \tc #7D313C",
+"i \tc #B82E2F",
+"j \tc #DF5E5E",
+"k \tc #D25C5C",
+"l \tc #CD1B1B",
+"m \tc #CE0A0A",
+"n \tc #DF6464",
+"o \tc #A51112",
+"p \tc #6C4757",
+"q \tc #60576B",
+"r \tc #9D0607",
+"s \tc #DD6868",
+"t \tc #D21E1E",
+"u \tc #CE1919",
+"v \tc #DAD4D4",
+"w \tc #D69090",
+"x \tc #D73636",
+"y \tc #CD4343",
+"z \tc #951115",
+"A \tc #BC3232",
+"B \tc #DE5858",
+"C \tc #D58484",
+"D \tc #DBDBDB",
+"E \tc #DBDADA",
+"F \tc #CF2A2A",
+"G \tc #CD0505",
+"H \tc #DE5F5F",
+"I \tc #A71718",
+"J \tc #71404F",
+"K \tc #625468",
+"L \tc #A00708",
+"M \tc #DE6B6B",
+"N \tc #D11919",
+"O \tc #CE1F1F",
+"P \tc #DBD8D8",
+"Q \tc #DCDCDC",
+"R \tc #D89E9E",
+"S \tc #D52C2C",
+"T \tc #D14949",
+"U \tc #990A0D",
+"V \tc #85252E",
+"W \tc #C03738",
+"X \tc #DC5151",
+"Y \tc #D68D8D",
+"Z \tc #D13737",
+"` \tc #CC0202",
+" .\tc #DD5757",
+"..\tc #AE1C1D",
+"+.\tc #763946",
+"@.\tc #A00909",
+"#.\tc #E06D6D",
+"$.\tc #D01313",
+"%.\tc #CF2626",
+"&.\tc #DBD9D9",
+"*.\tc #DDDDDD",
+"=.\tc #DAACAC",
+"-.\tc #D32323",
+";.\tc #D44D4D",
+">.\tc #9B0608",
+",.\tc #5F5A6E",
+"\'.\tc #892028",
+").\tc #C33C3C",
+"!.\tc #DB4B4B",
+"~.\tc #D69595",
+"{.\tc #D24444",
+"].\tc #DC4E4E",
+"^.\tc #B22223",
+"/.\tc #7C313C",
+"(.\tc #674F61",
+"_.\tc #CF2D2D",
+":.\tc #DCDBDB",
+"<.\tc #DEDEDE",
+"[.\tc #DBB8B8",
+"}.\tc #D11A1A",
+"|.\tc #D75050",
+"1.\tc #61576A",
+"2.\tc #8D1B21",
+"3.\tc #C74141",
+"4.\tc #DA4545",
+"5.\tc #DFDFDF",
+"6.\tc #D35151",
+"7.\tc #DA4444",
+"8.\tc #B92627",
+"9.\tc #822932",
+"0.\tc #6A4B5C",
+"a.\tc #A40F10",
+"b.\tc #E06C6C",
+"c.\tc #CE0B0B",
+"d.\tc #D03535",
+"e.\tc #767676",
+"f.\tc #ADADAD",
+"g.\tc #DCC2C2",
+"h.\tc #CC0505",
+"i.\tc #D95151",
+"j.\tc #9F0607",
+"k.\tc #645365",
+"l.\tc #90161C",
+"m.\tc #CA4545",
+"n.\tc #D93F3F",
+"o.\tc #D8A6A6",
+"p.\tc #0A0A0A",
+"q.\tc #000000",
+"r.\tc #818181",
+"s.\tc #E0E0E0",
+"t.\tc #D55F5F",
+"u.\tc #D83B3B",
+"v.\tc #BE2B2C",
+"w.\tc #882129",
+"x.\tc #A61314",
+"y.\tc #E16B6B",
+"z.\tc #CE0808",
+"A.\tc #D03C3C",
+"B.\tc #151515",
+"C.\tc #8D8D8D",
+"D.\tc #DECCCC",
+"E.\tc #CD0A0A",
+"F.\tc #CE0C0C",
+"G.\tc #DA4F4F",
+"H.\tc #674E60",
+"I.\tc #941216",
+"J.\tc #CF4A4A",
+"K.\tc #D73838",
+"L.\tc #D8ADAD",
+"M.\tc #212121",
+"N.\tc #989898",
+"O.\tc #E1E1E1",
+"P.\tc #D76D6D",
+"Q.\tc #D63131",
+"R.\tc #C32E2E",
+"S.\tc #8E191F",
+"T.\tc #6F4251",
+"U.\tc #A81819",
+"V.\tc #E16969",
+"W.\tc #CD0606",
+"X.\tc #D14444",
+"Y.\tc #2D2D2D",
+"Z.\tc #A4A4A4",
+"`.\tc #E2E2E2",
+" +\tc #E1D5D5",
+".+\tc #CE1010",
+"++\tc #CD0707",
+"@+\tc #DA4C4C",
+"#+\tc #A30D0E",
+"$+\tc #6B4859",
+"%+\tc #970D10",
+"&+\tc #D25050",
+"*+\tc #D63333",
+"=+\tc #DAB6B6",
+"-+\tc #383838",
+";+\tc #B1B1B1",
+">+\tc #E3E3E3",
+",+\tc #D97B7B",
+"\'+\tc #C73232",
+")+\tc #951216",
+"!+\tc #723E4C",
+"~+\tc #AC1C1D",
+"{+\tc #E06565",
+"]+\tc #CD0404",
+"^+\tc #D24D4D",
+"/+\tc #434343",
+"(+\tc #BDBDBD",
+"_+\tc #E3DCDC",
+":+\tc #CE1818",
+"<+\tc #DA4646",
+"[+\tc #704250",
+"}+\tc #990A0C",
+"|+\tc #D55454",
+"1+\tc #CC0303",
+"2+\tc #DBBDBD",
+"3+\tc #4F4F4F",
+"4+\tc #C8C8C8",
+"5+\tc #E4E4E4",
+"6+\tc #E5E5E5",
+"7+\tc #DB8989",
+"8+\tc #D32121",
+"9+\tc #CC3535",
+"0+\tc #980C0F",
+"a+\tc #B02122",
+"b+\tc #DF6161",
+"c+\tc #D35656",
+"d+\tc #5C5C5C",
+"e+\tc #D5D5D5",
+"f+\tc #E5E2E2",
+"g+\tc #D02222",
+"h+\tc #A91516",
+"i+\tc #5E5A6E",
+"j+\tc #9C0708",
+"k+\tc #D75959",
+"l+\tc #D42727",
+"m+\tc #DCC3C3",
+"n+\tc #686868",
+"o+\tc #E6E6E6",
+"p+\tc #DE9B9B",
+"q+\tc #CE3636",
+"r+\tc #9A0709",
+"s+\tc #7B343F",
+"t+\tc #B22626",
+"u+\tc #DE5C5C",
+"v+\tc #D45E5E",
+"w+\tc #A5A5A5",
+"x+\tc #696969",
+"y+\tc #6F6F6F",
+"z+\tc #E7E7E7",
+"A+\tc #E7E6E6",
+"B+\tc #D12F2F",
+"C+\tc #AF191A",
+"D+\tc #7A333F",
+"E+\tc #5F586D",
+"F+\tc #9C0607",
+"G+\tc #D95D5D",
+"H+\tc #CD0909",
+"I+\tc #DCC8C8",
+"J+\tc #D8D8D8",
+"K+\tc #A7A7A7",
+"L+\tc #C1C1C1",
+"M+\tc #E8E8E8",
+"N+\tc #E1AAAA",
+"O+\tc #7E2E39",
+"P+\tc #B82A2B",
+"Q+\tc #D46666",
+"R+\tc #242424",
+"S+\tc #030303",
+"T+\tc #9C9C9C",
+"U+\tc #E9E9E9",
+"V+\tc #D43D3D",
+"W+\tc #D63030",
+"X+\tc #B31B1B",
+"Y+\tc #61566A",
+"Z+\tc #9F0506",
+"`+\tc #DB6161",
+" @\tc #D11B1B",
+".@\tc #CD0C0C",
+"+@\tc #DCCDCD",
+"@@\tc #4B4B4B",
+"#@\tc #EAEAEA",
+"$@\tc #E4B8B8",
+"%@\tc #CF0D0D",
+"&@\tc #D33737",
+"*@\tc #9E0506",
+"=@\tc #625467",
+"-@\tc #BA2F2F",
+";@\tc #D56F6F",
+">@\tc #CFCFCF",
+",@\tc #6E6E6E",
+"\'@\tc #EBEBEB",
+")@\tc #D64B4B",
+"!@\tc #D42929",
+"~@\tc #B81E1F",
+"{@\tc #88232B",
+"]@\tc #635467",
+"^@\tc #9F0708",
+"/@\tc #DD6363",
+"(@\tc #D01616",
+"_@\tc #DED3D3",
+":@\tc #AEAEAE",
+"<@\tc #555555",
+"[@\tc #757575",
+"}@\tc #E7C5C5",
+"|@\tc #CD0303",
+"1@\tc #CE0909",
+"2@\tc #D43535",
+"3@\tc #A10707",
+"4@\tc #654F61",
+"5@\tc #86242C",
+"6@\tc #C03334",
+"7@\tc #D67878",
+"8@\tc #ECECEC",
+"9@\tc #EDEDED",
+"0@\tc #D85959",
+"a@\tc #D32222",
+"b@\tc #BD1E1F",
+"c@\tc #655063",
+"d@\tc #A10909",
+"e@\tc #DE6565",
+"f@\tc #D01212",
+"g@\tc #CE1515",
+"h@\tc #DED6D6",
+"i@\tc #EAD1D1",
+"j@\tc #D43232",
+"k@\tc #A1090A",
+"l@\tc #6A4A5A",
+"m@\tc #892128",
+"n@\tc #C03030",
+"o@\tc #DA4848",
+"p@\tc #D35555",
+"q@\tc #EEEEEE",
+"r@\tc #EEECEC",
+"s@\tc #D43A3A",
+"t@\tc #D21D1D",
+"u@\tc #C11C1C",
+"v@\tc #90171D",
+"w@\tc #DB5C5C",
+"x@\tc #D11818",
+"y@\tc #D32F2F",
+"z@\tc #9B0709",
+"A@\tc #DA5B5B",
+"B@\tc #D22020",
+"C@\tc #D12D2D",
+"D@\tc #9D0506",
+"E@\tc #AF1E1F",
+"F@\tc #DB5959",
+"G@\tc #E06464",
+"H@\tc #E06666",
+"I@\tc #DF6060",
+"J@\tc #DF5D5D",
+"K@\tc #DE5B5B",
+"L@\tc #DE5959",
+"M@\tc #DD5656",
+"N@\tc #DD5454",
+"O@\tc #DD5353",
+"P@\tc #DC5050",
+"Q@\tc #DB4949",
+"R@\tc #D94343",
+"S@\tc #D94141",
+"T@\tc #D83E3E",
+"U@\tc #D83C3C",
+"V@\tc #D73939",
+"W@\tc #D73737",
+"X@\tc #D63434",
+"Y@\tc #D02B2B",
+"Z@\tc #AC1112",
+"`@\tc #812A34",
+" #\tc #832831",
+".#\tc #9D0405",
+"+#\tc #9F0000",
+"@#\tc #832730",
+"##\tc #5B5B70",
+"$#\tc #58586C",
+"%#\tc #565669",
+"&#\tc #535366",
+"*#\tc #515163",
+"=#\tc #4E4E60",
+"-#\tc #4C4C5D",
+";#\tc #4A4A5B",
+">#\tc #484858",
+",#\tc #464656",
+"\'#\tc #454554",
+")#\tc #434353",
+"!#\tc #424251",
+"~#\tc #424250",
+"{#\tc #414150",
+"]#\tc #444454",
+"^#\tc #505063",
+"/#\tc #555569",
+"(#\tc #59596D",
+"_#\tc #5C5C71",
+":#\tc #5A5A6E",
+"<#\tc #57576B",
+"[#\tc #4F4F61",
+"}#\tc #4D4D5F",
+"|#\tc #49495A",
+"1#\tc #484859",
+"2#\tc #474758",
+"3#\tc #474757",
+"4#\tc #535365",
+"5#\tc #555568",
+"6#\tc #5A5A6F",
+"7#\tc #545467",
+"8#\tc #515164",
+"9#\tc #505062",
+"0#\tc #4E4E5F",
+"a#\tc #545468",
+". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\
+ . . . . . . . . . ",
+". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\
+ . . . . . . . . . ",
+". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\
+ . . . . . . . . . ",
+". . . . . . . . . . . . . . . . . . . . . + @ # $ % & . . . . . . . . . . . .\
+ . . . . . . . . . ",
+". . . . . . . . . . . . . . . . . . . . * = - ; > , \' . . . . . . . . . . . \
+. . . . . . . . . . ",
+". . . . . . . . . . . . . . . . . . . . ) ! ~ { ] ^ / ( . . . . . . . . . . .\
+ . . . . . . . . . ",
+". . . . . . . . . . . . . . . . . . . _ : < [ } } | 1 2 . . . . . . . . . . .\
+ . . . . . . . . . ",
+". . . . . . . . . . . . . . . . . . . 3 4 5 6 } } 7 8 9 0 . . . . . . . . . .\
+ . . . . . . . . . ",
+". . . . . . . . . . . . . . . . . . a b c d } } } } e f g . . . . . . . . . .\
+ . . . . . . . . . ",
+". . . . . . . . . . . . . . . . . . h i j } } k l } m n o p . . . . . . . . .\
+ . . . . . . . . . ",
+". . . . . . . . . . . . . . . . . q r s t } u v w } } x y z . . . . . . . . .\
+ . . . . . . . . . ",
+". . . . . . . . . . . . . . . . . \' A B } } C D E F } G H I J . . . . . . . \
+. . . . . . . . . . ",
+". . . . . . . . . . . . . . . . K L M N } O P D Q R } } S T U & . . . . . . .\
+ . . . . . . . . . ",
+". . . . . . . . . . . . . . . . V W X } } Y D Q Q Q Z } `  ...+.. . . . . . .\
+ . . . . . . . . . ",
+". . . . . . . . . . . . . . . ( @.#.$.} %.&.Q Q Q *.=.} } -.;.>.,.. . . . . .\
+ . . . . . . . . . ",
+". . . . . . . . . . . . . . . \'.).!.} } ~.Q Q Q *.*.*.{.} } ].^./.. . . . . \
+. . . . . . . . . . ",
+". . . . . . . . . . . . . . (.9 #.7 } _.:.Q Q *.*.*.<.[.` } }.|.$ 1.. . . . .\
+ . . . . . . . . . ",
+". . . . . . . . . . . . . . 2.3.4.} } R Q Q *.*.*.<.<.5.6.} } 7.8.9.. . . . .\
+ . . . . . . . . . ",
+". . . . . . . . . . . . . 0.a.b.c.} d.Q Q *.e.e.e.f.5.5.g.h.} $.i.j.k.. . . .\
+ . . . . . . . . . ",
+". . . . . . . . . . . . . l.m.n.} } o.Q *.*.p.q.q.r.5.5.s.t.} } u.v.w.. . . .\
+ . . . . . . . . . ",
+". . . . . . . . . . . . p x.y.z.} A.Q *.*.<.B.q.q.C.5.s.s.D.E.} F.G.@.H.. . .\
+ . . . . . . . . . ",
+". . . . . . . . . . . . I.J.K.} 6 L.*.*.<.<.M.q.q.N.s.s.O.O.P.} } Q.R.S.. . .\
+ . . . . . . . . . ",
+". . . . . . . . . . . T.U.V.W.} X.*.*.<.<.<.Y.q.q.Z.s.O.O.`. +.+} ++@+#+$+. .\
+ . . . . . . . . . ",
+". . . . . . . . . . * %+&+*+} ` =+*.<.<.<.5.-+q.q.;+O.O.`.`.>+,+} } ] \'+)+. \
+. . . . . . . . . . ",
+". . . . . . . . . . !+~+{+]+} ^+*.<.<.<.5.5./+q.q.(+O.`.`.>+>+_+:+} ]+<+o [+.\
+ . . . . . . . . . ",
+". . . . . . . . . & }+|+[ } 1+2+<.<.<.5.5.5.3+q.q.4+`.`.>+>+5+6+7+} } 8+9+0+*\
+ . . . . . . . . . ",
+". . . . . . . . . +.a+b+` } c+<.<.<.5.5.5.s.d+q.q.e+`.>+>+5+6+6+f+g+} ` e h+)\
+ . . . . . . . . . ",
+". . . . . . . . i+j+k+l+} h.m+<.<.5.5.5.s.s.n+q.q.`.>+>+5+6+6+o+o+p+} } N q+r\
++i+. . . . . . . . ",
+". . . . . . . . s+t+u+6 } v+<.<.5.5.5.s.s.O.w+x+y+>+>+5+6+6+o+o+z+A+B+} 6 K.C\
++D+. . . . . . . . ",
+". . . . . . . E+F+G+8+} H+I+<.5.5.5.s.s.O.O.J+K+L+>+5+6+6+o+o+z+z+M+N+} } $.Z\
+ r q . . . . . . . ",
+". . . . . . . O+P+ .} } Q+<.5.5.5.s.s.O.O.Q R+q.S+T+6+6+o+o+z+z+M+U+U+V+} } W\
++X+\' . . . . . . . ",
+". . . . . . Y+Z+`+ @} .@+@5.5.5.s.s.O.O.`.;+q.q.q.@@6+o+o+z+z+M+U+U+#@$@6 } %\
+@&@*@=@. . . . . . ",
+". . . . . . 9.-@X } } ;@5.5.5.s.s.O.O.`.`.>@p.q.q.,@o+o+z+z+M+U+U+#@#@\'@)@} \
+} !@~@{@. . . . . . ",
+". . . . . ]@^@/@(@} .+_@5.s.s.s.O.O.`.`.>+5+:@<@[@<.o+z+z+M+U+U+#@#@\'@\'@}@|\
+@} 1@2@3@4@. . . . . ",
+". . . . . 5@6@!.} } 7@5.s.s.s.O.O.`.`.>+5+5+6+6+o+o+z+z+M+U+U+#@#@\'@\'@8@9@0\
+@} } a@b@2.. . . . . ",
+". . . . c@d@e@f@} g@h@s.s.s.O.O.`.`.>+5+5+6+6+o+o+z+M+M+U+U+#@#@\'@\'@8@9@9@i\
+@++} G j@k@l@. . . . ",
+". . . . m@n@o@} } p@s.s.s.O.O.`.`.>+5+5+6+6+o+o+z+M+M+U+U+#@#@\'@\'@8@9@9@q@r\
+@s@} } t@u@v@. . . . ",
+". . . . F+w@x@} } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } }\
+ } } G y@# . . . . ",
+". . . . z@A@B@G } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } }\
+ } ` F.C@D@. . . . ",
+". . . . \' E@F@G@H@{+5 b+I@j J@K@L@B M@N@O@X P@].| !.Q@o@<+7.R@S@n.T@U@u.V@W@\
+x X@W+Y@Z@`@. . . . ",
+". . . . &  #.#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+\
+#+#+#.#@#& . . . . ",
+". . . . . . . . . ##$#%#&#*#=#-#;#>#,#\'#)#!#~#{#{#{#~#!#)#]#,#>#;#-#=#^#&#/#\
+(#_#. . . . . . . . ",
+". . . . . . . . . . . :#<#/#&#*#[#}#-#;#|#1#>#2#3#3#>#>#|#;#-#}#[#*#4#5#<###.\
+ . . . . . . . . . ",
+". . . . . . . . . . . . _#6#$#%#7#4#8#9#[#=#=#0#}#0#=#=#[#9#8#4#7#%#(###. . .\
+ . . . . . . . . . ",
+". . . . . . . . . . . . . . . _###(#<#%#/#a#7#7#7#7#7#a#/#%#$#:###. . . . . .\
+ . . . . . . . . . ",
+". . . . . . . . . . . . . . . . . . . . _#_#_#######_#_#. . . . . . . . . . .\
+ . . . . . . . . . ",
+". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\
+ . . . . . . . . . ",
+". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\
+ . . . . . . . . . "
+};
+static Fl_Pixmap image_dialog(idata_dialog);
+
+ErrorDialog::ErrorDialog() {
+  Fl_Double_Window* w;
+  { Fl_Double_Window* o = new Fl_Double_Window(375, 290, "Error");
+    w = o;
+    o->user_data((void*)(this));
+    { Fl_Box* o = new Fl_Box(25, 25, 50, 50);
+      o->image(image_dialog);
+    }
+    { Fl_Box* o = new Fl_Box(115, 35, 250, 30, "Could  not load File");
+      o->labelfont(1);
+      o->labelsize(16);
+    }
+    new Fl_Button(5, 95, 135, 25, "Details <<");
+    { Fl_Return_Button* o = new Fl_Return_Button(5, 260, 365, 25, "Close");
+      w->hotspot(o);
+    }
+    new Fl_Text_Display(5, 125, 365, 130);
+    o->end();
+  }
+}
+
+inline void SaveAsDialog::cb_Ok_i(Fl_Return_Button* o, void*) {
+  o->window()->hide();
+}
+void SaveAsDialog::cb_Ok(Fl_Return_Button* o, void* v) {
+  ((SaveAsDialog*)(o->parent()->user_data()))->cb_Ok_i(o,v);
+}
+
+inline void SaveAsDialog::cb_Cancel2_i(Fl_Button* o, void*) {
+  o->window()->hide();
+}
+void SaveAsDialog::cb_Cancel2(Fl_Button* o, void* v) {
+  ((SaveAsDialog*)(o->parent()->user_data()))->cb_Cancel2_i(o,v);
+}
+
+SaveAsDialog::SaveAsDialog() {
+  Fl_Double_Window* w;
+  { Fl_Double_Window* o = saveAsDialog = new Fl_Double_Window(335, 135, "Save as Dialog");
+    w = o;
+    o->user_data((void*)(this));
+    { Fl_Box* o = new Fl_Box(0, 0, 335, 40, "Save Project as");
+      o->labelfont(1);
+      o->labelsize(16);
+    }
+    new Fl_Input(110, 55, 215, 25, "Project Name");
+    { Fl_Return_Button* o = new Fl_Return_Button(175, 100, 150, 25, "Ok");
+      o->callback((Fl_Callback*)cb_Ok);
+      w->hotspot(o);
+    }
+    { Fl_Button* o = new Fl_Button(10, 100, 150, 25, "Cancel");
+      o->callback((Fl_Callback*)cb_Cancel2);
+    }
+    o->set_modal();
+    o->end();
+  }
+}
+
+void SaveAsDialog::show() {
+  saveAsDialog->show();
+}
+
+int SaveAsDialog::shown() {
+  return saveAsDialog->shown();
 }
