@@ -1,0 +1,571 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0106 
+header_name {.h} 
+code_name {.cxx}
+class NleUI {open
+} {
+  Function {NleUI()} {open
+  } {
+    Fl_Window mainWindow {
+      label MovieEditor
+      private xywh {459 323 515 465} type Double resizable visible
+    } {
+      Fl_Menu_Bar {} {open
+        xywh {0 0 345 25}
+      } {
+        submenu {} {
+          label {&File} open
+          xywh {0 0 100 20}
+        } {
+          menuitem {} {
+            label {New Project}
+            xywh {0 0 100 20}
+          }
+          menuitem {} {
+            label {Save as...}
+            callback {SaveAsDialog dlg;
+dlg.show();
+while (dlg.shown())
+  Fl::wait();}
+            xywh {0 0 100 20} divider
+          }
+          menuitem {} {
+            label {Render...}
+            callback {Fl_Group::current( mainWindow );
+EncodeDialog dlg;
+dlg.show();
+while (dlg.shown())
+  Fl::wait();
+
+if ( dlg.go ) {
+	ProgressDialog pDlg;
+	pDlg.progress( 10 );
+	pDlg.progressDialog->show();
+	while ( pDlg.progressDialog->shown() )
+		Fl::wait();
+	pDlg.progressDialog->hide();
+}}
+            xywh {5 5 100 20} divider
+            code0 {\#include "ProgressDialog/ProgressDialog.h"}
+          }
+          menuitem {} {
+            label Quit
+            xywh {5 5 100 20}
+          }
+        }
+        submenu {} {
+          label {&View} open
+          xywh {0 0 100 20}
+        } {
+          menuitem {} {
+            label Fullscreen
+            xywh {0 0 100 20}
+          }
+        }
+        submenu {} {
+          label {&Help}
+          xywh {5 5 100 20}
+        } {
+          menuitem {} {
+            label {About...}
+            callback {AboutDialog dlg;
+dlg.show();
+while (dlg.shown())
+  Fl::wait();}
+            xywh {5 5 100 20}
+          }
+        }
+      }
+      Fl_Tile {} {open
+        xywh {0 25 515 440} resizable
+      } {
+        Fl_Group {} {open
+          xywh {0 275 515 190}
+        } {
+          Fl_Group {} {open
+            xywh {40 275 475 190} resizable
+          } {
+            Fl_Box {} {
+              label Ruler
+              xywh {40 275 475 25} box UP_BOX align 16
+              code0 {\#include "Ruler.H"}
+              class {nle::Ruler}
+            }
+            Fl_Box m_timelineView {
+              xywh {40 300 475 145} when 2 resizable
+              code0 {\#include "TimelineView.H"}
+              class {nle::TimelineView}
+            }
+            Fl_Scrollbar scaleBar {
+              callback {Flmm_Scalebar *sb = (Flmm_Scalebar *)o;
+float width = sb->w();
+float slider_size = sb->slider_size_i();
+float zoom = width / slider_size;
+m_timelineView->scroll( (int64_t)sb->value() );
+m_timelineView->zoom( zoom );}
+              private xywh {40 445 475 20} type Horizontal maximum 1024 slider_size 0.40404
+              code0 {\#include "Flmm_Scalebar.H"}
+              code1 {\#include "globals.H"}
+              code2 {using namespace std;}
+              class Flmm_Scalebar
+            }
+          }
+          Fl_Group {} {open
+            xywh {0 275 40 190} labelsize 12
+          } {
+            Fl_Button {} {
+              tooltip Positioning image {/home/oracle/Projekte/OpenME/code/src/icons/tool_positioning.xpm} xywh {0 300 40 40} type Radio value 1 align 16
+            }
+            Fl_Button {} {
+              tooltip Automations image {/home/oracle/Projekte/OpenME/code/src/icons/tool_automations.xpm} xywh {0 340 40 40} type Radio align 18 hide
+            }
+            Fl_Box {} {
+              xywh {0 340 40 85} box THIN_UP_BOX resizable
+            }
+            Fl_Box {} {
+              label Tools
+              xywh {0 275 40 25} box UP_BOX labelsize 12
+            }
+            Fl_Box trashCan {
+              private tooltip Trash image {/home/oracle/Projekte/OpenME/code/src/icons/trash_2.xpm} xywh {0 425 40 40} box UP_BOX
+            }
+          }
+        }
+        Fl_Tile {} {open
+          xywh {0 25 515 250} resizable
+        } {
+          Fl_Group {} {open
+            xywh {280 25 235 250}
+          } {
+            Fl_Box m_videoView {
+              label VideoView
+              xywh {280 25 235 250} box DOWN_BOX labelcolor 32 resizable
+              code0 {\#include "VideoViewGL.H"}
+              class {nle::VideoViewGL}
+            }
+          }
+          Fl_Group {} {open
+            xywh {0 25 280 250}
+          } {
+            Fl_Tabs {} {open
+              xywh {0 50 280 185} box UP_BOX labelcolor 32 resizable
+            } {
+              Fl_Group {} {
+                label Files open
+                xywh {0 75 280 160} resizable
+              } {
+                Fl_File_Browser fileBrowser {
+                  callback {nle::FileBrowser *fb = (nle::FileBrowser*)o;
+fb->load_rel();}
+                  xywh {5 80 270 150} resizable
+                  code0 {\#include <iostream>}
+                  code1 {\#include <string>}
+                  code2 {\#include "FileBrowser.H"}
+                  class {nle::FileBrowser}
+                }
+              }
+            }
+            Fl_Input projectNameInput {
+              xywh {0 25 280 25} box FLAT_BOX color 49 textfont 1
+            }
+            Fl_Button {} {
+              label {@>}
+              callback {if ( strcmp( o->label(), "@>" ) == 0 ) {
+	o->label( "@||" );
+	m_videoView->play();
+} else {
+	o->label( "@>" );
+	m_videoView->stop();
+}}
+              tooltip Play xywh {100 235 80 40}
+            }
+            Fl_Button {} {
+              label {@>|}
+              tooltip {Goto End} xywh {230 235 50 40}
+            }
+            Fl_Button {} {
+              label {@|<}
+              tooltip {Goto Start} xywh {0 235 50 40}
+            }
+            Fl_Button {} {
+              label {@<|}
+              tooltip {Skip Frame backwards} xywh {50 235 50 40}
+            }
+            Fl_Button {} {
+              label {@|>}
+              tooltip {Skip Frame forward} xywh {180 235 50 40}
+            }
+          }
+        }
+      }
+      Fl_Choice {} {open
+        xywh {345 0 170 25} down_box BORDER_BOX
+      } {
+        menuitem {} {
+          label {Project 1}
+          xywh {10 10 100 20}
+        }
+        menuitem {} {
+          label {Project 2}
+          xywh {5 5 100 20}
+        }
+      }
+    }
+  }
+  Function {show( int argc, char **argv )} {open
+  } {
+    code {g_fps = 25.0;
+g_scrollBar = scaleBar;
+g_trashCan = trashCan;
+scaleBar->slider_size_i(300);
+mainWindow->show(argc, argv);
+projectNameInput->value("Project 1");} {}
+  }
+  Function {~NleUI()} {open
+  } {
+    code {delete mainWindow;} {selected
+    }
+  }
+} 
+
+decl {Flmm_Scalebar* g_scrollBar;} {public
+} 
+
+class EncodeDialog {} {
+  Function {EncodeDialog()} {} {
+    Fl_Window encodeDialog {
+      label Render open
+      private xywh {932 689 485 340} type Double modal visible
+    } {
+      Fl_Return_Button {} {
+        label Encode
+        callback {//nle::renderMovie();
+go = true;
+o->window()->hide();}
+        xywh {250 300 200 25} hotspot
+      }
+      Fl_Button {} {
+        label Cancel
+        callback {go = false;
+o->window()->hide();}
+        xywh {35 300 200 25}
+      }
+      Fl_Choice audio_codec_menu {
+        label {Audio Codec}
+        callback {audio_codec = o->menu()[o->value()].user_data();} open
+        xywh {145 220 205 25} down_box BORDER_BOX
+        code0 {\#include "Codecs.H"}
+        code1 {\#include <iostream>}
+        code2 {using namespace std;}
+      } {}
+      Fl_Choice video_codec_menu {
+        label {Video Codec}
+        callback {video_codec = o->menu()[o->value()].user_data();} open
+        xywh {145 100 205 25} down_box BORDER_BOX
+      } {}
+      Fl_Choice {} {
+        label Samplerate open
+        xywh {145 250 205 25} down_box BORDER_BOX
+      } {
+        menuitem {} {
+          label 48000
+          xywh {0 0 100 20}
+        }
+      }
+      Fl_Choice {} {
+        label Framerate open
+        xywh {145 130 205 25} down_box BORDER_BOX
+      } {
+        menuitem {} {
+          label {25 (PAL)}
+          xywh {0 0 100 20}
+        }
+      }
+      Fl_Choice {} {
+        label Framesize open
+        xywh {145 160 205 25} down_box BORDER_BOX
+      } {
+        menuitem {} {
+          label 720x576
+          xywh {0 0 100 20}
+        }
+        menuitem {} {
+          label 360x288
+          xywh {0 0 100 20}
+        }
+        menuitem {} {
+          label 180x144
+          xywh {0 0 100 20}
+        }
+      }
+      Fl_Box {} {
+        label Export
+        xywh {0 0 485 35} labelfont 1 labelsize 16
+      }
+      Fl_Button audio_options {
+        label {Options...}
+        callback {if ( audio_codec ) {
+	Fl_Group::current( encodeDialog );
+	CodecOptions dlg;
+	nle::setCodecInfo( &dlg, audio_codec );
+	dlg.codecOptions->show();
+	while (dlg.codecOptions->shown())
+		Fl::wait();
+}}
+        private xywh {355 220 75 25}
+      }
+      Fl_Button video_options {
+        label {Options...}
+        callback {if ( video_codec ) {
+	Fl_Group::current( encodeDialog );
+	CodecOptions dlg;
+	nle::setCodecInfo( &dlg, video_codec );
+	dlg.codecOptions->show();
+	while (dlg.codecOptions->shown())
+		Fl::wait();
+}}
+        private xywh {355 100 75 25}
+      }
+      Fl_File_Input {} {
+        label Filename
+        xywh {145 35 205 35}
+      }
+      Fl_Button {} {
+        label {File...}
+        callback {fl_file_chooser( "Set Export Filename", 0, 0 );}
+        xywh {355 45 75 25}
+        code0 {\#include <stdlib.h>}
+        code1 {\#include <FL/Fl_File_Chooser.H>}
+      }
+      Fl_Box {} {
+        label Video
+        xywh {35 95 415 95} box ENGRAVED_FRAME labelfont 1 align 5
+      }
+      Fl_Box {} {
+        label Audio
+        xywh {35 215 415 65} box ENGRAVED_FRAME labelfont 1 align 5
+      }
+    }
+  }
+  Function {show()} {} {
+    code {audio_codec = 0;
+video_codec = 0;
+nle::setAudioCodecMenu( audio_codec_menu );
+nle::setVideoCodecMenu( video_codec_menu );
+encodeDialog->show();} {}
+  }
+  Function {shown()} {return_type int
+  } {
+    code {return encodeDialog->shown();} {}
+  }
+  decl {void *audio_codec;} {}
+  decl {void* video_codec;} {}
+  decl {bool go;} {public
+  }
+  Function {~EncodeDialog()} {open
+  } {
+    code {delete encodeDialog;} {}
+  }
+} 
+
+class ChangesDialog {} {
+  Function {ChangesDialog()} {open
+  } {
+    Fl_Window {} {
+      label {Unsaved changes!} open
+      xywh {887 161 410 80} type Double visible
+    } {
+      Fl_Box {} {
+        label {Save changes?}
+        xywh {5 10 385 25}
+      }
+      Fl_Button {} {
+        label {Don't Save}
+        xywh {5 50 120 25}
+      }
+      Fl_Button {} {
+        label Cancel
+        xywh {160 50 120 25}
+      }
+      Fl_Return_Button {} {
+        label Save
+        xywh {285 50 120 25}
+      }
+    }
+  }
+} 
+
+decl {Fl_Box *g_trashCan} {public
+} 
+
+decl {float g_fps} {public
+} 
+
+class CodecOptions {} {
+  Function {CodecOptions()} {} {
+    Fl_Window codecOptions {
+      label {Codec Options} open
+      xywh {1457 50 345 305} type Double resizable modal visible
+    } {
+      Fl_Box codec_label {
+        label Codec
+        xywh {0 0 345 35} labelfont 1 labelsize 16
+      }
+      Fl_Group {} {open
+        xywh {0 35 345 230} resizable
+      } {
+        Fl_Browser parameters_browser {
+          callback {if ( parameters_browser->value() ) {
+	nle::setCodecParameter( this, parameters_browser->data( parameters_browser->value() ) );
+}}
+          xywh {5 40 165 220} resizable
+          code0 {\#include <FL/Fl_Hold_Browser.H>}
+          class Fl_Hold_Browser
+        }
+        Fl_Group {} {open
+          xywh {170 35 175 230}
+        } {
+          Fl_Value_Input parameter_int_input {
+            xywh {175 40 165 25} step 1 deactivate
+          }
+          Fl_Input parameter_string_input {
+            xywh {175 70 165 25} deactivate
+          }
+          Fl_Choice parameter_stringlist_input {open
+            xywh {175 100 165 25} down_box BORDER_BOX deactivate
+          } {}
+          Fl_Box {} {
+            xywh {230 175 25 25} resizable
+          }
+        }
+      }
+      Fl_Group {} {open
+        xywh {0 265 345 40}
+      } {
+        Fl_Button {} {
+          label Cancel
+          callback {o->window()->hide();}
+          xywh {20 275 140 25}
+        }
+        Fl_Return_Button {} {
+          label Ok
+          xywh {185 275 140 25} hotspot
+        }
+      }
+    }
+  }
+} 
+
+class AboutDialog {} {
+  Function {AboutDialog()} {} {
+    Fl_Window aboutDialog {
+      label {About Dialog} open
+      xywh {1019 328 340 370} type Double modal visible
+    } {
+      Fl_Box {} {
+        image {/home/oracle/Projekte/OpenME/code/src/icons/logo.xpm} xywh {0 0 340 155}
+      }
+      Fl_Box {} {
+        label {Open Movie Editor}
+        xywh {0 155 340 30} labelfont 1 labelsize 16
+      }
+      Fl_Box {} {
+        label {(C)opyright 2005 Richard Spindler}
+        xywh {0 210 340 40} labelsize 12
+      }
+      Fl_Box {} {
+        label {0.0.0}
+        xywh {0 185 340 25} labelfont 1
+      }
+      Fl_Box {} {
+        label {Open Movie Editor is FREE Software (GPL)}
+        xywh {0 250 340 25}
+      }
+      Fl_Box {} {
+        label {http://openmovieeditor.sourceforge.net/}
+        xywh {0 275 340 25}
+      }
+      Fl_Return_Button {} {
+        label Close
+        callback {o->window()->hide();}
+        xywh {10 335 320 25} hotspot
+      }
+    }
+  }
+  Function {show()} {} {
+    code {aboutDialog->show();} {}
+  }
+  Function {shown()} {return_type int
+  } {
+    code {return aboutDialog->shown();} {}
+  }
+  Function {~AboutDialog()} {} {
+    code {delete aboutDialog;} {}
+  }
+} 
+
+class ErrorDialog {} {
+  Function {ErrorDialog()} {open
+  } {
+    Fl_Window {} {
+      label Error open
+      xywh {505 789 375 290} type Double visible
+    } {
+      Fl_Box {} {
+        image {/home/oracle/Projekte/OpenME/code/src/icons/dialog-warning.xpm} xywh {25 25 50 50}
+      }
+      Fl_Box {} {
+        label {Could  not load File}
+        xywh {115 35 250 30} labelfont 1 labelsize 16
+      }
+      Fl_Button {} {
+        label {Details <<}
+        xywh {5 95 135 25}
+      }
+      Fl_Return_Button {} {
+        label Close
+        xywh {5 260 365 25} hotspot
+      }
+      Fl_Text_Display {} {
+        xywh {5 125 365 130}
+      }
+    }
+  }
+} 
+
+class SaveAsDialog {} {
+  Function {SaveAsDialog()} {open
+  } {
+    Fl_Window saveAsDialog {
+      label {Save as Dialog} open
+      xywh {1376 445 335 135} type Double modal visible
+    } {
+      Fl_Box {} {
+        label {Save Project as}
+        xywh {0 0 335 40} labelfont 1 labelsize 16
+      }
+      Fl_Input {} {
+        label {Project Name}
+        xywh {110 55 215 25}
+      }
+      Fl_Return_Button {} {
+        label Ok
+        callback {o->window()->hide();}
+        xywh {175 100 150 25} hotspot
+      }
+      Fl_Button {} {
+        label Cancel
+        callback {o->window()->hide();}
+        xywh {10 100 150 25}
+      }
+    }
+  }
+  Function {show()} {open
+  } {
+    code {saveAsDialog->show();} {}
+  }
+  Function {shown()} {open return_type int
+  } {
+    code {return saveAsDialog->shown();} {}
+  }
+} 
