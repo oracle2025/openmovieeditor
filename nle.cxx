@@ -941,6 +941,10 @@ scaleBar->slider_size_i(300);
 mainWindow->show(argc, argv);
 projectNameInput->value("Project 1");
 }
+
+NleUI::~NleUI() {
+  delete mainWindow;
+}
 Flmm_Scalebar* g_scrollBar;
 
 inline void EncodeDialog::cb_Encode_i(Fl_Return_Button* o, void*) {

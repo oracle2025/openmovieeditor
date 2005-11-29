@@ -56,6 +56,7 @@ private:
   static Fl_Menu_Item menu_1[];
 public:
   void show( int argc, char **argv );
+  ~NleUI();
 };
 extern Flmm_Scalebar* g_scrollBar;
 #include <FL/Fl_Return_Button.H>
