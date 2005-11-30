@@ -6,6 +6,7 @@
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Menu_Bar.H>
 #include "ProgressDialog/ProgressDialog.h"
+#include "Renderer.H"
 #include <FL/Fl_Tile.H>
 #include <FL/Fl_Group.H>
 #include "Ruler.H"
@@ -93,6 +94,9 @@ private:
   Fl_Button *video_options;
   inline void cb_video_options_i(Fl_Button*, void*);
   static void cb_video_options(Fl_Button*, void*);
+public:
+  Fl_File_Input *export_filename;
+private:
   inline void cb_File_i(Fl_Button*, void*);
   static void cb_File(Fl_Button*, void*);
 public:

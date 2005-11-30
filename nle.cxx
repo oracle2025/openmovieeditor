@@ -19,13 +19,16 @@ dlg.show();
 while (dlg.shown())
   Fl::wait();
 
-if ( dlg.go ) {
-	ProgressDialog pDlg;
-	pDlg.progress( 10 );
-	pDlg.progressDialog->show();
-	while ( pDlg.progressDialog->shown() )
-		Fl::wait();
-	pDlg.progressDialog->hide();
+if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
+	ProgressDialog pDlg( "Rendering Project" );
+	nle::Renderer ren( dlg.export_filename->value(), 360, 288, 0, 0 );
+	ren.go( &pDlg );
+	
+
+//	pDlg.progressDialog->show();
+//	while ( pDlg.progressDialog->shown() )
+//		Fl::wait();
+//	pDlg.progressDialog->hide();
 };
 }
 void NleUI::cb_Render(Fl_Menu_* o, void* v) {
@@ -1024,7 +1027,7 @@ void EncodeDialog::cb_video_options(Fl_Button* o, void* v) {
 }
 
 inline void EncodeDialog::cb_File_i(Fl_Button*, void*) {
-  fl_file_chooser( "Set Export Filename", 0, 0 );
+  export_filename->value( fl_file_chooser( "Set Export Filename", 0, 0 ) );
 }
 void EncodeDialog::cb_File(Fl_Button* o, void* v) {
   ((EncodeDialog*)(o->parent()->user_data()))->cb_File_i(o,v);
@@ -1072,7 +1075,7 @@ EncodeDialog::EncodeDialog() {
     { Fl_Button* o = video_options = new Fl_Button(355, 100, 75, 25, "Options...");
       o->callback((Fl_Callback*)cb_video_options);
     }
-    new Fl_File_Input(145, 35, 205, 35, "Filename");
+    export_filename = new Fl_File_Input(145, 35, 205, 35, "Filename");
     { Fl_Button* o = new Fl_Button(355, 45, 75, 25, "File...");
       o->callback((Fl_Callback*)cb_File);
     }

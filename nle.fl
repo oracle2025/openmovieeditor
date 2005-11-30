@@ -37,16 +37,20 @@ dlg.show();
 while (dlg.shown())
   Fl::wait();
 
-if ( dlg.go ) {
-	ProgressDialog pDlg;
-	pDlg.progress( 10 );
-	pDlg.progressDialog->show();
-	while ( pDlg.progressDialog->shown() )
-		Fl::wait();
-	pDlg.progressDialog->hide();
-}}
+if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
+	ProgressDialog pDlg( "Rendering Project" );
+	nle::Renderer ren( dlg.export_filename->value(), 360, 288, 0, 0 );
+	ren.go( &pDlg );
+	
+
+//	pDlg.progressDialog->show();
+//	while ( pDlg.progressDialog->shown() )
+//		Fl::wait();
+//	pDlg.progressDialog->hide();
+}} selected
             xywh {5 5 100 20} divider
             code0 {\#include "ProgressDialog/ProgressDialog.h"}
+            code1 {\#include "Renderer.H"}
           }
           menuitem {} {
             label Quit
@@ -223,19 +227,20 @@ projectNameInput->value("Project 1");} {}
   }
   Function {~NleUI()} {open
   } {
-    code {delete mainWindow;} {selected
-    }
+    code {delete mainWindow;} {}
   }
 } 
 
 decl {Flmm_Scalebar* g_scrollBar;} {public
 } 
 
-class EncodeDialog {} {
-  Function {EncodeDialog()} {} {
+class EncodeDialog {open
+} {
+  Function {EncodeDialog()} {open
+  } {
     Fl_Window encodeDialog {
       label Render open
-      private xywh {932 689 485 340} type Double modal visible
+      private xywh {484 701 485 340} type Double modal visible
     } {
       Fl_Return_Button {} {
         label Encode
@@ -326,13 +331,13 @@ o->window()->hide();}
 }}
         private xywh {355 100 75 25}
       }
-      Fl_File_Input {} {
+      Fl_File_Input export_filename {
         label Filename
         xywh {145 35 205 35}
       }
       Fl_Button {} {
         label {File...}
-        callback {fl_file_chooser( "Set Export Filename", 0, 0 );}
+        callback {export_filename->value( fl_file_chooser( "Set Export Filename", 0, 0 ) );}
         xywh {355 45 75 25}
         code0 {\#include <stdlib.h>}
         code1 {\#include <FL/Fl_File_Chooser.H>}

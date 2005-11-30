@@ -12,7 +12,7 @@
 
 class ProgressDialog : public nle::IProgressListener {
 public:
-  ProgressDialog();
+  ProgressDialog( const char* title );
   Fl_Double_Window *progressDialog;
   Fl_Button *cancel_button;
 private:
@@ -20,6 +20,7 @@ private:
   static void cb_cancel_button(Fl_Button*, void*);
 public:
   Fl_Progress *progress_bar;
+  Fl_Box *title_box;
   bool progress( int percent );
   void start();
   void end();

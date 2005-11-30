@@ -28,6 +28,7 @@
 #include "Renderer.H"
 #include "globals.H"
 #include "Timeline.H"
+#include "ProgressDialog/IProgressListener.H"
 
 namespace nle
 {
@@ -143,6 +144,9 @@ void scale_it( frame_struct* src, frame_struct* dst )
 }
 void Renderer::go( IProgressListener* l )
 {
+	if ( l ) {
+		l->start();
+	}
 	g_timeline->seek( 0 );
 	g_timeline->sort();
 	
@@ -153,6 +157,8 @@ void Renderer::go( IProgressListener* l )
 	float *buffer_p[2] = { left_buffer, right_buffer };
 
 	int64_t fcnt = 0;
+	int64_t length = g_timeline->length();
+	int64_t current_frame = 0;
 
 	frame_struct enc_frame;
 	enc_frame.x = enc_frame.y = 0;
@@ -167,7 +173,7 @@ void Renderer::go( IProgressListener* l )
 	}
 	
 	do {
-		if ( fcnt > 1601 ) {
+		if ( fcnt > 1920 ) { // 1601 für NTSC, 1920 für PAL
 			if ( frame_struct *fs = g_timeline->nextFrame() ) {
 				if ( fs->w != m_w || fs->h != m_h ) {
 					scale_it( fs, &enc_frame  );
@@ -178,6 +184,12 @@ void Renderer::go( IProgressListener* l )
 				}
 				fcnt = 0;
 			}
+			current_frame++;
+			if ( l ) {
+				if ( l->progress( current_frame * 100 / length ) ) {
+					break;
+				}
+			}
 		}
 		
 		res = g_timeline->fillBuffer( buffer, 128 ); //Das sollte etwas mehr als 128 sein
@@ -187,10 +199,12 @@ void Renderer::go( IProgressListener* l )
 		}
 		lqt_encode_audio_track( qt, 0, buffer_p, res, 0 );
 		fcnt += 128;
-
 	} while ( res == 128 );
 	delete [] enc_frame.RGB;
 	delete [] enc_frame.rows;
+	if ( l ) {
+		l->end();
+	}
 }
 
 
