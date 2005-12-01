@@ -39,6 +39,10 @@ progress_bar->value( 0.0 );
 title_box->label( title );
 }
 
+ProgressDialog::~ProgressDialog() {
+  delete progressDialog;
+}
+
 bool ProgressDialog::progress( int percent ) {
   progress_bar->value( percent );
 Fl::check();
@@ -52,8 +56,4 @@ progressDialog->show();
 
 void ProgressDialog::end() {
   progressDialog->hide();
-}
-
-ProgressDialog::~ProgressDialog() {
-  delete progressDialog;
 }

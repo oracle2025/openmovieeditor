@@ -13,20 +13,19 @@
 class ProgressDialog : public nle::IProgressListener {
 public:
   ProgressDialog( const char* title );
+private:
   Fl_Double_Window *progressDialog;
   Fl_Button *cancel_button;
-private:
   inline void cb_cancel_button_i(Fl_Button*, void*);
   static void cb_cancel_button(Fl_Button*, void*);
-public:
   Fl_Progress *progress_bar;
   Fl_Box *title_box;
+public:
+  ~ProgressDialog();
   bool progress( int percent );
   void start();
   void end();
 private:
   bool cancel;
-public:
-  ~ProgressDialog();
 };
 #endif

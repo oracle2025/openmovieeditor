@@ -8,50 +8,48 @@ class ProgressDialog {open : {public nle::IProgressListener}
   } {
     Fl_Window progressDialog {
       label {Progress Dialog} open
-      xywh {506 96 335 145} type Double
+      private xywh {506 96 335 145} type Double
       code0 {\#include "IProgressListener.H"} modal visible
     } {
       Fl_Button cancel_button {
         label Cancel
         callback {cancel = true;
 cancel_button->deactivate();}
-        xywh {240 115 90 25} hotspot
+        private xywh {240 115 90 25} hotspot
       }
       Fl_Progress progress_bar {
-        xywh {40 75 255 25} selection_color 5
+        private xywh {40 75 255 25} selection_color 5
       }
       Fl_Box title_box {
         label {Loading Project...}
-        xywh {0 5 335 30} labelfont 1 labelsize 16
+        private xywh {0 5 335 30} labelfont 1 labelsize 16
       }
-      Fl_Output {} {
-        xywh {10 40 315 25} box FLAT_BOX color 49
+      Fl_Output {} {selected
+        private xywh {10 40 315 25} box FLAT_BOX color 49
       }
     }
     code {progress_bar->minimum( 0.0 );
 progress_bar->maximum( 100.0 );
 progress_bar->value( 0.0 );
-title_box->label( title );} {selected
-    }
+title_box->label( title );} {}
   }
-  Function {progress( int percent )} {open return_type bool
+  Function {~ProgressDialog()} {} {
+    code {delete progressDialog;} {}
+  }
+  Function {progress( int percent )} {return_type bool
   } {
     code {progress_bar->value( percent );
 Fl::check();
 return cancel;} {}
   }
-  Function {start()} {open return_type void
+  Function {start()} {return_type void
   } {
     code {cancel = false;
 progressDialog->show();} {}
   }
-  Function {end()} {open return_type void
+  Function {end()} {return_type void
   } {
     code {progressDialog->hide();} {}
   }
   decl {bool cancel;} {}
-  Function {~ProgressDialog()} {open
-  } {
-    code {delete progressDialog;} {}
-  }
 } 
