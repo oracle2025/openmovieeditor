@@ -32,7 +32,9 @@
 #include "IAudioReader.H"
 #include "IVideoReader.H"
 #include "IVideoWriter.H"
+#include "globals.H"
 #include "global_includes.H"
+#include "Timeline.H"
 
 #define FRAMES 256
 
@@ -150,13 +152,18 @@ void PlaybackCore::play()
 	m_videoFrames_protected = 0;
 	m_xruns = 0;
 	m_active = false;
-
+	m_videoFrames_offset = 0;
 	m_stop = false;
-
+	m_videoFrames_offset = g_timeline->m_seekPosition;
+	
 	pthread_mutex_lock( &m_audio_lock );
 	pthread_cond_signal( &m_audio_ready );
 	pthread_mutex_unlock( &m_audio_lock );
-	
+	while ( 1 ) { // FIXME: This is active waiting, which is totally evil!
+		if ( jack_ringbuffer_read_space( m_rb ) >= DEFAULT_RB_SIZE ) {
+			break;
+		}
+	}
 
 	PortAudioCallback *cb = (PortAudioCallback*)callback;
 	PaError err;
@@ -183,7 +190,6 @@ void PlaybackCore::stop()
 	if ( !m_active ) {
 		return;
 	}
-	cout << "XRuns: " << m_xruns << endl;
 
 	m_active = false;
 	
@@ -265,7 +271,7 @@ void PlaybackCore::videoThread()
 		
 		pthread_mutex_unlock( &m_video_lock);
 		
-		m_fs = m_videoReader->getFrame( videoFrame );
+		m_fs = m_videoReader->getFrame( videoFrame + m_videoFrames_offset );
 
 		if ( semop( m_semid, &sb_leave, 1) == -1 ) {
 			perror( "disk" );

@@ -36,6 +36,7 @@ VideoViewGL::VideoViewGL( int x, int y, int w, int h, const char *l )
 {
 	g_videoView = this;
 	m_seekPosition = -1;
+	m_playing = false;
 }
 
 VideoViewGL::~VideoViewGL()
@@ -55,7 +56,7 @@ void VideoViewGL::pushFrame( frame_struct* fs )
 {
 	//make_overlay_current();
 	//fl_draw_box( FL_DIAMOND_UP_BOX, 0, 0, 25, 25, FL_BACKGROUND_COLOR );
-	//SwitchBoard::i()->move_cursor();
+	SwitchBoard::i()->move_cursor();
 	make_current();
 	if ( !valid() ) {
 		glLoadIdentity(); glViewport( 0, 0, w(), h() ); // glViewport( _x, _y, _w, _h );
@@ -135,6 +136,7 @@ void VideoViewGL::draw()
 		}
 		once = false;
 	}
+	if ( m_playing ) { return; }
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	glBindTexture( GL_TEXTURE_2D, video_canvas[0] );
 	if ( m_seekPosition > 0 ) {
@@ -225,6 +227,7 @@ void VideoViewGL::play()
 	if ( g_playbackCore->active() ) {
 		return;
 	}
+	m_playing = true;
 	m_seekPosition = -1;
 	g_timeline->sort();
 	g_playbackCore->play();
@@ -233,6 +236,7 @@ void VideoViewGL::play()
 void VideoViewGL::stop()
 {
 	g_playbackCore->stop();
+	m_playing = false;
 }
 
 } /* namespace nle */

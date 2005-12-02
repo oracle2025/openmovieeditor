@@ -62,6 +62,7 @@ class PlaybackCore
 		int64_t m_soundSamples;
 		int64_t m_videoFrames;
 		int64_t m_videoFrames_protected;
+		int64_t m_videoFrames_offset;
 		int m_semid;
 		int m_xruns;
 		int m_pipe[2];

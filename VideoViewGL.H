@@ -44,6 +44,7 @@ class VideoViewGL : public Fl_Gl_Window, public IVideoWriter
 		void stop();
 	private:
 		int64_t m_seekPosition;
+		bool m_playing;
 };
 
 } /* namespace nle */
