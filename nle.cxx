@@ -14,7 +14,7 @@ void NleUI::cb_Save(Fl_Menu_* o, void* v) {
 
 inline void NleUI::cb_Render_i(Fl_Menu_*, void*) {
   Fl_Group::current( mainWindow );
-EncodeDialog dlg;
+EncodeDialog dlg( 0, 0 );
 dlg.show();
 while (dlg.shown())
   Fl::wait();
@@ -2802,7 +2802,7 @@ void EncodeDialog::cb_File(Fl_Button* o, void* v) {
   ((EncodeDialog*)(o->parent()->user_data()))->cb_File_i(o,v);
 }
 
-EncodeDialog::EncodeDialog() {
+EncodeDialog::EncodeDialog( nle::IVideoReader*, nle::IAudioReader* ) {
   Fl_Double_Window* w;
   { Fl_Double_Window* o = encodeDialog = new Fl_Double_Window(485, 340, "Render");
     w = o;

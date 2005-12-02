@@ -32,7 +32,7 @@ while (dlg.shown())
           menuitem {} {
             label {Render...}
             callback {Fl_Group::current( mainWindow );
-EncodeDialog dlg;
+EncodeDialog dlg( 0, 0 );
 dlg.show();
 while (dlg.shown())
   Fl::wait();
@@ -78,7 +78,7 @@ if ( fullscreen_on ) {
 	h = mainWindow->h();
 	mainWindow->fullscreen();
 	fullscreen_on = true;
-}} selected
+}}
             xywh {0 0 100 20} shortcut 0xffc8
           }
         }
@@ -252,11 +252,13 @@ decl {Flmm_Scalebar* g_scrollBar;} {public
 
 class EncodeDialog {open
 } {
-  Function {EncodeDialog()} {open
+  Function {EncodeDialog( nle::IVideoReader*, nle::IAudioReader* )} {open
   } {
     Fl_Window encodeDialog {
       label Render open
-      private xywh {484 701 485 340} type Double modal visible
+      private xywh {623 440 485 340} type Double
+      code0 {\#include "IVideoReader.H"}
+      code1 {\#include "IAudioReader.H"} modal visible
     } {
       Fl_Return_Button {} {
         label Encode
@@ -298,7 +300,7 @@ o->window()->hide();}
         xywh {145 130 205 25} down_box BORDER_BOX
       } {
         menuitem {} {
-          label {25 (PAL)}
+          label {25 (PAL)} selected
           xywh {0 0 100 20}
         }
       }
@@ -426,7 +428,7 @@ class CodecOptions {} {
   Function {CodecOptions()} {} {
     Fl_Window codecOptions {
       label {Codec Options} open
-      xywh {1457 50 345 305} type Double resizable modal visible
+      xywh {1207 237 345 305} type Double resizable modal visible
     } {
       Fl_Box codec_label {
         label Codec

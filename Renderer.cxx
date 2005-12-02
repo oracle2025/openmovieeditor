@@ -19,11 +19,11 @@
 
 #include <cstring>
 
-#include <lqt.h>
 #include <colormodels.h>
 #include <gavl/gavl.h>
 
 #include "strlcpy.h"
+#include "sl/sl.h"
 
 #include "Renderer.H"
 #include "globals.H"
@@ -34,6 +34,8 @@ namespace nle
 {
 
 static quicktime_t *qt;
+
+
 
 Renderer::Renderer( string filename, int w, int h, int framerate, int samplerate )
 {
@@ -204,6 +206,51 @@ void Renderer::go( IProgressListener* l )
 	delete [] enc_frame.rows;
 	if ( l ) {
 		l->end();
+	}
+}
+
+int find_param_helper( void* p, void* data )
+{
+	param_node* node = (param_node*)p;
+	const char* key = (const char*)data;
+	return ( strncmp( node->key, key, 1024 ) == 0 );
+}
+static void setParameter( param_node* params, const char* key, lqt_parameter_value_t* value )
+{
+	param_node* p = (param_node*)sl_map( params, find_param_helper, (void*)key );
+	if ( p ) {
+		memcpy( &(p->value), value, sizeof(lqt_parameter_value_t) );
+	} else {
+		p = new param_node;
+		strlcpy( p->key, key, 1024 );
+		memcpy( &(p->value), value, sizeof(lqt_parameter_value_t) );
+		params = (param_node*)sl_push( params, p );
+	}
+}
+void Renderer::setVideoParameter( const char* key, lqt_parameter_value_t* value )
+{
+	setParameter( m_videoParams, key, value );
+}
+void Renderer::setAudioParameter( const char* key, lqt_parameter_value_t* value )
+{
+	setParameter( m_audioParams, key, value );
+}
+const lqt_parameter_value_t* Renderer::getVideoParameter( const char* key )
+{
+	param_node* p = (param_node*)sl_map( m_videoParams, find_param_helper, (void*)key );
+	if ( p ) {
+		return &(p->value);
+	} else {
+		return 0;
+	}
+}
+const lqt_parameter_value_t* Renderer::getAudioParameter( const char* key )
+{
+	param_node* p = (param_node*)sl_map( m_videoParams, find_param_helper, (void*)key );
+	if ( p ) {
+		return &(p->value);
+	} else {
+		return 0;
 	}
 }
 

@@ -66,6 +66,7 @@ void setCodecInfo( CodecOptions* dialog, void* data )
 void setCodecParameter( CodecOptions* dialog, void* data )
 {
 	lqt_parameter_info_t* info = (lqt_parameter_info_t*)data;
+//	g_renderer->getVideoParameter( info->name );
 	switch ( info->type ) {
 		case LQT_PARAMETER_INT:
 		{

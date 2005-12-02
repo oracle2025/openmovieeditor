@@ -62,6 +62,8 @@ public:
   ~NleUI();
 };
 extern Flmm_Scalebar* g_scrollBar;
+#include "IVideoReader.H"
+#include "IAudioReader.H"
 #include <FL/Fl_Return_Button.H>
 #include "Codecs.H"
 #include <FL/Fl_File_Input.H>
@@ -70,7 +72,7 @@ extern Flmm_Scalebar* g_scrollBar;
 
 class EncodeDialog {
 public:
-  EncodeDialog();
+  EncodeDialog( nle::IVideoReader*, nle::IAudioReader* );
 private:
   Fl_Double_Window *encodeDialog;
   inline void cb_Encode_i(Fl_Return_Button*, void*);

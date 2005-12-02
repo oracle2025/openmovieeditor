@@ -20,6 +20,7 @@
 #ifndef _RENDERER_H_
 #define _RENDERER_H_
 
+#include <lqt.h>
 #include "global_includes.H"
 
 namespace nle
@@ -27,11 +28,23 @@ namespace nle
 
 class IProgressListener;
 
+typedef struct _param_list_node {
+	struct _param_list_node *next;
+	char key[1024];
+	lqt_parameter_value_t value;
+} param_node;
+
 class Renderer
 {
 	public:
 		Renderer( string filename, int w, int h, int framerate, int samplerate );
 		~Renderer();
+		inline void setVideoCodec( lqt_codec_info_t* info ) { m_videoCodec = info }
+		inline void setAudioCodec( lqt_codec_info_t* info ) { m_audioCodec = info }
+		void setVideoParameter( const char* key, lqt_parameter_value_t* value );
+		void setAudioParameter( const char* key, lqt_parameter_value_t* value );
+		const lqt_parameter_value_t* getVideoParameter( const char* key );
+		const lqt_parameter_value_t* getAudioParameter( const char* key );
 		void go( IProgressListener* l = 0 );
 	private:
 		string m_filename;
@@ -39,6 +52,10 @@ class Renderer
 		int m_h;
 		int m_framerate;
 		int m_samplerate;
+		param_node* m_audioParams;
+		param_node* m_videoParams;
+		lqt_codec_info_t* m_videoCodec;
+		lqt_codec_info_t* m_audioCodec;
 };
 
 } /* namespace nle */
