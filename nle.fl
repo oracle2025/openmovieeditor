@@ -7,7 +7,7 @@ class NleUI {open
   Function {NleUI()} {open
   } {
     Fl_Window mainWindow {
-      label MovieEditor
+      label MovieEditor open
       private xywh {459 323 515 465} type Double resizable visible
     } {
       Fl_Menu_Bar {} {open
@@ -47,7 +47,7 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 //	while ( pDlg.progressDialog->shown() )
 //		Fl::wait();
 //	pDlg.progressDialog->hide();
-}} selected
+}}
             xywh {5 5 100 20} divider
             code0 {\#include "ProgressDialog/ProgressDialog.h"}
             code1 {\#include "Renderer.H"}
@@ -63,7 +63,23 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
         } {
           menuitem {} {
             label Fullscreen
-            xywh {0 0 100 20}
+            callback {static bool fullscreen_on = false;
+static int x;
+static int y;
+static int w;
+static int h;
+if ( fullscreen_on ) {
+	mainWindow->fullscreen_off( x, y, w, h );
+	fullscreen_on = false;
+} else {
+	x = mainWindow->x();
+	y = mainWindow->y();
+	w = mainWindow->w();
+	h = mainWindow->h();
+	mainWindow->fullscreen();
+	fullscreen_on = true;
+}} selected
+            xywh {0 0 100 20} shortcut 0xffc8
           }
         }
         submenu {} {
@@ -87,16 +103,16 @@ while (dlg.shown())
           xywh {0 275 515 190}
         } {
           Fl_Group {} {open
-            xywh {40 275 475 190} resizable
+            xywh {69 275 446 190} resizable
           } {
             Fl_Box {} {
               label Ruler
-              xywh {40 275 475 25} box UP_BOX align 16
+              xywh {69 275 446 25} box UP_BOX align 16
               code0 {\#include "Ruler.H"}
               class {nle::Ruler}
             }
             Fl_Box m_timelineView {
-              xywh {40 300 475 145} when 2 resizable
+              xywh {69 300 446 145} when 2 resizable
               code0 {\#include "TimelineView.H"}
               class {nle::TimelineView}
             }
@@ -107,7 +123,7 @@ float slider_size = sb->slider_size_i();
 float zoom = width / slider_size;
 m_timelineView->scroll( (int64_t)sb->value() );
 m_timelineView->zoom( zoom );}
-              private xywh {40 445 475 20} type Horizontal maximum 1024 slider_size 0.40404
+              private xywh {69 445 446 20} type Horizontal maximum 1024 slider_size 0.40404
               code0 {\#include "Flmm_Scalebar.H"}
               code1 {\#include "globals.H"}
               code2 {using namespace std;}
@@ -115,23 +131,23 @@ m_timelineView->zoom( zoom );}
             }
           }
           Fl_Group {} {open
-            xywh {0 275 40 190} labelsize 12
+            xywh {0 275 69 190} labelsize 12
           } {
             Fl_Button {} {
-              tooltip Positioning image {/home/oracle/Projekte/OpenME/code/src/icons/tool_positioning.xpm} xywh {0 300 40 40} type Radio value 1 align 16
+              tooltip Positioning image {/home/oracle/Projekte/OpenME/code/src/icons/arrows_small.xpm} xywh {0 300 69 69} type Radio value 1 align 16
             }
             Fl_Button {} {
               tooltip Automations image {/home/oracle/Projekte/OpenME/code/src/icons/tool_automations.xpm} xywh {0 340 40 40} type Radio align 18 hide
             }
             Fl_Box {} {
-              xywh {0 340 40 85} box THIN_UP_BOX resizable
+              xywh {0 369 69 27} box THIN_UP_BOX resizable
             }
             Fl_Box {} {
               label Tools
-              xywh {0 275 40 25} box UP_BOX labelsize 12
+              xywh {0 275 69 25} box UP_BOX labelsize 12
             }
             Fl_Box trashCan {
-              private tooltip Trash image {/home/oracle/Projekte/OpenME/code/src/icons/trash_2.xpm} xywh {0 425 40 40} box UP_BOX
+              private tooltip Trash image {/home/oracle/Projekte/OpenME/code/src/icons/trash_small.xpm} xywh {0 396 69 69} box UP_BOX
             }
           }
         }

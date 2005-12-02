@@ -34,6 +34,8 @@ private:
   static void cb_Save(Fl_Menu_*, void*);
   inline void cb_Render_i(Fl_Menu_*, void*);
   static void cb_Render(Fl_Menu_*, void*);
+  inline void cb_Fullscreen_i(Fl_Menu_*, void*);
+  static void cb_Fullscreen(Fl_Menu_*, void*);
   inline void cb_About_i(Fl_Menu_*, void*);
   static void cb_About(Fl_Menu_*, void*);
 public:
