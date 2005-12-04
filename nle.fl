@@ -32,14 +32,15 @@ while (dlg.shown())
           menuitem {} {
             label {Render...}
             callback {Fl_Group::current( mainWindow );
-EncodeDialog dlg( 0, 0 );
+nle::CodecParameters cp( nle::g_audio_codec_info, nle::g_video_codec_info );
+EncodeDialog dlg( 0, 0, &cp );
 dlg.show();
 while (dlg.shown())
   Fl::wait();
 
 if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 	ProgressDialog pDlg( "Rendering Project" );
-	nle::Renderer ren( dlg.export_filename->value(), 360, 288, 0, 0 );
+	nle::Renderer ren( dlg.export_filename->value(), 360, 288, 25, 48000, &cp );
 	ren.go( &pDlg );
 	
 
@@ -47,10 +48,11 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 //	while ( pDlg.progressDialog->shown() )
 //		Fl::wait();
 //	pDlg.progressDialog->hide();
-}}
+}} selected
             xywh {5 5 100 20} divider
             code0 {\#include "ProgressDialog/ProgressDialog.h"}
             code1 {\#include "Renderer.H"}
+            code2 {\#include "Codecs.H"}
           }
           menuitem {} {
             label Quit
@@ -252,7 +254,7 @@ decl {Flmm_Scalebar* g_scrollBar;} {public
 
 class EncodeDialog {open
 } {
-  Function {EncodeDialog( nle::IVideoReader*, nle::IAudioReader* )} {open
+  Function {EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecParameters* codecParams )} {open
   } {
     Fl_Window encodeDialog {
       label Render open
@@ -275,7 +277,8 @@ o->window()->hide();}
       }
       Fl_Choice audio_codec_menu {
         label {Audio Codec}
-        callback {audio_codec = o->menu()[o->value()].user_data();} open
+        callback {audio_codec = o->menu()[o->value()].user_data();
+m_codecParams->setAudioCodec( (lqt_codec_info_t*)audio_codec );} open
         xywh {145 220 205 25} down_box BORDER_BOX
         code0 {\#include "Codecs.H"}
         code1 {\#include <iostream>}
@@ -283,7 +286,8 @@ o->window()->hide();}
       } {}
       Fl_Choice video_codec_menu {
         label {Video Codec}
-        callback {video_codec = o->menu()[o->value()].user_data();} open
+        callback {video_codec = o->menu()[o->value()].user_data();
+m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
         xywh {145 100 205 25} down_box BORDER_BOX
       } {}
       Fl_Choice {} {
@@ -300,7 +304,7 @@ o->window()->hide();}
         xywh {145 130 205 25} down_box BORDER_BOX
       } {
         menuitem {} {
-          label {25 (PAL)} selected
+          label {25 (PAL)}
           xywh {0 0 100 20}
         }
       }
@@ -330,6 +334,8 @@ o->window()->hide();}
         callback {if ( audio_codec ) {
 	Fl_Group::current( encodeDialog );
 	CodecOptions dlg;
+	dlg.m_audio = true;
+	dlg.m_codecParams = m_codecParams;
 	nle::setCodecInfo( &dlg, audio_codec );
 	dlg.codecOptions->show();
 	while (dlg.codecOptions->shown())
@@ -342,6 +348,8 @@ o->window()->hide();}
         callback {if ( video_codec ) {
 	Fl_Group::current( encodeDialog );
 	CodecOptions dlg;
+	dlg.m_audio = false;
+	dlg.m_codecParams = m_codecParams;
 	nle::setCodecInfo( &dlg, video_codec );
 	dlg.codecOptions->show();
 	while (dlg.codecOptions->shown())
@@ -369,6 +377,7 @@ o->window()->hide();}
         xywh {35 215 415 65} box ENGRAVED_FRAME labelfont 1 align 5
       }
     }
+    code {m_codecParams = codecParams;} {}
   }
   Function {show()} {} {
     code {audio_codec = 0;
@@ -389,6 +398,7 @@ encodeDialog->show();} {}
   } {
     code {delete encodeDialog;} {}
   }
+  decl {nle::CodecParameters* m_codecParams;} {}
 } 
 
 class ChangesDialog {} {
@@ -424,11 +434,13 @@ decl {Fl_Box *g_trashCan} {public
 decl {float g_fps} {public
 } 
 
-class CodecOptions {} {
-  Function {CodecOptions()} {} {
+class CodecOptions {open
+} {
+  Function {CodecOptions()} {open
+  } {
     Fl_Window codecOptions {
-      label {Codec Options} open
-      xywh {1207 237 345 305} type Double resizable modal visible
+      label {Codec Options}
+      xywh {1139 375 345 305} type Double resizable modal visible
     } {
       Fl_Box codec_label {
         label Codec
@@ -449,12 +461,33 @@ class CodecOptions {} {
           xywh {170 35 175 230}
         } {
           Fl_Value_Input parameter_int_input {
+            callback {nle::ParameterValue val( (int)o->value() );
+lqt_parameter_info_t* info = (lqt_parameter_info_t*)parameters_browser->data( parameters_browser->value() );
+if ( m_audio ) {
+	m_codecParams->setAudioParameter( info->name, val );
+} else {
+	m_codecParams->setVideoParameter( info->name, val );
+}}
             xywh {175 40 165 25} step 1 deactivate
           }
           Fl_Input parameter_string_input {
+            callback {nle::ParameterValue val( o->value() );
+lqt_parameter_info_t* info = (lqt_parameter_info_t*)parameters_browser->data( parameters_browser->value() );
+if ( m_audio ) {
+	m_codecParams->setAudioParameter( info->name, val );
+} else {
+	m_codecParams->setVideoParameter( info->name, val );
+}}
             xywh {175 70 165 25} deactivate
           }
-          Fl_Choice parameter_stringlist_input {open
+          Fl_Choice parameter_stringlist_input {
+            callback {nle::ParameterValue val( o->text() );
+lqt_parameter_info_t* info = (lqt_parameter_info_t*)parameters_browser->data( parameters_browser->value() );
+if ( m_audio ) {
+	m_codecParams->setAudioParameter( info->name, val );
+} else {
+	m_codecParams->setVideoParameter( info->name, val );
+}} open
             xywh {175 100 165 25} down_box BORDER_BOX deactivate
           } {}
           Fl_Box {} {
@@ -476,6 +509,14 @@ class CodecOptions {} {
         }
       }
     }
+  }
+  decl {bool m_audio;} {public
+  }
+  decl {nle::CodecParameters* m_codecParams;} {public
+  }
+  Function {~CodecOptions()} {open
+  } {
+    code {delete codecOptions;} {}
   }
 } 
 

@@ -29,6 +29,7 @@
 #include "globals.H"
 #include "Timeline.H"
 #include "ProgressDialog/IProgressListener.H"
+#include "Codecs.H"
 
 namespace nle
 {
@@ -37,7 +38,7 @@ static quicktime_t *qt;
 
 
 
-Renderer::Renderer( string filename, int w, int h, int framerate, int samplerate )
+Renderer::Renderer( string filename, int w, int h, int framerate, int samplerate, CodecParameters* params )
 {
 	char buffer[1024];
 	m_w = w;
@@ -47,6 +48,13 @@ Renderer::Renderer( string filename, int w, int h, int framerate, int samplerate
 	m_filename = filename;
 	strlcpy( buffer, m_filename.c_str(), sizeof(buffer) );
 	qt = quicktime_open( buffer, false, true );
+
+	params->set( qt, m_w, m_h );
+
+	lqt_set_cmodel( qt, 0, BC_RGB888 );
+	return;
+
+	
 	lqt_codec_info_t **codecs = lqt_query_registry( 1, 0, 1, 0 );
 #if 0
 	for ( int i = 0; codecs[i]; i++ ) {
@@ -206,51 +214,6 @@ void Renderer::go( IProgressListener* l )
 	delete [] enc_frame.rows;
 	if ( l ) {
 		l->end();
-	}
-}
-
-int find_param_helper( void* p, void* data )
-{
-	param_node* node = (param_node*)p;
-	const char* key = (const char*)data;
-	return ( strncmp( node->key, key, 1024 ) == 0 );
-}
-static void setParameter( param_node* params, const char* key, lqt_parameter_value_t* value )
-{
-	param_node* p = (param_node*)sl_map( params, find_param_helper, (void*)key );
-	if ( p ) {
-		memcpy( &(p->value), value, sizeof(lqt_parameter_value_t) );
-	} else {
-		p = new param_node;
-		strlcpy( p->key, key, 1024 );
-		memcpy( &(p->value), value, sizeof(lqt_parameter_value_t) );
-		params = (param_node*)sl_push( params, p );
-	}
-}
-void Renderer::setVideoParameter( const char* key, lqt_parameter_value_t* value )
-{
-	setParameter( m_videoParams, key, value );
-}
-void Renderer::setAudioParameter( const char* key, lqt_parameter_value_t* value )
-{
-	setParameter( m_audioParams, key, value );
-}
-const lqt_parameter_value_t* Renderer::getVideoParameter( const char* key )
-{
-	param_node* p = (param_node*)sl_map( m_videoParams, find_param_helper, (void*)key );
-	if ( p ) {
-		return &(p->value);
-	} else {
-		return 0;
-	}
-}
-const lqt_parameter_value_t* Renderer::getAudioParameter( const char* key )
-{
-	param_node* p = (param_node*)sl_map( m_videoParams, find_param_helper, (void*)key );
-	if ( p ) {
-		return &(p->value);
-	} else {
-		return 0;
 	}
 }
 

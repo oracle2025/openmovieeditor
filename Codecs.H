@@ -24,6 +24,7 @@
 #include "nle.h"
 
 class CodecOptions;
+class Fl_Choice;
 
 namespace nle
 {
@@ -34,6 +35,62 @@ void setVideoCodecMenu( Fl_Choice* menu );
 void setCodecInfo( CodecOptions* dialog, void* data );
 
 void setCodecParameter( CodecOptions* dialog, void* data );
+
+typedef struct _param_list_node {
+	struct _param_list_node *next;
+	lqt_parameter_value_t value;
+	lqt_parameter_info_t * info;
+} param_node;
+
+typedef struct _codec_list_node {
+	struct _codec_list_node *next;
+	lqt_codec_info_t* codecInfo;
+	param_node* parameters;
+} codec_node;
+
+typedef enum {
+	PV_INT,
+	PV_STRING
+} pv_type;
+
+class ParameterValue
+{
+	public:
+		ParameterValue( const char* v );
+		ParameterValue( int v );
+		~ParameterValue();
+		void get( lqt_parameter_value_t& val );
+	private:
+		pv_type m_type;
+		char* m_value_string;
+		int m_value_int;
+};
+
+
+class CodecParameters
+{
+	public:
+		CodecParameters( lqt_codec_info_t** audio, lqt_codec_info_t** video );
+		~CodecParameters();
+		//read_from_xml
+		//write_to_xml
+		void setVideoCodec( lqt_codec_info_t* info );
+		void setAudioCodec( lqt_codec_info_t* info );
+		lqt_codec_info_t* getVideoCodec();
+		lqt_codec_info_t* getAudioCodec();
+		void setVideoParameter( const char* key, ParameterValue& value );
+		void setAudioParameter( const char* key, ParameterValue& value );
+		lqt_parameter_value_t getVideoParameter( const char* key );
+		lqt_parameter_value_t getAudioParameter( const char* key );
+		void set( quicktime_t* qt, int w, int h );
+	private:
+		codec_node* m_audioCodecs;
+		codec_node* m_videoCodecs;
+		codec_node* m_currentAudioCodec;
+		codec_node* m_currentVideoCodec;
+
+};
+
 
 } /* namespace nle */
 

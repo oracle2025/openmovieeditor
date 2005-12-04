@@ -14,14 +14,15 @@ void NleUI::cb_Save(Fl_Menu_* o, void* v) {
 
 inline void NleUI::cb_Render_i(Fl_Menu_*, void*) {
   Fl_Group::current( mainWindow );
-EncodeDialog dlg( 0, 0 );
+nle::CodecParameters cp( nle::g_audio_codec_info, nle::g_video_codec_info );
+EncodeDialog dlg( 0, 0, &cp );
 dlg.show();
 while (dlg.shown())
   Fl::wait();
 
 if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 	ProgressDialog pDlg( "Rendering Project" );
-	nle::Renderer ren( dlg.export_filename->value(), 360, 288, 0, 0 );
+	nle::Renderer ren( dlg.export_filename->value(), 360, 288, 25, 48000, &cp );
 	ren.go( &pDlg );
 	
 
@@ -2738,6 +2739,7 @@ void EncodeDialog::cb_Cancel(Fl_Button* o, void* v) {
 
 inline void EncodeDialog::cb_audio_codec_menu_i(Fl_Choice* o, void*) {
   audio_codec = o->menu()[o->value()].user_data();
+m_codecParams->setAudioCodec( (lqt_codec_info_t*)audio_codec );
 }
 void EncodeDialog::cb_audio_codec_menu(Fl_Choice* o, void* v) {
   ((EncodeDialog*)(o->parent()->user_data()))->cb_audio_codec_menu_i(o,v);
@@ -2745,6 +2747,7 @@ void EncodeDialog::cb_audio_codec_menu(Fl_Choice* o, void* v) {
 
 inline void EncodeDialog::cb_video_codec_menu_i(Fl_Choice* o, void*) {
   video_codec = o->menu()[o->value()].user_data();
+m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );
 }
 void EncodeDialog::cb_video_codec_menu(Fl_Choice* o, void* v) {
   ((EncodeDialog*)(o->parent()->user_data()))->cb_video_codec_menu_i(o,v);
@@ -2771,6 +2774,8 @@ inline void EncodeDialog::cb_audio_options_i(Fl_Button*, void*) {
   if ( audio_codec ) {
 	Fl_Group::current( encodeDialog );
 	CodecOptions dlg;
+	dlg.m_audio = true;
+	dlg.m_codecParams = m_codecParams;
 	nle::setCodecInfo( &dlg, audio_codec );
 	dlg.codecOptions->show();
 	while (dlg.codecOptions->shown())
@@ -2785,6 +2790,8 @@ inline void EncodeDialog::cb_video_options_i(Fl_Button*, void*) {
   if ( video_codec ) {
 	Fl_Group::current( encodeDialog );
 	CodecOptions dlg;
+	dlg.m_audio = false;
+	dlg.m_codecParams = m_codecParams;
 	nle::setCodecInfo( &dlg, video_codec );
 	dlg.codecOptions->show();
 	while (dlg.codecOptions->shown())
@@ -2802,7 +2809,7 @@ void EncodeDialog::cb_File(Fl_Button* o, void* v) {
   ((EncodeDialog*)(o->parent()->user_data()))->cb_File_i(o,v);
 }
 
-EncodeDialog::EncodeDialog( nle::IVideoReader*, nle::IAudioReader* ) {
+EncodeDialog::EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecParameters* codecParams ) {
   Fl_Double_Window* w;
   { Fl_Double_Window* o = encodeDialog = new Fl_Double_Window(485, 340, "Render");
     w = o;
@@ -2861,6 +2868,7 @@ EncodeDialog::EncodeDialog( nle::IVideoReader*, nle::IAudioReader* ) {
     o->set_modal();
     o->end();
   }
+  m_codecParams = codecParams;
 }
 
 void EncodeDialog::show() {
@@ -2903,6 +2911,45 @@ void CodecOptions::cb_parameters_browser(Fl_Hold_Browser* o, void* v) {
   ((CodecOptions*)(o->parent()->parent()->user_data()))->cb_parameters_browser_i(o,v);
 }
 
+inline void CodecOptions::cb_parameter_int_input_i(Fl_Value_Input* o, void*) {
+  nle::ParameterValue val( (int)o->value() );
+lqt_parameter_info_t* info = (lqt_parameter_info_t*)parameters_browser->data( parameters_browser->value() );
+if ( m_audio ) {
+	m_codecParams->setAudioParameter( info->name, val );
+} else {
+	m_codecParams->setVideoParameter( info->name, val );
+};
+}
+void CodecOptions::cb_parameter_int_input(Fl_Value_Input* o, void* v) {
+  ((CodecOptions*)(o->parent()->parent()->parent()->user_data()))->cb_parameter_int_input_i(o,v);
+}
+
+inline void CodecOptions::cb_parameter_string_input_i(Fl_Input* o, void*) {
+  nle::ParameterValue val( o->value() );
+lqt_parameter_info_t* info = (lqt_parameter_info_t*)parameters_browser->data( parameters_browser->value() );
+if ( m_audio ) {
+	m_codecParams->setAudioParameter( info->name, val );
+} else {
+	m_codecParams->setVideoParameter( info->name, val );
+};
+}
+void CodecOptions::cb_parameter_string_input(Fl_Input* o, void* v) {
+  ((CodecOptions*)(o->parent()->parent()->parent()->user_data()))->cb_parameter_string_input_i(o,v);
+}
+
+inline void CodecOptions::cb_parameter_stringlist_input_i(Fl_Choice* o, void*) {
+  nle::ParameterValue val( o->text() );
+lqt_parameter_info_t* info = (lqt_parameter_info_t*)parameters_browser->data( parameters_browser->value() );
+if ( m_audio ) {
+	m_codecParams->setAudioParameter( info->name, val );
+} else {
+	m_codecParams->setVideoParameter( info->name, val );
+};
+}
+void CodecOptions::cb_parameter_stringlist_input(Fl_Choice* o, void* v) {
+  ((CodecOptions*)(o->parent()->parent()->parent()->user_data()))->cb_parameter_stringlist_input_i(o,v);
+}
+
 inline void CodecOptions::cb_Cancel1_i(Fl_Button* o, void*) {
   o->window()->hide();
 }
@@ -2936,13 +2983,16 @@ CodecOptions::CodecOptions() {
       { Fl_Group* o = new Fl_Group(170, 35, 175, 230);
         { Fl_Value_Input* o = parameter_int_input = new Fl_Value_Input(175, 40, 165, 25);
           o->step(1);
+          o->callback((Fl_Callback*)cb_parameter_int_input);
           o->deactivate();
         }
         { Fl_Input* o = parameter_string_input = new Fl_Input(175, 70, 165, 25);
+          o->callback((Fl_Callback*)cb_parameter_string_input);
           o->deactivate();
         }
         { Fl_Choice* o = parameter_stringlist_input = new Fl_Choice(175, 100, 165, 25);
           o->down_box(FL_BORDER_BOX);
+          o->callback((Fl_Callback*)cb_parameter_stringlist_input);
           o->deactivate();
         }
         { Fl_Box* o = new Fl_Box(230, 175, 25, 25);
@@ -2965,6 +3015,10 @@ CodecOptions::CodecOptions() {
     o->set_modal();
     o->end();
   }
+}
+
+CodecOptions::~CodecOptions() {
+  delete codecOptions;
 }
 
 static const char *idata_logo[] = {

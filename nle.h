@@ -7,6 +7,7 @@
 #include <FL/Fl_Menu_Bar.H>
 #include "ProgressDialog/ProgressDialog.h"
 #include "Renderer.H"
+#include "Codecs.H"
 #include <FL/Fl_Tile.H>
 #include <FL/Fl_Group.H>
 #include "Ruler.H"
@@ -65,14 +66,13 @@ extern Flmm_Scalebar* g_scrollBar;
 #include "IVideoReader.H"
 #include "IAudioReader.H"
 #include <FL/Fl_Return_Button.H>
-#include "Codecs.H"
 #include <FL/Fl_File_Input.H>
 #include <stdlib.h>
 #include <FL/Fl_File_Chooser.H>
 
 class EncodeDialog {
 public:
-  EncodeDialog( nle::IVideoReader*, nle::IAudioReader* );
+  EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecParameters* codecParams );
 private:
   Fl_Double_Window *encodeDialog;
   inline void cb_Encode_i(Fl_Return_Button*, void*);
@@ -112,6 +112,8 @@ private:
 public:
   bool go;
   ~EncodeDialog();
+private:
+  nle::CodecParameters* m_codecParams;
 };
 
 class ChangesDialog {
@@ -134,11 +136,25 @@ private:
   static void cb_parameters_browser(Fl_Hold_Browser*, void*);
 public:
   Fl_Value_Input *parameter_int_input;
+private:
+  inline void cb_parameter_int_input_i(Fl_Value_Input*, void*);
+  static void cb_parameter_int_input(Fl_Value_Input*, void*);
+public:
   Fl_Input *parameter_string_input;
+private:
+  inline void cb_parameter_string_input_i(Fl_Input*, void*);
+  static void cb_parameter_string_input(Fl_Input*, void*);
+public:
   Fl_Choice *parameter_stringlist_input;
 private:
+  inline void cb_parameter_stringlist_input_i(Fl_Choice*, void*);
+  static void cb_parameter_stringlist_input(Fl_Choice*, void*);
   inline void cb_Cancel1_i(Fl_Button*, void*);
   static void cb_Cancel1(Fl_Button*, void*);
+public:
+  bool m_audio;
+  nle::CodecParameters* m_codecParams;
+  ~CodecOptions();
 };
 
 class AboutDialog {

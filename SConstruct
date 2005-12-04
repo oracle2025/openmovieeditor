@@ -60,8 +60,12 @@ src_list.append( SConscript(['portaudio/SConscript']) )
 Export( 'env' )
 src_list.append( SConscript(['timeline/SConscript']) )
 src_list.append( SConscript(['ProgressDialog/SConscript']) )
-src_list.append( SConscript(['sl/SConscript']) )
+sl = SConscript(['sl/SConscript'])
+src_list.append( sl )
 src_list.append( SConscript(['tinyxml/SConscript']) )
+
+Export( 'sl' )
+SConscript( ['tests/SConscript'] )
 
 strlcpy_env = Environment( CFLAGS ="-Wall -Werror -ggdb" )
 strlcpy = strlcpy_env.Library( 'strlcpy', "strlcpy.c" )
