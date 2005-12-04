@@ -1,0 +1,6 @@
+Import('env')
+src_list = Split("""ProgressDialog.cxx""")
+
+progress_dialog = env.Library( 'progress_dialog', src_list )
+Return( 'progress_dialog' )
+
