@@ -1,0 +1,9 @@
+Import('env')
+Import('sl')
+src_list = Split("""testCodecParameters.cxx
+	../Codecs.cxx""")
+
+src_list.append( sl )
+
+env.Program( 'testCodecParameters', src_list )
+
