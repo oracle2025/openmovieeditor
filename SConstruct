@@ -55,7 +55,6 @@ src_list = Split("""nle.cxx
 	Texter.cxx""")
 
 src_list.append( SConscript(['portaudio/SConscript']) )
-#src_list.append( SConscript(['sexpr/SConscript']) )
 
 Export( 'env' )
 src_list.append( SConscript(['timeline/SConscript']) )
