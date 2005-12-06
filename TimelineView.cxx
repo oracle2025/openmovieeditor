@@ -52,7 +52,6 @@ TimelineView::TimelineView( int x, int y, int w, int h, const char *label )
 {
 	g_timelineView = this;
 	m_dragHandler = NULL;
-	m_timeline = new Timeline();
 	
 
 	m_scrollPosition = 0;
@@ -64,8 +63,6 @@ TimelineView::TimelineView( int x, int y, int w, int h, const char *label )
 TimelineView::~TimelineView()
 {
 	cout << "Never Called" << endl;
-	delete m_timeline;
-	m_timeline = NULL;
 }
 int TimelineView::handle( int event )
 {
@@ -144,7 +141,7 @@ void TimelineView::draw()
 // END - Draw Background
 
 	int track_count = -1;
-	for ( track_node* i = m_timeline->getTracks(); i; i = i->next ) {
+	for ( track_node* i = g_timeline->getTracks(); i; i = i->next ) {
 		Track* track = i->track;
 		track_count++;
 		int y_coord = y() + TRACK_SPACING + track_count * TRACK_OFFSET;
@@ -258,7 +255,7 @@ void TimelineView::zoom( float zoom )
 }
 Track* TimelineView::get_track( int _x, int _y )
 {
-	for ( track_node* o = m_timeline->getTracks(); o; o = o->next ) {
+	for ( track_node* o = g_timeline->getTracks(); o; o = o->next ) {
 		if ( !get_track_rect( o->track ).inside( _x, _y ) )
 			continue;
 		return o->track;
@@ -348,7 +345,7 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 }
 void TimelineView::adjustScrollbar()
 {
-	int64_t l = m_timeline->length();
+	int64_t l = g_timeline->length();
 	if ( l > g_scrollBar->slider_size_i() ) {
 		g_scrollBar->slider_size_i( l );
 	}

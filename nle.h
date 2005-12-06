@@ -23,6 +23,7 @@ using namespace std;
 #include <string>
 #include "FileBrowser.H"
 #include <FL/Fl_Input.H>
+#include "LoadSaveManager/LoadSaveManager.H"
 #include <FL/Fl_Choice.H>
 
 class NleUI {
@@ -55,10 +56,12 @@ private:
 public:
   Fl_Input *projectNameInput;
 private:
+  inline void cb_projectNameInput_i(Fl_Input*, void*);
+  static void cb_projectNameInput(Fl_Input*, void*);
   inline void cb__i(Fl_Button*, void*);
   static void cb_(Fl_Button*, void*);
-  static Fl_Menu_Item menu_1[];
 public:
+  Fl_Choice *projectChoice;
   void show( int argc, char **argv );
   ~NleUI();
 };

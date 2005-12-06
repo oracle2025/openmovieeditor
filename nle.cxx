@@ -2525,6 +2525,13 @@ void NleUI::cb_fileBrowser(nle::FileBrowser* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_fileBrowser_i(o,v);
 }
 
+inline void NleUI::cb_projectNameInput_i(Fl_Input* o, void*) {
+  nle::g_loadSaveManager->name( o->value() );
+}
+void NleUI::cb_projectNameInput(Fl_Input* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_projectNameInput_i(o,v);
+}
+
 inline void NleUI::cb__i(Fl_Button* o, void*) {
   if ( strcmp( o->label(), "@>" ) == 0 ) {
 	o->label( "@||" );
@@ -2537,12 +2544,6 @@ inline void NleUI::cb__i(Fl_Button* o, void*) {
 void NleUI::cb_(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb__i(o,v);
 }
-
-Fl_Menu_Item NleUI::menu_1[] = {
- {"Project 1", 0,  0, 0, 0, 0, 0, 14, 56},
- {"Project 2", 0,  0, 0, 0, 0, 0, 14, 56},
- {0,0,0,0,0,0,0,0,0}
-};
 
 NleUI::NleUI() {
   Fl_Double_Window* w;
@@ -2673,6 +2674,7 @@ NleUI::NleUI() {
             o->box(FL_FLAT_BOX);
             o->color(FL_BACKGROUND_COLOR);
             o->textfont(1);
+            o->callback((Fl_Callback*)cb_projectNameInput);
           }
           { Fl_Button* o = new Fl_Button(100, 235, 80, 40, "@>");
             o->tooltip("Play");
@@ -2698,9 +2700,8 @@ NleUI::NleUI() {
       o->end();
       Fl_Group::current()->resizable(o);
     }
-    { Fl_Choice* o = new Fl_Choice(345, 0, 170, 25);
+    { Fl_Choice* o = projectChoice = new Fl_Choice(345, 0, 170, 25);
       o->down_box(FL_BORDER_BOX);
-      o->menu(menu_1);
     }
     o->end();
   }

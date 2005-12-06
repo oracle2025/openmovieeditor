@@ -48,7 +48,7 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 //	while ( pDlg.progressDialog->shown() )
 //		Fl::wait();
 //	pDlg.progressDialog->hide();
-}} selected
+}}
             xywh {5 5 100 20} divider
             code0 {\#include "ProgressDialog/ProgressDialog.h"}
             code1 {\#include "Renderer.H"}
@@ -188,7 +188,9 @@ fb->load_rel();}
               }
             }
             Fl_Input projectNameInput {
+              callback {nle::g_loadSaveManager->name( o->value() );} selected
               xywh {0 25 280 25} box FLAT_BOX color 49 textfont 1
+              code0 {\#include "LoadSaveManager/LoadSaveManager.H"}
             }
             Fl_Button {} {
               label {@>}
@@ -220,18 +222,9 @@ fb->load_rel();}
           }
         }
       }
-      Fl_Choice {} {open
+      Fl_Choice projectChoice {open
         xywh {345 0 170 25} down_box BORDER_BOX
-      } {
-        menuitem {} {
-          label {Project 1}
-          xywh {10 10 100 20}
-        }
-        menuitem {} {
-          label {Project 2}
-          xywh {5 5 100 20}
-        }
-      }
+      } {}
     }
   }
   Function {show( int argc, char **argv )} {open

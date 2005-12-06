@@ -51,6 +51,11 @@ Prefs::Prefs()
 	if ( text ) {
 		m_browserFolder = text->Value();
 	}
+	
+	text = docH.FirstChildElement( "lastProject" ).Child( 0 ).Text();
+	if ( text ) {
+		m_lastProject = text->Value();
+	}
 
 }
 
@@ -73,16 +78,24 @@ Prefs::~Prefs()
 	text = new TiXmlText( m_browserFolder.c_str() );
 	item->LinkEndChild( text );
 
+	item = new TiXmlElement( "lastProject" );
+	doc.LinkEndChild( item );
+	text = new TiXmlText( m_lastProject.c_str() );
+	item->LinkEndChild( text );
+
 	doc.SaveFile();
 }
 string Prefs::getBrowserFolder()
-{
-	return m_browserFolder;
-}
+{ return m_browserFolder; }
+
 void Prefs::setBrowserFolder( string filename )
-{
-	m_browserFolder = filename;
-}
+{ m_browserFolder = filename; }
+
+string Prefs::lastProject()
+{ return m_lastProject; }
+
+void Prefs::lastProject( string filename )
+{ m_lastProject = filename; }
 
 } /* namespace nle */
 

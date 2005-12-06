@@ -36,6 +36,7 @@ class VideoViewGL;
 class Sound;
 class Prefs;
 class WavArtist;
+class LoadSaveManager;
 
 extern TimelineView* g_timelineView;
 extern Timeline* g_timeline;
@@ -45,6 +46,7 @@ extern VideoViewGL* g_videoView;
 extern Sound* g_sound;
 extern Prefs* g_preferences;
 extern WavArtist* g_wavArtist;
+extern LoadSaveManager* g_loadSaveManager;
 
 extern lqt_codec_info_t** g_audio_codec_info;
 extern lqt_codec_info_t** g_video_codec_info;

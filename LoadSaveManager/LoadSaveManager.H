@@ -1,4 +1,4 @@
-/* Prefs.H
+/*  LoadSaveManager.H
  *
  *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,33 +17,33 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _PREFS_H_
-#define _PREFS_H_
-
+#ifndef _LOAD_SAVE_MANAGER_H_
+#define _LOAD_SAVE_MANAGER_H_
 
 #include "global_includes.H"
 
+class Fl_Choice;
+
 namespace nle
 {
-
-
-class Prefs
+	
+class LoadSaveManager
 {
 	public:
-		Prefs();
-		~Prefs();
-		string getBrowserFolder();
-		void setBrowserFolder( string filename );
-		string lastProject();
-		void lastProject( string filename );
+		LoadSaveManager( Fl_Choice* projectChoice );
+		~LoadSaveManager();
+		void startup();
+		void shutdown();
+		void newProject();
+		void saveAs();
+		void name( string v );
+		void load( string v );
 	private:
-		string m_browserFolder;
-		string m_lastProject;
-		
+		Fl_Choice* m_projectChoice;
+		string m_currentName;
+		string m_currentFilename;
 };
 
 } /* namespace nle */
 
-#endif /* _PREFS_H_ */
-
-
+#endif /* _LOAD_SAVE_MANAGER_H_ */

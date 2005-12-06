@@ -30,20 +30,23 @@
 #include "globals.H"
 #include "Timeline.H"
 #include "VideoViewGL.H"
+#include "LoadSaveManager/LoadSaveManager.H"
 
 namespace nle 
 {
-lqt_codec_info_t** g_audio_codec_info;
-lqt_codec_info_t** g_video_codec_info;
+	lqt_codec_info_t** g_audio_codec_info;
+	lqt_codec_info_t** g_video_codec_info;
 } /* namespace nle */
 
 int main( int argc, char** argv )
 {
+	nle::Timeline timeline;
 	nle::Prefs preferences;
 	nle::WavArtist wavArtist;
 	NleUI nui;
 	nle::PlaybackCore playbackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
-	
+	nle::LoadSaveManager lsm( nui.projectChoice );
+
 	Fl::visual(FL_DOUBLE|FL_RGB);
 
 	Fl_Tooltip::color( fl_rgb_color( 0, 0, 1 ) );

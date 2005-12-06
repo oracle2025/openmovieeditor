@@ -67,7 +67,6 @@ class TimelineView : public Fl_Widget
 		void draw();
 	private:
 		void adjustScrollbar();
-		Timeline *m_timeline;
 		DragHandler *m_dragHandler;
 		int64_t m_scrollPosition;
 		int64_t m_stylusPosition;

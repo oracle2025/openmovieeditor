@@ -20,12 +20,19 @@
 #ifndef _PROJECT_H_
 #define _PROJECT_H_
 
+#include "IProject.H"
+
 namespace nle
 {
 	
-class Project
+class Project : public IProject
 {
 	public:
+		Project() {}
+		~Project() {}
+		int write( string filename, string name ) { return 0; }
+		int read( string filename, string& name ) { return 0; }
+		void clear() {}
 		static void write_project();
 		static void read_project();
 	private:

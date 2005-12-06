@@ -1,4 +1,4 @@
-/* Prefs.H
+/*  IProject.H
  *
  *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,33 +17,24 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _PREFS_H_
-#define _PREFS_H_
-
+#ifndef _I_PROJECT_H_
+#define _I_PROJECT_H_
 
 #include "global_includes.H"
 
 namespace nle
 {
-
-
-class Prefs
+	
+class IProject
 {
 	public:
-		Prefs();
-		~Prefs();
-		string getBrowserFolder();
-		void setBrowserFolder( string filename );
-		string lastProject();
-		void lastProject( string filename );
-	private:
-		string m_browserFolder;
-		string m_lastProject;
-		
+		virtual ~IProject() {}
+		// return < 0 on failure
+		virtual int write( string filename, string name ) = 0;
+		virtual int read( string filename, string& name ) = 0;
+		virtual void clear() = 0;
 };
 
 } /* namespace nle */
 
-#endif /* _PREFS_H_ */
-
-
+#endif /* _I_PROJECT_H_ */
