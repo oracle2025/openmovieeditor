@@ -23,10 +23,7 @@ class NleUI {open
           }
           menuitem {} {
             label {Save as...}
-            callback {SaveAsDialog dlg;
-dlg.show();
-while (dlg.shown())
-  Fl::wait();}
+            callback {nle::g_loadSaveManager->saveAs();} selected
             xywh {0 0 100 20} divider
           }
           menuitem {} {
@@ -188,7 +185,7 @@ fb->load_rel();}
               }
             }
             Fl_Input projectNameInput {
-              callback {nle::g_loadSaveManager->name( o->value() );} selected
+              callback {nle::g_loadSaveManager->name( o->value() );}
               xywh {0 25 280 25} box FLAT_BOX color 49 textfont 1
               code0 {\#include "LoadSaveManager/LoadSaveManager.H"}
             }
@@ -222,8 +219,11 @@ fb->load_rel();}
           }
         }
       }
-      Fl_Choice projectChoice {open
+      Fl_Choice projectChoice {
+        callback {char* name = (char*)o->mvalue()->user_data();
+nle::g_loadSaveManager->load( name );} open
         xywh {345 0 170 25} down_box BORDER_BOX
+        code0 {\#include "LoadSaveManager/LoadSaveManager.H"}
       } {}
     }
   }
@@ -245,8 +245,7 @@ projectNameInput->value("Project 1");} {}
 decl {Flmm_Scalebar* g_scrollBar;} {public
 } 
 
-class EncodeDialog {open
-} {
+class EncodeDialog {} {
   Function {EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecParameters* codecParams )} {open
   } {
     Fl_Window encodeDialog {
@@ -587,42 +586,5 @@ class ErrorDialog {} {
         xywh {5 125 365 130}
       }
     }
-  }
-} 
-
-class SaveAsDialog {} {
-  Function {SaveAsDialog()} {open
-  } {
-    Fl_Window saveAsDialog {
-      label {Save as Dialog} open
-      xywh {1376 445 335 135} type Double modal visible
-    } {
-      Fl_Box {} {
-        label {Save Project as}
-        xywh {0 0 335 40} labelfont 1 labelsize 16
-      }
-      Fl_Input {} {
-        label {Project Name}
-        xywh {110 55 215 25}
-      }
-      Fl_Return_Button {} {
-        label Ok
-        callback {o->window()->hide();}
-        xywh {175 100 150 25} hotspot
-      }
-      Fl_Button {} {
-        label Cancel
-        callback {o->window()->hide();}
-        xywh {10 100 150 25}
-      }
-    }
-  }
-  Function {show()} {open
-  } {
-    code {saveAsDialog->show();} {}
-  }
-  Function {shown()} {open return_type int
-  } {
-    code {return saveAsDialog->shown();} {}
   }
 } 

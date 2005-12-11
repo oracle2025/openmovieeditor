@@ -37,6 +37,7 @@ class Sound;
 class Prefs;
 class WavArtist;
 class LoadSaveManager;
+class Project;
 
 extern TimelineView* g_timelineView;
 extern Timeline* g_timeline;
@@ -47,6 +48,7 @@ extern Sound* g_sound;
 extern Prefs* g_preferences;
 extern WavArtist* g_wavArtist;
 extern LoadSaveManager* g_loadSaveManager;
+extern Project* g_project;
 
 extern lqt_codec_info_t** g_audio_codec_info;
 extern lqt_codec_info_t** g_video_codec_info;

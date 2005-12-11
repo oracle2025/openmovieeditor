@@ -31,6 +31,7 @@
 #include "Timeline.H"
 #include "VideoViewGL.H"
 #include "LoadSaveManager/LoadSaveManager.H"
+#include "Project.H"
 
 namespace nle 
 {
@@ -40,6 +41,8 @@ namespace nle
 
 int main( int argc, char** argv )
 {
+	srand( time( 0 ) );
+	nle::Project project;
 	nle::Timeline timeline;
 	nle::Prefs preferences;
 	nle::WavArtist wavArtist;

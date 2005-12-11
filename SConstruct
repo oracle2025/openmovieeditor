@@ -50,7 +50,8 @@ src_list = Split("""nle.cxx
 	PlaybackCore.cxx
 	Renderer.cxx
 	Flmm_Scalebar.cxx
-	Texter.cxx""")
+	Texter.cxx
+	SaveAsDialog.cxx""")
 
 sl = SConscript(['sl/SConscript'])
 Export( 'sl' )

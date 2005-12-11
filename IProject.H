@@ -31,7 +31,7 @@ class IProject
 		virtual ~IProject() {}
 		// return < 0 on failure
 		virtual int write( string filename, string name ) = 0;
-		virtual int read( string filename, string& name ) = 0;
+		virtual int read( string filename ) = 0;
 		virtual void clear() = 0;
 };
 

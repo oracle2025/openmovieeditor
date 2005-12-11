@@ -62,6 +62,10 @@ private:
   static void cb_(Fl_Button*, void*);
 public:
   Fl_Choice *projectChoice;
+private:
+  inline void cb_projectChoice_i(Fl_Choice*, void*);
+  static void cb_projectChoice(Fl_Choice*, void*);
+public:
   void show( int argc, char **argv );
   ~NleUI();
 };
@@ -177,19 +181,5 @@ public:
 class ErrorDialog {
 public:
   ErrorDialog();
-};
-
-class SaveAsDialog {
-public:
-  SaveAsDialog();
-  Fl_Double_Window *saveAsDialog;
-private:
-  inline void cb_Ok_i(Fl_Return_Button*, void*);
-  static void cb_Ok(Fl_Return_Button*, void*);
-  inline void cb_Cancel2_i(Fl_Button*, void*);
-  static void cb_Cancel2(Fl_Button*, void*);
-public:
-  void show();
-  int shown();
 };
 #endif

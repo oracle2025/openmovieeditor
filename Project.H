@@ -28,10 +28,10 @@ namespace nle
 class Project : public IProject
 {
 	public:
-		Project() {}
+		Project();
 		~Project() {}
-		int write( string filename, string name ) { return 0; }
-		int read( string filename, string& name ) { return 0; }
+		int write( string filename, string name );
+		int read( string filename );
 		void clear() {}
 		static void write_project();
 		static void read_project();

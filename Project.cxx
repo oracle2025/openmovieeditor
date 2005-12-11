@@ -43,6 +43,22 @@ namespace nle
 {
 static char project_filename[1024];
 
+Project* g_project;
+
+Project::Project()
+{
+	g_project = this;
+}
+int Project::write( string filename, string name )
+{
+	cout << "Write: " << filename << " | " << name << endl;
+	return 0;
+}
+int Project::read( string filename )
+{
+	cout << "Read: " << filename << endl;
+	return 0;
+}
 void Project::write_project()
 {
 	strcpy( project_filename, "" );
@@ -62,6 +78,11 @@ void Project::write_project()
 	TiXmlElement* item = new TiXmlElement( "version" );
 	project->LinkEndChild( item );
 	TiXmlText* text = new TiXmlText( OME_VERSION );
+	item->LinkEndChild( text );
+
+	item = new TiXmlElement( "name" );
+	project->LinkEndChild( item );
+	text = new TiXmlText( "New Project" );
 	item->LinkEndChild( text );
 
 	item = new TiXmlElement( "zoom" );

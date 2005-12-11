@@ -42,6 +42,7 @@ class LoadSaveManager
 		Fl_Choice* m_projectChoice;
 		string m_currentName;
 		string m_currentFilename;
+		string m_video_projects;
 };
 
 } /* namespace nle */

@@ -3,10 +3,7 @@
 #include "nle.h"
 
 inline void NleUI::cb_Save_i(Fl_Menu_*, void*) {
-  SaveAsDialog dlg;
-dlg.show();
-while (dlg.shown())
-  Fl::wait();
+  nle::g_loadSaveManager->saveAs();
 }
 void NleUI::cb_Save(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Save_i(o,v);
@@ -2545,6 +2542,14 @@ void NleUI::cb_(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb__i(o,v);
 }
 
+inline void NleUI::cb_projectChoice_i(Fl_Choice* o, void*) {
+  char* name = (char*)o->mvalue()->user_data();
+nle::g_loadSaveManager->load( name );
+}
+void NleUI::cb_projectChoice(Fl_Choice* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_projectChoice_i(o,v);
+}
+
 NleUI::NleUI() {
   Fl_Double_Window* w;
   { Fl_Double_Window* o = mainWindow = new Fl_Double_Window(515, 465, "MovieEditor");
@@ -2702,6 +2707,7 @@ NleUI::NleUI() {
     }
     { Fl_Choice* o = projectChoice = new Fl_Choice(345, 0, 170, 25);
       o->down_box(FL_BORDER_BOX);
+      o->callback((Fl_Callback*)cb_projectChoice);
     }
     o->end();
   }
@@ -8388,48 +8394,4 @@ ErrorDialog::ErrorDialog() {
     new Fl_Text_Display(5, 125, 365, 130);
     o->end();
   }
-}
-
-inline void SaveAsDialog::cb_Ok_i(Fl_Return_Button* o, void*) {
-  o->window()->hide();
-}
-void SaveAsDialog::cb_Ok(Fl_Return_Button* o, void* v) {
-  ((SaveAsDialog*)(o->parent()->user_data()))->cb_Ok_i(o,v);
-}
-
-inline void SaveAsDialog::cb_Cancel2_i(Fl_Button* o, void*) {
-  o->window()->hide();
-}
-void SaveAsDialog::cb_Cancel2(Fl_Button* o, void* v) {
-  ((SaveAsDialog*)(o->parent()->user_data()))->cb_Cancel2_i(o,v);
-}
-
-SaveAsDialog::SaveAsDialog() {
-  Fl_Double_Window* w;
-  { Fl_Double_Window* o = saveAsDialog = new Fl_Double_Window(335, 135, "Save as Dialog");
-    w = o;
-    o->user_data((void*)(this));
-    { Fl_Box* o = new Fl_Box(0, 0, 335, 40, "Save Project as");
-      o->labelfont(1);
-      o->labelsize(16);
-    }
-    new Fl_Input(110, 55, 215, 25, "Project Name");
-    { Fl_Return_Button* o = new Fl_Return_Button(175, 100, 150, 25, "Ok");
-      o->callback((Fl_Callback*)cb_Ok);
-      w->hotspot(o);
-    }
-    { Fl_Button* o = new Fl_Button(10, 100, 150, 25, "Cancel");
-      o->callback((Fl_Callback*)cb_Cancel2);
-    }
-    o->set_modal();
-    o->end();
-  }
-}
-
-void SaveAsDialog::show() {
-  saveAsDialog->show();
-}
-
-int SaveAsDialog::shown() {
-  return saveAsDialog->shown();
 }

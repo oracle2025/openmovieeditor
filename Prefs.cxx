@@ -55,6 +55,8 @@ Prefs::Prefs()
 	text = docH.FirstChildElement( "lastProject" ).Child( 0 ).Text();
 	if ( text ) {
 		m_lastProject = text->Value();
+	} else {
+		m_lastProject = "";
 	}
 
 }
