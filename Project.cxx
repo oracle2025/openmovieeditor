@@ -38,10 +38,11 @@
 #include "AudioFileSnd.H"
 #include "VideoClip.H"
 #include "AudioClip.H"
+#include "TimelineView.H"
 
 namespace nle
 {
-static char project_filename[1024];
+//static char project_filename[1024];
 
 Project* g_project;
 
@@ -51,24 +52,14 @@ Project::Project()
 }
 int Project::write( string filename, string name )
 {
-	cout << "Write: " << filename << " | " << name << endl;
-	return 0;
-}
-int Project::read( string filename )
-{
-	cout << "Read: " << filename << endl;
-	return 0;
-}
-void Project::write_project()
-{
-	strcpy( project_filename, "" );
+/*	strcpy( project_filename, "" );
 	if ( !getenv( "HOME" ) ) {
 		return;
 	}
 	strlcpy( project_filename, getenv( "HOME" ), sizeof(project_filename) );
 	strncat( project_filename, "/.openme.project", sizeof(project_filename) - strlen( project_filename ) - 1 );
-	
-	TiXmlDocument doc( project_filename );
+*/	
+	TiXmlDocument doc( filename.c_str() );
 	TiXmlDeclaration* dec = new TiXmlDeclaration( "1.0", "", "no" );
 	doc.LinkEndChild( dec );
 
@@ -82,7 +73,7 @@ void Project::write_project()
 
 	item = new TiXmlElement( "name" );
 	project->LinkEndChild( item );
-	text = new TiXmlText( "New Project" );
+	text = new TiXmlText( name.c_str() );
 	item->LinkEndChild( text );
 
 	item = new TiXmlElement( "zoom" );
@@ -130,21 +121,21 @@ void Project::write_project()
 	
 	doc.SaveFile();
 	
+	cout << "Write: " << filename << " | " << name << endl;
+	return 1;
 }
-
-void Project::read_project()
+int Project::read( string filename )
 {
-
-	strcpy( project_filename, "" );
+/*	strcpy( project_filename, "" );
 	if ( !getenv( "HOME" ) ) {
 		return;
 	}
 	strlcpy( project_filename, getenv( "HOME" ), sizeof(project_filename) );
 	strncat( project_filename, "/.openme.project", sizeof(project_filename) - strlen( project_filename ) - 1 );
-	
-	TiXmlDocument doc( project_filename );
+*/	
+	TiXmlDocument doc( filename.c_str() );
 	if ( !doc.LoadFile() ) {
-		return;
+		return 0;
 	}
 	g_timeline->clear();
 	TiXmlHandle docH( &doc );
@@ -220,6 +211,17 @@ void Project::read_project()
 		}
 		i++;
 	}
+	g_timelineView->redraw();
+	cout << "Read: " << filename << endl;
+	return 1;
+}
+void Project::write_project()
+{
+}
+
+void Project::read_project()
+{
+
 
 
 }

@@ -48,7 +48,7 @@ int main( int argc, char** argv )
 	nle::WavArtist wavArtist;
 	NleUI nui;
 	nle::PlaybackCore playbackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
-	nle::LoadSaveManager lsm( nui.projectChoice );
+	nle::LoadSaveManager lsm( nui.projectChoice, nui.projectNameInput );
 
 	Fl::visual(FL_DOUBLE|FL_RGB);
 
@@ -64,8 +64,10 @@ int main( int argc, char** argv )
 	nle::g_video_codec_info = lqt_query_registry( 0, 1, 1, 0 );
 
 	nui.show( argc, argv );
-	nle::Project::read_project();
+//	nle::Project::read_project();
+	lsm.startup();
 	int r = Fl::run();
-	nle::Project::write_project();
+	lsm.shutdown();
+//	nle::Project::write_project();
 	return r;
 }

@@ -23,7 +23,7 @@ class NleUI {open
           }
           menuitem {} {
             label {Save as...}
-            callback {nle::g_loadSaveManager->saveAs();} selected
+            callback {nle::g_loadSaveManager->saveAs();}
             xywh {0 0 100 20} divider
           }
           menuitem {} {
@@ -185,7 +185,7 @@ fb->load_rel();}
               }
             }
             Fl_Input projectNameInput {
-              callback {nle::g_loadSaveManager->name( o->value() );}
+              callback {nle::g_loadSaveManager->name( o->value() );} selected
               xywh {0 25 280 25} box FLAT_BOX color 49 textfont 1
               code0 {\#include "LoadSaveManager/LoadSaveManager.H"}
             }

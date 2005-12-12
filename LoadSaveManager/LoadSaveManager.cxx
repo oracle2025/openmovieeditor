@@ -39,8 +39,8 @@ static string name_from_projectfile( string filename );
 static string home( getenv( "HOME" ) );
 LoadSaveManager* g_loadSaveManager;
 
-LoadSaveManager::LoadSaveManager( Fl_Choice* projectChoice )
-	: m_projectChoice( projectChoice )
+LoadSaveManager::LoadSaveManager( Fl_Choice* projectChoice, Fl_Input* projectInput )
+	: m_projectChoice( projectChoice ), m_projectInput( projectInput )
 {
 	g_loadSaveManager = this;
 	int count = 0;
@@ -54,7 +54,6 @@ LoadSaveManager::LoadSaveManager( Fl_Choice* projectChoice )
 				string name = name_from_projectfile( m_video_projects + "/" + list[i]->d_name );
 				if ( name != "" ) {
 					char* cname = strdup( list[i]->d_name );
-					cout << (void*)cname << endl;	
 					m_projectChoice->add( name.c_str(), 0, 0, cname );
 				}
 			}
@@ -64,8 +63,8 @@ LoadSaveManager::LoadSaveManager( Fl_Choice* projectChoice )
 		}
 		free( (void*)list );
 	}
-	cout << name_from_projectfile( "/home/oracle/.openme.project" ) << endl;
-	cout << name_to_filename( "Hello World 2" ) << endl;
+//	cout << name_from_projectfile( "/home/oracle/.openme.project" ) << endl;
+//	cout << name_to_filename( "Hello World 2" ) << endl;
 }
 LoadSaveManager::~LoadSaveManager()
 {
@@ -95,7 +94,7 @@ static string name_to_filename( string name )
 	
 	for ( char* p = buffer; *p != '\0'; p++ ) {
 		*p = tolower( *p );
-		if ( !( ( *p > 'a' && *p < 'z' ) || ( *p > '0' && *p < '9' ) ) ) {
+		if ( !( ( *p >= 'a' && *p <= 'z' ) || ( *p >= '0' && *p <= '9' ) ) ) {
 			*p = '_';
 		}
 	}
@@ -112,18 +111,36 @@ void LoadSaveManager::startup()
 	if ( m_currentFilename == "" ) {
 		m_currentFilename = "default.vproj";
 		m_currentName = "New Project";
-		m_projectChoice->add( m_currentName.c_str(), 0, 0 );
+		m_projectChoice->add( m_currentName.c_str(), 0, 0, strdup( m_currentFilename.c_str() ) );
 	} else {
 		g_project->read( m_video_projects + "/" + m_currentFilename );
 		m_currentName = name_from_projectfile( m_video_projects + "/" + m_currentFilename );
 	}
-	//Find right m_projectChoice Entry
+	/* vv  Put this in a function */
+	m_projectInput->value( m_currentName.c_str() );
+	const Fl_Menu_Item* item;
+	item = m_projectChoice->find_item( m_currentName.c_str() );
+	if ( item ) {
+		m_projectChoice->value( item );
+	}
 }
 void LoadSaveManager::shutdown()
 {
 	g_project->write( m_video_projects + "/" + m_currentFilename, m_currentName );
 	g_preferences->lastProject( m_currentFilename );
 	// free all strings from m_projectChoice;
+	Fl_Menu_Item* item = (Fl_Menu_Item*)m_projectChoice->menu();
+	int i = 0;
+	int m = m_projectChoice->size() - 1;
+	while ( item && i < m ) {
+		if ( item->user_data() ) {
+			char* buffer = (char*)item->user_data();
+			item->user_data( 0 );
+			free( buffer );
+		}
+		item++;
+		i++;
+	}
 }
 void LoadSaveManager::newProject()
 {
@@ -133,6 +150,12 @@ void LoadSaveManager::newProject()
 	g_timeline->clear();
 	char* cname = strdup( m_currentFilename.c_str() );
 	m_projectChoice->add( m_currentName.c_str(), 0, 0, cname );
+	m_projectInput->value( m_currentName.c_str() );
+	const Fl_Menu_Item* item;
+	item = m_projectChoice->find_item( m_currentName.c_str() );
+	if ( item ) {
+		m_projectChoice->value( item );
+	}
 }
 void LoadSaveManager::saveAs()
 {
@@ -146,6 +169,14 @@ void LoadSaveManager::saveAs()
 		m_currentFilename = name_to_filename( dlg.projectName() );
 		m_currentName = dlg.projectName();
 		g_project->write( m_video_projects + "/" + m_currentFilename, m_currentName );
+		char* cname = strdup( m_currentFilename.c_str() );
+		m_projectChoice->add( m_currentName.c_str(), 0, 0, cname );
+		m_projectInput->value( m_currentName.c_str() );
+		const Fl_Menu_Item* item;
+		item = m_projectChoice->find_item( m_currentName.c_str() );
+		if ( item ) {
+			m_projectChoice->value( item );
+		}
 	}
 }
 void LoadSaveManager::name( string v )
@@ -162,11 +193,17 @@ void LoadSaveManager::name( string v )
 }
 void LoadSaveManager::load( string v )
 {
+	g_project->write( m_video_projects + "/" + m_currentFilename, m_currentName );
 	m_currentFilename = v;
 	cout << "LOAD: " << m_currentFilename << endl;
 	m_currentName = name_from_projectfile( m_video_projects + "/" + m_currentFilename );
 	g_project->read( m_video_projects + "/" + m_currentFilename );
-	m_currentName = name_from_projectfile( m_video_projects + "/" + m_currentFilename );
+	const Fl_Menu_Item* item;
+	m_projectInput->value( m_currentName.c_str() );
+	item = m_projectChoice->find_item( m_currentName.c_str() );
+	if ( item ) {
+		m_projectChoice->value( item );
+	}
 }
 
 
