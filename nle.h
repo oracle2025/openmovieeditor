@@ -176,10 +176,4 @@ public:
   int shown();
   ~AboutDialog();
 };
-#include <FL/Fl_Text_Display.H>
-
-class ErrorDialog {
-public:
-  ErrorDialog();
-};
 #endif

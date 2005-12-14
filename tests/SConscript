@@ -7,3 +7,10 @@ src_list.append( sl )
 
 env.Program( 'testCodecParameters', src_list )
 
+src_list = Split("""errorDialogTest.cxx
+	../ErrorDialog/ErrorDialog.cxx
+	../ErrorDialog/IErrorHandler.cxx
+	../ErrorDialog/FltkErrorHandler.cxx""")
+
+env.Program( 'testErrorDialog', src_list )
+

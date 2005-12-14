@@ -25,7 +25,10 @@ src_list = Split("""nle.cxx
 	Timeline.cxx
 	VideoTrack.cxx
 	nle_main.cxx
-  LoadSaveManager/LoadSaveManager.cxx
+	LoadSaveManager/LoadSaveManager.cxx
+	ErrorDialog/ErrorDialog.cxx
+	ErrorDialog/IErrorHandler.cxx
+	ErrorDialog/FltkErrorHandler.cxx
 	SwitchBoard.cxx
 	WavArtist.cxx
 	TimelineView.cxx

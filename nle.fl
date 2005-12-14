@@ -4,8 +4,7 @@ header_name {.h}
 code_name {.cxx}
 class NleUI {open
 } {
-  Function {NleUI()} {open
-  } {
+  Function {NleUI()} {} {
     Fl_Window mainWindow {
       label MovieEditor open
       private xywh {459 323 515 465} type Double resizable visible
@@ -185,7 +184,7 @@ fb->load_rel();}
               }
             }
             Fl_Input projectNameInput {
-              callback {nle::g_loadSaveManager->name( o->value() );} selected
+              callback {nle::g_loadSaveManager->name( o->value() );}
               xywh {0 25 280 25} box FLAT_BOX color 49 textfont 1
               code0 {\#include "LoadSaveManager/LoadSaveManager.H"}
             }
@@ -245,7 +244,8 @@ projectNameInput->value("Project 1");} {}
 decl {Flmm_Scalebar* g_scrollBar;} {public
 } 
 
-class EncodeDialog {} {
+class EncodeDialog {open
+} {
   Function {EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecParameters* codecParams )} {open
   } {
     Fl_Window encodeDialog {
@@ -313,7 +313,11 @@ m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
           xywh {0 0 100 20}
         }
         menuitem {} {
-          label 180x144
+          label 640x480
+          xywh {0 0 100 20}
+        }
+        menuitem {} {
+          label 320x240
           xywh {0 0 100 20}
         }
       }
@@ -557,34 +561,5 @@ class AboutDialog {} {
   }
   Function {~AboutDialog()} {} {
     code {delete aboutDialog;} {}
-  }
-} 
-
-class ErrorDialog {} {
-  Function {ErrorDialog()} {open
-  } {
-    Fl_Window {} {
-      label Error open
-      xywh {505 789 375 290} type Double visible
-    } {
-      Fl_Box {} {
-        image {/home/oracle/Projekte/OpenME/code/src/icons/dialog-warning.xpm} xywh {25 25 50 50}
-      }
-      Fl_Box {} {
-        label {Could  not load File}
-        xywh {115 35 250 30} labelfont 1 labelsize 16
-      }
-      Fl_Button {} {
-        label {Details <<}
-        xywh {5 95 135 25}
-      }
-      Fl_Return_Button {} {
-        label Close
-        xywh {5 260 365 25} hotspot
-      }
-      Fl_Text_Display {} {
-        xywh {5 125 365 130}
-      }
-    }
   }
 } 
