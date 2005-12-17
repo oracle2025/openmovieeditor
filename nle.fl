@@ -4,12 +4,16 @@ header_name {.h}
 code_name {.cxx}
 class NleUI {open
 } {
-  Function {NleUI()} {} {
+  Function {NleUI()} {open
+  } {
     Fl_Window mainWindow {
-      label MovieEditor open
+      label MovieEditor
+      callback {if (Fl::event()==FL_SHORTCUT && Fl::event_key()==FL_Escape) 
+    return; // ignore Escape
+mainWindow->hide();} open
       private xywh {459 323 515 465} type Double resizable visible
     } {
-      Fl_Menu_Bar {} {open
+      Fl_Menu_Bar {} {open selected
         xywh {0 0 345 25}
       } {
         submenu {} {
@@ -18,12 +22,13 @@ class NleUI {open
         } {
           menuitem {} {
             label {New Project}
+            callback {nle::g_loadSaveManager->newProject();}
             xywh {0 0 100 20}
           }
           menuitem {} {
             label {Save as...}
             callback {nle::g_loadSaveManager->saveAs();}
-            xywh {0 0 100 20} divider
+            xywh {0 0 100 20} shortcut 0x50073 divider
           }
           menuitem {} {
             label {Render...}
@@ -36,7 +41,8 @@ while (dlg.shown())
 
 if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 	ProgressDialog pDlg( "Rendering Project" );
-	nle::Renderer ren( dlg.export_filename->value(), 360, 288, 25, 48000, &cp );
+	render_frame_size* fs = (render_frame_size*)dlg.frameSize();
+	nle::Renderer ren( dlg.export_filename->value(), fs->x, fs->y, 25, 48000, &cp );
 	ren.go( &pDlg );
 	
 
@@ -52,7 +58,8 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
           }
           menuitem {} {
             label Quit
-            xywh {5 5 100 20}
+            callback {o->window()->hide();}
+            xywh {5 5 100 20} shortcut 0x40071
           }
         }
         submenu {} {
@@ -244,13 +251,12 @@ projectNameInput->value("Project 1");} {}
 decl {Flmm_Scalebar* g_scrollBar;} {public
 } 
 
-class EncodeDialog {open
-} {
+class EncodeDialog {} {
   Function {EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecParameters* codecParams )} {open
   } {
     Fl_Window encodeDialog {
       label Render open
-      private xywh {623 440 485 340} type Double
+      private xywh {372 571 485 340} type Double
       code0 {\#include "IVideoReader.H"}
       code1 {\#include "IAudioReader.H"} modal visible
     } {
@@ -300,24 +306,28 @@ m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
           xywh {0 0 100 20}
         }
       }
-      Fl_Choice {} {
+      Fl_Choice frame_size_choice {
         label Framesize open
         xywh {145 160 205 25} down_box BORDER_BOX
       } {
         menuitem {} {
           label 720x576
+          user_data {&fs720x576}
           xywh {0 0 100 20}
         }
         menuitem {} {
           label 360x288
+          user_data {&fs360x288}
           xywh {0 0 100 20}
         }
         menuitem {} {
           label 640x480
+          user_data {&fs640x480}
           xywh {0 0 100 20}
         }
         menuitem {} {
           label 320x240
+          user_data {&fs320x240}
           xywh {0 0 100 20}
         }
       }
@@ -395,6 +405,10 @@ encodeDialog->show();} {}
     code {delete encodeDialog;} {}
   }
   decl {nle::CodecParameters* m_codecParams;} {}
+  Function {frameSize()} {open return_type {void*}
+  } {
+    code {return frame_size_choice->mvalue()->user_data();} {}
+  }
 } 
 
 class ChangesDialog {} {
@@ -436,7 +450,7 @@ class CodecOptions {open
   } {
     Fl_Window codecOptions {
       label {Codec Options}
-      xywh {1139 375 345 305} type Double resizable modal visible
+      xywh {462 419 345 305} type Double resizable modal visible
     } {
       Fl_Box codec_label {
         label Codec
@@ -497,11 +511,12 @@ if ( m_audio ) {
         Fl_Button {} {
           label Cancel
           callback {o->window()->hide();}
-          xywh {20 275 140 25}
+          xywh {20 275 140 25} hide
         }
         Fl_Return_Button {} {
           label Ok
-          xywh {185 275 140 25} hotspot
+          callback {o->window()->hide();}
+          xywh {20 275 305 25} resizable hotspot
         }
       }
     }

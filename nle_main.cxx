@@ -32,6 +32,7 @@
 #include "VideoViewGL.H"
 #include "LoadSaveManager/LoadSaveManager.H"
 #include "Project.H"
+#include "ErrorDialog/FltkErrorHandler.H"
 
 namespace nle 
 {
@@ -42,6 +43,7 @@ namespace nle
 int main( int argc, char** argv )
 {
 	srand( time( 0 ) );
+	nle::FltkErrorHandler e;
 	nle::Project project;
 	nle::Timeline timeline;
 	nle::Prefs preferences;
@@ -64,10 +66,8 @@ int main( int argc, char** argv )
 	nle::g_video_codec_info = lqt_query_registry( 0, 1, 1, 0 );
 
 	nui.show( argc, argv );
-//	nle::Project::read_project();
 	lsm.startup();
 	int r = Fl::run();
 	lsm.shutdown();
-//	nle::Project::write_project();
 	return r;
 }

@@ -31,11 +31,17 @@ public:
   NleUI();
 private:
   Fl_Double_Window *mainWindow;
+  inline void cb_mainWindow_i(Fl_Double_Window*, void*);
+  static void cb_mainWindow(Fl_Double_Window*, void*);
   static Fl_Menu_Item menu_[];
+  inline void cb_New_i(Fl_Menu_*, void*);
+  static void cb_New(Fl_Menu_*, void*);
   inline void cb_Save_i(Fl_Menu_*, void*);
   static void cb_Save(Fl_Menu_*, void*);
   inline void cb_Render_i(Fl_Menu_*, void*);
   static void cb_Render(Fl_Menu_*, void*);
+  inline void cb_Quit_i(Fl_Menu_*, void*);
+  static void cb_Quit(Fl_Menu_*, void*);
   inline void cb_Fullscreen_i(Fl_Menu_*, void*);
   static void cb_Fullscreen(Fl_Menu_*, void*);
   inline void cb_About_i(Fl_Menu_*, void*);
@@ -98,7 +104,10 @@ private:
   static void cb_video_codec_menu(Fl_Choice*, void*);
   static Fl_Menu_Item menu_Samplerate[];
   static Fl_Menu_Item menu_Framerate[];
-  static Fl_Menu_Item menu_Framesize[];
+public:
+  Fl_Choice *frame_size_choice;
+  static Fl_Menu_Item menu_frame_size_choice[];
+private:
   Fl_Button *audio_options;
   inline void cb_audio_options_i(Fl_Button*, void*);
   static void cb_audio_options(Fl_Button*, void*);
@@ -121,6 +130,8 @@ public:
   ~EncodeDialog();
 private:
   nle::CodecParameters* m_codecParams;
+public:
+  void* frameSize();
 };
 
 class ChangesDialog {
@@ -158,6 +169,8 @@ private:
   static void cb_parameter_stringlist_input(Fl_Choice*, void*);
   inline void cb_Cancel1_i(Fl_Button*, void*);
   static void cb_Cancel1(Fl_Button*, void*);
+  inline void cb_Ok_i(Fl_Return_Button*, void*);
+  static void cb_Ok(Fl_Return_Button*, void*);
 public:
   bool m_audio;
   nle::CodecParameters* m_codecParams;

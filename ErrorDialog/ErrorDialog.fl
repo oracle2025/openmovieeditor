@@ -14,8 +14,8 @@ class ErrorDialog {open
         image {/home/oracle/Projekte/OpenME/code/src/icons/dialog-warning.xpm} xywh {30 40 50 50}
       }
       Fl_Box errorBox {
-        label {Could  not load File}
-        xywh {115 35 250 55} labelfont 1 labelsize 16
+        label {Could  not load File} selected
+        xywh {115 30 250 60} labelfont 1 labelsize 16 align 20
       }
       Fl_Button detailsButton {
         label {Details <<}
@@ -78,7 +78,6 @@ if ( show_details ) {
 	errorDialog->size( errorDialog->w(), 290 );
 	detailsButton->label( "Details <<" );
 }
-show_details = !show_details;} {selected
-    }
+show_details = !show_details;} {}
   }
 } 

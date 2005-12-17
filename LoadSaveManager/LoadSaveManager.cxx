@@ -27,9 +27,12 @@
 #include "LoadSaveManager.H"
 #include "Prefs.H"
 #include "Timeline.H"
+#include "VideoTrack.H"
+#include "AudioTrack.H"
 #include "globals.H"
 #include "Project.H"
 #include "SaveAsDialog.H"
+#include "TimelineView.H"
 
 namespace nle
 {
@@ -148,6 +151,18 @@ void LoadSaveManager::newProject()
 	m_currentFilename = "new_project.vproj";
 	m_currentName = "New Project";
 	g_timeline->clear();
+	{
+		VideoTrack *vt;
+		AudioTrack *at;
+		vt = new VideoTrack( 0 );
+		g_timeline->addTrack( vt );
+		vt = new VideoTrack( 1 );
+		g_timeline->addTrack( vt );
+		at = new AudioTrack( 2 );
+		g_timeline->addTrack( at );
+		at = new AudioTrack( 3 );
+		g_timeline->addTrack( at );
+	}
 	char* cname = strdup( m_currentFilename.c_str() );
 	m_projectChoice->add( m_currentName.c_str(), 0, 0, cname );
 	m_projectInput->value( m_currentName.c_str() );
@@ -156,6 +171,7 @@ void LoadSaveManager::newProject()
 	if ( item ) {
 		m_projectChoice->value( item );
 	}
+	g_timelineView->redraw();
 }
 void LoadSaveManager::saveAs()
 {

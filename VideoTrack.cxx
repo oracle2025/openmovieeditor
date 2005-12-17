@@ -17,9 +17,12 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <FL/filename.H>
+
 #include "VideoTrack.H"
 #include "VideoClip.H"
 #include "VideoFileQT.H"
+#include "ErrorDialog/IErrorHandler.H"
 
 namespace nle
 {
@@ -42,7 +45,7 @@ void VideoTrack::addFile( int64_t position, string filename )
 	VideoFileQT *vf = new VideoFileQT( filename );
 	
 	if ( !vf->ok() ) {
-		cerr << "VideoFile not OK" << endl;
+		SHOW_ERROR( string( "Video file failed to load:\n" ) + fl_filename_name( filename.c_str() ) );
 		delete vf;
 		return;
 	}

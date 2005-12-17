@@ -28,10 +28,14 @@ namespace nle
 class FltkErrorHandler : public IErrorHandler
 {
 	public:
-		FltkErrorHandler() {}
-		~FltkErrorHandler() {}
+		FltkErrorHandler();
+		~FltkErrorHandler();
+		void errorDialog();
 	protected:
 		virtual void showError( string msg );
+	private:
+		string m_msg;
+		string m_detailsBuffer;
 };
 	
 } /* namespace nle */

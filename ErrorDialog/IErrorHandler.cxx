@@ -30,6 +30,10 @@ void IErrorHandler::detail( string msg )
 void IErrorHandler::error( string msg )
 {
 	showError( msg );
+	clear();
+}
+void IErrorHandler::clear()
+{
 	m_details = "";
 }
 

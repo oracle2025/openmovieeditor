@@ -534,9 +534,10 @@ ErrorDialog::ErrorDialog() {
     { Fl_Box* o = new Fl_Box(30, 40, 50, 50);
       o->image(image_dialog);
     }
-    { Fl_Box* o = errorBox = new Fl_Box(115, 35, 250, 55, "Could  not load File");
+    { Fl_Box* o = errorBox = new Fl_Box(115, 30, 250, 60, "Could  not load File");
       o->labelfont(1);
       o->labelsize(16);
+      o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
     }
     { Fl_Button* o = detailsButton = new Fl_Button(235, 95, 135, 25, "Details <<");
       o->callback((Fl_Callback*)cb_detailsButton);

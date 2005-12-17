@@ -31,6 +31,11 @@
 #include "ProgressDialog/IProgressListener.H"
 #include "Codecs.H"
 
+render_frame_size fs720x576 = { 720, 576 };
+render_frame_size fs360x288 = { 360, 288 };
+render_frame_size fs640x480 = { 640, 480 };
+render_frame_size fs320x240 = { 320, 240 };
+
 namespace nle
 {
 
@@ -43,6 +48,7 @@ Renderer::Renderer( string filename, int w, int h, int framerate, int samplerate
 	char buffer[1024];
 	m_w = w;
 	m_h = h;
+	cout << "RENDER width: " << w << " height: " << h << endl;
 	m_framerate = framerate;
 	m_samplerate = samplerate;
 	m_filename = filename;

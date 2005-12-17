@@ -2,6 +2,22 @@
 
 #include "nle.h"
 
+inline void NleUI::cb_mainWindow_i(Fl_Double_Window*, void*) {
+  if (Fl::event()==FL_SHORTCUT && Fl::event_key()==FL_Escape) 
+    return; // ignore Escape
+mainWindow->hide();
+}
+void NleUI::cb_mainWindow(Fl_Double_Window* o, void* v) {
+  ((NleUI*)(o->user_data()))->cb_mainWindow_i(o,v);
+}
+
+inline void NleUI::cb_New_i(Fl_Menu_*, void*) {
+  nle::g_loadSaveManager->newProject();
+}
+void NleUI::cb_New(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_New_i(o,v);
+}
+
 inline void NleUI::cb_Save_i(Fl_Menu_*, void*) {
   nle::g_loadSaveManager->saveAs();
 }
@@ -19,7 +35,8 @@ while (dlg.shown())
 
 if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 	ProgressDialog pDlg( "Rendering Project" );
-	nle::Renderer ren( dlg.export_filename->value(), 360, 288, 25, 48000, &cp );
+	render_frame_size* fs = (render_frame_size*)dlg.frameSize();
+	nle::Renderer ren( dlg.export_filename->value(), fs->x, fs->y, 25, 48000, &cp );
 	ren.go( &pDlg );
 	
 
@@ -31,6 +48,13 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 }
 void NleUI::cb_Render(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Render_i(o,v);
+}
+
+inline void NleUI::cb_Quit_i(Fl_Menu_* o, void*) {
+  o->window()->hide();
+}
+void NleUI::cb_Quit(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_Quit_i(o,v);
 }
 
 inline void NleUI::cb_Fullscreen_i(Fl_Menu_*, void*) {
@@ -67,10 +91,10 @@ void NleUI::cb_About(Fl_Menu_* o, void* v) {
 
 Fl_Menu_Item NleUI::menu_[] = {
  {"&File", 0,  0, 0, 64, 0, 0, 14, 56},
- {"New Project", 0,  0, 0, 0, 0, 0, 14, 56},
- {"Save as...", 0,  (Fl_Callback*)NleUI::cb_Save, 0, 128, 0, 0, 14, 56},
+ {"New Project", 0,  (Fl_Callback*)NleUI::cb_New, 0, 0, 0, 0, 14, 56},
+ {"Save as...", 0x50073,  (Fl_Callback*)NleUI::cb_Save, 0, 128, 0, 0, 14, 56},
  {"Render...", 0,  (Fl_Callback*)NleUI::cb_Render, 0, 128, 0, 0, 14, 56},
- {"Quit", 0,  0, 0, 0, 0, 0, 14, 56},
+ {"Quit", 0x40071,  (Fl_Callback*)NleUI::cb_Quit, 0, 0, 0, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0},
  {"&View", 0,  0, 0, 64, 0, 0, 14, 56},
  {"Fullscreen", 0xffc8,  (Fl_Callback*)NleUI::cb_Fullscreen, 0, 0, 0, 0, 14, 56},
@@ -2554,7 +2578,7 @@ NleUI::NleUI() {
   Fl_Double_Window* w;
   { Fl_Double_Window* o = mainWindow = new Fl_Double_Window(515, 465, "MovieEditor");
     w = o;
-    o->user_data((void*)(this));
+    o->callback((Fl_Callback*)cb_mainWindow, (void*)(this));
     { Fl_Menu_Bar* o = new Fl_Menu_Bar(0, 0, 345, 25);
       o->menu(menu_);
     }
@@ -2770,11 +2794,11 @@ Fl_Menu_Item EncodeDialog::menu_Framerate[] = {
  {0,0,0,0,0,0,0,0,0}
 };
 
-Fl_Menu_Item EncodeDialog::menu_Framesize[] = {
- {"720x576", 0,  0, 0, 0, 0, 0, 14, 56},
- {"360x288", 0,  0, 0, 0, 0, 0, 14, 56},
- {"640x480", 0,  0, 0, 0, 0, 0, 14, 56},
- {"320x240", 0,  0, 0, 0, 0, 0, 14, 56},
+Fl_Menu_Item EncodeDialog::menu_frame_size_choice[] = {
+ {"720x576", 0,  0, (void*)(&fs720x576), 0, 0, 0, 14, 56},
+ {"360x288", 0,  0, (void*)(&fs360x288), 0, 0, 0, 14, 56},
+ {"640x480", 0,  0, (void*)(&fs640x480), 0, 0, 0, 14, 56},
+ {"320x240", 0,  0, (void*)(&fs320x240), 0, 0, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0}
 };
 
@@ -2845,9 +2869,9 @@ EncodeDialog::EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecPa
       o->down_box(FL_BORDER_BOX);
       o->menu(menu_Framerate);
     }
-    { Fl_Choice* o = new Fl_Choice(145, 160, 205, 25, "Framesize");
+    { Fl_Choice* o = frame_size_choice = new Fl_Choice(145, 160, 205, 25, "Framesize");
       o->down_box(FL_BORDER_BOX);
-      o->menu(menu_Framesize);
+      o->menu(menu_frame_size_choice);
     }
     { Fl_Box* o = new Fl_Box(0, 0, 485, 35, "Export");
       o->labelfont(1);
@@ -2893,6 +2917,10 @@ int EncodeDialog::shown() {
 
 EncodeDialog::~EncodeDialog() {
   delete encodeDialog;
+}
+
+void* EncodeDialog::frameSize() {
+  return frame_size_choice->mvalue()->user_data();
 }
 
 ChangesDialog::ChangesDialog() {
@@ -2965,6 +2993,13 @@ void CodecOptions::cb_Cancel1(Fl_Button* o, void* v) {
   ((CodecOptions*)(o->parent()->parent()->user_data()))->cb_Cancel1_i(o,v);
 }
 
+inline void CodecOptions::cb_Ok_i(Fl_Return_Button* o, void*) {
+  o->window()->hide();
+}
+void CodecOptions::cb_Ok(Fl_Return_Button* o, void* v) {
+  ((CodecOptions*)(o->parent()->parent()->user_data()))->cb_Ok_i(o,v);
+}
+
 CodecOptions::CodecOptions() {
   Fl_Double_Window* w;
   { Fl_Double_Window* o = codecOptions = new Fl_Double_Window(345, 305, "Codec Options");
@@ -3014,8 +3049,11 @@ CodecOptions::CodecOptions() {
     { Fl_Group* o = new Fl_Group(0, 265, 345, 40);
       { Fl_Button* o = new Fl_Button(20, 275, 140, 25, "Cancel");
         o->callback((Fl_Callback*)cb_Cancel1);
+        o->hide();
       }
-      { Fl_Return_Button* o = new Fl_Return_Button(185, 275, 140, 25, "Ok");
+      { Fl_Return_Button* o = new Fl_Return_Button(20, 275, 305, 25, "Ok");
+        o->callback((Fl_Callback*)cb_Ok);
+        Fl_Group::current()->resizable(o);
         w->hotspot(o);
       }
       o->end();

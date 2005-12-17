@@ -18,16 +18,40 @@
  */
 
 #include "ErrorDialog.H"
+#include "globals.H"
 #include "FltkErrorHandler.H"
+
+void error_callback( void* data )
+{
+	nle::FltkErrorHandler* h = (nle::FltkErrorHandler*)data;
+	h->errorDialog();
+}
 
 namespace nle
 {
 
+IErrorHandler* g_errorHandler;
+
+FltkErrorHandler::FltkErrorHandler()
+{
+	g_errorHandler = this;
+}
+FltkErrorHandler::~FltkErrorHandler()
+{
+	g_errorHandler = 0;
+}
 void FltkErrorHandler::showError( string msg )
 {
+	m_msg = msg;
+	m_detailsBuffer = m_details;
+	Fl::add_idle( error_callback, this );
+}
+void FltkErrorHandler::errorDialog()
+{
+	Fl::remove_idle( error_callback, this );
 	ErrorDialog dlg;
-	dlg.error( msg.c_str() );
-	dlg.details( m_details.c_str() );
+	dlg.error( m_msg.c_str() );
+	dlg.details( m_detailsBuffer.c_str() );
 	dlg.show();
 	while ( dlg.shown() ) {
 		Fl::wait();

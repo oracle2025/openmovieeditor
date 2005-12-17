@@ -36,6 +36,7 @@
 #include "FilmStrip.H"
 #include "WavArtist.H"
 #include "helper.H"
+#include "ErrorDialog/IErrorHandler.H"
 
 #include "audio.xpm"
 #include "video.xpm"

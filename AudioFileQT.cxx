@@ -19,9 +19,8 @@
 
 #include <cstring>
 
-#include "strlcpy.h"
-
 #include "AudioFileQT.H"
+#include "ErrorDialog/IErrorHandler.H"
 
 #define FRAMES_PER_BUFFER 256
 
@@ -36,23 +35,27 @@ AudioFileQT::AudioFileQT( string filename )
 	m_filename = filename;
 	char *lqt_sucks_filename = strdup( filename.c_str() );
 	if ( !quicktime_check_sig( lqt_sucks_filename ) ) {
+		ERROR_DETAIL( "This is not a Quicktime audio file" );
 		return;
 	}
 	m_qt = quicktime_open( lqt_sucks_filename, true, false );
 	free( lqt_sucks_filename );
 	if ( quicktime_audio_tracks( m_qt ) == 0 ) {
+		ERROR_DETAIL( "This Quicktime file does not have a audio track" );
 		return;
 	}
 	if ( !quicktime_supported_audio( m_qt, 0 ) ) {
+		ERROR_DETAIL( "This Audio Codec is not supported" );
 		return;
 	}
 	m_length = quicktime_audio_length( m_qt, 0 );
 	if ( quicktime_sample_rate( m_qt, 0 ) != 48000 ) {
-		cerr << "Wrong Samplerate, only 48000 allowed" << endl;
+		ERROR_DETAIL( "Audio samplerates other than 48000 are not supported" );
 		return;
 	}
 	if ( quicktime_track_channels( m_qt, 0 ) != 2 ) {
-		cerr << "Soundfile is not a stereo" << endl;
+		ERROR_DETAIL( "Only Stereo audio files are supported" );
+		return;
 	}
 	m_ok = true;
 }

@@ -22,6 +22,10 @@
 
 #include "global_includes.H"
 
+#define ERROR_DETAIL( s ) g_errorHandler->detail( s )
+#define SHOW_ERROR( s ) g_errorHandler->error( s )
+#define CLEAR_ERRORS() g_errorHandler->clear()
+
 namespace nle
 {
 
@@ -38,10 +42,13 @@ class IErrorHandler
 		virtual ~IErrorHandler() {}
 		void detail( string msg );
 		void error( string msg );
+		void clear();
 	protected:
 		virtual void showError( string msg ) = 0;
 		string m_details;
 };
+
+extern IErrorHandler* g_errorHandler;
 
 } /* namespace nle */
 

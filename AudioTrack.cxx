@@ -17,10 +17,13 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <FL/filename.H>
+
 #include "AudioTrack.H"
 #include "AudioFileQT.H"
 #include "AudioFileSnd.H"
 #include "AudioClip.H"
+#include "ErrorDialog/IErrorHandler.H"
 
 namespace nle
 {
@@ -41,7 +44,7 @@ void AudioTrack::addFile( int64_t position, string filename )
 	}
 	if ( !af->ok() ) {
 		delete af;
-		cerr << "Error: AudioTrack::add_audio" << std::endl;
+		SHOW_ERROR( string( "Audio file failed to load:\n" ) + fl_filename_name( filename.c_str() ) );
 		return;
 	}
 	Clip *clp = new AudioClip( this, position, af );

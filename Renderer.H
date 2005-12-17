@@ -23,6 +23,17 @@
 #include <lqt.h>
 #include "global_includes.H"
 
+typedef struct
+{
+	int x;
+	int y;
+} render_frame_size;
+
+extern render_frame_size fs720x576;
+extern render_frame_size fs360x288;
+extern render_frame_size fs640x480;
+extern render_frame_size fs320x240;
+
 namespace nle
 {
 

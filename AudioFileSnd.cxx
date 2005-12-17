@@ -20,6 +20,7 @@
 #include "strlcpy.h"
 
 #include "AudioFileSnd.H"
+#include "ErrorDialog/IErrorHandler.H"
 
 namespace nle
 {
@@ -30,19 +31,19 @@ AudioFileSnd::AudioFileSnd( string filename )
 	SF_INFO sfinfo;
 	m_sndfile = sf_open( filename.c_str(), SFM_READ, &sfinfo );	
 	if ( SF_ERR_NO_ERROR != sf_error( m_sndfile ) ) {
-		cerr << "Could not open Soundfile" << endl;
+		ERROR_DETAIL( "This is not a supported audio file format" );
 		return;
 	}
 	if ( sfinfo.channels != 2 ) {
-		cerr << "Soundfile is not a stereo" << endl;
+		ERROR_DETAIL( "Only Stereo audio files are supported" );
 		return;
 	}
 	if ( sfinfo.frames==0 ) {
-		cerr << "Soundfile has length zero" << endl;
+		ERROR_DETAIL( "This is an empty audio file" );
 		return;
 	}
 	if ( sfinfo.samplerate != 48000 ) {
-		cerr << "Wrong Samplerate, only 48000 allowed" << endl;
+		ERROR_DETAIL( "Audio samplerates other than 48000 are not supported" );
 		return;
 	}
 	m_length = sfinfo.frames;

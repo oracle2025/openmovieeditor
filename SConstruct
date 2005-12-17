@@ -18,6 +18,7 @@ env.ParseConfig( 'pkg-config libquicktime --cflags --libs' )
 env.ParseConfig( 'fltk-config --cxxflags --ldflags --use-gl' )
 env.ParseConfig( 'Magick++-config --cppflags --ldflags --libs' )
 env.ParseConfig( 'pkg-config jack --cflags --libs' )
+env.ParseConfig( 'pkg-config gmerlin_avdec --cflags --libs' )
 Export( 'env' )
 
 src_list = Split("""nle.cxx
