@@ -1,0 +1,5 @@
+
+install ffmpeg_acl
+modify pkg_config file to fit version
+export LD_LIBRARY_PATH and PKG_CONFIG_PATH
+install libquicktime
