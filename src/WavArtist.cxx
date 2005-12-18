@@ -22,7 +22,6 @@
 #include <FL/fl_draw.H>
 
 #include <sl.h>
-#include "strlcpy.h"
 
 #include "WavArtist.H"
 #include "IAudioFile.H"

@@ -24,6 +24,7 @@
 
 #include "Prefs.H"
 #include "globals.H"
+#include "config.h"
 
 namespace nle
 {
@@ -72,7 +73,7 @@ Prefs::~Prefs()
 	
 	TiXmlElement *item = new TiXmlElement( "version" );
 	doc.LinkEndChild( item );
-	TiXmlText* text = new TiXmlText( OME_VERSION );
+	TiXmlText* text = new TiXmlText( VERSION );
 	item->LinkEndChild( text );
 	
 	item = new TiXmlElement( "browserFolder" );

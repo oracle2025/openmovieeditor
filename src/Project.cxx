@@ -26,6 +26,7 @@
 
 #include <tinyxml.h>
 
+#include "config.h"
 #include "Project.H"
 #include "globals.H"
 #include "timeline/Track.H"
@@ -68,7 +69,7 @@ int Project::write( string filename, string name )
 
 	TiXmlElement* item = new TiXmlElement( "version" );
 	project->LinkEndChild( item );
-	TiXmlText* text = new TiXmlText( OME_VERSION );
+	TiXmlText* text = new TiXmlText( VERSION );
 	item->LinkEndChild( text );
 
 	item = new TiXmlElement( "name" );

@@ -4,8 +4,7 @@ header_name {.h}
 code_name {.cxx}
 class NleUI {open
 } {
-  Function {NleUI()} {open
-  } {
+  Function {NleUI()} {} {
     Fl_Window mainWindow {
       label MovieEditor
       callback {if (Fl::event()==FL_SHORTCUT && Fl::event_key()==FL_Escape) 
@@ -13,7 +12,7 @@ class NleUI {open
 mainWindow->hide();} open
       private xywh {459 323 515 465} type Double resizable visible
     } {
-      Fl_Menu_Bar {} {open selected
+      Fl_Menu_Bar {} {open
         xywh {0 0 345 25}
       } {
         submenu {} {
@@ -531,8 +530,10 @@ if ( m_audio ) {
   }
 } 
 
-class AboutDialog {} {
-  Function {AboutDialog()} {} {
+class AboutDialog {open
+} {
+  Function {AboutDialog()} {open
+  } {
     Fl_Window aboutDialog {
       label {About Dialog} open
       xywh {1019 328 340 370} type Double modal visible
@@ -548,9 +549,10 @@ class AboutDialog {} {
         label {(C)opyright 2005 Richard Spindler}
         xywh {0 210 340 40} labelsize 12
       }
-      Fl_Box {} {
+      Fl_Box version_box {
         label {0.0.0}
         xywh {0 185 340 25} labelfont 1
+        code0 {\#include "config.h"}
       }
       Fl_Box {} {
         label {Open Movie Editor is FREE Software (GPL)}
@@ -565,6 +567,8 @@ class AboutDialog {} {
         callback {o->window()->hide();}
         xywh {10 335 320 25} hotspot
       }
+    }
+    code {version_box->label( VERSION );} {selected
     }
   }
   Function {show()} {} {
