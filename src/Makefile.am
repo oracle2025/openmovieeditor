@@ -1,0 +1,95 @@
+# Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+SUBDIRS = portaudio tinyxml timeline ProgressDialog sl LoadSaveManager ErrorDialog
+EXTRA_DIST = nle.fl
+AM_CPPFLAGS = @CPPFLAGS@ -I$(top_srcdir)/icons -I$(top_srcdir)/src -I$(top_srcdir)/src/tinyxml -I$(top_srcdir)/src/sl
+
+bin_PROGRAMS = openmovieeditor
+openmovieeditor_LDADD = portaudio/libportaudio.a\
+	tinyxml/libtinyxml.a timeline/libtimeline.a\
+	ProgressDialog/libProgressDialog.a\
+	sl/libsl.a\
+	LoadSaveManager/libLoadSaveManager.a\
+	ErrorDialog/libErrorDialog.a
+
+openmovieeditor_SOURCES = nle.cxx\
+	helper.cxx\
+	Timeline.cxx\
+	VideoTrack.cxx\
+	nle_main.cxx\
+	SwitchBoard.cxx\
+	WavArtist.cxx\
+	TimelineView.cxx\
+	VideoClip.cxx\
+	Codecs.cxx\
+	VideoViewGL.cxx\
+	FilmStrip.cxx\
+	Ruler.cxx\
+	Rect.cxx\
+	Prefs.cxx\
+	Project.cxx\
+	MoveDragHandler.cxx\
+	TrimDragHandler.cxx\
+	FileBrowser.cxx\
+	VideoFileQT.cxx\
+	TrackBase.cxx\
+	AudioTrack.cxx\
+	AudioClip.cxx\
+	AudioClipBase.cxx\
+	AudioFileSnd.cxx\
+	AudioFileQT.cxx\
+	PlaybackCore.cxx\
+	Renderer.cxx\
+	Flmm_Scalebar.cxx\
+	SaveAsDialog.cxx\
+	strlcpy.c\
+	strlcpy.h\
+	AudioClipBase.H\
+	FilmStrip.H\
+	IVideoFile.H\
+	RenderDialog.H\
+	VideoClip.H\
+	AudioClip.H\
+	Flmm_Scalebar.H\
+	IVideoReader.H\
+	Renderer.H\
+	VideoFileQT.H\
+	AudioFileQT.H\
+	frame_struct.h\
+	IVideoWriter.H\
+	Ruler.H\
+	VideoTrack.H\
+	AudioFileSnd.H\
+	global_includes.H\
+	MoveDragHandler.H\
+	SaveAsDialog.H\
+	VideoViewGL.H\
+	AudioTrack.H\
+	globals.H\
+	nle.h\
+	SwitchBoard.H\
+	WavArtist.H\
+	Codecs.H\
+	helper.H\
+	PlaybackCore.H\
+	Timeline.H\
+	DragHandler.H\
+	IAudioFile.H\
+	Prefs.H\
+	TimelineView.H\
+	events.H\
+	IAudioReader.H\
+	Project.H\
+	TrackBase.H\
+	FileBrowser.H\
+	IProject.H\
+	Rect.H\
+	TrimDragHandler.H
