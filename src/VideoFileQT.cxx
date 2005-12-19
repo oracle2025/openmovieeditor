@@ -50,10 +50,10 @@ VideoFileQT::VideoFileQT( string filename )
 		return;
 	}
 	// check frame rate
-	if ( quicktime_frame_rate( m_qt, 0 ) != 25.0 ) { // This is a double (DANGEROUS)
+	/*if ( quicktime_frame_rate( m_qt, 0 ) != 25.0 ) { // This is a double (DANGEROUS)
 		ERROR_DETAIL( "Video framerates other than 25 are not supported" );
 		return;
-	}
+	}*/
 	lqt_set_cmodel( m_qt, 0, BC_RGB888);
 	m_width = quicktime_video_width( m_qt, 0 );
 	m_height = quicktime_video_height( m_qt, 0 );

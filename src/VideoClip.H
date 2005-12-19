@@ -40,6 +40,7 @@ class VideoClip : public AudioClipBase
 		frame_struct* getFrame( int64_t position );
 		inline FilmStrip* getFilmStrip() { return m_filmStrip; }
 		string filename();
+		inline IVideoFile* file() { return m_videoFile; }
 	protected:
 		int64_t audioTrimA();
 		int64_t audioTrimB();

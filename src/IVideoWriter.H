@@ -29,7 +29,7 @@ class IVideoWriter
 {
 	public:
 		virtual ~IVideoWriter() {}
-		virtual void pushFrame( frame_struct* frame ) = 0;
+		virtual void pushFrame( frame_struct* frame, bool move_cursor = true ) = 0;
 };
 
 } /* namespace nle */

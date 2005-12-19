@@ -24,6 +24,16 @@
 
 #include "TrimDragHandler.H"
 #include "TimelineView.H"
+#include "VideoViewGL.H"
+#include "VideoClip.H"
+#include "globals.H"
+#include "IVideoFile.H"
+
+void preview_callback( void* data )
+{
+	nle::TrimDragHandler* tdh = (nle::TrimDragHandler*)data;
+	tdh->preview();
+}
 
 namespace nle
 {
@@ -41,12 +51,32 @@ void TrimDragHandler::OnDrag( int x, int y )
 	fl_overlay_rect( x,
 			m_tlv->y() + TRACK_SPACING + (TRACK_SPACING + TRACK_HEIGHT)*m_track,
 			1, TRACK_HEIGHT );
+	m_x = x;
+	Fl::add_check( preview_callback, this );
 }
 void TrimDragHandler::OnDrop( int x, int y )
 {
 	m_tlv->window()->make_current();
 	fl_overlay_clear();
 	m_tlv->trim_clip( m_clip, x, m_trimRight );
+}
+void TrimDragHandler::preview()
+{
+	Fl::remove_check( preview_callback, this );
+	VideoClip* cl = ((VideoClip*)m_clip);
+	int64_t pos = g_timelineView->get_real_position( m_x ) - cl->position() - cl->trimA();
+	if ( pos < 0 || pos > cl->file()->length() ) {
+		if ( m_trimRight ) {
+			cl->file()->seek( cl->file()->length() );
+		} else {
+			cl->file()->seek( 0 );
+		}
+	} else {
+		cl->file()->seek( pos );
+	}
+	frame_struct* fs = cl->file()->read();
+	
+	g_videoView->pushFrame( fs, false );
 }
 	
 } /* namespace nle */

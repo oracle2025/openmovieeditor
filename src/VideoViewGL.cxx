@@ -52,11 +52,11 @@ static GLuint video_canvas[10];
 #define TEXTURE_WIDTH 1024.0 
 #define TEXTURE_HEIGHT 1024.0
 
-void VideoViewGL::pushFrame( frame_struct* fs )
+void VideoViewGL::pushFrame( frame_struct* fs, bool move_cursor )
 {
-	//make_overlay_current();
-	//fl_draw_box( FL_DIAMOND_UP_BOX, 0, 0, 25, 25, FL_BACKGROUND_COLOR );
-	SwitchBoard::i()->move_cursor();
+	if ( move_cursor ) {
+		SwitchBoard::i()->move_cursor();
+	}
 	make_current();
 	if ( !valid() ) {
 		glLoadIdentity(); glViewport( 0, 0, w(), h() ); // glViewport( _x, _y, _w, _h );

@@ -34,7 +34,9 @@ class TrimDragHandler : public DragHandler
 				bool trimRight );
 		void OnDrag( int x, int y );
 		void OnDrop( int x, int y );
+		void preview();
 	private:
+		int m_x;
 		int m_track;
 		int m_left;
 		int m_right;
