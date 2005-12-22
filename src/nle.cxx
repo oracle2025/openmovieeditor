@@ -90,7 +90,7 @@ void NleUI::cb_About(Fl_Menu_* o, void* v) {
 }
 
 Fl_Menu_Item NleUI::menu_[] = {
- {"&File", 0,  0, 0, 64, 0, 0, 14, 56},
+ {"&Project", 0,  0, 0, 64, 0, 0, 14, 56},
  {"New Project", 0,  (Fl_Callback*)NleUI::cb_New, 0, 0, 0, 0, 14, 56},
  {"Save as...", 0x50073,  (Fl_Callback*)NleUI::cb_Save, 0, 128, 0, 0, 14, 56},
  {"Render...", 0,  (Fl_Callback*)NleUI::cb_Render, 0, 128, 0, 0, 14, 56},
@@ -7879,7 +7879,7 @@ AboutDialog::AboutDialog() {
     { Fl_Box* o = new Fl_Box(0, 210, 340, 40, "(C)opyright 2005 Richard Spindler");
       o->labelsize(12);
     }
-    { Fl_Box* o = new Fl_Box(0, 185, 340, 25, "0.0.0");
+    { Fl_Box* o = version_box = new Fl_Box(0, 185, 340, 25, "0.0.0");
       o->labelfont(1);
     }
     new Fl_Box(0, 250, 340, 25, "Open Movie Editor is FREE Software (GPL)");
@@ -7891,6 +7891,7 @@ AboutDialog::AboutDialog() {
     o->set_modal();
     o->end();
   }
+  version_box->label( VERSION );
 }
 
 void AboutDialog::show() {

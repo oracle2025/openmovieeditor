@@ -176,11 +176,13 @@ public:
   nle::CodecParameters* m_codecParams;
   ~CodecOptions();
 };
+#include "config.h"
 
 class AboutDialog {
 public:
   AboutDialog();
   Fl_Double_Window *aboutDialog;
+  Fl_Box *version_box;
 private:
   inline void cb_Close_i(Fl_Return_Button*, void*);
   static void cb_Close(Fl_Return_Button*, void*);

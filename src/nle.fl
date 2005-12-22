@@ -16,7 +16,7 @@ mainWindow->hide();} open
         xywh {0 0 345 25}
       } {
         submenu {} {
-          label {&File} open
+          label {&Project} open
           xywh {0 0 100 20}
         } {
           menuitem {} {
@@ -226,7 +226,7 @@ fb->load_rel();}
       }
       Fl_Choice projectChoice {
         callback {char* name = (char*)o->mvalue()->user_data();
-nle::g_loadSaveManager->load( name );} open
+nle::g_loadSaveManager->load( name );} open selected
         xywh {345 0 170 25} down_box BORDER_BOX
         code0 {\#include "LoadSaveManager/LoadSaveManager.H"}
       } {}
@@ -568,8 +568,7 @@ class AboutDialog {open
         xywh {10 335 320 25} hotspot
       }
     }
-    code {version_box->label( VERSION );} {selected
-    }
+    code {version_box->label( VERSION );} {}
   }
   Function {show()} {} {
     code {aboutDialog->show();} {}
