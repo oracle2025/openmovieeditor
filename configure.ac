@@ -51,25 +51,24 @@ AC_CHECK_FUNCS([gettimeofday memset select strchr strdup strstr])
 
 
 PKG_CHECK_MODULES(SNDFILE, sndfile >= 1.0.0,,
-  AC_MSG_ERROR([*** libsndfile not found - this program requires libsndfile http://www.mega-nerd.com/libsndfile/ ***]))
+  AC_MSG_ERROR([*** libsndfile 1.0.0 not found - this program requires libsndfile >= 1.0.0 http://www.mega-nerd.com/libsndfile/ ***]))
 CPPFLAGS="$CPPFLAGS $SNDFILE_CFLAGS"
 LDFLAGS="$LDFLAGS $SNDFILE_LIBS"
 
 PKG_CHECK_MODULES(GAVL, gavl >= 0.2.2,,
-  AC_MSG_ERROR([*** gavl not found - this program requires the gmerlin audio
-  video library http://gmerlin.sourceforge.net/ ***]))
+  AC_MSG_ERROR([*** gavl 0.2.2 not found - this program requires the gmerlin audio
+  video library >= 0.2.2 http://gmerlin.sourceforge.net/ ***]))
 CPPFLAGS="$CPPFLAGS $GAVL_CFLAGS"
 LDFLAGS="$LDFLAGS $GAVL_LIBS"
 
-PKG_CHECK_MODULES(LIBQUICKTIME, libquicktime >= 0.9.8,,
-  AC_MSG_ERROR([*** libquicktime not found - this program requires libquicktime
-  http://libquicktime.sourceforge.net/ ***]))
+PKG_CHECK_MODULES(LIBQUICKTIME, libquicktime >= 0.9.7,,
+  AC_MSG_ERROR([*** libquicktime 0.9.7 not found - this program requires libquicktime >= 0.9.7 http://libquicktime.sourceforge.net/ ***]))
 CPPFLAGS="$CPPFLAGS $LIBQUICKTIME_CFLAGS"
 LDFLAGS="$LDFLAGS $LIBQUICKTIME_LIBS"
 
 PKG_CHECK_MODULES(JACK, jack >= 0.99.0,,
-  AC_MSG_ERROR([*** jack not found - this program requires the jack audio
-  connection kit http://jackit.sourceforge.net/ ***]))
+  AC_MSG_ERROR([*** jack 0.99.0 not found - this program requires the jack audio
+  connection kit >= 0.99.0 http://jackit.sourceforge.net/ ***]))
 CPPFLAGS="$CPPFLAGS $JACK_CFLAGS"
 LDFLAGS="$LDFLAGS $JACK_LIBS"
 
