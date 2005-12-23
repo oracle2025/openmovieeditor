@@ -19,6 +19,9 @@
 
 #include <algorithm>
 
+#include <sys/stat.h>
+#include <sys/types.h>
+
 #include <FL/filename.H>
 #include <FL/Fl_Choice.H>
 
@@ -65,6 +68,8 @@ LoadSaveManager::LoadSaveManager( Fl_Choice* projectChoice, Fl_Input* projectInp
 			free( (void*)( list[--i] ) );
 		}
 		free( (void*)list );
+	} else {
+		mkdir( m_video_projects.c_str(), 0755 );
 	}
 //	cout << name_from_projectfile( "/home/oracle/.openme.project" ) << endl;
 //	cout << name_to_filename( "Hello World 2" ) << endl;

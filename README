@@ -1,8 +1,9 @@
-Hi,
+The Open Movie Editor
 
-this is a Non Linear Movie Editor, it is in it's very early stages of development.
 
-http://propirate.net/oracle/nle/
+... is a Non Linear Movie Editor, it is in it's very early stages of development.
+
+http://openmovieeditor.sourceforge.net/
 
 -Richard Spindler <richard.spindler AT gmail.com>
 
@@ -10,6 +11,7 @@ http://propirate.net/oracle/nle/
 Deps:
 
 fltk
-libquicktime >= 0.9.6
-portaudio v_18
-scons
+libquicktime
+gavl (gmerlin audio video library)
+libsndfile
+jack (jack audio connection kit)

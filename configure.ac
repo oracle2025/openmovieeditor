@@ -9,7 +9,7 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 AC_PREREQ(2.5)
-AC_INIT(openmovieeditor, [0.1.0], [richard.spindler@gmail.com])
+AC_INIT(openmovieeditor, [20051223], [richard.spindler@gmail.com])
 AC_CONFIG_HEADER([config.h])
 
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
@@ -112,6 +112,8 @@ AC_SUBST(FLTK_LIBS)
 
 AC_CONFIG_FILES([
    Makefile
+   doc/Makefile
+   doc/images/Makefile
    icons/Makefile
    src/Makefile
    src/portaudio/Makefile

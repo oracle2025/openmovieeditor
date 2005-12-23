@@ -8,4 +8,5 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-EXTRA_DIST = audio.xpm video.xpm
+EXTRA_DIST = audio.xpm video.xpm arrows_small.xpm dialog-warning.xpm \
+             logo.xpm trash_small.xpm openmovieeditor.png
