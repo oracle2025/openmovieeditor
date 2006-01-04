@@ -25,3 +25,16 @@ img {
 p {
   text-align: justify;
 }
+
+a:link {
+  color: #727e0a;
+}
+
+a:visited {
+  color: #727e0a;
+}
+
+a:active {
+  color: #9db029;
+}
+

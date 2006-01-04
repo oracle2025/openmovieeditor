@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='ISO-8859-15'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-15" />
+  <title>Open Movie Editor Preview</title>
+  <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+
+<img src="images/openmovieeditor.png" width="128" height="128" style=" border: none; " />
+
+<h1>Open Movie Editor Preview</h1>
+
+<p>
+This Document tries to outline the next Steps in the Development of the
+<a href="http://openmovieeditor.sourceforge.net/">Open Movie Editor</a>. It
+tries to be as accurate as possible, complete with mocked up screenshots.
+</p>
+
+<p>
+So what's next? Although to current version is not ready for primetime yet, the
+most basic primitives for doing a movie are already in place. You can place
+clips on the timeline, add a little background music, trim clips, play back the
+arrangement and render everything into a video file. Enough for simple usage. I think
+this is a fairly nice approach, therefore I will keep it up and add some more
+&quot;primitives&quot; before moving on to the fine tuning and refactoring.
+</p>
+
+<h2>Issues</h2>
+
+<p>
+There are some issues/problems that the current version as and that is mostly
+the way the playback is handeled internally. It's based heavily on threads, and
+since my experience is rather limited with this topic, the implementation is
+poor. However I still feel that some other features are more relevant now, at
+least until I can educate myself about alternatives or better patterns to deal
+with this.
+</p>
+
+<h2>Fade Over</h2>
+
+<img src="images_preview/fade_over.png" width="350" height="120" />
+
+<p>
+Besides a simple hard cut, I'm also planning to add the capability to provide a
+soft fade over between clips. Although hard cuts are propably more
+&quot;professional&quot; than anything else, a little soft cut here and there
+can't be too bad. On a more technical side, adding this features means that I
+have to implement a system to handle transparency between frames, which might be
+interesting for other features in the future.
+</p>
+
+<p>
+The user interface for this thingy will be as straight forward as possibly. To
+fade two clips it will be enought to drag their ends into an overlap, which will
+then be displayed as on the screenshot on the right.
+</p>
+
+<h2>Titel Maker</h2>
+
+<img src="images_preview/openme_titles.png" width="260" height="169" />
+
+<p>
+Whenever someone does a movie sooner or later the need to add some text will
+surface, and therefore a simple title maker will be done, it propably won''t
+have scrolling and animated text in it's first incarnation, but it will surely
+be useful for a lot of stuff.
+</p>
+
+<p>
+I anticipate to provide resizing and positiong by manipulating the text frame right in
+the video view.
+</p>
+
+<h2>Volume Adjust</h2>
+
+<img src="images_preview/openme_volume.png" width="271" height="139" />
+<img src="images_preview/automations_ui.png" width="654" height="501" />
+
+<p>
+While the simple crossfade is propably sufficient for video, I think audio needs
+some special attention. More often than not, a scene needs some quiet background
+tunes that suddenly become more intense to support the plot. The most common
+interface to model such functionality is the use of automations, or whatever
+these might be called. It basically means little, draggable points on the track,
+connected with lines that visualize the volume level at the different positions
+of the sound.
+</p>
+
+<h2>Undo Redo</h2>
+
+</body>
