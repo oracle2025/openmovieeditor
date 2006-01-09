@@ -27,6 +27,12 @@
 namespace nle
 {
 
+typedef struct _auto_node {
+	struct _auto_node *next;
+	int64_t x;
+	float y;
+} auto_node;
+	
 class AudioClip : public AudioClipBase
 {
 	public:
@@ -34,10 +40,15 @@ class AudioClip : public AudioClipBase
 		~AudioClip();
 		int64_t length();
 		string filename();
+		inline auto_node* getAutoPoints() { return m_automationPoints; }
+		inline float basicLevel() { return m_basicLevel; }
 	protected:
 		int64_t audioTrimA();
 		int64_t audioTrimB();
 		int64_t audioPosition();
+	private:
+		float m_basicLevel;
+		auto_node* m_automationPoints;
 };
 
 

@@ -52,6 +52,9 @@ static GLuint video_canvas[10];
 #define TEXTURE_WIDTH 1024.0 
 #define TEXTURE_HEIGHT 1024.0
 
+void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
+{
+}
 void VideoViewGL::pushFrame( frame_struct* fs, bool move_cursor )
 {
 	if ( move_cursor ) {
@@ -161,7 +164,7 @@ void VideoViewGL::draw()
 			}
 
 			
-
+//glColor4f(1.0f,1.0f,1.0f,0.5f); //makes the texture transparent
 			float ww = fs->w / TEXTURE_WIDTH;
 			float hh = fs->h / TEXTURE_HEIGHT;
 			glBegin (GL_QUADS);

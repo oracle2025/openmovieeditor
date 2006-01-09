@@ -37,6 +37,7 @@ class VideoViewGL : public Fl_Gl_Window, public IVideoWriter
 		VideoViewGL( int x, int y, int w, int h, const char *l = 0 );
 		~VideoViewGL();
 		void draw();
+		void pushFrameStack( frame_struct** fs, bool move_cursor = true );
 		void pushFrame( frame_struct* fs, bool move_cursor = true );
 		void nextFrame( int64_t frame );
 		void seek( int64_t position );

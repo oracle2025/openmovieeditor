@@ -122,6 +122,35 @@ frame_struct* Timeline::nextFrame( int64_t position )
 	}
 	return res;
 }
+frame_struct** Timeline::getFrameStack( int64_t position )
+{
+	static frame_struct* frameStack[8]; //At most 8 Frames, ought to be enough for everyone ;)
+	int cnt = 0;
+	static int64_t last_frame = -1;
+	frame_struct* res = NULL;
+	if ( position < 0 || last_frame < 0 || last_frame + 1 == position ) {
+		m_playPosition++;
+	} else {
+		m_playPosition = position;
+	}
+	last_frame = m_playPosition;
+	for ( track_node *p = m_allTracks; p; p = p->next ) {
+		if ( p->track->type() != TRACK_TYPE_VIDEO ) {
+			continue;
+		}
+		VideoTrack* current = (VideoTrack*)p->track;
+		res = current->getFrame( m_playPosition - 1 );
+		if ( res ) {
+			frameStack[cnt] = res;
+			cnt++;
+		}
+		if ( cnt == 7 ) {
+			break;
+		}
+	}
+	frameStack[cnt] = 0;
+	return frameStack;
+}
 
 unsigned int mixChannels( float *A, float *B, float* out, unsigned int frames )
 {

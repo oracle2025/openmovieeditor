@@ -32,6 +32,7 @@ typedef struct
 	unsigned char *YUV;
 	unsigned char **rows;
 	int64_t nr;
+	float alpha;
 } frame_struct;
 
 } /* namespace nle */
