@@ -21,16 +21,38 @@
 #include <FL/fl_draw.H>
 
 #include "AutomationDragHandler.H"
-#include "AutomationPoint.H"
-#include "timeline/Clip.H"
 #include "globals.H"
+#include "global_includes.H"
 #include "TimelineView.H"
 
 
 namespace nle
 {
 
-AutomationDragHandler::AutomationDragHandler( Clip* clip, AutomationPoint* aPoint, const Rect& rect )
+AutomationDragHandler::AutomationDragHandler( Clip* clip, const Rect& rect )
+	:DragHandler( g_timelineView, clip )
+{
+	m_outline = rect;
+	m_basicLevelDrag = true;
+}
+AutomationDragHandler::~AutomationDragHandler()
+{
+}
+
+void AutomationDragHandler::OnDrag( int x, int y )
+{
+	if ( y > m_outline.y + m_outline.h - 2 ) {
+		y = m_outline.y + m_outline.h - 2;
+	} else if ( y < m_outline.y ) {
+		y = m_outline.y;
+	}
+	fl_overlay_rect( m_outline.x, y + g_timelineView->y(), m_outline.w, 1 );
+}
+void AutomationDragHandler::OnDrop( int x, int y )
+{
+	fl_overlay_clear();
+}
+/*AutomationDragHandler::AutomationDragHandler( Clip* clip, AutomationPoint* aPoint, const Rect& rect )
 	: DragHandler(g_timelineView, clip)
 {
 	m_outline = rect;
@@ -97,6 +119,6 @@ void AutomationDragHandler::OnDrop( int x, int y )
 	//setAutomation
 	g_timelineView->window()->make_current();
 	g_timelineView->redraw();
-}
+}*/
 
 } /* namespace nle */

@@ -37,6 +37,8 @@
 #include "WavArtist.H"
 #include "helper.H"
 #include "ErrorDialog/IErrorHandler.H"
+#include "AudioClip.H"
+#include "AutomationDragHandler.H"
 
 #include "audio.xpm"
 #include "video.xpm"
@@ -69,6 +71,7 @@ int TimelineView::handle( int event )
 {
 	int _x = Fl::event_x();
 	int _y = Fl::event_y() - y();
+	static bool automationLine = false;
 	switch ( event ) {
 		case FL_PASTE:
 			{
@@ -99,19 +102,48 @@ int TimelineView::handle( int event )
 								this, cl, cl->track()->num(),
 								0, 0, true );
 					} else {
-						m_dragHandler = new MoveDragHandler(
-								this, cl, _x, _y, get_clip_rect( cl, false )
-								);
+						bool h = false;
+						if ( cl->has_automation() ) {
+							AudioClip *c = (AudioClip*)cl;
+							{
+								int track_y = TRACK_SPACING + (TRACK_SPACING + TRACK_HEIGHT) * c->track()->num();
+								int basic_y_1 = track_y + (int)( TRACK_HEIGHT * ( 1.0 - c->basicLevel() ) ) - 1;
+								int basic_y_2 = basic_y_1 + 2;
+								if ( _y >= basic_y_1 && _y <= basic_y_2 ) {
+									automationLine = true;
+									cout << "GOT basic" << endl;
+									//m_dragHandler = new AutomationDragHandler( c, get_clip_rect( cl, true ) );
+									h = true;
+								}
+							}
+						}
+						if ( !h ) {
+							m_dragHandler = new MoveDragHandler(
+									this, cl, _x, _y, get_clip_rect( cl, false )
+									);
+						}
 					}
 					return 1;
 				}
 			}// vv-- Fall Through
+			return Fl_Widget::handle( event );	
 		case FL_DRAG:
+			if ( automationLine ) {
+				//really draggin
+				m_dragHandler = new AutomationDragHandler( c, get_clip_rect( cl, true ) );
+				automationLine = false;
+				return 1;
+			}
 			if ( m_dragHandler ) {
 				m_dragHandler->OnDrag( _x, _y );
 				return 1;
 			}
 		case FL_RELEASE:
+			if ( automationLine ) {
+				// Add a node
+				automationLine = false;
+				return 1;
+			}
 			if ( m_dragHandler ) {
 				m_dragHandler->OnDrop( _x, _y );
 				delete m_dragHandler;
@@ -296,13 +328,16 @@ Rect TimelineView::get_clip_rect( Clip* clip, bool clipping )
 			TRACK_HEIGHT
 		);
 	if ( clipping ) {
-		if ( tmp.x < LEFT_TRACK_SPACING ) {
-			tmp.w += tmp.x - LEFT_TRACK_SPACING;
-			tmp.x = LEFT_TRACK_SPACING;
+		cout << tmp.w << " " << tmp.x << " " << w() << " " << TRACK_SPACING << endl;
+		if ( tmp.x < LEFT_TRACK_SPACING + x() ) {
+			tmp.w += tmp.x - ( LEFT_TRACK_SPACING + x() );
+			tmp.x = LEFT_TRACK_SPACING + x();
 		}
-		if ( tmp.w + tmp.x > w() - ( TRACK_SPACING ) ) {
-			tmp.w = (w() - ( TRACK_SPACING )) - tmp.x;
+		cout << tmp.w << " " << tmp.x << " " << w() << " " << TRACK_SPACING << endl;
+		if ( tmp.w + tmp.x > w() - TRACK_SPACING + x() ) {
+			tmp.w = ( w() - TRACK_SPACING + x() ) - tmp.x;
 		}
+		cout << tmp.w << " " << tmp.x << " " << w() << " " << TRACK_SPACING << endl;
 	}
 	return tmp;
 }

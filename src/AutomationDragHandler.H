@@ -20,16 +20,25 @@
 #ifndef _AUTOMATION_DRAG_HANDLER_H_
 #define _AUTOMATION_DRAG_HANDLER_H_
 
-#include <list>
-
 #include "DragHandler.H"
 #include "Rect.H"
-#include "DragHandler.H"
 
 namespace nle
 {
 
-class AutomationPoint;
+class AutomationDragHandler : public DragHandler
+{
+	public:
+		AutomationDragHandler( Clip* clip, const Rect& rect );
+		~AutomationDragHandler();
+		void OnDrag( int x, int y );
+		void OnDrop( int x, int y );
+	private:
+		bool m_basicLevelDrag;
+		Rect m_outline;
+};
+
+/*class AutomationPoint;
 
 class AutomationDragHandler : public DragHandler
 {
@@ -44,7 +53,7 @@ class AutomationDragHandler : public DragHandler
 		Rect* m_activeRect;
 		Clip *m_clip;
 		Rect m_outline;
-};
+}; */
 
 } /* namespace nle */
 #endif /* _AUTOMATION_DRAG_HANDLER_H_ */

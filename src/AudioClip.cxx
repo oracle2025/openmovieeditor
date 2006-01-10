@@ -28,6 +28,7 @@ AudioClip::AudioClip( Track *track, int64_t position, IAudioFile* af )
 	: AudioClipBase( track, position, af )
 {
 	g_wavArtist->add( af );
+	m_basicLevel = 1.0;
 }
 AudioClip::~AudioClip()
 {

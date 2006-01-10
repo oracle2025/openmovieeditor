@@ -92,4 +92,7 @@ openmovieeditor_SOURCES = nle.cxx\
 	FileBrowser.H\
 	IProject.H\
 	Rect.H\
-	TrimDragHandler.H
+	TrimDragHandler.H\
+	AutomationDragHandler.H\
+	AutomationDragHandler.cxx
+

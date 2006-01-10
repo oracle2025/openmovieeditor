@@ -46,6 +46,7 @@ class Clip
 		virtual std::string filename()=0;
 		inline int64_t A() { return position(); }
 		inline int64_t B() { return m_position + length(); }
+		virtual bool has_automation() { return false; }
 	protected:
 		Clip( Track *track, int64_t position );
 		int64_t m_position;

@@ -42,6 +42,8 @@ class AudioClip : public AudioClipBase
 		string filename();
 		inline auto_node* getAutoPoints() { return m_automationPoints; }
 		inline float basicLevel() { return m_basicLevel; }
+		inline void basicLevel( float o ) { m_basicLevel = o; }
+		bool has_automation() { return true; }
 	protected:
 		int64_t audioTrimA();
 		int64_t audioTrimB();
