@@ -17,6 +17,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <sl.h>
+
 #include "AudioClip.H"
 #include "IAudioFile.H"
 #include "WavArtist.H"
@@ -29,6 +31,23 @@ AudioClip::AudioClip( Track *track, int64_t position, IAudioFile* af )
 {
 	g_wavArtist->add( af );
 	m_basicLevel = 1.0;
+	m_automationPoints = 0;
+	//Add Start and End Node
+	auto_node* r = new auto_node;
+	r->next = 0;
+	r->y = 1.0;
+	r->x = af->length();
+	m_automationPoints = (auto_node*)sl_push( m_automationPoints, r );
+	r = new auto_node;
+	r->next = 0;
+	r->y = 0.5;
+	r->x = 100000;
+	m_automationPoints = (auto_node*)sl_push( m_automationPoints, r );
+	r = new auto_node;
+	r->next = 0;
+	r->y = 1.0;
+	r->x = 0;
+	m_automationPoints = (auto_node*)sl_push( m_automationPoints, r );
 }
 AudioClip::~AudioClip()
 {

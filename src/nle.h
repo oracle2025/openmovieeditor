@@ -52,6 +52,10 @@ private:
   Flmm_Scalebar *scaleBar;
   inline void cb_scaleBar_i(Flmm_Scalebar*, void*);
   static void cb_scaleBar(Flmm_Scalebar*, void*);
+public:
+  Fl_Button *positioningButton;
+  Fl_Button *automationsButton;
+private:
   Fl_Box *trashCan;
 public:
   nle::VideoViewGL *m_videoView;
@@ -74,6 +78,7 @@ private:
 public:
   void show( int argc, char **argv );
   ~NleUI();
+  bool automationsMode();
 };
 extern Flmm_Scalebar* g_scrollBar;
 #include "IVideoReader.H"

@@ -28,6 +28,7 @@
 #include "VideoClip.H"
 #include "globals.H"
 #include "IVideoFile.H"
+#include "timeline/Track.H"
 
 void preview_callback( void* data )
 {
@@ -52,7 +53,9 @@ void TrimDragHandler::OnDrag( int x, int y )
 			m_tlv->y() + TRACK_SPACING + (TRACK_SPACING + TRACK_HEIGHT)*m_track,
 			1, TRACK_HEIGHT );
 	m_x = x;
-	Fl::add_check( preview_callback, this );
+	if ( m_clip->track()->type() == TRACK_TYPE_VIDEO ) {
+		Fl::add_check( preview_callback, this );
+	}
 }
 void TrimDragHandler::OnDrop( int x, int y )
 {

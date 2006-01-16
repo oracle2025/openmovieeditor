@@ -26,16 +26,26 @@
 namespace nle
 {
 
+struct _auto_node;
+class AudioClip;
+
 class AutomationDragHandler : public DragHandler
 {
 	public:
-		AutomationDragHandler( Clip* clip, const Rect& rect );
+		AutomationDragHandler( Clip* clip, const Rect& rect, struct _auto_node* n = 0, int x_off = 0, int y_off = 0 );
 		~AutomationDragHandler();
 		void OnDrag( int x, int y );
 		void OnDrop( int x, int y );
 	private:
-		bool m_basicLevelDrag;
+		bool m_dragging;
 		Rect m_outline;
+		struct _auto_node* m_node;
+		struct _auto_node* m_node_before;
+		bool m_firstNode;
+		bool m_lastNode;
+		int m_x_off;
+		int m_y_off;
+		AudioClip* m_audioClip;
 };
 
 /*class AutomationPoint;

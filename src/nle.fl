@@ -4,13 +4,14 @@ header_name {.h}
 code_name {.cxx}
 class NleUI {open
 } {
-  Function {NleUI()} {} {
+  Function {NleUI()} {open
+  } {
     Fl_Window mainWindow {
       label MovieEditor
       callback {if (Fl::event()==FL_SHORTCUT && Fl::event_key()==FL_Escape) 
     return; // ignore Escape
 mainWindow->hide();} open
-      private xywh {459 323 515 465} type Double resizable visible
+      private xywh {477 221 515 465} type Double resizable visible
     } {
       Fl_Menu_Bar {} {open
         xywh {0 0 345 25}
@@ -107,16 +108,16 @@ while (dlg.shown())
           xywh {0 275 515 190}
         } {
           Fl_Group {} {open
-            xywh {69 275 446 190} resizable
+            xywh {40 275 475 190} resizable
           } {
             Fl_Box {} {
               label Ruler
-              xywh {69 275 446 25} box UP_BOX align 16
+              xywh {40 275 475 25} box UP_BOX align 16
               code0 {\#include "Ruler.H"}
               class {nle::Ruler}
             }
             Fl_Box m_timelineView {
-              xywh {69 300 446 145} when 2 resizable
+              xywh {40 300 475 145} when 2 resizable
               code0 {\#include "TimelineView.H"}
               class {nle::TimelineView}
             }
@@ -127,7 +128,7 @@ float slider_size = sb->slider_size_i();
 float zoom = width / slider_size;
 m_timelineView->scroll( (int64_t)sb->value() );
 m_timelineView->zoom( zoom );}
-              private xywh {69 445 446 20} type Horizontal maximum 1024 slider_size 0.40404
+              private xywh {40 445 475 20} type Horizontal maximum 1024 slider_size 0.40404
               code0 {\#include "Flmm_Scalebar.H"}
               code1 {\#include "globals.H"}
               code2 {using namespace std;}
@@ -135,23 +136,23 @@ m_timelineView->zoom( zoom );}
             }
           }
           Fl_Group {} {open
-            xywh {0 275 69 190} labelsize 12
+            xywh {0 275 40 190} labelsize 12
           } {
-            Fl_Button {} {
-              tooltip Positioning image {/home/oracle/Projekte/OpenME/code/src/icons/arrows_small.xpm} xywh {0 300 69 69} type Radio value 1 align 16
+            Fl_Button positioningButton {selected
+              tooltip {Positioning (S)} image {/home/oracle/Projekte/OpenME/code/src/icons/tool_positioning.xpm} xywh {0 300 40 40} type Radio shortcut 0x73 value 1 align 16
             }
-            Fl_Button {} {
-              tooltip Automations image {/home/oracle/Projekte/OpenME/code/src/icons/tool_automations.xpm} xywh {0 340 40 40} type Radio align 18 hide
+            Fl_Button automationsButton {
+              tooltip {Automations (A)} image {/home/oracle/Projekte/OpenME/code/src/icons/tool_automations.xpm} xywh {0 340 40 40} type Radio shortcut 0x61 align 18
             }
             Fl_Box {} {
-              xywh {0 369 69 27} box THIN_UP_BOX resizable
+              xywh {0 380 40 45} box THIN_UP_BOX resizable
             }
             Fl_Box {} {
               label Tools
-              xywh {0 275 69 25} box UP_BOX labelsize 12
+              xywh {0 275 40 25} box UP_BOX labelsize 12
             }
             Fl_Box trashCan {
-              private tooltip Trash image {/home/oracle/Projekte/OpenME/code/src/icons/trash_small.xpm} xywh {0 396 69 69} box UP_BOX
+              private tooltip Trash image {/home/oracle/Projekte/OpenME/code/src/icons/trash.xpm} xywh {0 425 40 40} box UP_BOX
             }
           }
         }
@@ -226,7 +227,7 @@ fb->load_rel();}
       }
       Fl_Choice projectChoice {
         callback {char* name = (char*)o->mvalue()->user_data();
-nle::g_loadSaveManager->load( name );} open selected
+nle::g_loadSaveManager->load( name );} open
         xywh {345 0 170 25} down_box BORDER_BOX
         code0 {\#include "LoadSaveManager/LoadSaveManager.H"}
       } {}
@@ -244,6 +245,10 @@ projectNameInput->value("Project 1");} {}
   Function {~NleUI()} {open
   } {
     code {delete mainWindow;} {}
+  }
+  Function {automationsMode()} {open return_type bool
+  } {
+    code {return automationsButton->value();} {}
   }
 } 
 

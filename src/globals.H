@@ -25,6 +25,8 @@
 
 #include <lqt.h>
 
+class NleUI;
+
 namespace nle
 {
 
@@ -52,6 +54,7 @@ extern Project* g_project;
 
 extern lqt_codec_info_t** g_audio_codec_info;
 extern lqt_codec_info_t** g_video_codec_info;
+extern NleUI* g_ui;
 
 } /* namespace nle */
 

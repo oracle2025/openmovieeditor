@@ -24,6 +24,7 @@
 #include <FL/Fl_Window.H>
 #include <FL/fl_draw.H>
 
+#include "nle.h"
 #include "TimelineView.H"
 #include "Timeline.H"
 #include "SwitchBoard.H"
@@ -92,7 +93,19 @@ int TimelineView::handle( int event )
 			return 1;
 		case FL_PUSH: {
 				Clip* cl = get_clip( _x, _y );
-				if (cl) {
+				if ( cl && g_ui->automationsMode() && cl->has_automation() ) {
+					m_dragHandler = new AutomationDragHandler( cl, get_clip_rect( cl, true ), 0, _x, _y );
+				/*	AudioClip *c = (AudioClip*)cl;
+					int track_y = TRACK_SPACING + (TRACK_SPACING + TRACK_HEIGHT) * c->track()->num();
+					int basic_y_1 = track_y + (int)( TRACK_HEIGHT * ( 1.0 - c->basicLevel() ) ) - 1;
+					int basic_y_2 = basic_y_1 + 2;
+					if ( _y >= basic_y_1 && _y <= basic_y_2 ) {
+						automationLine = true;
+						cout << "GOT basic" << endl;
+						m_dragHandler = new AutomationDragHandler( c, get_clip_rect( cl, true ) );
+					}*/
+					return 1;
+				} else if ( cl ) {
 					if ( _x < get_screen_position( cl->position(), cl->track()->stretchFactor() ) + 8 ) {
 						m_dragHandler = new TrimDragHandler(
 								this, cl, cl->track()->num(),
@@ -102,48 +115,20 @@ int TimelineView::handle( int event )
 								this, cl, cl->track()->num(),
 								0, 0, true );
 					} else {
-						bool h = false;
-						if ( cl->has_automation() ) {
-							AudioClip *c = (AudioClip*)cl;
-							{
-								int track_y = TRACK_SPACING + (TRACK_SPACING + TRACK_HEIGHT) * c->track()->num();
-								int basic_y_1 = track_y + (int)( TRACK_HEIGHT * ( 1.0 - c->basicLevel() ) ) - 1;
-								int basic_y_2 = basic_y_1 + 2;
-								if ( _y >= basic_y_1 && _y <= basic_y_2 ) {
-									automationLine = true;
-									cout << "GOT basic" << endl;
-									//m_dragHandler = new AutomationDragHandler( c, get_clip_rect( cl, true ) );
-									h = true;
-								}
-							}
-						}
-						if ( !h ) {
-							m_dragHandler = new MoveDragHandler(
-									this, cl, _x, _y, get_clip_rect( cl, false )
-									);
-						}
+						m_dragHandler = new MoveDragHandler(
+								this, cl, _x, _y, get_clip_rect( cl, false )
+								);
 					}
 					return 1;
 				}
 			}// vv-- Fall Through
 			return Fl_Widget::handle( event );	
 		case FL_DRAG:
-			if ( automationLine ) {
-				//really draggin
-				m_dragHandler = new AutomationDragHandler( c, get_clip_rect( cl, true ) );
-				automationLine = false;
-				return 1;
-			}
 			if ( m_dragHandler ) {
 				m_dragHandler->OnDrag( _x, _y );
 				return 1;
 			}
 		case FL_RELEASE:
-			if ( automationLine ) {
-				// Add a node
-				automationLine = false;
-				return 1;
-			}
 			if ( m_dragHandler ) {
 				m_dragHandler->OnDrop( _x, _y );
 				delete m_dragHandler;
@@ -234,10 +219,10 @@ void TimelineView::draw()
 			if ( track->type() == TRACK_TYPE_AUDIO ) {
 				Rect r( scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h );
 				g_wavArtist->render( clip->filename(), r, clip->trimA(), clip->trimA() + clip->length() );
+
 			}
 
 			fl_draw_box( FL_BORDER_FRAME, scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h, FL_DARK3 );
-			
 		//     - Draw Trim Triangles
 		     	fl_color( FL_BLACK );
 			fl_begin_polygon();
@@ -251,6 +236,39 @@ void TimelineView::draw()
 			fl_vertex( scr_clip_x + scr_clip_w - 8, scr_clip_y + TRACK_HEIGHT / 2 + 5 );
 			fl_end_polygon();
 		// END - Draw Trim Triangles
+			if ( track->type() == TRACK_TYPE_AUDIO ) {
+				//Draw Automations
+				fl_push_clip( scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h );
+				AudioClip* audioClip = (AudioClip*)clip;
+				
+				auto_node* nodes = audioClip->getAutoPoints();
+
+				fl_color( FL_RED );
+				for ( ; nodes && nodes->next; nodes = nodes->next ) {
+					int y = (int)( scr_clip_y + ( ( TRACK_HEIGHT - 10 ) * ( 1.0 - nodes->y ) ) + 5 );
+					int y_next = (int)( scr_clip_y + ( ( TRACK_HEIGHT - 10 ) * ( 1.0 - nodes->next->y ) ) + 5 );
+					fl_line( get_screen_position( audioClip->position() + nodes->x, track->stretchFactor() ),
+							y,
+							get_screen_position( audioClip->position() + nodes->next->x, track->stretchFactor() ),
+							y_next );
+				}
+				nodes = audioClip->getAutoPoints();
+				for ( ; nodes; nodes = nodes->next ) {
+					//consider Trimming
+					int x;
+					int y = (int)( scr_clip_y + ( ( TRACK_HEIGHT - 10 ) * ( 1.0 - nodes->y ) ) );
+					if ( !nodes->next ) {
+						x = get_screen_position( audioClip->position() + nodes->x, track->stretchFactor() ) - 10;
+					} else if ( nodes == audioClip->getAutoPoints() ) {
+						x = get_screen_position( audioClip->position() + nodes->x, track->stretchFactor() );
+					} else {
+						x = get_screen_position( audioClip->position() + nodes->x, track->stretchFactor() ) - 5;
+					}
+					fl_draw_box( FL_UP_BOX, x, y, 10, 10, FL_RED );
+				}
+				fl_pop_clip();
+			}
+
 		}
 		fl_pop_clip();
 	}
@@ -328,16 +346,13 @@ Rect TimelineView::get_clip_rect( Clip* clip, bool clipping )
 			TRACK_HEIGHT
 		);
 	if ( clipping ) {
-		cout << tmp.w << " " << tmp.x << " " << w() << " " << TRACK_SPACING << endl;
 		if ( tmp.x < LEFT_TRACK_SPACING + x() ) {
 			tmp.w += tmp.x - ( LEFT_TRACK_SPACING + x() );
 			tmp.x = LEFT_TRACK_SPACING + x();
 		}
-		cout << tmp.w << " " << tmp.x << " " << w() << " " << TRACK_SPACING << endl;
 		if ( tmp.w + tmp.x > w() - TRACK_SPACING + x() ) {
 			tmp.w = ( w() - TRACK_SPACING + x() ) - tmp.x;
 		}
-		cout << tmp.w << " " << tmp.x << " " << w() << " " << TRACK_SPACING << endl;
 	}
 	return tmp;
 }
