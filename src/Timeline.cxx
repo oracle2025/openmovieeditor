@@ -174,13 +174,14 @@ int Timeline::fillBuffer( float* output, unsigned long frames )
 	unsigned int rv;
 	unsigned int max_frames = 0;
 	track_node* p = m_allTracks;
+//	p = p->next->next->next;
 	if ( !p )
 		return 0;
 	rv = ((TrackBase*)p->track)->fillBuffer( buffer1, frames, m_samplePosition );
 	max_frames = rv;
 	p = p->next;
 	if ( !p ) { //Only one Track
-		for ( unsigned long i = 0; i < frames; i++ ) {
+		for ( unsigned long i = 0; i < frames * 2; i += 2 ) {
 			output[i] = buffer1[i];
 			output[i+1] = buffer1[i+1];
 		}

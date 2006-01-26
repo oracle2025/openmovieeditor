@@ -46,7 +46,7 @@ openmovieeditor_SOURCES = nle.cxx\
 	AudioClipBase.cxx\
 	AudioFileSnd.cxx\
 	AudioFileQT.cxx\
-	PlaybackCore.cxx\
+	SimplePlaybackCore.cxx\
 	Renderer.cxx\
 	Flmm_Scalebar.cxx\
 	SaveAsDialog.cxx\
@@ -79,7 +79,7 @@ openmovieeditor_SOURCES = nle.cxx\
 	WavArtist.H\
 	Codecs.H\
 	helper.H\
-	PlaybackCore.H\
+	SimplePlaybackCore.H\
 	Timeline.H\
 	DragHandler.H\
 	IAudioFile.H\

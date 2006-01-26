@@ -40,11 +40,6 @@ AudioClip::AudioClip( Track *track, int64_t position, IAudioFile* af )
 	m_automationPoints = (auto_node*)sl_push( m_automationPoints, r );
 	r = new auto_node;
 	r->next = 0;
-	r->y = 0.5;
-	r->x = 100000;
-	m_automationPoints = (auto_node*)sl_push( m_automationPoints, r );
-	r = new auto_node;
-	r->next = 0;
 	r->y = 1.0;
 	r->x = 0;
 	m_automationPoints = (auto_node*)sl_push( m_automationPoints, r );

@@ -33,6 +33,7 @@ typedef struct
 	unsigned char **rows;
 	int64_t nr;
 	float alpha;
+	bool has_alpha_channel;
 } frame_struct;
 
 } /* namespace nle */

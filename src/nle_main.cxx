@@ -26,7 +26,7 @@
 #include "Prefs.H"
 #include "WavArtist.H"
 #include "Project.H"
-#include "PlaybackCore.H"
+#include "SimplePlaybackCore.H"
 #include "globals.H"
 #include "Timeline.H"
 #include "VideoViewGL.H"
@@ -51,7 +51,8 @@ int main( int argc, char** argv )
 	nle::WavArtist wavArtist;
 	NleUI nui;
 	nle::g_ui = &nui;
-	nle::PlaybackCore playbackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
+	nle::SimplePlaybackCore playbackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
+	//nle::PlaybackCore playbackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
 	nle::LoadSaveManager lsm( nui.projectChoice, nui.projectNameInput );
 
 	Fl::visual(FL_DOUBLE|FL_RGB);

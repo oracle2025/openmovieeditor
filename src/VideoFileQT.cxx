@@ -69,6 +69,8 @@ VideoFileQT::VideoFileQT( string filename )
 	m_framestruct.RGB = m_frame;
 	m_framestruct.YUV = 0;
 	m_framestruct.rows = m_rows;
+	m_framestruct.alpha = 1.0;
+	m_framestruct.has_alpha_channel = false;
 /*	cout << "Video Duration: " << lqt_video_duration( m_qt, 0 ) << endl;
 	cout << "Width: " << quicktime_video_width( m_qt, 0 ) << endl;
 	cout << "Height: " << quicktime_video_height( m_qt, 0 ) << endl;

@@ -22,7 +22,7 @@
 #include "VideoViewGL.H"
 #include "globals.H"
 #include "SwitchBoard.H"
-#include "PlaybackCore.H"
+#include "SimplePlaybackCore.H"
 #include "Timeline.H"
 #include "events.H"
 
@@ -54,6 +54,73 @@ static GLuint video_canvas[10];
 
 void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 {
+	if ( move_cursor ) {
+		SwitchBoard::i()->move_cursor();
+	}
+	make_current();
+	if ( !valid() ) {
+		glLoadIdentity(); glViewport( 0, 0, w(), h() ); // glViewport( _x, _y, _w, _h );
+		glOrtho( 0, 10, 10, 0, -20000, 10000 ); glEnable( GL_BLEND );
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		glEnable (GL_TEXTURE_2D);
+	}
+
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+	glBindTexture( GL_TEXTURE_2D, video_canvas[0] );
+
+	if ( !fs[0] ) {
+		static unsigned char p[3 * T_W * T_H] = { 0 };
+		glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, T_W, T_H, GL_RGB, GL_UNSIGNED_BYTE, p );
+		swap_buffers();
+		return;
+	}
+	
+	for ( int i = 0; fs[i]; i++ ) {
+		glBindTexture( GL_TEXTURE_2D, video_canvas[i] );
+		if ( fs->has_alpha_channel ) {
+			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGB, GL_UNSIGNED_BYTE, fs[i]->RGB );
+		} else {
+			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGBA, GL_UNSIGNED_BYTE, fs[i]->RGB );
+		}
+		float gl_x, gl_y, gl_w, gl_h;
+		{
+			float f_v = ( (float)fs[i]->w / (float)fs[i]->h );
+			float f_w = ( (float)w() / (float)h() );
+			float f_g = f_v / f_w;
+			if ( f_g > 1.0 ) {
+				gl_h = 10.0 / f_g;
+				gl_w = 10.0;
+			} else {
+				gl_h = 10.0;
+				gl_w = f_g * 10.0;
+			}
+			gl_x = ( 10.0 - gl_w ) / 2;
+			gl_y = ( 10.0 - gl_h ) / 2;
+
+		}
+
+		//glColor4f( 1.0f, 1.0f, 1.0f, 0.5 ); //Control Transparency
+
+		float ww = fs[i]->w / TEXTURE_WIDTH;
+		float hh = fs[i]->h / TEXTURE_HEIGHT;
+		glBegin (GL_QUADS);
+			glTexCoord2f (  0.0,      0.0 );
+			glVertex3f   (  gl_x,      gl_y, 0.0 );
+			glTexCoord2f (  ww,  0.0 );  // (fs->w / 512.0)
+			glVertex3f   ( gl_x + gl_w,      gl_y, 0.0 );
+			glTexCoord2f (  ww,  hh ); // (368.0 / 512.0) (240.0 / 512.0)
+			glVertex3f   ( gl_x + gl_w,     gl_y + gl_h, 0.0 );
+			glTexCoord2f (  0.0,      hh ); // (fs->h / 512.0)
+			glVertex3f   (  gl_x,     gl_y + gl_h, 0.0 );
+		glEnd ();
+	}
+	
+
+
+	
+	swap_buffers();
+
 }
 void VideoViewGL::pushFrame( frame_struct* fs, bool move_cursor )
 {
@@ -164,7 +231,7 @@ void VideoViewGL::draw()
 			}
 
 			
-//glColor4f(1.0f,1.0f,1.0f,0.5f); //makes the texture transparent
+glColor4f(1.0f,1.0f,1.0f,1.0f); 
 			float ww = fs->w / TEXTURE_WIDTH;
 			float hh = fs->h / TEXTURE_HEIGHT;
 			glBegin (GL_QUADS);
@@ -227,18 +294,18 @@ void VideoViewGL::seek( int64_t position )
 
 void VideoViewGL::play()
 {
-	if ( g_playbackCore->active() ) {
+	if ( g_simplePlaybackCore->active() ) {
 		return;
 	}
 	m_playing = true;
 	m_seekPosition = -1;
 	g_timeline->sort();
-	g_playbackCore->play();
+	g_simplePlaybackCore->play();
 }
 
 void VideoViewGL::stop()
 {
-	g_playbackCore->stop();
+	g_simplePlaybackCore->stop();
 	m_playing = false;
 }
 

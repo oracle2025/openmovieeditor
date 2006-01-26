@@ -30,6 +30,7 @@ class IVideoReader
 	public:
 		virtual ~IVideoReader() {}
 		virtual frame_struct* getFrame( int64_t position ) = 0;
+		virtual frame_struct** getFrameStack( int64_t position ) = 0;
 };
 
 } /* namespace nle */
