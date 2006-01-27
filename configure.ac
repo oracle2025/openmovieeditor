@@ -92,9 +92,9 @@ if test "$FLTK_CONFIG" = "no"; then
   FLTK_CFLAGS="$FLTK_CXXFLAGS"
   FLTK_LIBS="$X_LIBS -lfltk $LIBGL"
 else
-  FLTK_CXXFLAGS=`$FLTK_CONFIG $fltk_config_args --cxxflags --use-gl`
-  FLTK_CFLAGS=`$FLTK_CONFIG $fltk_config_args --cxxflags --use-gl`
-  FLTK_LIBS=`$FLTK_CONFIG $fltk_config_args --ldflags --use-gl`
+  FLTK_CXXFLAGS=`$FLTK_CONFIG $fltk_config_args --cxxflags --use-gl --use-images`
+  FLTK_CFLAGS=`$FLTK_CONFIG $fltk_config_args --cxxflags --use-gl --use-images`
+  FLTK_LIBS=`$FLTK_CONFIG $fltk_config_args --ldflags --use-gl --use-images`
 dnl This caused problems for debian users,
 dnl It would be nice to find a more robust way of doing it.
 dnl  if test "${FLTK_LIBS/*-rpath*/yes}" != "yes"; then

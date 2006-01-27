@@ -34,6 +34,9 @@ int TrackBase::fillBuffer( float* output, unsigned long frames, int64_t position
 	unsigned long emptyItems = 0;
 	float* incBuffer = output;
 //	ASSERT(m_current)
+	while ( m_current && m_current->clip->type() != CLIP_TYPE_VIDEO && m_current->clip->type() != CLIP_TYPE_AUDIO ) {
+		m_current = m_current->next;
+	}
 	while( written < frames && m_current ) {
 		inc = ((AudioClipBase*)(m_current->clip))->fillBuffer( incBuffer,
 				 frames - written, position + written
@@ -41,6 +44,9 @@ int TrackBase::fillBuffer( float* output, unsigned long frames, int64_t position
 		written += inc;
 		incBuffer += inc;
 		if ( written < frames ) { m_current = m_current->next; }
+		while ( m_current && m_current->clip->type() != CLIP_TYPE_VIDEO && m_current->clip->type() != CLIP_TYPE_AUDIO ) {
+			m_current = m_current->next;
+		}
 	}
 	if ( m_current == 0 ) {
 		while( written < frames ) {

@@ -26,7 +26,7 @@
 namespace nle
 {
 	
-VideoClip::VideoClip( Track *track, int64_t position, IVideoFile *vf )
+VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf )
 	: AudioClipBase( track, position )
 {
 	m_videoFile = vf;

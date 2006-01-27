@@ -96,15 +96,6 @@ int TimelineView::handle( int event )
 				Clip* cl = get_clip( _x, _y );
 				if ( cl && g_ui->automationsMode() && cl->has_automation() ) {
 					m_dragHandler = new AutomationDragHandler( cl, get_clip_rect( cl, true ), 0, _x, _y );
-				/*	AudioClip *c = (AudioClip*)cl;
-					int track_y = TRACK_SPACING + (TRACK_SPACING + TRACK_HEIGHT) * c->track()->num();
-					int basic_y_1 = track_y + (int)( TRACK_HEIGHT * ( 1.0 - c->basicLevel() ) ) - 1;
-					int basic_y_2 = basic_y_1 + 2;
-					if ( _y >= basic_y_1 && _y <= basic_y_2 ) {
-						automationLine = true;
-						cout << "GOT basic" << endl;
-						m_dragHandler = new AutomationDragHandler( c, get_clip_rect( cl, true ) );
-					}*/
 					return 1;
 				} else if ( cl ) {
 					if ( _x < get_screen_position( cl->position(), cl->track()->stretchFactor() ) + 8 ) {
@@ -201,6 +192,8 @@ void TimelineView::draw()
 			fl_draw_box( FL_BORDER_BOX , scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h, FL_DARK3 );
 			
 		//     - Draw Thumbnails
+			/*
+			// Removed while ImageClip can't handle this
 			if ( track->type() == TRACK_TYPE_VIDEO ) {
 				fl_push_clip( scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h );
 				
@@ -218,6 +211,9 @@ void TimelineView::draw()
 				}
 				fl_pop_clip();
 			}
+
+
+			*/
 		// END - Draw Thumbnails
 			fl_color( FL_GREEN );
 			if ( track->type() == TRACK_TYPE_AUDIO ) {
@@ -243,7 +239,7 @@ void TimelineView::draw()
 			if ( track->type() == TRACK_TYPE_AUDIO ) {
 				//Draw Automations
 				fl_push_clip( scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h );
-				AudioClip* audioClip = (AudioClip*)clip;
+				AudioClip* audioClip = dynamic_cast<AudioClip*>(clip);
 				
 				auto_node* nodes = audioClip->getAutoPoints();
 

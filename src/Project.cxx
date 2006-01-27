@@ -164,15 +164,7 @@ int Project::read( string filename )
 			strlcpy( filename, j->Attribute( "filename" ), sizeof(filename) );
 			if ( ! filename )
 				continue;
-			VideoFileQT* vf = new VideoFileQT( filename );
-			if ( !vf->ok() ) {
-				delete vf;
-				continue;
-			}
-			Clip* clip = new VideoClip( tr, position, vf );
-			clip->trimA( trimA );
-			clip->trimB( trimB );
-			g_timeline->addClip( i, clip );
+			g_timeline->addFile( i, position, filename, trimA, trimB );
 		}
 		i++;
 	}

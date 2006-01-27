@@ -75,8 +75,8 @@ static int audio_length_helper( void* p, void* data )
 	int64_t l;
 	int64_t* max = (int64_t*)data;
 	track_node* node = (track_node*)p;
-	if ( node->track->type() == TRACK_TYPE_AUDIO ) {
-		l = ((AudioTrack*)node->track)->soundLength();
+	if ( AudioTrack* t = dynamic_cast<AudioTrack*>(node->track) ) {
+		l = t->soundLength();
 		if ( l > *max ) {
 			*max = l;
 		}
@@ -112,10 +112,10 @@ frame_struct* Timeline::nextFrame( int64_t position )
 	}
 	last_frame = m_playPosition;
 	for ( track_node *p = m_allTracks; p; p = p->next ) {
-		if ( p->track->type() != TRACK_TYPE_VIDEO ) {
+		VideoTrack* current = dynamic_cast<VideoTrack*>(p->track);
+		if ( !current ) {
 			continue;
 		}
-		VideoTrack* current = (VideoTrack*)p->track;
 		res = current->getFrame( m_playPosition - 1 );
 		if ( res )
 			return res;
@@ -135,10 +135,10 @@ frame_struct** Timeline::getFrameStack( int64_t position )
 	}
 	last_frame = m_playPosition;
 	for ( track_node *p = m_allTracks; p; p = p->next ) {
-		if ( p->track->type() != TRACK_TYPE_VIDEO ) {
+		VideoTrack* current = dynamic_cast<VideoTrack*>(p->track);
+		if ( !current ) {
 			continue;
 		}
-		VideoTrack* current = (VideoTrack*)p->track;
 		res = current->getFrame( m_playPosition - 1 );
 		if ( res ) {
 			frameStack[cnt] = res;
@@ -177,7 +177,7 @@ int Timeline::fillBuffer( float* output, unsigned long frames )
 //	p = p->next->next->next;
 	if ( !p )
 		return 0;
-	rv = ((TrackBase*)p->track)->fillBuffer( buffer1, frames, m_samplePosition );
+	rv = (dynamic_cast<TrackBase*>(p->track))->fillBuffer( buffer1, frames, m_samplePosition );
 	max_frames = rv;
 	p = p->next;
 	if ( !p ) { //Only one Track
@@ -192,12 +192,12 @@ int Timeline::fillBuffer( float* output, unsigned long frames )
 		m_samplePosition += max_frames;
 		return max_frames;
 	}
-	rv = ((TrackBase*)p->track)->fillBuffer( buffer2, frames, m_samplePosition );
+	rv = (dynamic_cast<TrackBase*>(p->track))->fillBuffer( buffer2, frames, m_samplePosition );
 	max_frames = rv > max_frames ? rv : max_frames;
 	mixChannels( buffer1, buffer2, output, frames );
 	p = p->next;
 	while ( p ) {
-		rv = ((TrackBase*)p->track)->fillBuffer( buffer1, frames, m_samplePosition );
+		rv = (dynamic_cast<TrackBase*>(p->track))->fillBuffer( buffer1, frames, m_samplePosition );
 		max_frames = rv > max_frames ? rv : max_frames;
 		mixChannels( output, buffer1, output, frames );
 		p = p->next;

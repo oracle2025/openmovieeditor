@@ -50,6 +50,8 @@ openmovieeditor_SOURCES = nle.cxx\
 	Renderer.cxx\
 	Flmm_Scalebar.cxx\
 	SaveAsDialog.cxx\
+	ImageClip.cxx\
+	ImageClip.H\
 	strlcpy.c\
 	strlcpy.h\
 	AudioClipBase.H\

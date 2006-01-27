@@ -18,6 +18,7 @@
  */
 
 #include <FL/gl.h>
+#include <FL/Fl_PNG_Image.H>
 
 #include "VideoViewGL.H"
 #include "globals.H"
@@ -76,13 +77,21 @@ void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 		return;
 	}
 	
-	for ( int i = 0; fs[i]; i++ ) {
+	int count = 0;	
+	for ( int i = 1; fs[i]; i++ ) {
+		count++;
+	}
+	for ( int i = count; i>=0; i-- ) {
 		glBindTexture( GL_TEXTURE_2D, video_canvas[i] );
-		if ( fs->has_alpha_channel ) {
-			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGB, GL_UNSIGNED_BYTE, fs[i]->RGB );
-		} else {
+		if ( fs[i]->has_alpha_channel ) {
 			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGBA, GL_UNSIGNED_BYTE, fs[i]->RGB );
+		} else {
+			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGB, GL_UNSIGNED_BYTE, fs[i]->RGB );
 		}
+	}
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f ); //Control Transparency
+	for ( int i = count; i>=0; i-- ) {
+		glBindTexture( GL_TEXTURE_2D, video_canvas[i] );
 		float gl_x, gl_y, gl_w, gl_h;
 		{
 			float f_v = ( (float)fs[i]->w / (float)fs[i]->h );
@@ -99,8 +108,6 @@ void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 			gl_y = ( 10.0 - gl_h ) / 2;
 
 		}
-
-		//glColor4f( 1.0f, 1.0f, 1.0f, 0.5 ); //Control Transparency
 
 		float ww = fs[i]->w / TEXTURE_WIDTH;
 		float hh = fs[i]->h / TEXTURE_HEIGHT;
@@ -202,7 +209,7 @@ void VideoViewGL::draw()
 			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-			if ( i != 1 ) {glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, T_W, T_H, 0, GL_RGB, GL_UNSIGNED_BYTE, p);}
+			glTexImage2D (GL_TEXTURE_2D, 0, GL_RGBA, T_W, T_H, 0, GL_RGB, GL_UNSIGNED_BYTE, p);
 		}
 		once = false;
 	}
@@ -212,7 +219,11 @@ void VideoViewGL::draw()
 	if ( m_seekPosition > 0 ) {
 		frame_struct* fs = g_timeline->getFrame( m_seekPosition );
 		if ( fs ) {
-			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs->w, fs->h, GL_RGB, GL_UNSIGNED_BYTE, fs->RGB );
+			if ( fs->has_alpha_channel ) {
+				glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs->w, fs->h, GL_RGBA, GL_UNSIGNED_BYTE, fs->RGB );
+			} else {
+				glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs->w, fs->h, GL_RGB, GL_UNSIGNED_BYTE, fs->RGB );
+			}
 			float gl_x, gl_y, gl_w, gl_h;
 			{
 				float f_v = ( (float)fs->w / (float)fs->h );

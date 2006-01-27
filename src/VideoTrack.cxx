@@ -21,6 +21,7 @@
 
 #include "VideoTrack.H"
 #include "VideoClip.H"
+#include "ImageClip.H"
 #include "VideoFileQT.H"
 #include "ErrorDialog/IErrorHandler.H"
 
@@ -40,22 +41,41 @@ void VideoTrack::sort()
 	m_current = m_clips;
 	m_playPosition = 0;
 }
-void VideoTrack::addFile( int64_t position, string filename )
+void VideoTrack::addFile( int64_t position, string filename, int64_t trimA, int64_t trimB )
 {
 	VideoFileQT *vf = new VideoFileQT( filename );
 	
-	if ( !vf->ok() ) {
-		SHOW_ERROR( string( "Video file failed to load:\n" ) + fl_filename_name( filename.c_str() ) );
-		delete vf;
+	if ( vf->ok() ) {
+		Clip* c = new VideoClip( this, position, vf );
+		c->trimA( trimA );
+		c->trimB( trimB );
+		addClip( c );
 		return;
+	} else {
+		delete vf;
+		ImageClip* ic = new ImageClip( this, position, filename );
+		if ( !ic->ok() ) {
+			delete ic;
+			SHOW_ERROR( string( "Video file failed to load:\n" ) + fl_filename_name( filename.c_str() ) );
+			return;
+		}
+		ic->trimA( trimA );
+		ic->trimB( trimB );
+		addClip( ic );
 	}
-	addClip( new VideoClip( this, position, vf ) );
 }
 frame_struct* VideoTrack::getFrame( int64_t position )
 {
 	frame_struct* res = NULL;
 	for ( clip_node *p = m_clips; p; p = p->next ) {
-		VideoClip* current = (VideoClip*)p->clip;
+		IVideoReader* current;
+		if ( p ->clip->type() == CLIP_TYPE_VIDEO ) {
+			current = (VideoClip*)p->clip;
+		} else if ( p->clip->type() == CLIP_TYPE_IMAGE ) {
+			current = (ImageClip*)p->clip;
+		} else {
+			continue;
+		}
 		res = current->getFrame( position );
 		if ( res )
 			return res;

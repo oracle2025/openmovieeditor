@@ -24,16 +24,17 @@
 
 #include "AudioClipBase.H"
 #include "frame_struct.h"
+#include "IVideoReader.H"
 
 namespace nle
 {
 class IVideoFile;
 class FilmStrip;
 
-class VideoClip : public AudioClipBase
+class VideoClip : public AudioClipBase, public IVideoReader
 {
 	public:
-		VideoClip( Track *track, int64_t position, IVideoFile *vf );
+		VideoClip( Track* track, int64_t position, IVideoFile* vf );
 		~VideoClip();
 		int64_t length();
 		void reset();
@@ -41,6 +42,7 @@ class VideoClip : public AudioClipBase
 		inline FilmStrip* getFilmStrip() { return m_filmStrip; }
 		string filename();
 		inline IVideoFile* file() { return m_videoFile; }
+		int type() { return CLIP_TYPE_VIDEO; }
 	protected:
 		int64_t audioTrimA();
 		int64_t audioTrimB();

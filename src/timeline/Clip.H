@@ -29,6 +29,13 @@ namespace nle
 
 class Track;
 
+enum Clip_Types {
+	CLIP_TYPE_VIDEO = 0,
+	CLIP_TYPE_AUDIO = 1,
+	CLIP_TYPE_IMAGE = 2
+};
+
+
 class Clip
 {
 	public:
@@ -47,6 +54,7 @@ class Clip
 		inline int64_t A() { return position(); }
 		inline int64_t B() { return m_position + length(); }
 		virtual bool has_automation() { return false; }
+		virtual int type() = 0;
 	protected:
 		Clip( Track *track, int64_t position );
 		int64_t m_position;

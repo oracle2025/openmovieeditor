@@ -66,6 +66,7 @@ void TrimDragHandler::OnDrop( int x, int y )
 void TrimDragHandler::preview()
 {
 	Fl::remove_check( preview_callback, this );
+/* //Removed while ImageClip can't handle this
 	VideoClip* cl = ((VideoClip*)m_clip);
 	int64_t pos = g_timelineView->get_real_position( m_x ) - cl->position() - cl->trimA();
 	if ( pos < 0 || pos > cl->file()->length() ) {
@@ -79,7 +80,7 @@ void TrimDragHandler::preview()
 	}
 	frame_struct* fs = cl->file()->read();
 	
-	g_videoView->pushFrame( fs, false );
+	g_videoView->pushFrame( fs, false );*/
 }
 	
 } /* namespace nle */

@@ -35,7 +35,7 @@ AudioTrack::AudioTrack( int num )
 AudioTrack::~AudioTrack()
 {
 }
-void AudioTrack::addFile( int64_t position, string filename )
+void AudioTrack::addFile( int64_t position, string filename, int64_t trimA, int64_t trimB )
 {
 	IAudioFile *af = new AudioFileSnd( filename );
 	if ( !af->ok() ) {
@@ -48,6 +48,8 @@ void AudioTrack::addFile( int64_t position, string filename )
 		return;
 	}
 	Clip *clp = new AudioClip( this, position, af );
+	clp->trimA( trimA );
+	clp->trimB( trimB );
 	addClip( clp );
 }
 void AudioTrack::sort()

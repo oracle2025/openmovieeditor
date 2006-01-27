@@ -35,7 +35,7 @@ class VideoTrack : public TrackBase
 		VideoTrack( int num );
 		virtual ~VideoTrack();
 
-		void addFile( int64_t position, string filename );
+		void addFile( int64_t position, string filename, int64_t trimA = 0, int64_t trimB = 0 );
 		int type() { return TRACK_TYPE_VIDEO; }
 		float stretchFactor() { return 1.0; }
 		frame_struct* getFrame( int64_t position );

@@ -34,13 +34,18 @@ VideoFileQT::VideoFileQT( string filename )
 	m_qt = NULL;
 	m_frame = NULL;
 	m_rows = NULL;
-	char *lqt_sucks_filename = strdup( filename.c_str() );
+	char *lqt_sucks_filename = const_cast<char *>( filename.c_str() );
 	if ( !quicktime_check_sig( lqt_sucks_filename ) ) {
 		ERROR_DETAIL( "This is not a Quicktime video file" );
+		free(lqt_sucks_filename);
 		return;
 	}
 	m_qt = quicktime_open( lqt_sucks_filename, true, false );
 	free(lqt_sucks_filename);
+	if ( !m_qt ) {
+		ERROR_DETAIL( "This is not a Quicktime video file" );
+		return;
+	}
 	if ( quicktime_video_tracks( m_qt ) == 0 ) {
 		ERROR_DETAIL( "This Quicktime file does not have a video track" );
 		return;

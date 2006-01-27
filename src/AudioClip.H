@@ -44,6 +44,7 @@ class AudioClip : public AudioClipBase
 		inline float basicLevel() { return m_basicLevel; }
 		inline void basicLevel( float o ) { m_basicLevel = o; }
 		bool has_automation() { return true; }
+		int type() { return CLIP_TYPE_AUDIO; }
 	protected:
 		int64_t audioTrimA();
 		int64_t audioTrimB();
