@@ -22,6 +22,7 @@
 #include "FilmStrip.H"
 #include "AudioFileQT.H"
 #include "ErrorDialog/IErrorHandler.H"
+#include "VideoClipArtist.H"
 
 namespace nle
 {
@@ -40,9 +41,11 @@ VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf )
 		af = 0;
 	}
 	CLEAR_ERRORS();
+	m_artist = new VideoClipArtist( this );
 }
 VideoClip::~VideoClip()
 {
+	delete m_artist;
 	delete m_filmStrip;
 	delete m_videoFile;
 }

@@ -108,6 +108,7 @@ static int find_peakfile_helper( void* p, void* data )
 }
 void WavArtist::render( string filename, Rect& rect, int64_t start, int64_t stop )
 {
+	fl_color( FL_GREEN );
 	peakfile_node* node = (peakfile_node*)sl_map( m_peaks, find_peakfile_helper, (void*)filename.c_str() );
 	if ( !node ) {
 		return;

@@ -83,5 +83,9 @@ frame_struct* VideoTrack::getFrame( int64_t position )
 	return NULL;
 
 }
+
+/*frame_struc* VideoTrack::getFrameStack( int64_t position )
+{
+}*/
 	
 } /* namespace nle */

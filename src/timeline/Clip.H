@@ -28,6 +28,7 @@ namespace nle
 {
 
 class Track;
+class IClipArtist;
 
 enum Clip_Types {
 	CLIP_TYPE_VIDEO = 0,
@@ -55,6 +56,7 @@ class Clip
 		inline int64_t B() { return m_position + length(); }
 		virtual bool has_automation() { return false; }
 		virtual int type() = 0;
+		virtual IClipArtist* getArtist() { return 0; }
 	protected:
 		Clip( Track *track, int64_t position );
 		int64_t m_position;

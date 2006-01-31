@@ -35,11 +35,11 @@
 #include "Rect.H"
 #include "events.H"
 #include "FilmStrip.H"
-#include "WavArtist.H"
 #include "helper.H"
 #include "ErrorDialog/IErrorHandler.H"
 #include "AudioClip.H"
 #include "AutomationDragHandler.H"
+#include "IClipArtist.H"
 
 #include "audio.xpm"
 #include "video.xpm"
@@ -191,40 +191,15 @@ void TimelineView::draw()
 			
 			fl_draw_box( FL_BORDER_BOX , scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h, FL_DARK3 );
 			
-		//     - Draw Thumbnails
-			/*
-			// Removed while ImageClip can't handle this
-			if ( track->type() == TRACK_TYPE_VIDEO ) {
-				fl_push_clip( scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h );
-				
-				int _x;
-				VideoClip* vc = (VideoClip*)clip;
-				FilmStrip* fs = vc->getFilmStrip();
-				int s = vc->trimA() / 100;
-				int e = ( vc->length() / 100 ) + s;
-				int off = vc->trimA() % 100;
-				for ( int k = s; k < e + 2; k++ ) {
-					_x = get_screen_position( clip->position() + (k - s) * 100, track->stretchFactor()  ) - off;
-					pic_struct* f = fs->get_pic(k);
-					if ( f )
-						fl_draw_image( f->data, _x, y_coord, f->w, f->h );
-				}
-				fl_pop_clip();
-			}
-
-
-			*/
-		// END - Draw Thumbnails
-			fl_color( FL_GREEN );
-			if ( track->type() == TRACK_TYPE_AUDIO ) {
-				Rect r( scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h );
-				g_wavArtist->render( clip->filename(), r, clip->trimA(), clip->trimA() + clip->length() );
-
+			Rect r( scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h );
+			IClipArtist* artist = clip->getArtist();
+			if ( artist ) {
+				artist->render( r, 0, 0 );
 			}
 
 			fl_draw_box( FL_BORDER_FRAME, scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h, FL_DARK3 );
 		//     - Draw Trim Triangles
-		     	fl_color( FL_BLACK );
+		    /* 	fl_color( FL_BLACK );
 			fl_begin_polygon();
 			fl_vertex( scr_clip_x, scr_clip_y + TRACK_HEIGHT / 2 );
 			fl_vertex( scr_clip_x + 8, scr_clip_y + TRACK_HEIGHT / 2 - 5 );
@@ -234,7 +209,7 @@ void TimelineView::draw()
 			fl_vertex( scr_clip_x + scr_clip_w, scr_clip_y + TRACK_HEIGHT / 2 );
 			fl_vertex( scr_clip_x + scr_clip_w - 8, scr_clip_y + TRACK_HEIGHT / 2 - 5 );
 			fl_vertex( scr_clip_x + scr_clip_w - 8, scr_clip_y + TRACK_HEIGHT / 2 + 5 );
-			fl_end_polygon();
+			fl_end_polygon();*/
 		// END - Draw Trim Triangles
 			if ( track->type() == TRACK_TYPE_AUDIO ) {
 				//Draw Automations
@@ -270,8 +245,53 @@ void TimelineView::draw()
 			}
 
 		}
+		for ( clip_node* j = track->getClips(); j; j = j->next ) {
+			Clip* clip = j->clip;
+			for ( clip_node* k = j->next; k; k = k->next ) {
+				Clip* cclip = k->clip;
+				if ( clip->A() < cclip->A() && clip->B() > cclip->A() ) {
+					int x = get_screen_position( cclip->A(), track->stretchFactor() );
+					int w = get_screen_position( clip->B(), track->stretchFactor() ) - x;
+					fl_draw_box( FL_BORDER_FRAME, x, y_coord, w, TRACK_HEIGHT, FL_RED );
+					fl_color( FL_RED );
+					fl_line( x, y_coord, x + w, y_coord + TRACK_HEIGHT );
+					fl_line( x + w, y_coord, x, y_coord + TRACK_HEIGHT );
+				} else if ( cclip->A() < clip->A() && cclip->B() > clip->A() ) {
+					int x = get_screen_position( clip->A(), track->stretchFactor() );
+					int w = get_screen_position( cclip->B(), track->stretchFactor() ) - x;
+					fl_draw_box( FL_BORDER_FRAME, x, y_coord, w, TRACK_HEIGHT, FL_RED );
+					fl_color( FL_RED );
+					fl_line( x, y_coord, x + w, y_coord + TRACK_HEIGHT );
+					fl_line( x + w, y_coord, x, y_coord + TRACK_HEIGHT );
+				}
+
+			}
+		}
+		for ( clip_node* j = track->getClips(); j; j = j->next ) {
+			Clip* clip = j->clip;
+			int scr_clip_x = get_screen_position( clip->position(), track->stretchFactor() );
+			int scr_clip_y = y_coord;
+			int scr_clip_w = (int)( clip->length() * SwitchBoard::i()->zoom() / track->stretchFactor() );
+			int scr_clip_h = TRACK_HEIGHT;
+		     	fl_color( FL_BLACK );
+			fl_begin_polygon();
+			fl_vertex( scr_clip_x, scr_clip_y + TRACK_HEIGHT / 2 );
+			fl_vertex( scr_clip_x + 8, scr_clip_y + TRACK_HEIGHT / 2 - 5 );
+			fl_vertex( scr_clip_x + 8, scr_clip_y + TRACK_HEIGHT / 2 + 5 );
+			fl_end_polygon();
+			fl_begin_polygon();
+			fl_vertex( scr_clip_x + scr_clip_w, scr_clip_y + TRACK_HEIGHT / 2 );
+			fl_vertex( scr_clip_x + scr_clip_w - 8, scr_clip_y + TRACK_HEIGHT / 2 - 5 );
+			fl_vertex( scr_clip_x + scr_clip_w - 8, scr_clip_y + TRACK_HEIGHT / 2 + 5 );
+			fl_end_polygon();
+		}
+
 		fl_pop_clip();
 	}
+
+
+//Überlappungen malen
+
 	fl_pop_clip();
 	fl_overlay_rect( get_screen_position( m_stylusPosition ), y(), 1, h() );
 }

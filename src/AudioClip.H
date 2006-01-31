@@ -27,6 +27,8 @@
 namespace nle
 {
 
+class IClipArtist;
+	
 typedef struct _auto_node {
 	struct _auto_node *next;
 	int64_t x;
@@ -45,6 +47,7 @@ class AudioClip : public AudioClipBase
 		inline void basicLevel( float o ) { m_basicLevel = o; }
 		bool has_automation() { return true; }
 		int type() { return CLIP_TYPE_AUDIO; }
+		inline IClipArtist* getArtist() { return m_artist; }
 	protected:
 		int64_t audioTrimA();
 		int64_t audioTrimB();
@@ -52,6 +55,7 @@ class AudioClip : public AudioClipBase
 	private:
 		float m_basicLevel;
 		auto_node* m_automationPoints;
+		IClipArtist* m_artist;
 };
 
 

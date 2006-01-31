@@ -1,0 +1,57 @@
+/*
+ * How a simple font api should look like
+ */
+
+typedef struct _font_list_struct {
+  const char* name;
+  const char* id;
+} font_list;
+
+struct _font_object_struct;
+
+int init_fonts ();
+void close_fonts ();
+
+_font_object_struct* create_font();
+
+/*
+ * NULL terminated font list
+ */
+font_list* get_all_fonts ();
+
+/*
+ * returns 0 on sucess and -1 on error
+ */
+int set_font_face                  ( struct _font_object_struct* o, const char* font_id );
+
+/*
+ * ditto
+ */
+int set_font_size                  ( struct _font_object_struct* o, int size );
+
+void set_font_regular              ( struct _font_object_struct* o );
+void set_font_bold                 ( struct _font_object_struct* o );
+void set_font_italic               ( struct _font_object_struct* o );
+
+void set_font_align_left           ( struct _font_object_struct* o );
+void set_font_align_right          ( struct _font_object_struct* o );
+void set_font_align_center         ( struct _font_object_struct* o );
+
+/*
+ * values are between 0.0 and 1.0
+ */
+void set_font_color                ( struct _font_object_struct* o, float r, float g, float b );
+void set_background_color          ( struct _font_object_struct* o, float r, float g, float b );
+
+void get_font_dimensions           ( struct _font_object_struct* o, int& w, int& h, const char* text );
+
+/*
+ * allocates an array of the size WxHx4
+ * and renderes the text to this buffer.
+ * with alpha channel (RGBA)
+ */
+unsigned char* render_font          ( struct _font_object_struct* o, const char* text );
+
+unsigned char* render_font_no_alpha ( struct _font_object_struct* o, const char* text );
+
+void free_font                      ( struct _font_object_struct* o );

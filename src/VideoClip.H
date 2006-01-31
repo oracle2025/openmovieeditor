@@ -30,6 +30,7 @@ namespace nle
 {
 class IVideoFile;
 class FilmStrip;
+class IClipArtist;
 
 class VideoClip : public AudioClipBase, public IVideoReader
 {
@@ -43,6 +44,7 @@ class VideoClip : public AudioClipBase, public IVideoReader
 		string filename();
 		inline IVideoFile* file() { return m_videoFile; }
 		int type() { return CLIP_TYPE_VIDEO; }
+		inline IClipArtist* getArtist() { return m_artist; }
 	protected:
 		int64_t audioTrimA();
 		int64_t audioTrimB();
@@ -55,6 +57,7 @@ class VideoClip : public AudioClipBase, public IVideoReader
 
 		int64_t m_audioPosition;
 		bool m_noAudio;
+		IClipArtist* m_artist;
 };
 
 } /* namespace nle */

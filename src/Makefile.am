@@ -96,5 +96,10 @@ openmovieeditor_SOURCES = nle.cxx\
 	Rect.H\
 	TrimDragHandler.H\
 	AutomationDragHandler.H\
-	AutomationDragHandler.cxx
+	AutomationDragHandler.cxx\
+	IClipArtist.H\
+	AudioClipArtist.H\
+	AudioClipArtist.cxx\
+	VideoClipArtist.H\
+	VideoClipArtist.cxx
 

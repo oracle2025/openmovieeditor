@@ -37,11 +37,9 @@ VideoFileQT::VideoFileQT( string filename )
 	char *lqt_sucks_filename = const_cast<char *>( filename.c_str() );
 	if ( !quicktime_check_sig( lqt_sucks_filename ) ) {
 		ERROR_DETAIL( "This is not a Quicktime video file" );
-		free(lqt_sucks_filename);
 		return;
 	}
 	m_qt = quicktime_open( lqt_sucks_filename, true, false );
-	free(lqt_sucks_filename);
 	if ( !m_qt ) {
 		ERROR_DETAIL( "This is not a Quicktime video file" );
 		return;

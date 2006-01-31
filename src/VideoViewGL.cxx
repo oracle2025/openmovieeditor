@@ -217,16 +217,24 @@ void VideoViewGL::draw()
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	glBindTexture( GL_TEXTURE_2D, video_canvas[0] );
 	if ( m_seekPosition > 0 ) {
-		frame_struct* fs = g_timeline->getFrame( m_seekPosition );
-		if ( fs ) {
-			if ( fs->has_alpha_channel ) {
-				glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs->w, fs->h, GL_RGBA, GL_UNSIGNED_BYTE, fs->RGB );
+		frame_struct** fs = g_timeline->getFrameStack( m_seekPosition );
+		if ( !fs[0] ) {
+			return;
+		}
+		int count = 0;	
+		for ( int i = 1; fs[i]; i++ ) {
+			count++;
+		}
+
+		for ( int i = count; i>=0; i-- ) {
+			if ( fs[i]->has_alpha_channel ) {
+				glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGBA, GL_UNSIGNED_BYTE, fs[i]->RGB );
 			} else {
-				glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs->w, fs->h, GL_RGB, GL_UNSIGNED_BYTE, fs->RGB );
+				glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGB, GL_UNSIGNED_BYTE, fs[i]->RGB );
 			}
 			float gl_x, gl_y, gl_w, gl_h;
 			{
-				float f_v = ( (float)fs->w / (float)fs->h );
+				float f_v = ( (float)fs[i]->w / (float)fs[i]->h );
 				float f_w = ( (float)w() / (float)h() );
 				float f_g = f_v / f_w;
 				if ( f_g > 1.0 ) {
@@ -243,8 +251,8 @@ void VideoViewGL::draw()
 
 			
 glColor4f(1.0f,1.0f,1.0f,1.0f); 
-			float ww = fs->w / TEXTURE_WIDTH;
-			float hh = fs->h / TEXTURE_HEIGHT;
+			float ww = fs[i]->w / TEXTURE_WIDTH;
+			float hh = fs[i]->h / TEXTURE_HEIGHT;
 			glBegin (GL_QUADS);
 				glTexCoord2f (  0.0,      0.0 );
 				glVertex3f   (  gl_x,      gl_y, 0.0 );
@@ -255,7 +263,6 @@ glColor4f(1.0f,1.0f,1.0f,1.0f);
 				glTexCoord2f (  0.0,      hh ); // (fs->h / 512.0)
 				glVertex3f   (  gl_x,     gl_y + gl_h, 0.0 );
 			glEnd ();
-
 		}
 	}
 #if 0 
