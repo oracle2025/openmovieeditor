@@ -55,6 +55,7 @@ extern Project* g_project;
 extern lqt_codec_info_t** g_audio_codec_info;
 extern lqt_codec_info_t** g_video_codec_info;
 extern NleUI* g_ui;
+extern bool g_SEEKING;
 
 } /* namespace nle */
 

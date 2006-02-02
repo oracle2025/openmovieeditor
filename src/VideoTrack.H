@@ -27,6 +27,19 @@
 namespace nle
 {
 
+
+typedef struct _fade_over_struct {
+	struct _fade_over_struct* next;
+	Clip* clipA;
+	Clip* clipB;
+	float inc;
+} fade_over;
+
+int64_t fade_over_start( fade_over* o );
+int64_t fade_over_end( fade_over* o );
+fade_over* create_fade_over( Clip* a, Clip* b );
+void get_alpha_values( fade_over* o, float& a, float& b, int64_t position );
+
 class VideoClip;
 
 class VideoTrack : public TrackBase
@@ -39,9 +52,13 @@ class VideoTrack : public TrackBase
 		int type() { return TRACK_TYPE_VIDEO; }
 		float stretchFactor() { return 1.0; }
 		frame_struct* getFrame( int64_t position );
+		frame_struct** VideoTrack::getFrameStack( int64_t position );
 		void sort();
+		void reconsiderFadeOver();
 	private:
 		int64_t m_playPosition;
+		clip_node* m_vidCurrent;
+		fade_over* m_fade_overs;
 };
 	
 } /* namespace nle */

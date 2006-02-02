@@ -139,11 +139,20 @@ frame_struct** Timeline::getFrameStack( int64_t position )
 		if ( !current ) {
 			continue;
 		}
-		res = current->getFrame( m_playPosition - 1 );
-		if ( res ) {
-			frameStack[cnt] = res;
+//		res = current->getFrame( m_playPosition - 1 );
+		frame_struct** fs = current->getFrameStack( m_playPosition - 1 );
+		
+		for ( int i = 0; fs[i] && cnt <=7 ; i++ ) {
+			frameStack[cnt] = fs[i];
 			cnt++;
 		}
+		
+
+		
+//		if ( res ) {
+//			frameStack[cnt] = res;
+//			cnt++;
+//		}
 		if ( cnt == 7 ) {
 			break;
 		}

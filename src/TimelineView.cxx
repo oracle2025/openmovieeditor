@@ -252,6 +252,7 @@ void TimelineView::draw()
 				if ( clip->A() < cclip->A() && clip->B() > cclip->A() ) {
 					int x = get_screen_position( cclip->A(), track->stretchFactor() );
 					int w = get_screen_position( clip->B(), track->stretchFactor() ) - x;
+					fl_draw_box( FL_FLAT_BOX, x, y_coord, w, TRACK_HEIGHT, FL_DARK_BLUE );
 					fl_draw_box( FL_BORDER_FRAME, x, y_coord, w, TRACK_HEIGHT, FL_RED );
 					fl_color( FL_RED );
 					fl_line( x, y_coord, x + w, y_coord + TRACK_HEIGHT );
@@ -259,6 +260,7 @@ void TimelineView::draw()
 				} else if ( cclip->A() < clip->A() && cclip->B() > clip->A() ) {
 					int x = get_screen_position( clip->A(), track->stretchFactor() );
 					int w = get_screen_position( cclip->B(), track->stretchFactor() ) - x;
+					fl_draw_box( FL_FLAT_BOX, x, y_coord, w, TRACK_HEIGHT, FL_DARK_BLUE );
 					fl_draw_box( FL_BORDER_FRAME, x, y_coord, w, TRACK_HEIGHT, FL_RED );
 					fl_color( FL_RED );
 					fl_line( x, y_coord, x + w, y_coord + TRACK_HEIGHT );
@@ -407,11 +409,23 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 	clip->position( new_position );
 	adjustScrollbar();
 	if ( new_tr == old_tr ) {
+		VideoTrack* t = dynamic_cast<VideoTrack*>(new_tr);
+		if ( t ) {
+			t->reconsiderFadeOver();
+		}
 		return;
 	}
 	old_tr->removeClip( clip );
 	clip->track( new_tr );
 	new_tr->addClip( clip );
+	VideoTrack* t = dynamic_cast<VideoTrack*>(new_tr);
+	if ( t ) {
+		t->reconsiderFadeOver();
+	}
+	t = dynamic_cast<VideoTrack*>(old_tr);
+	if ( t ) {
+		t->reconsiderFadeOver();
+	}
 
 }
 void TimelineView::adjustScrollbar()

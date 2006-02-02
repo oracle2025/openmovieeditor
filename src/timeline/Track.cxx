@@ -79,7 +79,10 @@ static int find_clip_helper( void* p, void* data )
 Clip *Track::find( int64_t position )
 {
 	clip_node* node = (clip_node*)sl_map( m_clips, find_clip_helper, &position );
-	return node->clip;
+	if ( node ) {
+		return node->clip;
+	}
+	return 0;
 }
 static int reset_clip( void* p, void* data )
 {

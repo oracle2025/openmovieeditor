@@ -39,10 +39,12 @@ namespace nle
 	lqt_codec_info_t** g_audio_codec_info;
 	lqt_codec_info_t** g_video_codec_info;
 	NleUI* g_ui;
+	bool g_SEEKING;
 } /* namespace nle */
 
 int main( int argc, char** argv )
 {
+	nle::g_SEEKING = false;
 	srand( time( 0 ) );
 	nle::FltkErrorHandler e;
 	nle::Project project;

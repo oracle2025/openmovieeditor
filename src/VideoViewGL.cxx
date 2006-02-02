@@ -89,7 +89,6 @@ void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGB, GL_UNSIGNED_BYTE, fs[i]->RGB );
 		}
 	}
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f ); //Control Transparency
 	for ( int i = count; i>=0; i-- ) {
 		glBindTexture( GL_TEXTURE_2D, video_canvas[i] );
 		float gl_x, gl_y, gl_w, gl_h;
@@ -111,6 +110,7 @@ void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 
 		float ww = fs[i]->w / TEXTURE_WIDTH;
 		float hh = fs[i]->h / TEXTURE_HEIGHT;
+		glColor4f( 1.0f, 1.0f, 1.0f, fs[i]->alpha ); //Control Transparency
 		glBegin (GL_QUADS);
 			glTexCoord2f (  0.0,      0.0 );
 			glVertex3f   (  gl_x,      gl_y, 0.0 );
@@ -216,8 +216,10 @@ void VideoViewGL::draw()
 	if ( m_playing ) { return; }
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	glBindTexture( GL_TEXTURE_2D, video_canvas[0] );
-	if ( m_seekPosition > 0 ) {
+	if ( m_seekPosition >= 0 ) {
+		g_SEEKING = true;
 		frame_struct** fs = g_timeline->getFrameStack( m_seekPosition );
+		g_SEEKING = false;
 		if ( !fs[0] ) {
 			return;
 		}
@@ -250,7 +252,7 @@ void VideoViewGL::draw()
 			}
 
 			
-glColor4f(1.0f,1.0f,1.0f,1.0f); 
+			glColor4f( 1.0f, 1.0f, 1.0f, fs[i]->alpha ); //Control Transparency
 			float ww = fs[i]->w / TEXTURE_WIDTH;
 			float hh = fs[i]->h / TEXTURE_HEIGHT;
 			glBegin (GL_QUADS);

@@ -146,7 +146,7 @@ int Project::read( string filename )
 	int i = 0;
 	
 	for ( ; track; track = track->NextSiblingElement( "track" ) ) {
-		Track *tr = new VideoTrack( i );
+		VideoTrack *tr = new VideoTrack( i );
 		g_timeline->addTrack( tr );
 		
 		TiXmlElement* j = TiXmlHandle( track ).FirstChildElement( "clip" ).Element();
@@ -166,6 +166,7 @@ int Project::read( string filename )
 				continue;
 			g_timeline->addFile( i, position, filename, trimA, trimB );
 		}
+		tr->reconsiderFadeOver();
 		i++;
 	}
 	track = docH.FirstChild( "open_movie_editor_project" ).FirstChild( "audio_tracks" ).FirstChild( "track" ).Element();
