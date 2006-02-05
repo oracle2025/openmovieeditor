@@ -136,7 +136,9 @@ frame_struct** VideoTrack::getFrameStack( int64_t position )
 		}
 		frameStack[0] = A->getFrame( position );
 		frameStack[1] = B->getFrame( position );
-		get_alpha_values( o, frameStack[0]->alpha, frameStack[1]->alpha, position );
+		if ( frameStack[0] && frameStack[1] ) {
+			get_alpha_values( o, frameStack[0]->alpha, frameStack[1]->alpha, position );
+		}
 		return frameStack;
 	} else {
 		for ( clip_node *p = m_clips; p; p = p->next ) {

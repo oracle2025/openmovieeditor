@@ -30,16 +30,17 @@ namespace nle
 VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf )
 	: AudioClipBase( track, position )
 {
+	m_audioFile = 0;
 	m_videoFile = vf;
 	m_filmStrip = new FilmStrip( vf );
 	m_lastFramePosition = -1;
-	IAudioFile* af = new AudioFileQT( m_videoFile->filename() );
+/*	IAudioFile* af = new AudioFileQT( m_videoFile->filename() );
 	if ( af->ok() ) {
 		m_audioFile = af;
 	} else {
 		delete af;
 		af = 0;
-	}
+	}*/
 	CLEAR_ERRORS();
 	m_artist = new VideoClipArtist( this );
 }

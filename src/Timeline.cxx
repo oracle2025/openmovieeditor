@@ -25,6 +25,7 @@
 #include "VideoClip.H"
 #include "timeline/Track.H"
 #include "SwitchBoard.H"
+#include "render_helper.H"
 
 namespace nle
 {
@@ -217,6 +218,63 @@ int Timeline::fillBuffer( float* output, unsigned long frames )
 	}
 	m_samplePosition += max_frames;
 	return max_frames;
+}
+void Timeline::getBlendedFrame( frame_struct* dst )
+{
+	getBlendedFrame( -1, dst );
+}
+void Timeline::getBlendedFrame( int64_t position, frame_struct* dst )
+{
+	frame_struct** fs = getFrameStack( position );
+	frame_struct tmp_frame;
+	tmp_frame.x = tmp_frame.y = 0;
+	tmp_frame.w = dst->w;
+	tmp_frame.h = dst->h;
+	tmp_frame.RGB = new unsigned char[dst->w * dst->h * 4];
+	memset( tmp_frame.RGB, 0, dst->w * dst->h * 4 );
+	memset( dst->RGB, 0, dst->w * dst->h * 3 );
+	
+
+	int start = 0;
+	int stop = 0;
+	
+	for ( int i = 0; fs[i]; i++ ) {
+		if ( fs[i]->has_alpha_channel || fs[i]->alpha < 1.0 ) {
+			start = i + 1;
+		} else {
+			break;
+		}
+	}
+	if ( !fs[start] ) {
+		start--;
+	} else {
+		if ( fs[start]->w != dst->w || fs[start]->h != dst->h ) {
+			scale_it( fs[start], dst );
+		} else {
+			memcpy( dst->RGB, fs[start]->RGB, dst->w * dst->h * 3 );
+		}
+		if ( fs[start]->has_alpha_channel || fs[start]->alpha < 1.0 ) {
+			cout << "NO ALPHA CHANNEL FOR start" << endl;
+		}
+	}
+	start--;
+	for ( int i = start; i >= stop; i-- ) {
+		if ( fs[i]->has_alpha_channel ) {
+			continue;
+		}
+		if ( fs[i]->w != dst->w || fs[i]->h != dst->h ) {
+			scale_it( fs[i], &tmp_frame );
+			blend( dst->RGB, tmp_frame.RGB, dst->RGB, fs[i]->alpha, dst->w * dst->h );
+		} else {
+			blend( dst->RGB, fs[i]->RGB, dst->RGB, fs[i]->alpha, dst->w * dst->h );
+		}
+	}
+	
+	// 0: ganz oben
+	// 1: 
+	// 2: ganz unten, zuerst blitten
+
+	delete tmp_frame.RGB;
 }
 
 

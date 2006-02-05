@@ -20,7 +20,6 @@
 #include <cstring>
 
 #include <colormodels.h>
-#include <gavl/gavl.h>
 
 #include "strlcpy.h"
 #include "sl/sl.h"
@@ -30,6 +29,7 @@
 #include "Timeline.H"
 #include "ProgressDialog/IProgressListener.H"
 #include "Codecs.H"
+#include "render_helper.H"
 
 render_frame_size fs720x576 = { 720, 576 };
 render_frame_size fs360x288 = { 360, 288 };
@@ -91,73 +91,51 @@ Renderer::~Renderer()
 	if (qt)
 		quicktime_close( qt );
 }
-void scale_it( frame_struct* src, frame_struct* dst )
+
+//shamelessly adapted from rastermans blending code
+/*
+# define MUL(a, b, t) (((a) * (b)) >> 8)
+#define BLEND(p, q, a, t) ((p) + (q) - (MUL(a, p, t)))
+#define R_VAL(p) ((unsigned char *)(p))[3]
+#define G_VAL(p) ((unsigned char *)(p))[2]
+#define B_VAL(p) ((unsigned char *)(p))[1]
+#define A_VAL(p) ((unsigned char *)(p))[0]
+void blend_RGBA_RGBA( unsigned int* dst, unsigned int* src1, unsigned int* src1, float alpha, int len )
 {
-
-	gavl_rectangle_t src_rect;
-	gavl_rectangle_t dst_rect;
-	gavl_video_format_t format_src;
-	gavl_video_format_t format_dst;
-
-	gavl_video_frame_t * frame_src, * frame_dst;
-
-	frame_src = gavl_video_frame_create( 0 );
-	frame_dst = gavl_video_frame_create( 0 );
-
-	frame_src->strides[0] = src->w * 3;
-	frame_src->planes[0] = src->RGB;
-	
-	frame_dst->strides[0] = dst->w * 3;
-	frame_dst->planes[0] = dst->RGB;
-
-
-	gavl_video_scaler_t *scaler;
-	scaler = gavl_video_scaler_create();
-	gavl_video_options_set_scale_mode( gavl_video_scaler_get_options( scaler ), GAVL_SCALE_AUTO );
-	
-
-	format_dst.frame_width  = dst->w;
-	format_dst.frame_height = dst->h;
-	format_dst.image_width  = dst->w;
-	format_dst.image_height = dst->h;;
-	format_dst.pixel_width = 1;
-	format_dst.pixel_height = 1;
-	format_dst.colorspace = GAVL_RGB_24;
-	
-	format_src.frame_width  = src->w;
-	format_src.frame_height = src->h;
-	format_src.image_width  = src->w;
-	format_src.image_height = src->h;;
-	format_src.pixel_width = 1;
-	format_src.pixel_height = 1;
-	format_src.colorspace = GAVL_RGB_24;
-
-	src_rect.x = 0;
-	src_rect.y = 0;
-	src_rect.w = src->w;
-	src_rect.h = src->h;
-
-	dst_rect.x = 0;
-	dst_rect.y = 0;
-	dst_rect.w = dst->w;
-	dst_rect.h = dst->h;
-
-	
-	if ( gavl_video_scaler_init( scaler, GAVL_RGB_24, &src_rect, &dst_rect, &format_src, &format_dst ) == -1 ) {
-		cerr << "Video Scaler Init failed" << endl;
-		return;
+	unsigned int *src1_ptr, *src2_ptr, *dst_ptr, *dst_end_ptr;
+	src1_ptr = src1;
+	src2_ptr = src2;
+	dst_ptr = dst;
+	dst_end_ptr = dst + len;
+	while ( dst_ptr < dst_end_ptr ) {
+		unsigned char tmp, a;
+		a = A_VAL(src2_ptr);
+		a++; //WHY?
+		R_VAL(dst_ptr) = BLEND(R_VAL(src1_ptr), R_VAL(src2_ptr), a, tmp);
+		G_VAL(dst_ptr) = BLEND(G_VAL(src1_ptr), G_VAL(src2_ptr), a, tmp);
+		B_VAL(dst_ptr) = BLEND(B_VAL(src1_ptr), B_VAL(src2_ptr), a, tmp);
+		src1_ptr++;
+		src2_ptr++;
+		dst_ptr++;
 	}
-	gavl_video_scaler_scale( scaler, frame_src, frame_dst );
-
-	frame_src->planes[0] = 0;
-	frame_dst->planes[0] = 0;
-	gavl_video_frame_destroy( frame_src );
-	gavl_video_frame_destroy( frame_dst );
-
-	gavl_video_scaler_destroy( scaler );
-
-
 }
+void blend_RGB_RGB( unsigned char* dst, unsigned char* src1, unsigned char* src1, float alpha, int len )
+{
+	unsigned char *src1_ptr, *src2_ptr, *dst_ptr, *dst_end_ptr;
+	src1_ptr = src1;
+	src2_ptr = src2;
+	dst_ptr = dst;
+	dst_end_ptr = dst + ( len * 3 );
+	while ( dst_ptr < dst_end_ptr ) {
+		unsigned char tmp, a;
+		R_VAL(dst_ptr) = BLEND(R_VAL(src1_ptr), R_VAL(src2_ptr), alpha * 255, tmp);
+		G_VAL(dst_ptr) = BLEND(G_VAL(src1_ptr), G_VAL(src2_ptr), alpha * 255, tmp);
+		B_VAL(dst_ptr) = BLEND(B_VAL(src1_ptr), B_VAL(src2_ptr), alpha * 255, tmp);
+		src1_ptr += 3;
+		src2_ptr += 3;
+		dst_ptr += 3;
+	}
+}*/
 void Renderer::go( IProgressListener* l )
 {
 	if ( l ) {
@@ -190,16 +168,9 @@ void Renderer::go( IProgressListener* l )
 	
 	do {
 		if ( fcnt > 1920 ) { // 1601 für NTSC, 1920 für PAL
-			if ( frame_struct *fs = g_timeline->nextFrame() ) {
-				if ( fs->w != m_w || fs->h != m_h ) {
-					scale_it( fs, &enc_frame  );
-					quicktime_encode_video( qt, enc_frame.rows, 0 );
-				
-				} else {
-					quicktime_encode_video( qt, fs->rows, 0 );
-				}
-				fcnt = 0;
-			}
+			g_timeline->getBlendedFrame( &enc_frame );
+			quicktime_encode_video( qt, enc_frame.rows, 0 );
+			fcnt = 0;
 			current_frame++;
 			if ( l ) {
 				if ( l->progress( current_frame * 100 / length ) ) {
