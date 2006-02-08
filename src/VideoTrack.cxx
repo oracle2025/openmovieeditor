@@ -53,9 +53,7 @@ void VideoTrack::addFile( int64_t position, string filename, int64_t trimA, int6
 	VideoFileQT *vf = new VideoFileQT( filename );
 	
 	if ( vf->ok() ) {
-		Clip* c = new VideoClip( this, position, vf );
-		c->trimA( trimA );
-		c->trimB( trimB );
+		Clip* c = new VideoClip( this, position, vf, trimA, trimB );
 		addClip( c );
 		return;
 	} else {

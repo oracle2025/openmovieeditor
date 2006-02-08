@@ -27,9 +27,11 @@
 namespace nle
 {
 
-AudioClip::AudioClip( Track *track, int64_t position, IAudioFile* af )
+AudioClip::AudioClip( Track *track, int64_t position, IAudioFile* af, int64_t trimA, int64_t trimB )
 	: AudioClipBase( track, position, af )
 {
+	m_trimA = trimA;
+	m_trimB = trimB;
 	g_wavArtist->add( af );
 	m_basicLevel = 1.0;
 	m_automationPoints = 0;

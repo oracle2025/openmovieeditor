@@ -27,9 +27,11 @@
 namespace nle
 {
 	
-VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf )
+VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A, int64_t B )
 	: AudioClipBase( track, position )
 {
+	m_trimA = A;
+	m_trimB = B;
 	m_audioFile = 0;
 	m_videoFile = vf;
 	m_filmStrip = new FilmStrip( vf );

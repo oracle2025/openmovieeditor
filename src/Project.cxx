@@ -198,9 +198,7 @@ int Project::read( string filename )
 				delete af;
 				continue;
 			}
-			Clip* clip = new AudioClip( tr, position, af );
-			clip->trimA( trimA );
-			clip->trimB( trimB );
+			Clip* clip = new AudioClip( tr, position, af, trimA, trimB );
 			g_timeline->addClip( i, clip );
 		}
 		i++;
