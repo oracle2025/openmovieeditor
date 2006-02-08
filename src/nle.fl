@@ -116,7 +116,7 @@ while (dlg.shown())
               code0 {\#include "Ruler.H"}
               class {nle::Ruler}
             }
-            Fl_Box m_timelineView {
+            Fl_Box m_timelineView {selected
               xywh {40 300 475 145} when 2 resizable
               code0 {\#include "TimelineView.H"}
               class {nle::TimelineView}
@@ -138,7 +138,7 @@ m_timelineView->zoom( zoom );}
           Fl_Group {} {open
             xywh {0 275 40 190} labelsize 12
           } {
-            Fl_Button positioningButton {selected
+            Fl_Button positioningButton {
               tooltip {Positioning (S)} image {/home/oracle/Projekte/OpenME/code/src/icons/tool_positioning.xpm} xywh {0 300 40 40} type Radio shortcut 0x73 value 1 align 16
             }
             Fl_Button automationsButton {

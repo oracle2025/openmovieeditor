@@ -454,13 +454,13 @@ void TimelineView::move_cursor( int64_t position )
 	}
 	window()->make_current();
 	long screen_pos = get_screen_position(m_stylusPosition);
-	if ( screen_pos < LEFT_TRACK_SPACING ) {
+	if ( screen_pos < ( LEFT_TRACK_SPACING + x() ) ) {
 		m_scrollPosition = get_real_position( screen_pos );
 		e_scroll_position( m_scrollPosition, long( w() / SwitchBoard::i()->zoom() ), 1024 );
 		redraw();
-	} else if ( screen_pos > w() - TRACK_SPACING ) {
+	} else if ( screen_pos > w() + x() - TRACK_SPACING ) {
 		m_scrollPosition = get_real_position( screen_pos - ( w() - TRACK_SPACING - LEFT_TRACK_SPACING )  ); //(25 = stylus_width)
-		e_scroll_position( m_scrollPosition, long( w() / SwitchBoard::i()->zoom() ), 1024  );
+		e_scroll_position( m_scrollPosition, long( ( w() + x() ) / SwitchBoard::i()->zoom() ), 1024  );
 		redraw();
 	} else {
 		window()->make_current();
