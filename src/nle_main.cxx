@@ -19,6 +19,7 @@
 
 #include <FL/Fl.H>
 #include <FL/Fl_Tooltip.H>
+#include <FL/Fl_Shared_Image.H>
 
 #include <lqt.h>
 
@@ -44,6 +45,7 @@ namespace nle
 
 int main( int argc, char** argv )
 {
+	fl_register_images();
 	nle::g_SEEKING = false;
 	srand( time( 0 ) );
 	nle::FltkErrorHandler e;

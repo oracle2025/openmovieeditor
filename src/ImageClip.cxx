@@ -17,9 +17,11 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <FL/Fl_PNG_Image.H>
+//#include <FL/Fl_PNG_Image.H>
+#include <FL/Fl_Shared_Image.H>
 
 #include "ImageClip.H"
+#include "ErrorDialog/IErrorHandler.H"
 
 namespace nle
 {
@@ -29,14 +31,28 @@ ImageClip::ImageClip( Track* track, int64_t position, string filename )
 	: Clip( track, position ), m_filename( filename )
 {
 	m_ok = false;
-	m_image = new Fl_PNG_Image( filename.c_str() );
+	m_image = Fl_Shared_Image::get( filename.c_str() );
+	if ( !m_image ) {
+		ERROR_DETAIL( "This is not an image file" );
+		return;
+	}
+
+	
+//	m_image = new Fl_PNG_Image( filename.c_str() );
 	cout << "DEPTH: " << m_image->d() << endl;
 	m_length = 25 * 10;
 	m_frame.x = m_frame.y = 0;
 	m_frame.w = m_image->w();
 	m_frame.h = m_image->h();
 	m_frame.alpha = 1.0;
-	m_frame.has_alpha_channel = true;
+	if ( m_image->d() == 4 ) {
+		m_frame.has_alpha_channel = true;
+	} else if ( m_image->d() == 3 ) {
+		m_frame.has_alpha_channel = false;
+	} else {
+		ERROR_DETAIL( "This image file has a wrong color depth,\nonly RGB and RGBA images are supported" );
+		return;
+	}
 	//m_frame.RGB = new (unsigned char)[m_frame.w * m_frame.h * 4];
 	char** d = (char**)m_image->data();
 	int c = m_image->count();
@@ -47,7 +63,7 @@ ImageClip::ImageClip( Track* track, int64_t position, string filename )
 ImageClip::~ImageClip()
 {
 	if ( m_image ) {
-		delete m_image;
+		m_image->release();
 		m_image = 0;
 	}
 }

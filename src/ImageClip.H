@@ -24,7 +24,7 @@
 #include "IVideoReader.H"
 #include "global_includes.H"
 
-class Fl_Image;
+class Fl_Shared_Image;
 
 namespace nle
 {
@@ -41,7 +41,7 @@ class ImageClip : public Clip, public IVideoReader
 		void reset() {}
 		int type() { return CLIP_TYPE_IMAGE; }
 	private:
-		Fl_Image* m_image;
+		Fl_Shared_Image* m_image;
 		int64_t m_length;
 		frame_struct m_frame;
 		bool m_ok;
