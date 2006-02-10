@@ -91,6 +91,7 @@ void scale_it( frame_struct* src, frame_struct* dst )
 
 
 }
+// inspired by rasterman, but poorly done ;)
 void blend( unsigned char* dst, unsigned char* src1, unsigned char* src2, float alpha, int len )
 {
 	unsigned char *ps1, *ps2, *pd, *pd_end;

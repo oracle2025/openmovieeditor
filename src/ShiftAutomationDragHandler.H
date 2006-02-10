@@ -1,6 +1,6 @@
-/*  AutomationDragHandler.H
+/*  ShiftAutomationDragHandler.H
  *
- *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,11 +17,10 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _AUTOMATION_DRAG_HANDLER_H_
-#define _AUTOMATION_DRAG_HANDLER_H_
+#ifndef _SHIFT_AUTOMATION_DRAG_HANDLER_H_
+#define _SHIFT_AUTOMATION_DRAG_HANDLER_H_
 
 #include "DragHandler.H"
-#include "Rect.H"
 
 namespace nle
 {
@@ -29,26 +28,23 @@ namespace nle
 struct _auto_node;
 class AudioClip;
 
-class AutomationDragHandler : public DragHandler
+class ShiftAutomationDragHandler : public DragHandler
 {
 	public:
-		AutomationDragHandler( Clip* clip, const Rect& rect, struct _auto_node* n = 0, int x_off = 0, int y_off = 0, bool shift = false );
-		~AutomationDragHandler();
+		ShiftAutomationDragHandler( Clip* clip, const Rect& rect, int x_, int y_ );
+		~ShiftAutomationDragHandler();
 		void OnDrag( int x, int y );
 		void OnDrop( int x, int y );
 	private:
-		bool m_dragging;
 		Rect m_outline;
-		struct _auto_node* m_node;
-		struct _auto_node* m_node_before;
-		bool m_firstNode;
-		bool m_lastNode;
-		int m_x_off;
-		int m_y_off;
+		struct _auto_node* m_nodeA;
+		struct _auto_node* m_nodeB;
+		bool m_firstA;
+		bool m_lastB;
 		AudioClip* m_audioClip;
-		bool m_shift;
 };
 
 } /* namespace nle */
-#endif /* _AUTOMATION_DRAG_HANDLER_H_ */
+
+#endif /* _SHIFT_AUTOMATION_DRAG_HANDLER_H_ */
 

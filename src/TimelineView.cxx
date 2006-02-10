@@ -39,6 +39,7 @@
 #include "ErrorDialog/IErrorHandler.H"
 #include "AudioClip.H"
 #include "AutomationDragHandler.H"
+#include "ShiftAutomationDragHandler.H"
 #include "IClipArtist.H"
 
 #include "audio.xpm"
@@ -95,7 +96,11 @@ int TimelineView::handle( int event )
 		case FL_PUSH: {
 				Clip* cl = get_clip( _x, _y );
 				if ( cl && g_ui->automationsMode() && cl->has_automation() ) {
-					m_dragHandler = new AutomationDragHandler( cl, get_clip_rect( cl, true ), 0, _x, _y );
+					if ( FL_SHIFT & Fl::event_state() ) {
+						m_dragHandler = new ShiftAutomationDragHandler( cl, get_clip_rect( cl, true ), _x, _y );
+					} else {
+						m_dragHandler = new AutomationDragHandler( cl, get_clip_rect( cl, true ), 0, _x, _y );
+					}
 					return 1;
 				} else if ( cl ) {
 					if ( _x < get_screen_position( cl->position(), cl->track()->stretchFactor() ) + 8 ) {
