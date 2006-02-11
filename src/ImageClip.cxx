@@ -22,6 +22,7 @@
 
 #include "ImageClip.H"
 #include "ErrorDialog/IErrorHandler.H"
+#include "ImageClipArtist.H"
 
 namespace nle
 {
@@ -31,6 +32,7 @@ ImageClip::ImageClip( Track* track, int64_t position, string filename )
 	: Clip( track, position ), m_filename( filename )
 {
 	m_ok = false;
+	m_artist = 0;
 	m_image = Fl_Shared_Image::get( filename.c_str() );
 	if ( !m_image ) {
 		ERROR_DETAIL( "This is not an image file" );
@@ -57,6 +59,7 @@ ImageClip::ImageClip( Track* track, int64_t position, string filename )
 	char** d = (char**)m_image->data();
 	int c = m_image->count();
 	m_frame.RGB = (unsigned char *)d[0];
+	m_artist = new ImageClipArtist( this, m_image );
 	m_ok = true;
 }
 
@@ -65,6 +68,9 @@ ImageClip::~ImageClip()
 	if ( m_image ) {
 		m_image->release();
 		m_image = 0;
+	}
+	if ( m_artist ) {
+		delete m_artist;
 	}
 }
 int64_t ImageClip::length()
