@@ -41,8 +41,8 @@ void ImageClipArtist::render( Rect& rect, int64_t start, int64_t stop )
 	fl_push_clip( rect.x, rect.y, rect.w, rect.h );		
 	m_image->draw( rect.x, rect.y );
 	m_image->draw( rect.x + rect.w - 40, rect.y );
-	fl_draw_box( FL_BORDER_BOX, rect.x, rect.y, 40, 30, FL_WHITE );
-	fl_draw_box( FL_BORDER_BOX, rect.x, rect.y - 40, 40, 30, FL_WHITE );
+	fl_draw_box( FL_BORDER_FRAME, rect.x, rect.y, 40, 30, FL_WHITE );
+	fl_draw_box( FL_BORDER_FRAME, rect.x + rect.w - 40, rect.y, 40, 30, FL_WHITE );
 	fl_pop_clip();
 }
 
