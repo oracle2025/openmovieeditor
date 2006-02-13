@@ -105,6 +105,18 @@ void Ruler::stylus( long stylus_pos )
 	redraw(); //FIXME: OpenGL Window is redrawn
 	// Maybe it should be somehow draw from within VideoViewGL
 }
+void Ruler::skipForward()
+{
+}
+void Ruler::skipBackward()
+{
+}
+void Ruler::skipFirst()
+{
+}
+void Ruler::skipLast()
+{
+}
 
 } /* namespace nle */
 

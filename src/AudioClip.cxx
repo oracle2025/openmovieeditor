@@ -146,7 +146,40 @@ void AudioClip::trimB( int64_t trim )
 	}
 
 	if ( trim > 0 ) {
+		//etwas von den Automations entfernen
+		auto_node* n = m_automationPoints;
+		while ( length() - trim > n->next->x ) {
+			n = n->next;
+		}
+		int64_t next_x = n->next->x;
+		float next_y = n->next->y;
+		auto_node* r = n->next;
+		while ( r ) {
+			auto_node* q = r;
+			r = r->next;
+			delete q;
+		}
+		r = new auto_node;
+		r->y = ( ( next_y - n->y ) * ( (float)( ( length() - trim ) - n->x) / (float)(next_x - n->x) ) ) + n->y;
+		r->x = length() - trim;
+		r->next = 0;
+		n->next = r;
 	} else {
+		// evtl. etwas hinzufügen
+		auto_node* n = m_automationPoints;
+		while ( n->next->next ) {
+			n = n->next;
+		}
+		if( n->y == n->next->y ) {
+			n->next->x = length() - trim;
+		} else {
+			n = n->next;
+			auto_node* r = new auto_node;
+			r->y = n->y;
+			r->x = length() - trim;
+			r->next = 0;
+			n->next = r;
+		}
 	}
 
 

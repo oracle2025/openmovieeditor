@@ -10,7 +10,7 @@
 
 SUBDIRS = portaudio tinyxml timeline ProgressDialog sl LoadSaveManager ErrorDialog
 EXTRA_DIST = nle.fl
-AM_CPPFLAGS = -Wall -Werror @CPPFLAGS@ -I$(top_srcdir)/icons -I$(top_srcdir)/src -I$(top_srcdir)/src/tinyxml -I$(top_srcdir)/src/sl
+AM_CPPFLAGS = -ggdb -Wall -Werror @CPPFLAGS@ -I$(top_srcdir)/icons -I$(top_srcdir)/src -I$(top_srcdir)/src/tinyxml -I$(top_srcdir)/src/sl
 
 bin_PROGRAMS = openmovieeditor
 openmovieeditor_LDADD = portaudio/libportaudio.a\
