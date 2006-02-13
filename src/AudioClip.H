@@ -48,6 +48,14 @@ class AudioClip : public AudioClipBase
 		bool has_automation() { return true; }
 		int type() { return CLIP_TYPE_AUDIO; }
 		inline IClipArtist* getArtist() { return m_artist; }
+		// vv  What's this? I hate C++
+		//inline int64_t trimA() { return Clip::trimA(); }
+		//inline int64_t trimB() { return Clip::trimB(); }
+		// vv "Fixed", yeah right 
+		using Clip::trimA;
+		using Clip::trimB;
+		void trimA( int64_t trim );
+		void trimB( int64_t trim );
 	protected:
 		int64_t audioTrimA();
 		int64_t audioTrimB();

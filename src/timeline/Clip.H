@@ -47,9 +47,9 @@ class Clip
 		const int64_t position() { return m_position; }
 		Track* track() { return m_track; }
 		void track( Track* track ) { m_track = track; }
-		void trimA( int64_t trim );
+		virtual void trimA( int64_t trim );
 		inline int64_t trimA() { return m_trimA; }
-		void trimB( int64_t trim );
+		virtual void trimB( int64_t trim );
 		inline int64_t trimB() { return m_trimB; }
 		virtual std::string filename()=0;
 		inline int64_t A() { return position(); }

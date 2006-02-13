@@ -74,7 +74,6 @@ int TimelineView::handle( int event )
 {
 	int _x = Fl::event_x();
 	int _y = Fl::event_y() - y();
-	static bool automationLine = false;
 	switch ( event ) {
 		case FL_PASTE:
 			{
@@ -182,7 +181,7 @@ void TimelineView::draw()
 	// END - Draw Button
 
 	//     - Draw Track Background
-		fl_draw_box( FL_BORDER_BOX , x_coord, y_coord, w_size, TRACK_HEIGHT, FL_DARK2 );
+		fl_draw_box( FL_BORDER_BOX, x_coord, y_coord, w_size, TRACK_HEIGHT, FL_DARK2 );
 	// END - Draw Track Background
 
 		fl_push_clip( x_coord, y_coord, w_size, TRACK_HEIGHT );
@@ -279,7 +278,7 @@ void TimelineView::draw()
 			int scr_clip_x = get_screen_position( clip->position(), track->stretchFactor() );
 			int scr_clip_y = y_coord;
 			int scr_clip_w = (int)( clip->length() * SwitchBoard::i()->zoom() / track->stretchFactor() );
-			int scr_clip_h = TRACK_HEIGHT;
+			//int scr_clip_h = TRACK_HEIGHT;
 		     	fl_color( FL_BLACK );
 			fl_begin_polygon();
 			fl_vertex( scr_clip_x, scr_clip_y + TRACK_HEIGHT / 2 );

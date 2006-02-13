@@ -52,6 +52,10 @@ AudioClip::~AudioClip()
 {
 	delete m_artist;
 	g_wavArtist->remove( m_audioFile->filename() );
+	auto_node* node;
+	while ( ( node = (auto_node*)sl_pop( &m_automationPoints ) ) ) {
+		delete node;
+	}
 }
 int64_t AudioClip::length()
 {
@@ -72,6 +76,81 @@ int64_t AudioClip::audioTrimB()
 int64_t AudioClip::audioPosition()
 {
 	return position();
+}
+void AudioClip::trimA( int64_t trim )
+{
+	if ( trim + m_trimA < 0 ) {
+		trim = -m_trimA;
+	}
+	if ( length() - trim <= 0 || trim == 0 ) {
+		return;
+	}
+	float last_y = m_automationPoints->y;
+	int64_t last_x = 0;
+	if ( trim > 0 ) {
+		auto_node* n = m_automationPoints;
+		while ( 1 ) {
+			if ( n->x < trim ) {
+				if ( n != m_automationPoints ) {
+					cerr << "Fatal, this shouldn't happen (AudioClip::trimA)" << endl;
+					return;
+				}
+				last_y = n->y;
+				last_x = n->x;
+				n = n->next;
+				delete (auto_node*)sl_pop( &m_automationPoints );
+			} else {
+				auto_node* r = new auto_node;
+				r->y = ( ( n->y - last_y ) * ( (float)(trim - last_x) / (float)(n->x - last_x) ) ) + last_y;
+				r->x = 0;
+				r->next = 0;
+				m_automationPoints = (auto_node*)sl_push( m_automationPoints, r );
+				auto_node* q = r->next;
+				for ( ; q; q = q->next ) {
+					q->x -= trim;
+				}
+				break;
+			}
+			if ( !n ) {
+				break;
+			}
+		}
+	} else {
+		auto_node* n = m_automationPoints;
+		if ( n->y == n->next->y ) {
+			n->x = 0;
+			n = n->next;
+			for ( ; n; n = n->next ) {
+				n->x -= trim;
+			}
+		} else {
+			auto_node* r = new auto_node;
+			r->y = n->y;
+			r->x = 0;
+			r->next = 0;
+			m_automationPoints = (auto_node*)sl_push( m_automationPoints, r );
+			for ( ; n; n = n->next ) {
+				n->x -= trim;
+			}
+		}
+	}
+	Clip::trimA( trim );
+}
+void AudioClip::trimB( int64_t trim )
+{
+	if ( trim + m_trimB < 0 ) {
+		trim = -m_trimB;
+	}
+	if ( length() - trim <= 0 ) {
+		return;
+	}
+
+	if ( trim > 0 ) {
+	} else {
+	}
+
+
+	Clip::trimB( trim );
 }
 
 } /* namespace nle */

@@ -96,7 +96,6 @@ void blend( unsigned char* dst, unsigned char* src1, unsigned char* src2, float 
 {
 	unsigned char *ps1, *ps2, *pd, *pd_end;
 	unsigned int a = (unsigned char)( alpha * 255 );
-	unsigned char tmp;
 	ps1 = src1;
 	ps2 = src2;
 	pd = dst;

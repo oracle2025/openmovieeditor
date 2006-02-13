@@ -128,7 +128,6 @@ frame_struct** Timeline::getFrameStack( int64_t position )
 	static frame_struct* frameStack[8]; //At most 8 Frames, ought to be enough for everyone ;)
 	int cnt = 0;
 	static int64_t last_frame = -1;
-	frame_struct* res = NULL;
 	if ( position < 0 || last_frame < 0 || last_frame + 1 == position ) {
 		m_playPosition++;
 	} else {
@@ -140,20 +139,12 @@ frame_struct** Timeline::getFrameStack( int64_t position )
 		if ( !current ) {
 			continue;
 		}
-//		res = current->getFrame( m_playPosition - 1 );
 		frame_struct** fs = current->getFrameStack( m_playPosition - 1 );
 		
 		for ( int i = 0; fs[i] && cnt <=7 ; i++ ) {
 			frameStack[cnt] = fs[i];
 			cnt++;
 		}
-		
-
-		
-//		if ( res ) {
-//			frameStack[cnt] = res;
-//			cnt++;
-//		}
 		if ( cnt == 7 ) {
 			break;
 		}
