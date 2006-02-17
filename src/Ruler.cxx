@@ -26,6 +26,7 @@
 #include "TimelineView.H"
 #include "helper.H"
 #include "SwitchBoard.H"
+#include "Timeline.H"
 
 namespace nle
 {
@@ -107,15 +108,22 @@ void Ruler::stylus( long stylus_pos )
 }
 void Ruler::skipForward()
 {
+	g_timelineView->move_cursor( g_timelineView->m_stylusPosition + 1 );
 }
 void Ruler::skipBackward()
 {
+	if ( g_timelineView->m_stylusPosition == 0 ) {
+		return;
+	}
+	g_timelineView->move_cursor( g_timelineView->m_stylusPosition - 1 );
 }
 void Ruler::skipFirst()
 {
+	g_timelineView->move_cursor( 0 );
 }
 void Ruler::skipLast()
 {
+	g_timelineView->move_cursor( g_timeline->length() );
 }
 
 } /* namespace nle */

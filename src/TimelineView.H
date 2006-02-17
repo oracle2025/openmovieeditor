@@ -63,13 +63,13 @@ class TimelineView : public Fl_Widget
 		int64_t get_real_position( int p, float stretchFactor = 1.0 );
 		int get_screen_position( int64_t p, float stretchFactor = 1.0 );
 		int64_t scrollPosition() { return m_scrollPosition; }
+		int64_t m_stylusPosition;
 	protected:
 		void draw();
 	private:
 		void adjustScrollbar();
 		DragHandler *m_dragHandler;
 		int64_t m_scrollPosition;
-		int64_t m_stylusPosition;
 };
 
 } /* namespace nle */
