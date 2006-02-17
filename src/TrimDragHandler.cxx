@@ -70,7 +70,7 @@ void TrimDragHandler::preview()
 	if ( !cl ) {
 		return;
 	}
-	int64_t pos = g_timelineView->get_real_position( m_x ) - cl->position() - cl->trimA();
+	int64_t pos = g_timelineView->get_real_position( m_x ) - ( cl->position() - cl->trimA() );
 	if ( pos < 0 || pos > cl->file()->length() ) {
 		if ( m_trimRight ) {
 			cl->file()->seek( cl->file()->length() );
