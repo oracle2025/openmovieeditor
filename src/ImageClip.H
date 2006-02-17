@@ -41,6 +41,10 @@ class ImageClip : public Clip, public IVideoReader
 		void reset() {}
 		int type() { return CLIP_TYPE_IMAGE; }
 		inline IClipArtist* getArtist() { return m_artist; }
+		using Clip::trimA;
+		using Clip::trimB;
+		void trimA( int64_t trim );
+		void trimB( int64_t trim );
 	private:
 		Fl_Shared_Image* m_image;
 		int64_t m_length;

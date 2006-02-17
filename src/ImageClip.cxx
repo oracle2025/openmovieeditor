@@ -87,5 +87,24 @@ frame_struct* ImageClip::getFrame( int64_t position )
 	}
 }
 
+void ImageClip::trimA( int64_t trim )
+{
+	if ( m_length - trim < 0 ) {
+		return;
+	}
+	if ( m_position + trim < 0 ) {
+		trim = (-1) * m_position;
+	}
+	m_length -= trim;
+	m_position += trim;
+
+}
+void ImageClip::trimB( int64_t trim )
+{
+	if ( m_length - trim < 0 ) {
+		return;
+	}
+	m_length -= trim;
+}
 
 } /* namespace nle */
