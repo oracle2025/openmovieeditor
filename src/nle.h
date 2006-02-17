@@ -70,6 +70,14 @@ private:
   static void cb_projectNameInput(Fl_Input*, void*);
   inline void cb__i(Fl_Button*, void*);
   static void cb_(Fl_Button*, void*);
+  inline void cb_1_i(Fl_Button*, void*);
+  static void cb_1(Fl_Button*, void*);
+  inline void cb_2_i(Fl_Button*, void*);
+  static void cb_2(Fl_Button*, void*);
+  inline void cb_3_i(Fl_Button*, void*);
+  static void cb_3(Fl_Button*, void*);
+  inline void cb_4_i(Fl_Button*, void*);
+  static void cb_4(Fl_Button*, void*);
 public:
   Fl_Choice *projectChoice;
 private:

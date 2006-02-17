@@ -249,6 +249,34 @@ void NleUI::cb_(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb__i(o,v);
 }
 
+inline void NleUI::cb_1_i(Fl_Button*, void*) {
+  nle::g_ruler->skipLast();
+}
+void NleUI::cb_1(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_1_i(o,v);
+}
+
+inline void NleUI::cb_2_i(Fl_Button*, void*) {
+  nle::g_ruler->skipFirst();
+}
+void NleUI::cb_2(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_2_i(o,v);
+}
+
+inline void NleUI::cb_3_i(Fl_Button*, void*) {
+  nle::g_ruler->skipBackward();
+}
+void NleUI::cb_3(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_3_i(o,v);
+}
+
+inline void NleUI::cb_4_i(Fl_Button*, void*) {
+  nle::g_ruler->skipForward();
+}
+void NleUI::cb_4(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_4_i(o,v);
+}
+
 inline void NleUI::cb_projectChoice_i(Fl_Choice* o, void*) {
   char* name = (char*)o->mvalue()->user_data();
 nle::g_loadSaveManager->load( name );
@@ -395,15 +423,19 @@ NleUI::NleUI() {
           }
           { Fl_Button* o = new Fl_Button(230, 235, 50, 40, "@>|");
             o->tooltip("Goto End");
+            o->callback((Fl_Callback*)cb_1);
           }
           { Fl_Button* o = new Fl_Button(0, 235, 50, 40, "@|<");
             o->tooltip("Goto Start");
+            o->callback((Fl_Callback*)cb_2);
           }
           { Fl_Button* o = new Fl_Button(50, 235, 50, 40, "@<|");
             o->tooltip("Skip Frame backwards");
+            o->callback((Fl_Callback*)cb_3);
           }
           { Fl_Button* o = new Fl_Button(180, 235, 50, 40, "@|>");
             o->tooltip("Skip Frame forward");
+            o->callback((Fl_Callback*)cb_4);
           }
           o->end();
         }
