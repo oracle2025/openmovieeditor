@@ -56,13 +56,17 @@ class AudioClip : public AudioClipBase
 		using Clip::trimB;
 		void trimA( int64_t trim );
 		void trimB( int64_t trim );
+		int fillBuffer( float* output, unsigned long frames, int64_t position );
+		void reset();
 	protected:
 		int64_t audioTrimA();
 		int64_t audioTrimB();
 		int64_t audioPosition();
 	private:
+		float getEnvelope( int64_t position );
 		float m_basicLevel;
 		auto_node* m_automationPoints;
+		auto_node* m_autoCache;
 		IClipArtist* m_artist;
 };
 

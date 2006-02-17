@@ -24,9 +24,8 @@
 
 namespace nle
 {
-void scale_it( frame_struct* src, frame_struct* dst )
+static void scale_it_raw( frame_struct* src, frame_struct* dst, gavl_colorspace_t colorspace, int bits )
 {
-
 	gavl_rectangle_t src_rect;
 	gavl_rectangle_t dst_rect;
 	gavl_video_format_t format_src;
@@ -37,10 +36,10 @@ void scale_it( frame_struct* src, frame_struct* dst )
 	frame_src = gavl_video_frame_create( 0 );
 	frame_dst = gavl_video_frame_create( 0 );
 
-	frame_src->strides[0] = src->w * 3;
+	frame_src->strides[0] = src->w * bits;
 	frame_src->planes[0] = src->RGB;
 	
-	frame_dst->strides[0] = dst->w * 3;
+	frame_dst->strides[0] = dst->w * bits;
 	frame_dst->planes[0] = dst->RGB;
 
 
@@ -55,7 +54,7 @@ void scale_it( frame_struct* src, frame_struct* dst )
 	format_dst.image_height = dst->h;;
 	format_dst.pixel_width = 1;
 	format_dst.pixel_height = 1;
-	format_dst.colorspace = GAVL_RGB_24;
+	format_dst.colorspace = colorspace;
 	
 	format_src.frame_width  = src->w;
 	format_src.frame_height = src->h;
@@ -63,7 +62,7 @@ void scale_it( frame_struct* src, frame_struct* dst )
 	format_src.image_height = src->h;;
 	format_src.pixel_width = 1;
 	format_src.pixel_height = 1;
-	format_src.colorspace = GAVL_RGB_24;
+	format_src.colorspace = colorspace;
 
 	src_rect.x = 0;
 	src_rect.y = 0;
@@ -76,7 +75,7 @@ void scale_it( frame_struct* src, frame_struct* dst )
 	dst_rect.h = dst->h;
 
 	
-	if ( gavl_video_scaler_init( scaler, GAVL_RGB_24, &src_rect, &dst_rect, &format_src, &format_dst ) == -1 ) {
+	if ( gavl_video_scaler_init( scaler, colorspace, &src_rect, &dst_rect, &format_src, &format_dst ) == -1 ) {
 		cerr << "Video Scaler Init failed" << endl;
 		return;
 	}
@@ -89,7 +88,14 @@ void scale_it( frame_struct* src, frame_struct* dst )
 
 	gavl_video_scaler_destroy( scaler );
 
-
+}
+void scale_it_alpha( frame_struct* src, frame_struct* dst )
+{
+	scale_it_raw( src, dst, GAVL_RGBA_32, 4 );
+}
+void scale_it( frame_struct* src, frame_struct* dst )
+{
+	scale_it_raw( src, dst, GAVL_RGB_24, 3 );
 }
 // inspired by rasterman, but poorly done ;)
 void blend( unsigned char* dst, unsigned char* src1, unsigned char* src2, float alpha, int len )
@@ -100,12 +106,29 @@ void blend( unsigned char* dst, unsigned char* src1, unsigned char* src2, float 
 	ps2 = src2;
 	pd = dst;
 	pd_end = dst + ( len * 3 );
-	while ( pd < pd_end ) {
+	while ( pd <= pd_end ) {
 		pd[0] = ( ( ( ps1[0] - ps2[0] ) * a ) >> 8 ) + ps2[0];
 		ps1++;
 		ps2++;
 		pd++;
-	};
+	}
+}
+void blend_alpha( unsigned char* dst, unsigned char* rgb, unsigned char* rgba, float alpha, int len )
+{
+	unsigned char *ps1, *ps2, *pd, *pd_end;
+	unsigned int a = (unsigned char)( alpha * 255 );
+	ps1 = rgba;
+	ps2 = rgb;
+	pd = dst;
+	pd_end = dst + ( len * 3 );
+	while ( pd <= pd_end ) {
+		pd[0] = ( ( ( ps1[0] - ps2[0] ) * a * ps1[3] ) >> 16 ) + ps2[0];
+		pd[1] = ( ( ( ps1[1] - ps2[1] ) * a * ps1[3] ) >> 16 ) + ps2[1];
+		pd[2] = ( ( ( ps1[2] - ps2[2] ) * a * ps1[3] ) >> 16 ) + ps2[2];
+		ps1 += 4;
+		ps2 += 3;
+		pd += 3;
+	}
 }
 	
 } /* namespace nle */

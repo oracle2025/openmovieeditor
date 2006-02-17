@@ -47,6 +47,7 @@ AudioClip::AudioClip( Track *track, int64_t position, IAudioFile* af, int64_t tr
 	r->x = 0;
 	m_automationPoints = (auto_node*)sl_push( m_automationPoints, r );
 	m_artist = new AudioClipArtist( this );
+	m_autoCache = 0;
 }
 AudioClip::~AudioClip()
 {
@@ -184,6 +185,52 @@ void AudioClip::trimB( int64_t trim )
 
 
 	Clip::trimB( trim );
+}
+void AudioClip::reset()
+{
+	AudioClipBase::reset();
+	m_autoCache = m_automationPoints;
+}
+float AudioClip::getEnvelope( int64_t position )
+{
+	/*if ( position < audioPosition() || position > audioPosition() + audioLength() ) {
+		cout << "shouldn't happen" << endl;
+	}*/
+	int64_t pPos = position - audioPosition();
+	if ( m_autoCache && m_autoCache->x <= pPos &&  m_autoCache->next && m_autoCache->next->x > pPos ) {
+		int64_t diff = m_autoCache->next->x - m_autoCache->x;
+		float diff_y = m_autoCache->next->y - m_autoCache->y;
+		float inc = diff_y / diff;
+		return ( inc * ( pPos - m_autoCache->x ) ) + m_autoCache->y;
+	} else {
+		if ( m_autoCache ) {
+			m_autoCache = m_autoCache->next;
+			cout << "Entering Recursion in getEnvelope" << endl;
+			return getEnvelope( position );
+		}
+	}
+	return 1.0;
+}
+int AudioClip::fillBuffer( float* output, unsigned long frames, int64_t position )
+{
+	int result = AudioClipBase::fillBuffer( output, frames, position );
+	int64_t currentPosition = audioPosition();
+	int64_t aLength = audioLength();
+	//Manipulate output
+
+	int64_t start_output = currentPosition > position ? currentPosition - position : 0;
+	int64_t start_clip = currentPosition > position ? currentPosition : position ;
+	int64_t count = currentPosition + aLength - position - start_output;
+	if ( count + start_output > frames ) {
+		count = frames - start_output;
+	}
+	float envelope;
+	for ( int64_t i = 0; i < count; i++ ) {
+		envelope = getEnvelope( start_clip + i );
+		output[(i*2)] = output[(i*2)] * envelope;
+		output[(i*2) + 1] = output[(i*2) + 1] * envelope;
+	}
+	return result;
 }
 
 } /* namespace nle */

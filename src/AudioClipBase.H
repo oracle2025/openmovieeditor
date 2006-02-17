@@ -39,7 +39,7 @@ class AudioClipBase : public Clip
 {
 	public:
 		virtual ~AudioClipBase();
-		int fillBuffer( float* output, unsigned long frames, int64_t position );
+		virtual int fillBuffer( float* output, unsigned long frames, int64_t position );
 		virtual void reset();
 	protected:
 		AudioClipBase( Track *track, int64_t position, IAudioFile* af = 0 );

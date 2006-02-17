@@ -249,28 +249,30 @@ void TimelineView::draw()
 			}
 
 		}
-		for ( clip_node* j = track->getClips(); j; j = j->next ) {
-			Clip* clip = j->clip;
-			for ( clip_node* k = j->next; k; k = k->next ) {
-				Clip* cclip = k->clip;
-				if ( clip->A() < cclip->A() && clip->B() > cclip->A() ) {
-					int x = get_screen_position( cclip->A(), track->stretchFactor() );
-					int w = get_screen_position( clip->B(), track->stretchFactor() ) - x;
-					fl_draw_box( FL_FLAT_BOX, x, y_coord, w, TRACK_HEIGHT, FL_DARK_BLUE );
-					fl_draw_box( FL_BORDER_FRAME, x, y_coord, w, TRACK_HEIGHT, FL_RED );
-					fl_color( FL_RED );
-					fl_line( x, y_coord, x + w, y_coord + TRACK_HEIGHT );
-					fl_line( x + w, y_coord, x, y_coord + TRACK_HEIGHT );
-				} else if ( cclip->A() < clip->A() && cclip->B() > clip->A() ) {
-					int x = get_screen_position( clip->A(), track->stretchFactor() );
-					int w = get_screen_position( cclip->B(), track->stretchFactor() ) - x;
-					fl_draw_box( FL_FLAT_BOX, x, y_coord, w, TRACK_HEIGHT, FL_DARK_BLUE );
-					fl_draw_box( FL_BORDER_FRAME, x, y_coord, w, TRACK_HEIGHT, FL_RED );
-					fl_color( FL_RED );
-					fl_line( x, y_coord, x + w, y_coord + TRACK_HEIGHT );
-					fl_line( x + w, y_coord, x, y_coord + TRACK_HEIGHT );
-				}
+		if ( dynamic_cast<VideoTrack*>(track) ) {
+			for ( clip_node* j = track->getClips(); j; j = j->next ) {
+				Clip* clip = j->clip;
+				for ( clip_node* k = j->next; k; k = k->next ) {
+					Clip* cclip = k->clip;
+					if ( clip->A() < cclip->A() && clip->B() > cclip->A() ) {
+						int x = get_screen_position( cclip->A(), track->stretchFactor() );
+						int w = get_screen_position( clip->B(), track->stretchFactor() ) - x;
+						fl_draw_box( FL_FLAT_BOX, x, y_coord, w, TRACK_HEIGHT, FL_DARK_BLUE );
+						fl_draw_box( FL_BORDER_FRAME, x, y_coord, w, TRACK_HEIGHT, FL_RED );
+						fl_color( FL_RED );
+						fl_line( x, y_coord, x + w, y_coord + TRACK_HEIGHT );
+						fl_line( x + w, y_coord, x, y_coord + TRACK_HEIGHT );
+					} else if ( cclip->A() < clip->A() && cclip->B() > clip->A() ) {
+						int x = get_screen_position( clip->A(), track->stretchFactor() );
+						int w = get_screen_position( cclip->B(), track->stretchFactor() ) - x;
+						fl_draw_box( FL_FLAT_BOX, x, y_coord, w, TRACK_HEIGHT, FL_DARK_BLUE );
+						fl_draw_box( FL_BORDER_FRAME, x, y_coord, w, TRACK_HEIGHT, FL_RED );
+						fl_color( FL_RED );
+						fl_line( x, y_coord, x + w, y_coord + TRACK_HEIGHT );
+						fl_line( x + w, y_coord, x, y_coord + TRACK_HEIGHT );
+					}
 
+				}
 			}
 		}
 		for ( clip_node* j = track->getClips(); j; j = j->next ) {
@@ -294,10 +296,6 @@ void TimelineView::draw()
 
 		fl_pop_clip();
 	}
-
-
-//Überlappungen malen
-
 	fl_pop_clip();
 	fl_overlay_rect( get_screen_position( m_stylusPosition ), y(), 1, h() );
 }

@@ -251,6 +251,12 @@ void Timeline::getBlendedFrame( int64_t position, frame_struct* dst )
 	start--;
 	for ( int i = start; i >= stop; i-- ) {
 		if ( fs[i]->has_alpha_channel ) {
+			if ( fs[i]->w != dst->w || fs[i]->h != dst->h ) {
+				scale_it_alpha( fs[i], &tmp_frame );
+				blend_alpha( dst->RGB, dst->RGB, tmp_frame.RGB, fs[i]->alpha, dst->w * dst->h );
+			} else {
+				blend_alpha( dst->RGB, dst->RGB, fs[i]->RGB, fs[i]->alpha, dst->w * dst->h );
+			}
 			continue;
 		}
 		if ( fs[i]->w != dst->w || fs[i]->h != dst->h ) {
