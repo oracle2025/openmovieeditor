@@ -55,9 +55,9 @@ PKG_CHECK_MODULES(SNDFILE, sndfile >= 1.0.0,,
 CPPFLAGS="$CPPFLAGS $SNDFILE_CFLAGS"
 LDFLAGS="$LDFLAGS $SNDFILE_LIBS"
 
-PKG_CHECK_MODULES(GAVL, gavl = 0.2.2,,
-  AC_MSG_ERROR([*** gavl 0.2.2 not found - this program requires the gmerlin audio
-  video library = 0.2.2 http://gmerlin.sourceforge.net/ ***]))
+PKG_CHECK_MODULES(GAVL, gavl = 0.2.3,,
+  AC_MSG_ERROR([*** gavl 0.2.3 not found - this program requires the gmerlin audio
+  video library = 0.2.3 http://gmerlin.sourceforge.net/ ***]))
 CPPFLAGS="$CPPFLAGS $GAVL_CFLAGS"
 LDFLAGS="$LDFLAGS $GAVL_LIBS"
 

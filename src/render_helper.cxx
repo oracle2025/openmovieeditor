@@ -24,6 +24,72 @@
 
 namespace nle
 {
+static void scale_it_raw( frame_struct* src, frame_struct* dst, gavl_pixelformat_t colorspace, int bits )
+{
+	gavl_rectangle_i_t src_rect;
+	gavl_rectangle_i_t dst_rect;
+	gavl_video_format_t format_src;
+	gavl_video_format_t format_dst;
+
+	gavl_video_frame_t * frame_src, * frame_dst;
+
+	frame_src = gavl_video_frame_create( 0 );
+	frame_dst = gavl_video_frame_create( 0 );
+
+	frame_src->strides[0] = src->w * bits;
+	frame_src->planes[0] = src->RGB;
+	
+	frame_dst->strides[0] = dst->w * bits;
+	frame_dst->planes[0] = dst->RGB;
+
+
+	gavl_video_scaler_t *scaler;
+	scaler = gavl_video_scaler_create();
+	gavl_video_options_set_scale_mode( gavl_video_scaler_get_options( scaler ), GAVL_SCALE_AUTO );
+	
+
+	format_dst.frame_width  = dst->w;
+	format_dst.frame_height = dst->h;
+	format_dst.image_width  = dst->w;
+	format_dst.image_height = dst->h;;
+	format_dst.pixel_width = 1;
+	format_dst.pixel_height = 1;
+	format_dst.pixelformat = colorspace;
+	
+	format_src.frame_width  = src->w;
+	format_src.frame_height = src->h;
+	format_src.image_width  = src->w;
+	format_src.image_height = src->h;;
+	format_src.pixel_width = 1;
+	format_src.pixel_height = 1;
+	format_src.pixelformat = colorspace;
+
+	src_rect.x = 0;
+	src_rect.y = 0;
+	src_rect.w = src->w;
+	src_rect.h = src->h;
+
+	dst_rect.x = 0;
+	dst_rect.y = 0;
+	dst_rect.w = dst->w;
+	dst_rect.h = dst->h;
+
+	
+	if ( gavl_video_scaler_init( scaler, &format_src, &format_dst ) == -1 ) {
+		cerr << "Video Scaler Init failed" << endl;
+		return;
+	}
+	gavl_video_scaler_scale( scaler, frame_src, frame_dst );
+
+	gavl_video_frame_null( frame_src );
+	gavl_video_frame_null( frame_dst );
+	gavl_video_frame_destroy( frame_src );
+	gavl_video_frame_destroy( frame_dst );
+
+	gavl_video_scaler_destroy( scaler );
+
+}
+#if 0
 static void scale_it_raw( frame_struct* src, frame_struct* dst, gavl_colorspace_t colorspace, int bits )
 {
 	gavl_rectangle_t src_rect;
@@ -89,6 +155,7 @@ static void scale_it_raw( frame_struct* src, frame_struct* dst, gavl_colorspace_
 	gavl_video_scaler_destroy( scaler );
 
 }
+#endif
 void scale_it_alpha( frame_struct* src, frame_struct* dst )
 {
 	scale_it_raw( src, dst, GAVL_RGBA_32, 4 );
