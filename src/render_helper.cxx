@@ -106,7 +106,7 @@ void blend( unsigned char* dst, unsigned char* src1, unsigned char* src2, float 
 	ps2 = src2;
 	pd = dst;
 	pd_end = dst + ( len * 3 );
-	while ( pd <= pd_end ) {
+	while ( pd < pd_end ) {
 		pd[0] = ( ( ( ps1[0] - ps2[0] ) * a ) >> 8 ) + ps2[0];
 		ps1++;
 		ps2++;
@@ -121,7 +121,7 @@ void blend_alpha( unsigned char* dst, unsigned char* rgb, unsigned char* rgba, f
 	ps2 = rgb;
 	pd = dst;
 	pd_end = dst + ( len * 3 );
-	while ( pd <= pd_end ) {
+	while ( pd < pd_end ) {
 		pd[0] = ( ( ( ps1[0] - ps2[0] ) * a * ps1[3] ) >> 16 ) + ps2[0];
 		pd[1] = ( ( ( ps1[1] - ps2[1] ) * a * ps1[3] ) >> 16 ) + ps2[1];
 		pd[2] = ( ( ( ps1[2] - ps2[2] ) * a * ps1[3] ) >> 16 ) + ps2[2];
