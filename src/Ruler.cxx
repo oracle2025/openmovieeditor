@@ -95,6 +95,8 @@ int Ruler::handle( int event )
 			if ( __x ) {
 				__x = 0;
 				return 1;
+			} else {
+				g_timelineView->stylus( _x + ( m_stylus.w / 2 ) );
 			}
 			break;
 	}
