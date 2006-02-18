@@ -307,18 +307,6 @@ NleUI::NleUI() {
             o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
             o->when(FL_WHEN_RELEASE);
           }
-          { nle::TimelineView* o = m_timelineView = new nle::TimelineView(40, 300, 475, 145);
-            o->box(FL_NO_BOX);
-            o->color(FL_BACKGROUND_COLOR);
-            o->selection_color(FL_BACKGROUND_COLOR);
-            o->labeltype(FL_NORMAL_LABEL);
-            o->labelfont(0);
-            o->labelsize(14);
-            o->labelcolor(FL_BLACK);
-            o->align(FL_ALIGN_CENTER);
-            o->when(2);
-            Fl_Group::current()->resizable(o);
-          }
           { Flmm_Scalebar* o = scaleBar = new Flmm_Scalebar(40, 445, 475, 20);
             o->type(1);
             o->box(FL_FLAT_BOX);
@@ -333,6 +321,18 @@ NleUI::NleUI() {
             o->callback((Fl_Callback*)cb_scaleBar);
             o->align(FL_ALIGN_BOTTOM);
             o->when(FL_WHEN_CHANGED);
+          }
+          { nle::TimelineView* o = m_timelineView = new nle::TimelineView(40, 300, 475, 145);
+            o->box(FL_NO_BOX);
+            o->color(FL_BACKGROUND_COLOR);
+            o->selection_color(FL_BACKGROUND_COLOR);
+            o->labeltype(FL_NORMAL_LABEL);
+            o->labelfont(0);
+            o->labelsize(14);
+            o->labelcolor(FL_BLACK);
+            o->align(FL_ALIGN_TOP);
+            o->when(FL_WHEN_RELEASE);
+            o->end();
           }
           o->end();
           Fl_Group::current()->resizable(o);

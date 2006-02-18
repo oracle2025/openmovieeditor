@@ -94,6 +94,25 @@ int TimelineView::handle( int event )
 			return 1;
 		case FL_PUSH: {
 				Clip* cl = get_clip( _x, _y );
+				VideoClip* vcl = 0;
+				if ( cl ) {
+					vcl = dynamic_cast<VideoClip*>(cl);
+				}
+				if ( cl && vcl && vcl->hasAudio() && ( Fl::event_button() == FL_RIGHT_MOUSE ) ) {
+					if ( vcl->m_mute ) {
+						Fl_Menu_Item menuitem[] = { { "Unmute Original Sound" }, { 0L } };
+						if ( menuitem->popup( Fl::event_x(), Fl::event_y() ) ) {
+							vcl->m_mute = false;
+							redraw();
+						}
+					} else {
+						Fl_Menu_Item menuitem[] = { { "Mute Original Sound" }, { 0L } };
+						if ( menuitem->popup( Fl::event_x(), Fl::event_y() ) ) {
+							vcl->m_mute = true;
+							redraw();
+						}
+					}
+				}
 				if ( cl && g_ui->automationsMode() && cl->has_automation() ) {
 					if ( FL_SHIFT & Fl::event_state() ) {
 						m_dragHandler = new ShiftAutomationDragHandler( cl, get_clip_rect( cl, true ), _x, _y );

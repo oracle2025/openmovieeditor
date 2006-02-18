@@ -45,7 +45,7 @@ class TimelineBase
 		// method declerations
 		void sort();
 		void addClip( int track, Clip *clip );
-		void addFile( int track, int64_t position, std::string filename, int64_t trimA = 0, int64_t trimB = 0 );
+		void addFile( int track, int64_t position, std::string filename, int64_t trimA = 0, int64_t trimB = 0, int mute = 0 );
 		void removeClip( int track, Clip *clip );
 		void addTrack( Track* track );
 		void removeTrack( int track );

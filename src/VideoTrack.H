@@ -48,17 +48,19 @@ class VideoTrack : public TrackBase
 		VideoTrack( int num );
 		virtual ~VideoTrack();
 
-		void addFile( int64_t position, string filename, int64_t trimA = 0, int64_t trimB = 0 );
+		void addFile( int64_t position, string filename, int64_t trimA = 0, int64_t trimB = 0, int mute = 0 );
 		int type() { return TRACK_TYPE_VIDEO; }
 		float stretchFactor() { return 1.0; }
 		frame_struct* getFrame( int64_t position );
 		frame_struct** VideoTrack::getFrameStack( int64_t position );
 		void sort();
 		void reconsiderFadeOver();
+		int fillBuffer( float* output, unsigned long frames, int64_t position ); //Needed for Crossfade handling
 	private:
 		int64_t m_playPosition;
 		clip_node* m_vidCurrent;
 		fade_over* m_fade_overs;
+		fade_over* m_currentAudioFadeOver;
 };
 	
 } /* namespace nle */

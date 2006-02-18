@@ -153,19 +153,6 @@ frame_struct** Timeline::getFrameStack( int64_t position )
 	return frameStack;
 }
 
-unsigned int mixChannels( float *A, float *B, float* out, unsigned int frames )
-{
-	float *p_output = out;
-	float *p_A = A;
-	float *p_B = B;
-	for ( unsigned int i = frames * 2; i > 0; i-- ){
-		*p_output = *p_A + *p_B;
-		p_output++;
-		p_A++;
-		p_B++;
-	}
-	return frames;
-}
 
 #define FRAMES_PER_BUFFER 256
 int Timeline::fillBuffer( float* output, unsigned long frames )

@@ -28,7 +28,7 @@ namespace nle
 class TrackBase : public Track
 {
 	public:
-		int fillBuffer( float* output, unsigned long frames, int64_t position );
+		virtual int fillBuffer( float* output, unsigned long frames, int64_t position );
 	protected:
 		TrackBase( int num );
 		clip_node* m_current;

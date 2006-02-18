@@ -64,6 +64,7 @@ class TimelineView : public Fl_Widget
 		int get_screen_position( int64_t p, float stretchFactor = 1.0 );
 		int64_t scrollPosition() { return m_scrollPosition; }
 		int64_t m_stylusPosition;
+		void end() {}
 	protected:
 		void draw();
 	private:

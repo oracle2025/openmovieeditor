@@ -123,6 +123,8 @@ int Project::write( string filename, string name )
 					automation->SetAttribute( "x", q->x );
 					automation->SetDoubleAttribute( "y", q->y );
 				}
+			} else if ( VideoClip* vc = dynamic_cast<VideoClip*>(cn->clip) ) {
+				clip->SetAttribute( "mute", (int)vc->m_mute );
 			}
 			cn = cn->next;
 		}
@@ -164,6 +166,7 @@ int Project::read( string filename )
 			int position;
 			int trimA;
 			int trimB;
+			int mute = 0;
 			char filename[1024];
 			if ( ! j->Attribute( "position", &position ) )
 				continue;
@@ -174,7 +177,8 @@ int Project::read( string filename )
 			strlcpy( filename, j->Attribute( "filename" ), sizeof(filename) );
 			if ( ! filename )
 				continue;
-			g_timeline->addFile( i, position, filename, trimA, trimB );
+			j->Attribute( "mute", &mute );
+			g_timeline->addFile( i, position, filename, trimA, trimB, mute );
 		}
 		tr->reconsiderFadeOver();
 		i++;

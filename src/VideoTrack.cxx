@@ -24,6 +24,7 @@
 #include "ImageClip.H"
 #include "VideoFileQT.H"
 #include "ErrorDialog/IErrorHandler.H"
+#include "render_helper.H"
 
 namespace nle
 {
@@ -33,6 +34,7 @@ VideoTrack::VideoTrack( int num )
 {
 	m_vidCurrent = 0;
 	m_fade_overs = 0;
+	m_currentAudioFadeOver = 0;
 }
 VideoTrack::~VideoTrack()
 {
@@ -47,13 +49,15 @@ void VideoTrack::sort()
 	m_current = m_clips;
 	m_vidCurrent = m_clips;
 	m_playPosition = 0;
+	m_currentAudioFadeOver = m_fade_overs;
 }
-void VideoTrack::addFile( int64_t position, string filename, int64_t trimA, int64_t trimB )
+void VideoTrack::addFile( int64_t position, string filename, int64_t trimA, int64_t trimB, int mute )
 {
 	VideoFileQT *vf = new VideoFileQT( filename );
 	
 	if ( vf->ok() ) {
-		Clip* c = new VideoClip( this, position, vf, trimA, trimB );
+		VideoClip* c = new VideoClip( this, position, vf, trimA, trimB );
+		c->m_mute = mute;
 		addClip( c );
 		return;
 	} else {
@@ -155,7 +159,6 @@ frame_struct** VideoTrack::getFrameStack( int64_t position )
 			}
 		}
 	}
-
 	return frameStack;
 }
 	
@@ -202,5 +205,48 @@ void get_alpha_values( fade_over* o, float& a, float& b, int64_t position )
 	b = 1.0;
 	a = 1.0 - ( o->inc * p );
 }
+int VideoTrack::fillBuffer( float* output, unsigned long frames, int64_t position )
+{
+	unsigned long inc;
+	unsigned long written = 0;
+	unsigned long emptyItems = 0;
+	float* incBuffer = output;
+	float buf[512];
 
+	while ( m_current && m_current->clip->type() != CLIP_TYPE_VIDEO && m_current->clip->type() != CLIP_TYPE_AUDIO ) {
+		m_current = m_current->next;
+	}
+	while ( m_currentAudioFadeOver && fade_over_end( m_currentAudioFadeOver ) * 1920 < position + frames  ) { // 48000 / 25 == 1920
+		m_currentAudioFadeOver = m_currentAudioFadeOver->next;
+	}
+	if ( m_currentAudioFadeOver && position > fade_over_start( m_currentAudioFadeOver ) * 1920 ) {
+		AudioClipBase* ac1 = dynamic_cast<AudioClipBase*>(m_current->clip);
+		AudioClipBase* ac2 = dynamic_cast<AudioClipBase*>(m_current->next->clip);
+		ac1->fillBuffer( incBuffer, frames, position );
+		ac2->fillBuffer( buf, frames, position );
+		mixChannels( incBuffer, buf, incBuffer, frames );
+		written = frames;
+	} else {
+		while( written < frames && m_current ) {
+			inc = (dynamic_cast<AudioClipBase*>(m_current->clip))->fillBuffer( incBuffer,
+					 frames - written, position + written
+					);
+			written += inc;
+			incBuffer += inc;
+			if ( written < frames ) { m_current = m_current->next; }
+			while ( m_current && m_current->clip->type() != CLIP_TYPE_VIDEO && m_current->clip->type() != CLIP_TYPE_AUDIO ) {
+				m_current = m_current->next;
+			}
+		}
+		if ( m_current == 0 ) {
+			while( written < frames ) {
+				*incBuffer = 0.0;
+				written++;
+				incBuffer++;
+				emptyItems++;
+			}
+		}
+	}
+	return written - emptyItems;
+}
 } /* namespace nle */

@@ -41,6 +41,7 @@ class AudioClipBase : public Clip
 		virtual ~AudioClipBase();
 		virtual int fillBuffer( float* output, unsigned long frames, int64_t position );
 		virtual void reset();
+		bool m_mute;
 	protected:
 		AudioClipBase( Track *track, int64_t position, IAudioFile* af = 0 );
 		virtual int64_t audioTrimA() = 0;

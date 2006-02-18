@@ -35,7 +35,7 @@ AudioTrack::AudioTrack( int num )
 AudioTrack::~AudioTrack()
 {
 }
-void AudioTrack::addFile( int64_t position, string filename, int64_t trimA, int64_t trimB )
+void AudioTrack::addFile( int64_t position, string filename, int64_t trimA, int64_t trimB, int mute )
 {
 	IAudioFile *af = new AudioFileSnd( filename );
 	if ( !af->ok() ) {

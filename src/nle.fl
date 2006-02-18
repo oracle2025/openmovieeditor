@@ -116,11 +116,6 @@ while (dlg.shown())
               code0 {\#include "Ruler.H"}
               class {nle::Ruler}
             }
-            Fl_Box m_timelineView {
-              xywh {40 300 475 145} when 2 resizable
-              code0 {\#include "TimelineView.H"}
-              class {nle::TimelineView}
-            }
             Fl_Scrollbar scaleBar {
               callback {Flmm_Scalebar *sb = (Flmm_Scalebar *)o;
 float width = sb->w();
@@ -134,6 +129,11 @@ m_timelineView->zoom( zoom );}
               code2 {using namespace std;}
               class Flmm_Scalebar
             }
+            Fl_Group m_timelineView {open
+              xywh {40 300 475 145}
+              code0 {\#include "TimelineView.H"}
+              class {nle::TimelineView}
+            } {}
           }
           Fl_Group {} {open
             xywh {0 275 40 190} labelsize 12
@@ -208,7 +208,7 @@ fb->load_rel();}
             }
             Fl_Button {} {
               label {@>|}
-              callback {nle::g_ruler->skipLast()} selected
+              callback {nle::g_ruler->skipLast()}
               tooltip {Goto End} xywh {230 235 50 40}
             }
             Fl_Button {} {
@@ -244,7 +244,8 @@ g_scrollBar = scaleBar;
 g_trashCan = trashCan;
 scaleBar->slider_size_i(300);
 mainWindow->show(argc, argv);
-projectNameInput->value("Project 1");} {}
+projectNameInput->value("Project 1");} {selected
+    }
   }
   Function {~NleUI()} {open
   } {

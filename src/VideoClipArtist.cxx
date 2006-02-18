@@ -25,6 +25,7 @@
 #include "TimelineView.H"
 #include "globals.H"
 #include "timeline/Track.H"
+#include "mute.xpm"
 
 namespace nle
 {
@@ -54,6 +55,9 @@ void VideoClipArtist::render( Rect& rect, int64_t start, int64_t stop )
 		if ( f ) {
 			fl_draw_image( f->data, _x, rect.y, f->w, f->h );
 		}
+	}
+	if ( m_clip->m_mute ) {
+		fl_draw_pixmap( mute_xpm, rect.x + 20, rect.y + 5 );
 	}
 	fl_pop_clip();
 }

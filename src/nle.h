@@ -11,10 +11,10 @@
 #include <FL/Fl_Tile.H>
 #include <FL/Fl_Group.H>
 #include "Ruler.H"
-#include "TimelineView.H"
 #include "Flmm_Scalebar.H"
 #include "globals.H"
 using namespace std;
+#include "TimelineView.H"
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Box.H>
 #include "VideoViewGL.H"
@@ -46,13 +46,11 @@ private:
   static void cb_Fullscreen(Fl_Menu_*, void*);
   inline void cb_About_i(Fl_Menu_*, void*);
   static void cb_About(Fl_Menu_*, void*);
-public:
-  nle::TimelineView *m_timelineView;
-private:
   Flmm_Scalebar *scaleBar;
   inline void cb_scaleBar_i(Flmm_Scalebar*, void*);
   static void cb_scaleBar(Flmm_Scalebar*, void*);
 public:
+  nle::TimelineView *m_timelineView;
   Fl_Button *positioningButton;
   Fl_Button *automationsButton;
 private:

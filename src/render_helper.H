@@ -31,6 +31,7 @@ void scale_it_alpha( frame_struct* src, frame_struct* dst );
 void blend( unsigned char* dst, unsigned char* src1, unsigned char* src2, float alpha, int len );
 void blend_alpha( unsigned char* dst, unsigned char* rgb, unsigned char* rgba, float alpha, int len );
 
+unsigned int mixChannels( float *A, float *B, float* out, unsigned int frames );
 
 } /* namespace nle */
 

@@ -27,6 +27,7 @@ AudioClipBase::AudioClipBase( Track *track, int64_t position, IAudioFile* af )
 	: Clip( track, position )
 {
 	m_audioFile = af;
+	m_mute = false;
 }
 AudioClipBase::~AudioClipBase()
 {
@@ -54,6 +55,9 @@ int64_t AudioClipBase::audioLength()
 
 int AudioClipBase::fillBuffer( float* output, unsigned long frames, int64_t position )
 {
+	if ( m_mute ) {
+		return 0;
+	}
 	unsigned int frames_written = 0;
 	int64_t currentPosition = audioPosition();
 	int64_t aLength = audioLength();
