@@ -44,7 +44,7 @@
 
 #include "audio.xpm"
 #include "video.xpm"
-#include "titles.xpm"
+//#include "titles.xpm"
 
 namespace nle
 {
@@ -187,10 +187,10 @@ void TimelineView::draw()
 		fl_draw_box( FL_UP_BOX, x() + TRACK_SPACING, y_coord, 64, TRACK_HEIGHT + 1, FL_BACKGROUND_COLOR );
 		fl_color( FL_BLACK );
 		fl_font( FL_HELVETICA, 11 );
-		if ( track_count == 0 ) {
+/*		if ( track_count == 0 ) {
 			fl_draw( "Titles", x() + TRACK_SPACING + 23, y_coord + 18);
 			fl_draw_pixmap( titles_xpm, x() + TRACK_SPACING + 3, y_coord + 5 );
-		} else if ( USING_AUDIO ) {
+		} else*/ if ( USING_AUDIO ) {
 			fl_draw( "Audio", x() + TRACK_SPACING + 23, y_coord + 18);
 			fl_draw_pixmap( audio_xpm, x() + TRACK_SPACING + 3, y_coord + 5 );
 		} else {
