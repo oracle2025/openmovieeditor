@@ -80,9 +80,8 @@ int Ruler::handle( int event )
 		case FL_PUSH:
 			if ( m_stylus.inside( _x, _y ) ) {
 				__x = _x - m_stylus.x;
-				return 1;
 			}
-			break;
+			return 1;
 		case FL_DRAG:
 			if ( !__x )
 				break;
@@ -96,7 +95,8 @@ int Ruler::handle( int event )
 				__x = 0;
 				return 1;
 			} else {
-				g_timelineView->stylus( _x + ( m_stylus.w / 2 ) );
+				g_timelineView->stylus( _x );
+				return 1;
 			}
 			break;
 	}
