@@ -205,7 +205,6 @@ float AudioClip::getEnvelope( int64_t position )
 	} else {
 		if ( m_autoCache ) {
 			m_autoCache = m_autoCache->next;
-			cout << "Entering Recursion in getEnvelope" << endl;
 			return getEnvelope( position );
 		}
 	}

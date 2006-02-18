@@ -98,6 +98,9 @@ int TimelineView::handle( int event )
 				if ( cl ) {
 					vcl = dynamic_cast<VideoClip*>(cl);
 				}
+				if ( cl && g_ui->automationsMode() == 2 ) {
+					return 1;
+				}
 				if ( cl && vcl && vcl->hasAudio() && ( Fl::event_button() == FL_RIGHT_MOUSE ) ) {
 					if ( vcl->m_mute ) {
 						Fl_Menu_Item menuitem[] = { { "Unmute Original Sound" }, { 0L } };
@@ -113,7 +116,7 @@ int TimelineView::handle( int event )
 						}
 					}
 				}
-				if ( cl && g_ui->automationsMode() && cl->has_automation() ) {
+				if ( cl && g_ui->automationsMode() == 1 && cl->has_automation() ) {
 					if ( FL_SHIFT & Fl::event_state() ) {
 						m_dragHandler = new ShiftAutomationDragHandler( cl, get_clip_rect( cl, true ), _x, _y );
 					} else {
@@ -143,6 +146,7 @@ int TimelineView::handle( int event )
 				m_dragHandler->OnDrag( _x, _y );
 				return 1;
 			}
+			return Fl_Widget::handle( event );
 		case FL_RELEASE:
 			if ( m_dragHandler ) {
 				m_dragHandler->OnDrop( _x, _y );
@@ -150,6 +154,14 @@ int TimelineView::handle( int event )
 				m_dragHandler = NULL;
 				redraw();
 				return 1;
+			}
+			if ( g_ui->automationsMode() == 2 ) {
+				Clip* cl = get_clip( _x, _y );
+				if ( cl ) {
+					split_clip( cl, _x );
+					redraw();
+					return 1;
+				}
 			}
 		default:
 			return Fl_Widget::handle( event );	
@@ -455,6 +467,17 @@ void TimelineView::adjustScrollbar()
 	if ( l > g_scrollBar->slider_size_i() ) {
 		g_scrollBar->slider_size_i( l );
 	}
+}
+void TimelineView::split_clip( Clip* clip, int _x )
+{
+	int64_t split_position = get_real_position(_x, clip->track()->stretchFactor() );
+	int64_t trimv = int64_t( ( clip->position() + clip->length() ) - ( get_real_position(_x, clip->track()->stretchFactor()) ) );
+	int mute = 0;
+	if ( VideoClip* c = dynamic_cast<VideoClip*>(clip) ) {
+		mute = c->m_mute;
+	}
+	clip->track()->addFile( split_position, clip->filename(), ( split_position  - clip->position() ) + clip->trimA(), clip->trimB(), mute );
+	clip->trimB( trimv );
 }
 void TimelineView::trim_clip( Clip* clip, int _x, bool trimRight )
 {

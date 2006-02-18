@@ -221,6 +221,47 @@ static const char *idata_trash[] = {
 };
 static Fl_Pixmap image_trash(idata_trash);
 
+static const char *idata_razor[] = {
+"32 32 4 1",
+" \tc None",
+".\tc #000000",
+"+\tc #CCCCCC",
+"@\tc #666666",
+"                                ",
+"                                ",
+"                                ",
+"            ..                  ",
+"        .. .+@.                 ",
+"       .++.+++@.                ",
+"      .++++++++@.               ",
+"     .++++++++++@.              ",
+"    .+++++..+++++@.             ",
+"    .++++. .++++++@.            ",
+"     .++.  .+++++++@.           ",
+"    .+++... ..++++++@.          ",
+"   .+++++++. .+++++++@.         ",
+"   .@++++++.. ...+++++@.        ",
+"    .@+++++++.   .+++++@.       ",
+"     .@++++++.   .++++++@.      ",
+"      .@+++++.   .+++++++@.     ",
+"       .@+++++... ..++++++@.    ",
+"        .@+++++++. .+++++++.    ",
+"         .@++++++.. ...+++.     ",
+"          .@+++++++.  .++.      ",
+"           .@++++++. .++++.     ",
+"            .@+++++..+++++.     ",
+"             .@++++++++++.      ",
+"              .@++++++++.       ",
+"               .@+++.++.        ",
+"                .@+. ..         ",
+"                 ..             ",
+"                                ",
+"                                ",
+"                                ",
+"                                "
+};
+static Fl_Pixmap image_razor(idata_razor);
+
 inline void NleUI::cb_fileBrowser_i(nle::FileBrowser* o, void*) {
   nle::FileBrowser *fb = (nle::FileBrowser*)o;
 fb->load_rel();
@@ -354,7 +395,7 @@ NleUI::NleUI() {
             o->image(image_tool_automations);
             o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
           }
-          { Fl_Box* o = new Fl_Box(0, 380, 40, 45);
+          { Fl_Box* o = new Fl_Box(0, 420, 40, 5);
             o->box(FL_THIN_UP_BOX);
             Fl_Group::current()->resizable(o);
           }
@@ -366,6 +407,13 @@ NleUI::NleUI() {
             o->tooltip("Trash");
             o->box(FL_UP_BOX);
             o->image(image_trash);
+          }
+          { Fl_Button* o = razorButton = new Fl_Button(0, 380, 40, 40);
+            o->tooltip("Split (R)");
+            o->type(102);
+            o->shortcut(0x72);
+            o->image(image_razor);
+            o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
           }
           o->end();
         }
@@ -466,8 +514,14 @@ NleUI::~NleUI() {
   delete mainWindow;
 }
 
-bool NleUI::automationsMode() {
-  return automationsButton->value();
+int NleUI::automationsMode() {
+  if ( positioningButton->value() ) {
+	return 0;
+} else if ( automationsButton->value() ) {
+	return 1;
+} else {
+	return 2;
+}
 }
 Flmm_Scalebar* g_scrollBar;
 

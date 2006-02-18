@@ -56,6 +56,7 @@ public:
 private:
   Fl_Box *trashCan;
 public:
+  Fl_Button *razorButton;
   nle::VideoViewGL *m_videoView;
   nle::FileBrowser *fileBrowser;
 private:
@@ -84,7 +85,7 @@ private:
 public:
   void show( int argc, char **argv );
   ~NleUI();
-  bool automationsMode();
+  int automationsMode();
 };
 extern Flmm_Scalebar* g_scrollBar;
 #include "IVideoReader.H"

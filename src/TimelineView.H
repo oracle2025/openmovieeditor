@@ -56,6 +56,7 @@ class TimelineView : public Fl_Widget
 		Rect get_clip_rect( Clip* clip, bool clipping = true );
 		void move_clip( Clip* clip, int _x, int _y, int offset );
 		void trim_clip( Clip* clip, int _x, bool trimRight );
+		void split_clip( Clip* clip, int _x );
 		void move_cursor( int64_t position );
 		void stylus( long stylus_pos );
 		long stylus();
