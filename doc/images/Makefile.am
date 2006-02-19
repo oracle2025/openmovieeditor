@@ -8,5 +8,6 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-EXTRA_DIST = openme_1.png openme_2.png openme_3.png openme_4.png
+EXTRA_DIST = openme_1.png openme_2.png openme_3.png openme_4.png\
+             openme_5.png openme_6.png openme_7.png openme_8.png
 
