@@ -9,7 +9,7 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 AC_PREREQ(2.5)
-AC_INIT(openmovieeditor, [20051223], [richard.spindler@gmail.com])
+AC_INIT(openmovieeditor, [20060219], [richard.spindler@gmail.com])
 AC_CONFIG_HEADER([config.h])
 
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
