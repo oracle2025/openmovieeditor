@@ -180,6 +180,7 @@ void Renderer::go( IProgressListener* l )
 		}
 		
 		res = g_timeline->fillBuffer( buffer, 128 ); //Das sollte etwas mehr als 128 sein
+		
 		for ( int i = 0; i < res; i++ ) {
 			left_buffer[i] = buffer[i*2];
 			right_buffer[i] = buffer[i*2+1];

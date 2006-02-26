@@ -38,7 +38,7 @@ int TrackBase::fillBuffer( float* output, unsigned long frames, int64_t position
 		m_current = m_current->next;
 	}
 	while( written < frames && m_current ) {
-		inc = (dynamic_cast<AudioClipBase*>(m_current->clip))->fillBuffer( incBuffer,
+		inc = ( dynamic_cast<AudioClipBase*>(m_current->clip) )->fillBuffer( incBuffer,
 				 frames - written, position + written
 				);
 		written += inc;
@@ -51,11 +51,14 @@ int TrackBase::fillBuffer( float* output, unsigned long frames, int64_t position
 	if ( m_current == 0 ) {
 		while( written < frames ) {
 			*incBuffer = 0.0;
+			incBuffer++;
+			*incBuffer = 0.0;
 			written++;
 			incBuffer++;
 			emptyItems++;
 		}
 	}
+	
 	return written - emptyItems;
 }
 

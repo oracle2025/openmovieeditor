@@ -177,7 +177,7 @@ CodecParameters::CodecParameters( lqt_codec_info_t** audio, lqt_codec_info_t** v
 		q->codecInfo = p;
 		q->parameters = 0;
 		m_audioCodecs = (codec_node*)sl_push( m_audioCodecs, q );
-	//	cout << "Adding Audio Codec: " << p->long_name << endl;
+		cout << "Adding Audio Codec: " << p->long_name << " \"" << p->name << "\"" << endl;
 
 		for ( int i = 0; i < p->num_encoding_parameters; i++ ) {
 			if ( q->codecInfo->encoding_parameters[i].type != LQT_PARAMETER_INT

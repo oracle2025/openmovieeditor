@@ -243,6 +243,8 @@ int VideoTrack::fillBuffer( float* output, unsigned long frames, int64_t positio
 		if ( m_current == 0 ) {
 			while( written < frames ) {
 				*incBuffer = 0.0;
+				incBuffer++;
+				*incBuffer = 0.0;
 				written++;
 				incBuffer++;
 				emptyItems++;
