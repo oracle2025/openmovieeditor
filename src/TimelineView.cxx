@@ -68,7 +68,6 @@ TimelineView::TimelineView( int x, int y, int w, int h, const char *label )
 }
 TimelineView::~TimelineView()
 {
-	cout << "Never Called" << endl;
 }
 int TimelineView::handle( int event )
 {
@@ -471,7 +470,7 @@ void TimelineView::adjustScrollbar()
 void TimelineView::split_clip( Clip* clip, int _x )
 {
 	int64_t split_position = get_real_position(_x, clip->track()->stretchFactor() );
-	int64_t trimv = int64_t( ( clip->position() + clip->length() ) - ( get_real_position(_x, clip->track()->stretchFactor()) ) );
+	int64_t trimv = int64_t( ( clip->position() + clip->length() ) - split_position );
 	int mute = 0;
 	if ( VideoClip* c = dynamic_cast<VideoClip*>(clip) ) {
 		mute = c->m_mute;

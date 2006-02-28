@@ -127,19 +127,17 @@ frame_struct** Timeline::getFrameStack( int64_t position )
 {
 	static frame_struct* frameStack[8]; //At most 8 Frames, ought to be enough for everyone ;)
 	int cnt = 0;
-	static int64_t last_frame = -1;
-	if ( position < 0 || last_frame < 0 || last_frame + 1 == position ) {
-		m_playPosition++;
-	} else {
-		m_playPosition = position;
-	}
-	last_frame = m_playPosition;
+
+	assert( position >= 0 );
+	
+	m_playPosition = position;
+	
 	for ( track_node *p = m_allTracks; p; p = p->next ) {
 		VideoTrack* current = dynamic_cast<VideoTrack*>(p->track);
 		if ( !current ) {
 			continue;
 		}
-		frame_struct** fs = current->getFrameStack( m_playPosition - 1 );
+		frame_struct** fs = current->getFrameStack( position );
 		
 		for ( int i = 0; fs[i] && cnt <=7 ; i++ ) {
 			frameStack[cnt] = fs[i];

@@ -39,7 +39,7 @@ AudioClip::AudioClip( Track *track, int64_t position, IAudioFile* af, int64_t tr
 	auto_node* r = new auto_node;
 	r->next = 0;
 	r->y = 1.0;
-	r->x = af->length();
+	r->x = af->length() - trimA - trimB;
 	m_automationPoints = (auto_node*)sl_push( m_automationPoints, r );
 	r = new auto_node;
 	r->next = 0;
