@@ -231,5 +231,9 @@ int AudioClip::fillBuffer( float* output, unsigned long frames, int64_t position
 	}
 	return result;
 }
+int64_t AudioClip::fileLength()
+{
+	return m_audioFile->length();
+}
 
 } /* namespace nle */

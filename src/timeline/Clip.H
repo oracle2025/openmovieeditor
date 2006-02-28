@@ -42,6 +42,7 @@ class Clip
 	public:
 		virtual ~Clip() {}
 		virtual int64_t length() = 0;
+		virtual int64_t fileLength() = 0;
 		virtual void reset() = 0;
 		void position( int64_t position ) { m_position = position; }
 		const int64_t position() { return m_position; }

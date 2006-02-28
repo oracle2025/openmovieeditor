@@ -93,5 +93,9 @@ frame_struct* VideoClip::getFrame( int64_t position )
 	m_lastFramePosition = position;
 	return m_videoFile->read();
 }
+int64_t VideoClip::fileLength()
+{
+	return m_videoFile->length();
+}
 	
 } /* namespace nle */

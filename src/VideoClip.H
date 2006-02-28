@@ -46,6 +46,7 @@ class VideoClip : public AudioClipBase, public IVideoReader
 		int type() { return CLIP_TYPE_VIDEO; }
 		inline IClipArtist* getArtist() { return m_artist; }
 		bool hasAudio();
+		int64_t fileLength();
 	protected:
 		int64_t audioTrimA();
 		int64_t audioTrimB();

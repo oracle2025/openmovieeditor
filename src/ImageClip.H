@@ -45,6 +45,7 @@ class ImageClip : public Clip, public IVideoReader
 		using Clip::trimB;
 		void trimA( int64_t trim );
 		void trimB( int64_t trim );
+		int64_t fileLength();
 	private:
 		Fl_Shared_Image* m_image;
 		int64_t m_length;

@@ -106,5 +106,9 @@ void ImageClip::trimB( int64_t trim )
 	}
 	m_length -= trim;
 }
+int64_t ImageClip::fileLength()
+{
+	return -1;
+}
 
 } /* namespace nle */

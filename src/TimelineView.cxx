@@ -483,9 +483,11 @@ void TimelineView::trim_clip( Clip* clip, int _x, bool trimRight )
 	if (trimRight) {
 		int64_t trimv = int64_t( ( clip->position() + clip->length() ) - ( get_real_position(_x, clip->track()->stretchFactor()) ) );
 		clip->trimB( trimv );
+		adjustScrollbar();
 		return;
 	}
 	clip->trimA( int64_t( get_real_position(_x, clip->track()->stretchFactor())  - clip->position() ) );
+	adjustScrollbar();
 }
 void TimelineView::move_cursor( int64_t position )
 {

@@ -48,11 +48,20 @@ TrimDragHandler::TrimDragHandler( TimelineView *tlv, Clip *clip,
 }
 void TrimDragHandler::OnDrag( int x, int y )
 {
+	m_x = x;
+	int64_t pos = g_timelineView->get_real_position( x, m_clip->track()->stretchFactor() ) - ( m_clip->position() - m_clip->trimA() );
+	if ( m_clip->fileLength() > 0 && ( pos < 0 || pos > m_clip->fileLength() ) ) {
+		if ( m_trimRight ) {
+			x = g_timelineView->get_screen_position( m_clip->position() - m_clip->trimA() + m_clip->fileLength(), m_clip->track()->stretchFactor() );
+		} else {
+			x = g_timelineView->get_screen_position( m_clip->position() - m_clip->trimA(), m_clip->track()->stretchFactor() ); 
+		}
+	}
+	
 	m_tlv->window()->make_current();
 	fl_overlay_rect( x,
 			m_tlv->y() + TRACK_SPACING + (TRACK_SPACING + TRACK_HEIGHT)*m_track,
 			1, TRACK_HEIGHT );
-	m_x = x;
 	if ( m_clip->track()->type() == TRACK_TYPE_VIDEO ) {
 		Fl::add_check( preview_callback, this );
 	}
