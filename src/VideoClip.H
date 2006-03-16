@@ -51,6 +51,7 @@ class VideoClip : public AudioClipBase, public IVideoReader
 		int64_t audioTrimA();
 		int64_t audioTrimB();
 		int64_t audioPosition();
+		int64_t maxAudioLength();
 	private:
 		IVideoFile* m_videoFile;
 		FilmStrip* m_filmStrip;

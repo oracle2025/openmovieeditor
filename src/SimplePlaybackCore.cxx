@@ -22,6 +22,7 @@
 #include <cerrno>
 
 #include <FL/Fl.H>
+#include <FL/Fl_Button.H>
 
 #include "global_includes.H"
 #include "globals.H"
@@ -57,6 +58,11 @@ static void video_idle_callback( void* data )
 {
 	SimplePlaybackCore* pc = (SimplePlaybackCore*)data;
 	pc->flipFrame();
+}
+static void timer_callback( void* data )
+{
+	SimplePlaybackCore* pc = (SimplePlaybackCore*)data;
+	pc->checkPlayButton();
 }
 
 static PortAudioStream* g_stream;
@@ -135,6 +141,7 @@ void SimplePlaybackCore::play()
 	Fl::add_check( video_idle_callback, this );
 	if ( portaudio_start( 48000, FRAMES, this ) ) {
 		m_active = true;
+		Fl::add_timeout( 0.1, timer_callback, this );
 	}
 }
 void SimplePlaybackCore::stop()
@@ -152,15 +159,28 @@ void SimplePlaybackCore::stop()
 	}*/
 	
 }
+void SimplePlaybackCore::checkPlayButton()
+{
+	if ( !m_active ) {
+		return;
+	}
+	if ( !Pa_StreamActive( g_stream ) ) {
+		stop();
+		g_playButton->label( "@>" );
+	} else {
+		Fl::repeat_timeout( 0.1, timer_callback, this );
+	}
+}
 int SimplePlaybackCore::readAudio( float* output, unsigned long frames )
 {
 	static char c = '\0';
-	m_audioPosition += m_audioReader->fillBuffer( output, frames );
+	unsigned long r = m_audioReader->fillBuffer( output, frames );
+	m_audioPosition += r;
 	if ( m_audioPosition / ( 48000 / 25 ) > m_videoPosition ) {
 		m_nextVideoFrame++;
 		write( m_pipe[1], &c, sizeof(char) );
 	}
-	return 0;
+	return r != frames;
 /*	static audio_chunk chunk;
 	int rt;
 	if ( ( rt = read( m_pipe[0], output, sizeof(chunk.buffer) ) ) < sizeof(chunk.buffer) ) {

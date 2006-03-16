@@ -46,7 +46,9 @@ class AudioClipBase : public Clip
 		AudioClipBase( Track *track, int64_t position, IAudioFile* af = 0 );
 		virtual int64_t audioTrimA() = 0;
 		virtual int64_t audioTrimB() = 0;
+		virtual int64_t maxAudioLength();
 		int64_t audioLength();
+		int64_t realAudioLength();
 		virtual int64_t audioPosition() = 0;
 		string audioFilename();
 		IAudioFile* m_audioFile;

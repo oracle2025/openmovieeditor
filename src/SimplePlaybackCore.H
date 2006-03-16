@@ -43,6 +43,7 @@ class SimplePlaybackCore
 		int readAudio( float* output, unsigned long frames );
 		void fillBuffer( int p );
 		void flipFrame();
+		void checkPlayButton();
 	private:
 		IAudioReader* m_audioReader;
 		IVideoReader* m_videoReader;

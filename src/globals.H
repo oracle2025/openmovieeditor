@@ -60,6 +60,8 @@ extern bool g_SEEKING;
 } /* namespace nle */
 
 extern float g_fps;
+class Fl_Button;
+extern Fl_Button* g_playButton;
 
 #endif /* _GLOBALS_H_ */
 

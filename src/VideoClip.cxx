@@ -60,6 +60,10 @@ string VideoClip::filename()
 {
 	return m_videoFile->filename();
 }
+int64_t VideoClip::maxAudioLength()
+{
+	return m_videoFile->length() * (int64_t)( 48000 / g_fps );
+}
 int64_t VideoClip::length()
 {
 	return m_videoFile->length() - ( m_trimA + m_trimB );

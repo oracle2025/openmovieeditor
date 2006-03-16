@@ -198,7 +198,7 @@ fb->load_rel();}
               xywh {0 25 280 25} box FLAT_BOX color 49 textfont 1
               code0 {\#include "LoadSaveManager/LoadSaveManager.H"}
             }
-            Fl_Button {} {
+            Fl_Button playButton {
               label {@>}
               callback {if ( strcmp( o->label(), "@>" ) == 0 ) {
 	o->label( "@||" );
@@ -245,6 +245,7 @@ nle::g_loadSaveManager->load( name );} open
     code {g_fps = 25.0;
 g_scrollBar = scaleBar;
 g_trashCan = trashCan;
+g_playButton = playButton;
 scaleBar->slider_size_i(300);
 mainWindow->show(argc, argv);
 projectNameInput->value("Project 1");} {}
@@ -261,8 +262,7 @@ projectNameInput->value("Project 1");} {}
 	return 1;
 } else {
 	return 2;
-}} {selected
-    }
+}} {}
   }
 } 
 
@@ -599,4 +599,7 @@ class AboutDialog {open
   Function {~AboutDialog()} {} {
     code {delete aboutDialog;} {}
   }
+} 
+
+decl {Fl_Button* g_playButton;} {selected public
 } 
