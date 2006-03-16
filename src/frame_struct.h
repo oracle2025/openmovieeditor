@@ -34,6 +34,7 @@ typedef struct
 	int64_t nr;
 	float alpha;
 	bool has_alpha_channel;
+	bool cacheable;
 } frame_struct;
 
 } /* namespace nle */

@@ -29,6 +29,13 @@
 
 namespace nle
 {
+
+struct texture_frame_cache {
+	void* p;
+	int dirty;
+};
+
+static struct texture_frame_cache tcache[10];
 	
 VideoViewGL* g_videoView = 0;
 
@@ -38,6 +45,10 @@ VideoViewGL::VideoViewGL( int x, int y, int w, int h, const char *l )
 	g_videoView = this;
 	m_seekPosition = -1;
 	m_playing = false;
+	for ( int i = 0; i < 10; i++ ) {
+		tcache[i].p = 0;
+		tcache[i].dirty = 0;
+	}
 }
 
 VideoViewGL::~VideoViewGL()
@@ -81,8 +92,16 @@ void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 	for ( int i = 1; fs[i]; i++ ) {
 		count++;
 	}
+	//TODO: i < 10
 	for ( int i = count; i>=0; i-- ) {
 		glBindTexture( GL_TEXTURE_2D, video_canvas[i] );
+		if ( fs[i]->cacheable ) {
+			if ( tcache[i].p == fs[i] ) {
+				continue;
+			} else {
+				tcache[i].p = fs[i];
+			}
+		}
 		if ( fs[i]->has_alpha_channel ) {
 			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGBA, GL_UNSIGNED_BYTE, fs[i]->RGB );
 		} else {
@@ -189,6 +208,9 @@ void VideoViewGL::pushFrame( frame_struct* fs, bool move_cursor )
 	
 	swap_buffers();
 }
+/*
+ *  GL_NVX_ycrcb
+ */
 void VideoViewGL::draw()
 {
 	if ( !valid() ) {

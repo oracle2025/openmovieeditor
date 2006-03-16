@@ -47,6 +47,7 @@ ImageClip::ImageClip( Track* track, int64_t position, string filename )
 	m_frame.w = m_image->w();
 	m_frame.h = m_image->h();
 	m_frame.alpha = 1.0;
+	m_frame.cacheable = true;
 	if ( m_image->d() == 4 ) {
 		m_frame.has_alpha_channel = true;
 	} else if ( m_image->d() == 3 ) {

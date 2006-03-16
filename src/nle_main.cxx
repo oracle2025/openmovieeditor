@@ -67,7 +67,7 @@ int main( int argc, char** argv )
 	Fl::foreground( 255, 255, 255 );
 	Fl::set_color( FL_BLACK, 200, 200, 200 );
 
-	Fl::lock();
+//	Fl::lock();
 	
 	nle::g_audio_codec_info = lqt_query_registry( 1, 0, 1, 0 );
 	nle::g_video_codec_info = lqt_query_registry( 0, 1, 1, 0 );
