@@ -45,24 +45,12 @@ void AudioClipBase::reset()
 	m_lastSamplePosition = -256; // FIXME no hardcoded number!
 }
 
-int64_t AudioClipBase::maxAudioLength()
-{
-	return audioLength();
-}
 int64_t AudioClipBase::audioLength()
 {
 	if ( !m_audioFile ) {
 		return 0;
 	}
 	return m_audioFile->length() - ( audioTrimA() + audioTrimB() );
-}
-int64_t AudioClipBase::realAudioLength()
-{
-	int64_t a;
-	int64_t b;
-	a = audioLength();
-	b = maxAudioLength();
-	return a > b ? b : a;
 }
 
 int AudioClipBase::fillBuffer( float* output, unsigned long frames, int64_t position )
@@ -72,7 +60,7 @@ int AudioClipBase::fillBuffer( float* output, unsigned long frames, int64_t posi
 	}
 	unsigned int frames_written = 0;
 	int64_t currentPosition = audioPosition();
-	int64_t aLength = realAudioLength();
+	int64_t aLength = audioLength();
 	int64_t trimA = audioTrimA();
 	if ( !m_audioFile ) {
 		return 0;

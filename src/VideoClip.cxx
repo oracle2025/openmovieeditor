@@ -74,7 +74,9 @@ int64_t VideoClip::audioTrimA()
 }
 int64_t VideoClip::audioTrimB()
 {
-	return m_trimB * (int64_t)( 48000 / g_fps );
+	int64_t r = m_trimB * (int64_t)( 48000 / g_fps );
+	int64_t t = m_audioFile->length() - maxAudioLength() + r;
+	return t < 0 ? 0 : t;
 }
 int64_t VideoClip::audioPosition()
 {
