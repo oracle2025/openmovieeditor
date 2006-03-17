@@ -83,6 +83,7 @@ int TimelineView::handle( int event )
 					t->addFile( rp, Fl::event_text() );
 					adjustScrollbar();
 					redraw();
+					g_videoView->seek( m_stylusPosition );
 				}
 			}
 			return 1;
@@ -152,6 +153,7 @@ int TimelineView::handle( int event )
 				delete m_dragHandler;
 				m_dragHandler = NULL;
 				redraw();
+				g_videoView->seek( m_stylusPosition );
 				return 1;
 			}
 			if ( g_ui->automationsMode() == 2 ) {
