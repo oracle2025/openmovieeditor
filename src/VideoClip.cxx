@@ -84,6 +84,7 @@ int64_t VideoClip::audioPosition()
 }
 void VideoClip::reset()
 {
+	m_lastFramePosition = -1;
 	AudioClipBase::reset();
 	m_videoFile->seek( m_trimA );//FIXME noch nötig??
 	/*evtl. damit nicht bei jedem Abspiel vorgang für jeden Clip geseekt werden muss*/

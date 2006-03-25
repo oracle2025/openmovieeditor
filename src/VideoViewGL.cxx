@@ -39,16 +39,20 @@ static struct texture_frame_cache tcache[10];
 	
 VideoViewGL* g_videoView = 0;
 
+void reset_cache()
+{
+	for ( int i = 0; i < 10; i++ ) {
+		tcache[i].p = 0;
+		tcache[i].dirty = 0;
+	}
+}
+
 VideoViewGL::VideoViewGL( int x, int y, int w, int h, const char *l )
 	: Fl_Gl_Window( x, y, w, h, l )
 {
 	g_videoView = this;
 	m_seekPosition = -1;
-	m_playing = false;
-	for ( int i = 0; i < 10; i++ ) {
-		tcache[i].p = 0;
-		tcache[i].dirty = 0;
-	}
+	reset_cache();
 }
 
 VideoViewGL::~VideoViewGL()
@@ -235,7 +239,7 @@ void VideoViewGL::draw()
 		}
 		once = false;
 	}
-	if ( m_playing ) { return; }
+	if ( g_simplePlaybackCore->active() ) { return; }
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	glBindTexture( GL_TEXTURE_2D, video_canvas[0] );
 	if ( m_seekPosition >= 0 ) {
@@ -339,7 +343,7 @@ void VideoViewGL::play()
 	if ( g_simplePlaybackCore->active() ) {
 		return;
 	}
-	m_playing = true;
+	reset_cache();
 	m_seekPosition = -1;
 	g_timeline->sort();
 	g_simplePlaybackCore->play();
@@ -348,7 +352,6 @@ void VideoViewGL::play()
 void VideoViewGL::stop()
 {
 	g_simplePlaybackCore->stop();
-	m_playing = false;
 }
 
 } /* namespace nle */
