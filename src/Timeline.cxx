@@ -18,6 +18,7 @@
  */
 
 #include <cmath>
+#include <cassert>
 
 #include "Timeline.H"
 #include "VideoTrack.H"
