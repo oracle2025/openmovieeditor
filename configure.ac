@@ -66,11 +66,11 @@ PKG_CHECK_MODULES(LIBQUICKTIME, libquicktime >= 0.9.7,,
 CPPFLAGS="$CPPFLAGS $LIBQUICKTIME_CFLAGS"
 LDFLAGS="$LDFLAGS $LIBQUICKTIME_LIBS"
 
-PKG_CHECK_MODULES(JACK, jack >= 0.99.0,,
-  AC_MSG_ERROR([*** jack 0.99.0 not found - this program requires the jack audio
-  connection kit >= 0.99.0 http://jackit.sourceforge.net/ ***]))
-CPPFLAGS="$CPPFLAGS $JACK_CFLAGS"
-LDFLAGS="$LDFLAGS $JACK_LIBS"
+#PKG_CHECK_MODULES(JACK, jack >= 0.99.0,,
+#  AC_MSG_ERROR([*** jack 0.99.0 not found - this program requires the jack audio
+#  connection kit >= 0.99.0 http://jackit.sourceforge.net/ ***]))
+#CPPFLAGS="$CPPFLAGS $JACK_CFLAGS"
+#LDFLAGS="$LDFLAGS $JACK_LIBS"
 
 dnl FLTK-Check Shamelessly stolen from SpiralSynthModular
 AC_PATH_PROG(FLTK_CONFIG, fltk-config, no)
