@@ -22,6 +22,8 @@ openmovieeditor_LDADD = portaudio/libportaudio.a\
 	ErrorDialog/libErrorDialog.a
 
 openmovieeditor_SOURCES = nle.cxx\
+	nle_audio.h\
+	nle_audio.c\
 	helper.cxx\
 	Timeline.cxx\
 	VideoTrack.cxx\

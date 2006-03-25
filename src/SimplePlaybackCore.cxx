@@ -18,8 +18,7 @@
  */
 
 #include <unistd.h>
-#include <fcntl.h>
-#include <cerrno>
+#include <pthread.h>
 
 #include <FL/Fl.H>
 #include <FL/Fl_Button.H>
@@ -34,14 +33,13 @@
 #include "Timeline.H"
  
 #define FRAMES 256
+#define VIDEO_DRIFT_LIMIT 2
 
 namespace nle
 {
 
-typedef struct _audio_chunk {
-	float buffer[2 * FRAMES];
-	int64_t timestamp;
-} audio_chunk;
+pthread_mutex_t condition_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t  condition_cond  = PTHREAD_COND_INITIALIZER;
 
 static int portaudio_callback( void *input, void *output, unsigned long frames, PaTimestamp time, void* data )
 {
@@ -49,11 +47,6 @@ static int portaudio_callback( void *input, void *output, unsigned long frames, 
 	return pc->readAudio( (float*)output, frames );
 }
 
-static void audio_pipe_callback( int p, void* data )
-{
-	SimplePlaybackCore* pc = (SimplePlaybackCore*)data;
-	pc->fillBuffer( p );
-}
 static void video_idle_callback( void* data )
 {
 	SimplePlaybackCore* pc = (SimplePlaybackCore*)data;
@@ -110,11 +103,6 @@ SimplePlaybackCore::SimplePlaybackCore( IAudioReader* audioReader, IVideoReader*
 {
 	g_simplePlaybackCore = this;
 	m_active = false;
-	if ( pipe( m_pipe ) == -1 ) {
-		perror( "SimplePlaybackCore" );
-	}
-//	fcntl( m_pipe[0], F_SETFL, O_NONBLOCK );
-//	fcntl( m_pipe[1], F_SETFL, O_NONBLOCK );
 }
 SimplePlaybackCore::~SimplePlaybackCore()
 {
@@ -124,24 +112,13 @@ void SimplePlaybackCore::play()
 	if ( m_active ) {
 		return;
 	}
-	m_videoPosition = g_timeline->m_seekPosition;
-	m_nextVideoFrame = g_timeline->m_seekPosition;
-	m_audioPosition = m_videoPosition * ( 48000 / 25 );
-//fill pipe
-/*	while ( true ) {
-		static audio_chunk chunk;
-		chunk.timestamp = m_audioPosition;
-		m_audioPosition += m_audioReader->fillBuffer( chunk.buffer, FRAMES );
-		ssize_t r = write( m_pipe[1], chunk.buffer, sizeof(chunk.buffer) );
-		if ( r < sizeof(chunk.buffer) || errno == EAGAIN ) {
-			break;
-		}
-	} */
-	Fl::add_fd( m_pipe[0], FL_READ, audio_pipe_callback, this );
-	Fl::add_check( video_idle_callback, this );
+	m_currentFrame = g_timeline->m_seekPosition;
+	m_lastFrame = g_timeline->m_seekPosition;
+	m_audioPosition = m_currentFrame * ( 48000 / 25 );
 	if ( portaudio_start( 48000, FRAMES, this ) ) {
 		m_active = true;
 		Fl::add_timeout( 0.1, timer_callback, this );
+		Fl::add_timeout( 0.04, video_idle_callback, this );
 	}
 }
 void SimplePlaybackCore::stop()
@@ -150,14 +127,7 @@ void SimplePlaybackCore::stop()
 		return;
 	}
 	m_active = false;
-	Fl::remove_fd( m_pipe[1] );
 	portaudio_stop();
-//empty pipe
-	/*float b[FRAMES];
-	while ( read( m_pipe[0], b, sizeof(b) ) == sizeof(b) ) {
-		// empty
-	}*/
-	
 }
 void SimplePlaybackCore::checkPlayButton()
 {
@@ -173,53 +143,40 @@ void SimplePlaybackCore::checkPlayButton()
 }
 int SimplePlaybackCore::readAudio( float* output, unsigned long frames )
 {
-	static char c = '\0';
 	unsigned long r = m_audioReader->fillBuffer( output, frames );
 	m_audioPosition += r;
-	if ( m_audioPosition / ( 48000 / 25 ) > m_videoPosition ) {
-		m_nextVideoFrame++;
-		write( m_pipe[1], &c, sizeof(char) );
+	pthread_mutex_lock( &condition_mutex );
+	if ( m_audioPosition / ( 48000 / 25 ) > m_currentFrame ) {
+		m_currentFrame++;
+		pthread_cond_signal( &condition_cond );
 	}
+	pthread_mutex_unlock( &condition_mutex );
 	return r != frames;
-/*	static audio_chunk chunk;
-	int rt;
-	if ( ( rt = read( m_pipe[0], output, sizeof(chunk.buffer) ) ) < sizeof(chunk.buffer) ) {
-		cout << rt << endl;
-		perror( "readAudio" );
-		return 1;
-	}
-	return 0;*/
-}
-void SimplePlaybackCore::fillBuffer( int p )
-{
-	static char c;
-	read( m_pipe[0], &c, sizeof(char) );
-	m_nextVideoFrame++;
-//	Fl::add_idle( video_idle_callback, this );
-	
-/*	if ( !m_active ) {
-		return;
-	}
-	static audio_chunk chunk;
-	chunk.timestamp = m_audioPosition;
-	m_audioPosition += m_audioReader->fillBuffer( chunk.buffer, FRAMES );
-	if ( write( p, chunk.buffer, sizeof(chunk.buffer) ) < sizeof(chunk.buffer) ) {
-		perror( "fillBuffer" );
-	}
-	if ( m_audioPosition / ( 48000 / 25 ) > m_videoPosition ) {
-		m_nextVideoFrame++;
-		Fl::add_idle( video_idle_callback, this );
-	}*/
 }
 void SimplePlaybackCore::flipFrame()
 {
-//	Fl::remove_idle( video_idle_callback, this );
-	if ( m_nextVideoFrame == m_videoPosition ) {
+	if ( !m_active ) {
 		return;
 	}
-	frame_struct** fs = m_videoReader->getFrameStack( m_nextVideoFrame );
-	m_videoPosition = m_nextVideoFrame;
-	m_videoWriter->pushFrameStack( fs );
+	m_lastFrame++;
+	pthread_mutex_lock( &condition_mutex );
+	int64_t diff = m_lastFrame - m_currentFrame;
+	if ( abs( diff ) > VIDEO_DRIFT_LIMIT ) {
+		if ( diff > 0 ) {
+			while( ( m_lastFrame - m_currentFrame ) > VIDEO_DRIFT_LIMIT ) {
+				pthread_cond_wait( &condition_cond, &condition_mutex );
+			}
+		} else {
+			m_lastFrame++;
+		}
+	}
+	pthread_mutex_unlock( &condition_mutex );
+	static frame_struct** fs = 0;
+	if ( fs ) {
+		m_videoWriter->pushFrameStack( fs );
+	}
+	fs = m_videoReader->getFrameStack( m_lastFrame );
+	Fl::repeat_timeout( 0.04, video_idle_callback, this );
 }
 
 } /* namespace nle */

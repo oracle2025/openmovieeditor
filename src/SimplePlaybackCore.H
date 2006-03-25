@@ -41,7 +41,6 @@ class SimplePlaybackCore
 		void stop();
 		inline bool active() { return m_active; }
 		int readAudio( float* output, unsigned long frames );
-		void fillBuffer( int p );
 		void flipFrame();
 		void checkPlayButton();
 	private:
@@ -49,10 +48,9 @@ class SimplePlaybackCore
 		IVideoReader* m_videoReader;
 		IVideoWriter* m_videoWriter;
 		bool m_active;
-		int m_pipe[2];
 		int64_t m_audioPosition;
-		int64_t m_videoPosition;
-		int64_t m_nextVideoFrame;
+		int64_t m_currentFrame;
+		int64_t m_lastFrame;
 		jack_ringbuffer_t* m_rb;
 };
 
