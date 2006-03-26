@@ -51,7 +51,7 @@ VideoViewGL::VideoViewGL( int x, int y, int w, int h, const char *l )
 	: Fl_Gl_Window( x, y, w, h, l )
 {
 	g_videoView = this;
-	m_seekPosition = -1;
+	m_seekPosition = 0;
 	reset_cache();
 }
 
