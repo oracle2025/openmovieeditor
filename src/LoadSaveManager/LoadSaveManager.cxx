@@ -18,6 +18,7 @@
  */
 
 #include <algorithm>
+#include <sstream>
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -168,6 +169,23 @@ void LoadSaveManager::newProject()
 		at = new AudioTrack( 3 );
 		g_timeline->addTrack( at );
 	}
+
+	if ( m_projectChoice->find_item( m_currentName.c_str() ) ) {
+		int i = 1;
+		stringstream o;
+		string a;
+		o << m_currentName << " " << i;
+		a = o.str();
+		while (  m_projectChoice->find_item( a.c_str() ) ) {
+			o.str("");
+			i++;
+			o << m_currentName << " " << i;
+			a = o.str();
+		}
+		m_currentName = a;
+		m_currentFilename = name_to_filename( m_currentName );
+	}
+	
 	char* cname = strdup( m_currentFilename.c_str() );
 	m_projectChoice->add( m_currentName.c_str(), 0, 0, cname );
 	m_projectInput->value( m_currentName.c_str() );
