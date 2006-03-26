@@ -38,6 +38,10 @@ ImageClip::ImageClip( Track* track, int64_t position, string filename )
 		ERROR_DETAIL( "This is not an image file" );
 		return;
 	}
+	if ( m_image->w() > 1024 || m_image->h() > 1024 ) {
+		ERROR_DETAIL( "This image is to big, maximum is 1024x1024" );
+		return;
+	}
 
 	
 //	m_image = new Fl_PNG_Image( filename.c_str() );
