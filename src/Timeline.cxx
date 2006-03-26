@@ -129,7 +129,10 @@ frame_struct** Timeline::getFrameStack( int64_t position )
 	static frame_struct* frameStack[8]; //At most 8 Frames, ought to be enough for everyone ;)
 	int cnt = 0;
 
-	assert( position >= 0 );
+	if ( position < 0 ) {
+		position = m_seekPosition;
+		m_seekPosition++;
+	}
 	
 	m_playPosition = position;
 	
