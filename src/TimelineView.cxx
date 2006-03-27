@@ -496,8 +496,6 @@ void TimelineView::move_cursor( int64_t position )
 	m_stylusPosition = position;
 	if ( m_stylusPosition < 0 ) {
 		m_stylusPosition = 0;
-	} else if ( m_stylusPosition > 1024 ) {
-		m_stylusPosition = 1024;
 	}
 	window()->make_current();
 	long screen_pos = get_screen_position(m_stylusPosition);
