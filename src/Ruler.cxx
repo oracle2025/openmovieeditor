@@ -46,10 +46,6 @@ Ruler::Ruler( int x, int y, int w, int h, const char *label )
 
 void Ruler::draw()
 {
-	// SwitchBoard::i()->zoom();
-	// g_scrollBar->value();
-	// g_fps;
-	
 	fl_push_clip( x(), y(), w(), h());
 	
 	fl_draw_box( FL_UP_BOX, x(), y(), w(), h(), FL_BACKGROUND_COLOR );
