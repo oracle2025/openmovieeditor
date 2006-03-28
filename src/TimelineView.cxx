@@ -172,9 +172,7 @@ int TimelineView::handle( int event )
 void TimelineView::resize(int x, int y, int w, int h)
 {
 	Fl_Widget::resize( x, y, w, h );
-	long num = long( this->w() / SwitchBoard::i()->zoom() );
-	e_scroll_position( m_scrollPosition, num, 1024 );
-
+	adjustScrollbar();
 }
 void TimelineView::draw()
 {
@@ -464,10 +462,7 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 }
 void TimelineView::adjustScrollbar()
 {
-	int64_t l = g_timeline->length();
-	if ( l > g_scrollBar->slider_size_i() ) {
-		g_scrollBar->slider_size_i( l );
-	}
+	g_scrollBar->value( m_scrollPosition, long( w() / SwitchBoard::i()->zoom() ),0, g_timeline->length() + long( w() / SwitchBoard::i()->zoom() ) );
 }
 void TimelineView::split_clip( Clip* clip, int _x )
 {
@@ -501,11 +496,11 @@ void TimelineView::move_cursor( int64_t position )
 	long screen_pos = get_screen_position(m_stylusPosition);
 	if ( screen_pos < ( LEFT_TRACK_SPACING + x() ) ) {
 		m_scrollPosition = get_real_position( screen_pos );
-		e_scroll_position( m_scrollPosition, long( w() / SwitchBoard::i()->zoom() ), 1024 );
+		adjustScrollbar();
 		redraw();
 	} else if ( screen_pos > w() + x() - TRACK_SPACING ) {
 		m_scrollPosition = get_real_position( screen_pos - ( w() - TRACK_SPACING - LEFT_TRACK_SPACING )  ); //(25 = stylus_width)
-		e_scroll_position( m_scrollPosition, long( ( w() + x() ) / SwitchBoard::i()->zoom() ), 1024  );
+		adjustScrollbar();
 		redraw();
 	} else {
 		window()->make_current();

@@ -41,17 +41,6 @@ inline void e_seek_position( int64_t position )
 	g_timeline->seek( position );
 }
 
-inline void e_scroll_position( long scroll_pos, long num, long len )
-{
-	/*
-	position
-	number = width * zoom
-	top = scroll_pos
-	length = 1024
-	*/
-	g_scrollBar->value( scroll_pos, num, 0, len );
-}
-
 
 } /* namespace nle */
 #endif /* _EVENTS_H_ */
