@@ -66,6 +66,15 @@ PKG_CHECK_MODULES(LIBQUICKTIME, libquicktime >= 0.9.7,,
 CPPFLAGS="$CPPFLAGS $LIBQUICKTIME_CFLAGS"
 LDFLAGS="$LDFLAGS $LIBQUICKTIME_LIBS"
 
+PKG_CHECK_MODULES(AVCODEC, avcodec_acl = "0.4.8acl",,
+  AC_MSG_ERROR([*** avcodec_acl 0.4.8acl not found ***]))
+CPPFLAGS="$CPPFLAGS $AVCODEC_CFLAGS"
+LDFLAGS="$LDFLAGS $AVCODEC_LIBS"
+PKG_CHECK_MODULES(AVFORMAT, avformat_acl = "CVSacl4901",,
+  AC_MSG_ERROR([*** avformat_acl CVSacl4901 not found ***]))
+CPPFLAGS="$CPPFLAGS $AVFORMAT_CFLAGS"
+LDFLAGS="$LDFLAGS $AVFORMAT_LIBS"
+
 #PKG_CHECK_MODULES(JACK, jack >= 0.99.0,,
 #  AC_MSG_ERROR([*** jack 0.99.0 not found - this program requires the jack audio
 #  connection kit >= 0.99.0 http://jackit.sourceforge.net/ ***]))

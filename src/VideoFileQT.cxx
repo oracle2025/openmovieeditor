@@ -67,8 +67,8 @@ VideoFileQT::VideoFileQT( string filename )
 	}
 	m_framestruct.x = 0;
 	m_framestruct.y = 0;
-	m_framestruct.w = quicktime_video_width( m_qt, 0 );
-	m_framestruct.h = quicktime_video_height( m_qt, 0 );
+	m_framestruct.w = m_width;
+	m_framestruct.h = m_height;
 	m_framestruct.RGB = m_frame;
 	m_framestruct.YUV = 0;
 	m_framestruct.rows = m_rows;
@@ -95,15 +95,6 @@ VideoFileQT::~VideoFileQT()
 		delete [] m_rows;
 	if ( m_qt )
 		quicktime_close( m_qt );
-}
-void VideoFileQT::initScaler( unsigned int w, unsigned int h )
-{
-	m_scaled_w = w;
-	m_scaled_h = h;
-}
-void VideoFileQT::readScaled( unsigned char** rows )
-{
-	quicktime_decode_scaled( m_qt, 0, 0, m_width, m_height, m_scaled_w, m_scaled_h, BC_RGB888, rows, 0 );
 }
 bool VideoFileQT::ok() { return m_ok; }
 int64_t VideoFileQT::length()

@@ -1,6 +1,6 @@
-/*  VideoFileQT.H
+/*  VideoFileFactory.H
  *
- *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,36 +17,23 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _VIDEO_FILE_QT_H
-#define _VIDEO_FILE_QT_H
-
-#include <lqt.h>
+#ifndef _VIDEO_FILE_FACTORY_H_
+#define _VIDEO_FILE_FACTORY_H_
 
 #include "global_includes.H"
-#include "IVideoFile.H"
-#include "frame_struct.h"
 
 namespace nle
 {
 
-class VideoFileQT : public IVideoFile
+class IVideoFile;
+
+class VideoFileFactory
 {
 	public:
-		VideoFileQT( string filename );
-		~VideoFileQT();
-		bool ok();
-		int64_t length();
-		double fps();
-		frame_struct* read();
-		void read( unsigned char** rows, int w, int h );
-		void seek( int64_t frame );
-	private:
-		quicktime_t* m_qt;
-		unsigned char *m_frame;
-		unsigned char **m_rows;
-		frame_struct m_framestruct;
-		bool m_ok;
+		static IVideoFile* get( string filename );
 };
 
 } /* namespace nle */
-#endif /* _VIDEO_FILE_QT_H */
+
+#endif /* _VIDEO_FILE_FACTORY_H_ */
+

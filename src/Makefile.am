@@ -108,5 +108,9 @@ openmovieeditor_SOURCES = nle.cxx\
 	render_helper.cxx\
 	render_helper.H\
 	ImageClipArtist.H\
-	ImageClipArtist.cxx
+	ImageClipArtist.cxx\
+	VideoFileFfmpeg.cxx\
+	VideoFileFfmpeg.H\
+	VideoFileFactory.cxx\
+	VideoFileFactory.H
 

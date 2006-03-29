@@ -36,11 +36,10 @@ class IVideoFile
 		inline int height() { return m_height; }
 		virtual double fps() = 0;
 		virtual frame_struct* read() = 0;
-		virtual void initScaler( unsigned int w, unsigned int h ) = 0;
-		virtual void readScaled( unsigned char** rows ) = 0; //For Final Rendering
 		virtual void read( unsigned char** rows, int w, int h ) = 0; //For Timeline Picture Preview
 		virtual void seek( int64_t frame ) = 0;
 		string filename() { return m_filename; }
+		virtual bool ok() = 0;
 	protected:
 		int m_width;
 		int m_height;

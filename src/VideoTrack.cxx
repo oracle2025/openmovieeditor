@@ -22,9 +22,10 @@
 #include "VideoTrack.H"
 #include "VideoClip.H"
 #include "ImageClip.H"
-#include "VideoFileQT.H"
 #include "ErrorDialog/IErrorHandler.H"
 #include "render_helper.H"
+#include "VideoFileFactory.H"
+#include "globals.H"
 
 namespace nle
 {
@@ -53,15 +54,15 @@ void VideoTrack::sort()
 }
 void VideoTrack::addFile( int64_t position, string filename, int64_t trimA, int64_t trimB, int mute )
 {
-	VideoFileQT *vf = new VideoFileQT( filename );
+//	VideoFileQT *vf = new VideoFileQT( filename );
+	IVideoFile* vf = VideoFileFactory::get( filename );
 	
-	if ( vf->ok() ) {
+	if ( vf ) {
 		VideoClip* c = new VideoClip( this, position, vf, trimA, trimB );
 		c->m_mute = mute;
 		addClip( c );
 		return;
 	} else {
-		delete vf;
 		ImageClip* ic = new ImageClip( this, position, filename );
 		if ( !ic->ok() ) {
 			delete ic;

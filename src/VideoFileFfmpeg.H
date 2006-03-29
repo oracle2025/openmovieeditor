@@ -1,6 +1,6 @@
-/*  VideoFileQT.H
+/*  VideoFileFfmpeg.H
  *
- *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,10 +17,11 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _VIDEO_FILE_QT_H
-#define _VIDEO_FILE_QT_H
+#ifndef _VIDEO_FILE_FFMPEG_H_
+#define _VIDEO_FILE_FFMPEG_H_
 
-#include <lqt.h>
+#include <ffmpeg/avcodec.h>
+#include <ffmpeg/avformat.h>
 
 #include "global_includes.H"
 #include "IVideoFile.H"
@@ -29,11 +30,11 @@
 namespace nle
 {
 
-class VideoFileQT : public IVideoFile
+class VideoFileFfmpeg : public IVideoFile
 {
 	public:
-		VideoFileQT( string filename );
-		~VideoFileQT();
+		VideoFileFfmpeg( string filename );
+		~VideoFileFfmpeg();
 		bool ok();
 		int64_t length();
 		double fps();
@@ -41,12 +42,21 @@ class VideoFileQT : public IVideoFile
 		void read( unsigned char** rows, int w, int h );
 		void seek( int64_t frame );
 	private:
-		quicktime_t* m_qt;
-		unsigned char *m_frame;
-		unsigned char **m_rows;
-		frame_struct m_framestruct;
-		bool m_ok;
+		AVFormatContext* m_formatContext;
+		AVCodecContext*  m_codecContext;
+		AVCodec*         m_codec;
+		AVFrame*         m_avFrame;
+		AVFrame*         m_avFrameRGB;
+		AVPacket         m_packet;
+		frame_struct     m_framestruct;
+		unsigned char*   m_frame;
+		unsigned char**  m_rows;
+		bool             m_ok;
+		double           m_framerate;
+		int64_t          m_length;
+		int              m_videoStream;
 };
-
+	
 } /* namespace nle */
-#endif /* _VIDEO_FILE_QT_H */
+
+#endif /* _VIDEO_FILE_FFMPEG_H_ */
