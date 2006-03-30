@@ -1,0 +1,12 @@
+Document: openmovieeditor
+Title: The Open Movie Editor Tutorial
+Author: Richard Spindler
+Abstract: This manual describes what openmovieeditor is
+ and how it can be used.
+Section: Apps/Graphics
+
+Format: HTML
+Index: /usr/share/doc/openmovieeditor/html/tutorial.html
+Files: /usr/share/doc/openmovieeditor/html/*.html
+
+  

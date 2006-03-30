@@ -1,0 +1,2 @@
+?package(openmovieeditor):needs="X11" section="Apps/Graphics"\
+  title="Open Movie Editor" command="/usr/bin/openmovieeditor"

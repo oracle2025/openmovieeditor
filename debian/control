@@ -1,0 +1,14 @@
+Source: openmovieeditor
+Section: graphics
+Priority: optional
+Maintainer: Richard Spindler <richard.spindler@gmail.com>
+Build-Depends: debhelper (>= 4.0.0), autotools-dev, libfltk1.1-dev, libsndfile1-dev, libquicktime-dev, docbook-to-man
+Standards-Version: 3.6.1
+
+Package: openmovieeditor
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: a simple non-linear video edior
+ Open Movie Editor is designed to be a simple tool, that provides
+ basic movie making capabilites. It aims to be powerful enough for
+ the amateur movie artist, yet easy to use.
