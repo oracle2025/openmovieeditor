@@ -60,13 +60,13 @@ VideoViewGL::~VideoViewGL()
 }
 
 static GLuint video_canvas[10];
-#define T_W_F 1024.0 
-#define T_H_F 1024.0
-#define T_W 1024 //368
-#define T_H 1024 //240
+#define T_W_F 512.0 
+#define T_H_F 512.0
+#define T_W 512 //368
+#define T_H 512 //240
 
-#define TEXTURE_WIDTH 1024.0 
-#define TEXTURE_HEIGHT 1024.0
+#define TEXTURE_WIDTH 512.0 
+#define TEXTURE_HEIGHT 512.0
 
 void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 {

@@ -9,7 +9,8 @@ URL:            http://openmovieeditor.sourceforge.net
 Source0:        openmovieeditor-20060325.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  fltk-devel, libquicktime-devel, gavl-devel
+BuildRequires:  fltk-devel, libquicktime-devel, gavl-devel, libjpeg-devel,
+libpng-devel
 #Requires:       
 
 %description
