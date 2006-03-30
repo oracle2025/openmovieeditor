@@ -21,7 +21,6 @@
 #define _SIMPLE_PLAYBACK_CORE_H_
 
 #include <stdint.h>
-#include <jack/ringbuffer.h>
 
 namespace nle
 {
@@ -51,7 +50,6 @@ class SimplePlaybackCore
 		int64_t m_audioPosition;
 		int64_t m_currentFrame;
 		int64_t m_lastFrame;
-		jack_ringbuffer_t* m_rb;
 };
 
 } /* namespace nle */
