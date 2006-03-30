@@ -52,7 +52,7 @@ class VideoTrack : public TrackBase
 		int type() { return TRACK_TYPE_VIDEO; }
 		float stretchFactor() { return 1.0; }
 		frame_struct* getFrame( int64_t position );
-		frame_struct** VideoTrack::getFrameStack( int64_t position );
+		frame_struct** getFrameStack( int64_t position );
 		void sort();
 		void reconsiderFadeOver();
 		int fillBuffer( float* output, unsigned long frames, int64_t position ); //Needed for Crossfade handling
