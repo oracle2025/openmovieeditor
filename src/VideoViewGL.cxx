@@ -145,10 +145,10 @@ void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 			glVertex3f   (  gl_x,     gl_y + gl_h, 0.0 );
 		glEnd ();
 	}
-	
+/*	gl_font(FL_TIMES|FL_BOLD, 80);
+	glRasterPos3f( 2, 2, 0 );
+	gl_draw( "HELLO", strlen( "HELLO" ) );*/
 
-
-	
 	swap_buffers();
 
 }
