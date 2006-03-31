@@ -370,8 +370,9 @@ Track* TimelineView::get_track( int _x, int _y )
 Clip* TimelineView::get_clip( int _x, int _y )
 {
 	Track *tr = get_track( _x, _y );
-	if (!tr)
+	if ( !tr ) {
 		return NULL;
+	}
 	for ( clip_node* p = tr->getClips(); p; p = p->next ) {
 		Rect tmp = get_clip_rect( p->clip, true );
 		if ( !tmp.inside( _x, _y ) )
@@ -383,9 +384,9 @@ Clip* TimelineView::get_clip( int _x, int _y )
 Rect TimelineView::get_track_rect( Track* track )
 {
 	Rect tmp(
-			TRACK_SPACING,
+			x() + LEFT_TRACK_SPACING,
 			TRACK_SPACING + (TRACK_SPACING + TRACK_HEIGHT) * track->num(),
-			w() - 2 * TRACK_SPACING,
+			w() - ( TRACK_SPACING + LEFT_TRACK_SPACING ),
 			TRACK_HEIGHT
 		);
 	return tmp;
