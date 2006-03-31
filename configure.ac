@@ -9,7 +9,7 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 AC_PREREQ(2.5)
-AC_INIT(openmovieeditor, [0.0.20060326], [richard.spindler@gmail.com])
+AC_INIT(openmovieeditor, [0.0.20060331], [richard.spindler@gmail.com])
 AC_CONFIG_HEADER([config.h])
 
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
@@ -66,14 +66,25 @@ PKG_CHECK_MODULES(LIBQUICKTIME, libquicktime >= 0.9.7,,
 CPPFLAGS="$CPPFLAGS $LIBQUICKTIME_CFLAGS"
 LDFLAGS="$LDFLAGS $LIBQUICKTIME_LIBS"
 
-PKG_CHECK_MODULES(AVCODEC, avcodec_acl = "0.4.8acl",,
-  AC_MSG_ERROR([*** avcodec_acl 0.4.8acl not found ***]))
+
+
+
+PKG_CHECK_MODULES(AVCODEC, avcodec_acl = "CVSacl5110",,
+  AC_MSG_ERROR([*** avcodec_acl CVSacl5110 not found ***]))
 CPPFLAGS="$CPPFLAGS $AVCODEC_CFLAGS"
 LDFLAGS="$LDFLAGS $AVCODEC_LIBS"
-PKG_CHECK_MODULES(AVFORMAT, avformat_acl = "CVSacl4901",,
-  AC_MSG_ERROR([*** avformat_acl CVSacl4901 not found ***]))
+PKG_CHECK_MODULES(AVFORMAT, avformat_acl = "CVSacl5110",,
+  AC_MSG_ERROR([*** avformat_acl CVSacl5110 not found ***]))
 CPPFLAGS="$CPPFLAGS $AVFORMAT_CFLAGS"
 LDFLAGS="$LDFLAGS $AVFORMAT_LIBS"
+#PKG_CHECK_MODULES(AVCODEC, libavcodec = "50.0.0",,
+#  AC_MSG_ERROR([*** avcodec 50.0.0 not found ***]))
+#CPPFLAGS="$CPPFLAGS $AVCODEC_CFLAGS"
+#LDFLAGS="$LDFLAGS $AVCODEC_LIBS"
+#PKG_CHECK_MODULES(AVFORMAT, libavformat = "49.1.0",,
+#  AC_MSG_ERROR([*** avformat 49.1.0 not found ***]))
+#CPPFLAGS="$CPPFLAGS $AVFORMAT_CFLAGS"
+#LDFLAGS="$LDFLAGS $AVFORMAT_LIBS"
 
 #PKG_CHECK_MODULES(JACK, jack >= 0.99.0,,
 #  AC_MSG_ERROR([*** jack 0.99.0 not found - this program requires the jack audio
