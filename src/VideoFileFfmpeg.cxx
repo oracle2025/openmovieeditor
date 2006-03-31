@@ -33,8 +33,11 @@ VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 	m_formatContext = NULL;
 	
 	av_register_all(); // TODO: once should be enought -> main
+
+	AVInputFormat *file_iformat = av_find_input_format( filename.c_str() );
 	
-	if ( av_open_input_file( &m_formatContext, filename.c_str(), NULL, 0, NULL ) != 0 ) {
+	if ( av_open_input_file( &m_formatContext, filename.c_str(), file_iformat, 0, NULL ) < 0 ) {
+		cout << "A: " << filename << endl;
 		return;
 	}
 	if ( av_find_stream_info( m_formatContext ) < 0 ) {

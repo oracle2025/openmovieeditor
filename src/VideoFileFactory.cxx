@@ -31,6 +31,7 @@ IVideoFile* VideoFileFactory::get( string filename )
 		return vf;
 	}
 	delete vf;
+	cout << "Trying FFMPEG" << endl;
 	vf = new VideoFileFfmpeg( filename );
 	if ( vf->ok() ) {
 		cout << "FFMPEG in USE" << endl;
