@@ -2,7 +2,7 @@ Source: openmovieeditor
 Section: graphics
 Priority: optional
 Maintainer: Richard Spindler <richard.spindler@gmail.com>
-Build-Depends: debhelper (>= 4.0.0), autotools-dev, libfltk1.1-dev, libsndfile1-dev, libquicktime-dev, docbook-to-man
+Build-Depends: debhelper (>= 4.0.0), autotools-dev, libfltk1.1-dev, libsndfile1-dev, libquicktime-dev, docbook-to-man, xlibmesa-gl-dev
 Standards-Version: 3.6.1
 
 Package: openmovieeditor
