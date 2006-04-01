@@ -162,7 +162,14 @@ frame_struct** VideoTrack::getFrameStack( int64_t position )
 	}
 	return frameStack;
 }
-	
+
+int fo_sort_helper( void* p, void* q )
+{
+	fade_over* pn = (fade_over*)p;
+	fade_over* qn = (fade_over*)q;
+	return fade_over_start( pn ) > fade_over_start( qn );
+
+}
 void VideoTrack::reconsiderFadeOver()
 {
 	fade_over* node;
@@ -174,14 +181,14 @@ void VideoTrack::reconsiderFadeOver()
 		for ( clip_node* k = j->next; k; k = k->next ) {
 			Clip* cclip = k->clip;
 			if ( clip->A() < cclip->A() && clip->B() > cclip->A() ) {
-				cout << "ADDING FADE OVER" << endl;
 				m_fade_overs = (fade_over*)sl_push( m_fade_overs, create_fade_over( clip, cclip ) );
 			} else if ( cclip->A() < clip->A() && cclip->B() > clip->A() ) {
-				cout << "ADDING FADE OVER" << endl;
 				m_fade_overs = (fade_over*)sl_push( m_fade_overs, create_fade_over( cclip, clip ) );
 			}
 		}
 	}
+
+	m_fade_overs = (fade_over*)sl_mergesort( m_fade_overs, fo_sort_helper );
 }
 int64_t fade_over_start( fade_over* o )
 {
@@ -198,6 +205,7 @@ fade_over* create_fade_over( Clip* a, Clip* b )
 	o->clipA = a;
 	o->clipB = b;
 	o->inc = 1.0 / (float)( fade_over_end( o ) - fade_over_start( o ) );
+	cout << fade_over_start( o ) << " " << fade_over_end( o ) << endl;
 	return o;
 }
 void get_alpha_values( fade_over* o, float& a, float& b, int64_t position )
@@ -228,6 +236,10 @@ int VideoTrack::fillBuffer( float* output, unsigned long frames, int64_t positio
 			ac2->fillBuffer( buf, frames, position );
 			mixChannels( incBuffer, buf, incBuffer, frames );
 			written = frames;
+		} else if ( ac1 ) {
+			ac1->fillBuffer( incBuffer, frames, position );
+		} else if ( ac2 ) {
+			ac2->fillBuffer( incBuffer, frames, position );
 		}
 	} else {
 		while( written < frames && m_current ) {
