@@ -88,8 +88,25 @@ if ( fullscreen_on ) {
           }
         }
         submenu {} {
+          label {P&references} open
+          xywh {0 0 100 20}
+        } {
+          menuitem {} {
+            label {No SW Scaling}
+            xywh {0 0 100 20}
+          }
+          menuitem {} {
+            label {2x2 Scaling good}
+            xywh {0 0 100 20}
+          }
+          menuitem {} {
+            label {2x2 Scaling bad}
+            xywh {0 0 100 20}
+          }
+        }
+        submenu {} {
           label {&Help}
-          xywh {5 5 100 20}
+          xywh {10 10 100 20}
         } {
           menuitem {} {
             label {About...}
@@ -97,11 +114,11 @@ if ( fullscreen_on ) {
 dlg.show();
 while (dlg.shown())
   Fl::wait();}
-            xywh {5 5 100 20}
+            xywh {10 10 100 20}
           }
         }
       }
-      Fl_Tile {} {open
+      Fl_Tile {} {
         xywh {0 25 515 440} resizable
       } {
         Fl_Group {} {open
@@ -482,7 +499,7 @@ class CodecOptions {open
   } {
     Fl_Window codecOptions {
       label {Codec Options}
-      xywh {462 419 345 305} type Double resizable modal visible
+      xywh {691 479 345 305} type Double resizable modal visible
     } {
       Fl_Box codec_label {
         label Codec
