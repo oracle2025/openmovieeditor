@@ -54,7 +54,7 @@ bool FilmStrip::process()
 		m_rows[j] = m_pics[m_count].data + PIC_WIDTH * 3 * j;
 	}
 	m_vfile->read( m_rows, PIC_WIDTH, PIC_HEIGHT );
-	if ( m_count % 20 == 0 ) {
+	if ( m_count % 50 == 0 ) {
 		g_timelineView->redraw();
 	}
 	m_count++;
