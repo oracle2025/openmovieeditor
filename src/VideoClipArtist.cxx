@@ -17,6 +17,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <cassert>
+
 #include <FL/fl_draw.H>
 
 #include "VideoClipArtist.H"
@@ -26,6 +28,7 @@
 #include "globals.H"
 #include "timeline/Track.H"
 #include "mute.xpm"
+#include "SwitchBoard.H"
 
 namespace nle
 {
@@ -45,7 +48,9 @@ void VideoClipArtist::render( Rect& rect, int64_t start, int64_t stop )
 	int s = m_clip->trimA() / 100;
 	int e = ( m_clip->length() / 100 ) + s;
 	int off = m_clip->trimA() % 100;
-	for ( int k = s; k < e + 2; k++ ) {
+	int64_t inc = 1 + (int64_t)( 0.5 / SwitchBoard::i()->zoom() );
+	assert( inc >= 1 );
+	for ( int k = s; k < e + 2; k += inc ) {
 		// TODO: g_timeline should not be used, rect, start and stop are
 		// sufficient
 

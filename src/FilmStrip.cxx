@@ -20,6 +20,7 @@
 
 #include "FilmStrip.H"
 #include "IVideoFile.H"
+#include "TimelineView.H"
 
 namespace nle
 {
@@ -28,27 +29,47 @@ namespace nle
 #define PIC_HEIGHT 30
 
 FilmStrip::FilmStrip( IVideoFile* vfile )
+	: m_vfile( vfile )
 {
-	unsigned char **rows  = new unsigned char*[PIC_HEIGHT];
-	m_count = vfile->length() / 100;
-	m_pics = new pic_struct[m_count];
-	for ( unsigned int i = 0; i < m_count; i++ ) {
-		vfile->seek( i * 100 );
-		m_pics[i].data = new unsigned char[PIC_WIDTH * PIC_HEIGHT * 3];
-		m_pics[i].w = PIC_WIDTH;
-		m_pics[i].h = PIC_HEIGHT;
-		for ( int j = 0; j < PIC_HEIGHT; j++ ) {
-			rows[j] = m_pics[i].data + PIC_WIDTH * 3 * j;
+	m_rows  = new unsigned char*[PIC_HEIGHT];
+	m_countAll = m_vfile->length() / 100;
+	m_pics = new pic_struct[m_countAll];
+	m_count = 0;
+	start();
+}
+bool FilmStrip::process()
+{
+	if ( m_count == m_countAll ) {
+		if ( m_rows ) {
+			delete [] m_rows;
+			m_rows = 0;
 		}
-		vfile->read( rows, PIC_WIDTH, PIC_HEIGHT );
+		return false;
 	}
+	m_vfile->seek( m_count * 100 );
+	m_pics[m_count].data = new unsigned char[PIC_WIDTH * PIC_HEIGHT * 3];
+	m_pics[m_count].w = PIC_WIDTH;
+	m_pics[m_count].h = PIC_HEIGHT;
+	for ( int j = 0; j < PIC_HEIGHT; j++ ) {
+		m_rows[j] = m_pics[m_count].data + PIC_WIDTH * 3 * j;
+	}
+	m_vfile->read( m_rows, PIC_WIDTH, PIC_HEIGHT );
+	if ( m_count % 20 == 0 ) {
+		g_timelineView->redraw();
+	}
+	m_count++;
+	return true;
 }
 FilmStrip::~FilmStrip()
 {
+	stop();
 	for ( unsigned int i = 0; i < m_count; i++ ) {
 		delete [] m_pics[i].data;
 	}
 	delete [] m_pics;
+	if ( m_rows ) {
+		delete [] m_rows;
+	}
 }
 
 

@@ -22,6 +22,8 @@
 
 #include <stdint.h>
 
+#include "IdleHandler.H"
+
 namespace nle
 {
 
@@ -34,17 +36,21 @@ typedef struct
 
 class IVideoFile;
 
-class FilmStrip
+class FilmStrip : public IdleHandler
 {
 	public:
 		FilmStrip( IVideoFile* vfile );
 		~FilmStrip();
+		bool process();
 		inline unsigned int count() { return m_count; }
 		inline pic_struct* get_pic( unsigned int index )
 			{ return index < m_count ? &m_pics[index] : 0; }
 	private:
+		unsigned int m_countAll;
 		unsigned int m_count;
 		pic_struct *m_pics;
+		unsigned char **m_rows;
+		IVideoFile* m_vfile;
 };
 
 

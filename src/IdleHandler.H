@@ -29,10 +29,11 @@ class IdleHandler
 		virtual ~IdleHandler() {}
 		virtual bool process() = 0;
 		void start();
+		void stop();
 	protected:
 		IdleHandler() {}
 
-}
+};
 
 } /* namespace nle*/
 

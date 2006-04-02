@@ -26,15 +26,19 @@ namespace nle
 
 void process_callback( void* data )
 {
-	IdleHandler* h = dynamic_cast<IdleHandler*>( data );
+	IdleHandler* h = (IdleHandler*)data;
 	if ( !h->process() ) {
 		Fl::remove_idle( process_callback, data );
 	}
 }
 
-IdleHandler::start()
+void IdleHandler::start()
 {
 	Fl::add_idle( process_callback, this );
+}
+void IdleHandler::stop()
+{
+	Fl::remove_idle( process_callback, this );
 }
 
 
