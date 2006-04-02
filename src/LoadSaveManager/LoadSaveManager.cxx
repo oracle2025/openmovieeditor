@@ -46,6 +46,15 @@ static string name_from_projectfile( string filename );
 static string home( getenv( "HOME" ) );
 LoadSaveManager* g_loadSaveManager;
 
+static void save_timeout( void* )
+{
+	if ( g_timeline->changed() ) {
+		g_loadSaveManager->save();
+		g_timeline->saving();
+	}
+	Fl::repeat_timeout( 10.0, save_timeout );
+}
+
 LoadSaveManager::LoadSaveManager( Fl_Choice* projectChoice, Fl_Input* projectInput )
 	: m_projectChoice( projectChoice ), m_projectInput( projectInput )
 {
@@ -72,6 +81,8 @@ LoadSaveManager::LoadSaveManager( Fl_Choice* projectChoice, Fl_Input* projectInp
 	} else {
 		mkdir( m_video_projects.c_str(), 0755 );
 	}
+	g_timeline->saving();
+	Fl::add_timeout( 10.0, save_timeout );
 //	cout << name_from_projectfile( "/home/oracle/.openme.project" ) << endl;
 //	cout << name_to_filename( "Hello World 2" ) << endl;
 }
@@ -150,6 +161,10 @@ void LoadSaveManager::shutdown()
 		item++;
 		i++;
 	}
+}
+void LoadSaveManager::save()
+{
+	g_project->write( m_video_projects + "/" + m_currentFilename, m_currentName );
 }
 void LoadSaveManager::newProject()
 {

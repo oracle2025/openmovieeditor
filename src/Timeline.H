@@ -48,8 +48,12 @@ class Timeline : public TimelineBase, public IAudioReader, public IVideoReader
 		int fillBuffer( float* output, unsigned long frames );
 		inline void seek( int64_t position ) { m_seekPosition = position; }
 		inline int64_t soundLength() { return m_soundLength; }
+		bool changed() { return m_changed; }
+		void changing() { m_changed = true; }
+		void saving() { m_changed = false; }
 	private:
 		int64_t m_soundLength;
+		bool m_changed;
 };
 
 } /* namespace nle */

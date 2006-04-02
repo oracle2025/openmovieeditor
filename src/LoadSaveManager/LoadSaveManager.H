@@ -37,6 +37,7 @@ class LoadSaveManager
 		void shutdown();
 		void newProject();
 		void saveAs();
+		void save();
 		void name( string v );
 		void load( string v );
 	private:

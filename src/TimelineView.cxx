@@ -84,6 +84,7 @@ int TimelineView::handle( int event )
 					adjustScrollbar();
 					redraw();
 					g_videoView->seek( m_stylusPosition );
+					g_timeline->changing();
 				}
 			}
 			return 1;
@@ -107,12 +108,14 @@ int TimelineView::handle( int event )
 						if ( menuitem->popup( Fl::event_x(), Fl::event_y() ) ) {
 							vcl->m_mute = false;
 							redraw();
+							g_timeline->changing();
 						}
 					} else {
 						Fl_Menu_Item menuitem[] = { { "Mute Original Sound" }, { 0L } };
 						if ( menuitem->popup( Fl::event_x(), Fl::event_y() ) ) {
 							vcl->m_mute = true;
 							redraw();
+							g_timeline->changing();
 						}
 					}
 				}
@@ -154,6 +157,7 @@ int TimelineView::handle( int event )
 				m_dragHandler = NULL;
 				redraw();
 				g_videoView->seek( m_stylusPosition );
+				g_timeline->changing();
 				return 1;
 			}
 			if ( g_ui->automationsMode() == 2 ) {
@@ -161,6 +165,7 @@ int TimelineView::handle( int event )
 				if ( cl ) {
 					split_clip( cl, _x );
 					redraw();
+					g_timeline->changing();
 					return 1;
 				}
 			}

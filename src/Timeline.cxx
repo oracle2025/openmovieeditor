@@ -53,6 +53,7 @@ Timeline::Timeline()
 
 	m_seekPosition = 0;
 	m_soundLength = 0;
+	m_changed = false;
 }
 Timeline::~Timeline()
 {
