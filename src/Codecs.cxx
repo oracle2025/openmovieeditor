@@ -229,7 +229,7 @@ CodecParameters::~CodecParameters()
 	param_node* r;
 	while ( ( q = (codec_node*)sl_pop( &m_audioCodecs ) ) ) {
 		while ( ( r = (param_node*)sl_pop( &( q->parameters ) ) ) ) {
-		 	if ( r->info->type != LQT_PARAMETER_INT ) {
+		 	if ( r->info->type == LQT_PARAMETER_STRING ) {
 				free( r->value.val_string );
 			}
 			delete r; //FIXME: Seqfault here.
@@ -238,7 +238,7 @@ CodecParameters::~CodecParameters()
 	}
 	while ( ( q = (codec_node*)sl_pop( &m_videoCodecs ) ) ) {
 		while ( ( r = (param_node*)sl_pop( &( q->parameters ) ) ) ) {
-		 	if ( r->info->type != LQT_PARAMETER_INT ) {
+		 	if ( r->info->type == LQT_PARAMETER_STRING ) {
 				free( r->value.val_string );
 			}
 			delete r;
