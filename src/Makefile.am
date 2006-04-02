@@ -114,5 +114,7 @@ openmovieeditor_SOURCES = nle.cxx\
 	VideoFileFactory.cxx\
 	VideoFileFactory.H\
 	NoDropInput.H\
-	NoDropInput.cxx
+	NoDropInput.cxx\
+	IdleHandler.cxx\
+	IdleHandler.H
 
