@@ -21,6 +21,7 @@
 #include "FilmStrip.H"
 #include "IVideoFile.H"
 #include "TimelineView.H"
+#include "SwitchBoard.H"
 
 namespace nle
 {
@@ -54,7 +55,8 @@ bool FilmStrip::process()
 		m_rows[j] = m_pics[m_count].data + PIC_WIDTH * 3 * j;
 	}
 	m_vfile->read( m_rows, PIC_WIDTH, PIC_HEIGHT );
-	if ( m_count % 50 == 0 ) {
+	int64_t inc = 1 + (int64_t)( 0.5 / SwitchBoard::i()->zoom() );
+	if ( m_count % inc == 0 ) {
 		g_timelineView->redraw();
 	}
 	m_count++;
