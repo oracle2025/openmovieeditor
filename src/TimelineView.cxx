@@ -77,9 +77,8 @@ int TimelineView::handle( int event )
 		case FL_PASTE:
 			{
 				Track* t = get_track( _x, _y );
-				int64_t rp = get_real_position( _x, t->stretchFactor() );
 				if (t && !fl_filename_isdir(Fl::event_text()) ) {
-					
+					int64_t rp = get_real_position( _x, t->stretchFactor() );
 					t->addFile( rp, Fl::event_text() );
 					adjustScrollbar();
 					redraw();

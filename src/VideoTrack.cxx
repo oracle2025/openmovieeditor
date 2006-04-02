@@ -205,7 +205,6 @@ fade_over* create_fade_over( Clip* a, Clip* b )
 	o->clipA = a;
 	o->clipB = b;
 	o->inc = 1.0 / (float)( fade_over_end( o ) - fade_over_start( o ) );
-	cout << fade_over_start( o ) << " " << fade_over_end( o ) << endl;
 	return o;
 }
 void get_alpha_values( fade_over* o, float& a, float& b, int64_t position )
