@@ -161,6 +161,7 @@ void LoadSaveManager::shutdown()
 		item++;
 		i++;
 	}
+	g_timeline->clear();
 }
 void LoadSaveManager::save()
 {

@@ -34,6 +34,7 @@
 #include "LoadSaveManager/LoadSaveManager.H"
 #include "Project.H"
 #include "ErrorDialog/FltkErrorHandler.H"
+#include "FilmStripFactory.H"
 
 namespace nle 
 {
@@ -58,6 +59,7 @@ int main( int argc, char** argv )
 	nle::SimplePlaybackCore playbackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
 	//nle::PlaybackCore playbackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
 	nle::LoadSaveManager lsm( nui.projectChoice, nui.projectNameInput );
+	nle::FilmStripFactory filmStripFactory;
 
 	Fl::visual(FL_DOUBLE|FL_RGB);
 

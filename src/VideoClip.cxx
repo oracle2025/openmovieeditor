@@ -23,6 +23,7 @@
 #include "AudioFileQT.H"
 #include "ErrorDialog/IErrorHandler.H"
 #include "VideoClipArtist.H"
+#include "FilmStripFactory.H"
 
 namespace nle
 {
@@ -34,7 +35,9 @@ VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A,
 	m_trimB = B;
 	m_audioFile = 0;
 	m_videoFile = vf;
-	m_filmStrip = new FilmStrip( vf );
+	
+	m_filmStrip = g_filmStripFactory->get( vf ); //new FilmStrip( vf );
+	
 	m_lastFramePosition = -1;
 	IAudioFile* af = new AudioFileQT( m_videoFile->filename() );
 	if ( af->ok() ) {
@@ -53,7 +56,7 @@ bool VideoClip::hasAudio()
 VideoClip::~VideoClip()
 {
 	delete m_artist;
-	delete m_filmStrip;
+	g_filmStripFactory->remove( m_filmStrip );//delete m_filmStrip;
 	delete m_videoFile;
 }
 string VideoClip::filename()
