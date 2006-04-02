@@ -232,7 +232,7 @@ CodecParameters::~CodecParameters()
 		 	if ( r->info->type != LQT_PARAMETER_INT ) {
 				free( r->value.val_string );
 			}
-			delete r;
+			delete r; //FIXME: Seqfault here.
 		}
 		delete q;
 	}

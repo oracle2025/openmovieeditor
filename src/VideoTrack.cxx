@@ -17,6 +17,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <cassert>
+
 #include <FL/filename.H>
 
 #include "VideoTrack.H"
@@ -137,6 +139,8 @@ frame_struct** VideoTrack::getFrameStack( int64_t position )
 		if ( !B ) {
 			B = dynamic_cast<ImageClip*>(o->clipB);
 		}
+		assert( A );
+		assert( B );
 		frameStack[0] = A->getFrame( position );
 		frameStack[1] = B->getFrame( position );
 		if ( frameStack[0] && frameStack[1] ) {
