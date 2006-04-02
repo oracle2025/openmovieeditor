@@ -112,5 +112,7 @@ openmovieeditor_SOURCES = nle.cxx\
 	VideoFileFfmpeg.cxx\
 	VideoFileFfmpeg.H\
 	VideoFileFactory.cxx\
-	VideoFileFactory.H
+	VideoFileFactory.H\
+	NoDropInput.H\
+	NoDropInput.cxx
 

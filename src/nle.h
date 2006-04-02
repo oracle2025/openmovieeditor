@@ -22,8 +22,8 @@ using namespace std;
 #include <iostream>
 #include <string>
 #include "FileBrowser.H"
-#include <FL/Fl_Input.H>
 #include "LoadSaveManager/LoadSaveManager.H"
+#include "NoDropInput.H"
 #include <FL/Fl_Choice.H>
 
 class NleUI {
@@ -63,23 +63,35 @@ private:
   inline void cb_fileBrowser_i(nle::FileBrowser*, void*);
   static void cb_fileBrowser(nle::FileBrowser*, void*);
 public:
-  Fl_Input *projectNameInput;
+  NoDropInput *projectNameInput;
 private:
-  inline void cb_projectNameInput_i(Fl_Input*, void*);
-  static void cb_projectNameInput(Fl_Input*, void*);
+  inline void cb_projectNameInput_i(NoDropInput*, void*);
+  static void cb_projectNameInput(NoDropInput*, void*);
 public:
   Fl_Button *playButton;
 private:
   inline void cb_playButton_i(Fl_Button*, void*);
   static void cb_playButton(Fl_Button*, void*);
-  inline void cb__i(Fl_Button*, void*);
-  static void cb_(Fl_Button*, void*);
-  inline void cb_1_i(Fl_Button*, void*);
-  static void cb_1(Fl_Button*, void*);
-  inline void cb_2_i(Fl_Button*, void*);
-  static void cb_2(Fl_Button*, void*);
-  inline void cb_3_i(Fl_Button*, void*);
-  static void cb_3(Fl_Button*, void*);
+public:
+  Fl_Button *lastButton;
+private:
+  inline void cb_lastButton_i(Fl_Button*, void*);
+  static void cb_lastButton(Fl_Button*, void*);
+public:
+  Fl_Button *firstButton;
+private:
+  inline void cb_firstButton_i(Fl_Button*, void*);
+  static void cb_firstButton(Fl_Button*, void*);
+public:
+  Fl_Button *backButton;
+private:
+  inline void cb_backButton_i(Fl_Button*, void*);
+  static void cb_backButton(Fl_Button*, void*);
+public:
+  Fl_Button *forwardButton;
+private:
+  inline void cb_forwardButton_i(Fl_Button*, void*);
+  static void cb_forwardButton(Fl_Button*, void*);
 public:
   Fl_Choice *projectChoice;
 private:
@@ -157,6 +169,7 @@ extern Fl_Box *g_trashCan;
 extern float g_fps;
 #include <FL/Fl_Hold_Browser.H>
 #include <FL/Fl_Value_Input.H>
+#include <FL/Fl_Input.H>
 
 class CodecOptions {
 public:
@@ -207,4 +220,8 @@ public:
   ~AboutDialog();
 };
 extern Fl_Button* g_playButton;
+extern Fl_Button* g_firstButton;
+extern Fl_Button* g_lastButton;
+extern Fl_Button* g_backButton;
+extern Fl_Button* g_forwardButton;
 #endif

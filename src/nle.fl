@@ -11,7 +11,7 @@ class NleUI {open
       callback {if (Fl::event()==FL_SHORTCUT && Fl::event_key()==FL_Escape) 
     return; // ignore Escape
 mainWindow->hide();} open
-      private xywh {477 221 515 465} type Double resizable visible
+      private xywh {398 151 515 465} type Double resizable visible
     } {
       Fl_Menu_Bar {} {open
         xywh {0 0 345 25}
@@ -194,37 +194,47 @@ fb->load_rel();}
               }
             }
             Fl_Input projectNameInput {
-              callback {nle::g_loadSaveManager->name( o->value() );}
+              callback {nle::g_loadSaveManager->name( o->value() );} selected
               xywh {0 25 280 25} box FLAT_BOX color 49 textfont 1
               code0 {\#include "LoadSaveManager/LoadSaveManager.H"}
+              code1 {\#include "NoDropInput.H"}
+              class NoDropInput
             }
             Fl_Button playButton {
               label {@>}
               callback {if ( strcmp( o->label(), "@>" ) == 0 ) {
 	o->label( "@||" );
+	lastButton->deactivate();
+	firstButton->deactivate();
+	forwardButton->deactivate();
+	backButton->deactivate();
 	m_videoView->play();
 } else {
 	o->label( "@>" );
 	m_videoView->stop();
+	lastButton->activate();
+	firstButton->activate();
+	forwardButton->activate();
+	backButton->activate();
 }}
               tooltip Play xywh {100 235 80 40}
             }
-            Fl_Button {} {
+            Fl_Button lastButton {
               label {@>|}
               callback {nle::g_ruler->skipLast()}
               tooltip {Goto End} xywh {230 235 50 40}
             }
-            Fl_Button {} {
+            Fl_Button firstButton {
               label {@|<}
               callback {nle::g_ruler->skipFirst();}
               tooltip {Goto Start} xywh {0 235 50 40}
             }
-            Fl_Button {} {
+            Fl_Button backButton {
               label {@<|}
               callback {nle::g_ruler->skipBackward();}
               tooltip {Skip Frame backwards} xywh {50 235 50 40}
             }
-            Fl_Button {} {
+            Fl_Button forwardButton {
               label {@|>}
               callback {nle::g_ruler->skipForward();}
               tooltip {Skip Frame forward} xywh {180 235 50 40}
@@ -246,6 +256,10 @@ nle::g_loadSaveManager->load( name );} open
 g_scrollBar = scaleBar;
 g_trashCan = trashCan;
 g_playButton = playButton;
+g_firstButton = firstButton;
+g_lastButton = lastButton;
+g_forwardButton = forwardButton;
+g_backButton = backButton;
 scaleBar->slider_size_i(300);
 mainWindow->show(argc, argv);
 projectNameInput->value("Project 1");} {}
@@ -601,5 +615,17 @@ class AboutDialog {open
   }
 } 
 
-decl {Fl_Button* g_playButton;} {selected public
+decl {Fl_Button* g_playButton;} {public
+} 
+
+decl {Fl_Button* g_firstButton;} {public
+} 
+
+decl {Fl_Button* g_lastButton;} {public
+} 
+
+decl {Fl_Button* g_backButton;} {public
+} 
+
+decl {Fl_Button* g_forwardButton;} {public
 } 

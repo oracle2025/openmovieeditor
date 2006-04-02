@@ -62,6 +62,10 @@ extern bool g_SEEKING;
 extern float g_fps;
 class Fl_Button;
 extern Fl_Button* g_playButton;
+extern Fl_Button* g_firstButton;
+extern Fl_Button* g_lastButton;
+extern Fl_Button* g_forwardButton;
+extern Fl_Button* g_backButton;
 
 #endif /* _GLOBALS_H_ */
 

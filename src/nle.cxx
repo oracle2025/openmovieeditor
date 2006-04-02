@@ -270,52 +270,60 @@ void NleUI::cb_fileBrowser(nle::FileBrowser* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_fileBrowser_i(o,v);
 }
 
-inline void NleUI::cb_projectNameInput_i(Fl_Input* o, void*) {
+inline void NleUI::cb_projectNameInput_i(NoDropInput* o, void*) {
   nle::g_loadSaveManager->name( o->value() );
 }
-void NleUI::cb_projectNameInput(Fl_Input* o, void* v) {
+void NleUI::cb_projectNameInput(NoDropInput* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_projectNameInput_i(o,v);
 }
 
 inline void NleUI::cb_playButton_i(Fl_Button* o, void*) {
   if ( strcmp( o->label(), "@>" ) == 0 ) {
 	o->label( "@||" );
+	lastButton->deactivate();
+	firstButton->deactivate();
+	forwardButton->deactivate();
+	backButton->deactivate();
 	m_videoView->play();
 } else {
 	o->label( "@>" );
 	m_videoView->stop();
+	lastButton->activate();
+	firstButton->activate();
+	forwardButton->activate();
+	backButton->activate();
 };
 }
 void NleUI::cb_playButton(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_playButton_i(o,v);
 }
 
-inline void NleUI::cb__i(Fl_Button*, void*) {
+inline void NleUI::cb_lastButton_i(Fl_Button*, void*) {
   nle::g_ruler->skipLast();
 }
-void NleUI::cb_(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb__i(o,v);
+void NleUI::cb_lastButton(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_lastButton_i(o,v);
 }
 
-inline void NleUI::cb_1_i(Fl_Button*, void*) {
+inline void NleUI::cb_firstButton_i(Fl_Button*, void*) {
   nle::g_ruler->skipFirst();
 }
-void NleUI::cb_1(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_1_i(o,v);
+void NleUI::cb_firstButton(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_firstButton_i(o,v);
 }
 
-inline void NleUI::cb_2_i(Fl_Button*, void*) {
+inline void NleUI::cb_backButton_i(Fl_Button*, void*) {
   nle::g_ruler->skipBackward();
 }
-void NleUI::cb_2(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_2_i(o,v);
+void NleUI::cb_backButton(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_backButton_i(o,v);
 }
 
-inline void NleUI::cb_3_i(Fl_Button*, void*) {
+inline void NleUI::cb_forwardButton_i(Fl_Button*, void*) {
   nle::g_ruler->skipForward();
 }
-void NleUI::cb_3(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_3_i(o,v);
+void NleUI::cb_forwardButton(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_forwardButton_i(o,v);
 }
 
 inline void NleUI::cb_projectChoice_i(Fl_Choice* o, void*) {
@@ -459,31 +467,38 @@ NleUI::NleUI() {
             o->end();
             Fl_Group::current()->resizable(o);
           }
-          { Fl_Input* o = projectNameInput = new Fl_Input(0, 25, 280, 25);
+          { NoDropInput* o = projectNameInput = new NoDropInput(0, 25, 280, 25);
             o->box(FL_FLAT_BOX);
             o->color(FL_BACKGROUND_COLOR);
+            o->selection_color(FL_SELECTION_COLOR);
+            o->labeltype(FL_NORMAL_LABEL);
+            o->labelfont(0);
+            o->labelsize(14);
+            o->labelcolor(FL_BLACK);
             o->textfont(1);
             o->callback((Fl_Callback*)cb_projectNameInput);
+            o->align(FL_ALIGN_LEFT);
+            o->when(FL_WHEN_RELEASE);
           }
           { Fl_Button* o = playButton = new Fl_Button(100, 235, 80, 40, "@>");
             o->tooltip("Play");
             o->callback((Fl_Callback*)cb_playButton);
           }
-          { Fl_Button* o = new Fl_Button(230, 235, 50, 40, "@>|");
+          { Fl_Button* o = lastButton = new Fl_Button(230, 235, 50, 40, "@>|");
             o->tooltip("Goto End");
-            o->callback((Fl_Callback*)cb_);
+            o->callback((Fl_Callback*)cb_lastButton);
           }
-          { Fl_Button* o = new Fl_Button(0, 235, 50, 40, "@|<");
+          { Fl_Button* o = firstButton = new Fl_Button(0, 235, 50, 40, "@|<");
             o->tooltip("Goto Start");
-            o->callback((Fl_Callback*)cb_1);
+            o->callback((Fl_Callback*)cb_firstButton);
           }
-          { Fl_Button* o = new Fl_Button(50, 235, 50, 40, "@<|");
+          { Fl_Button* o = backButton = new Fl_Button(50, 235, 50, 40, "@<|");
             o->tooltip("Skip Frame backwards");
-            o->callback((Fl_Callback*)cb_2);
+            o->callback((Fl_Callback*)cb_backButton);
           }
-          { Fl_Button* o = new Fl_Button(180, 235, 50, 40, "@|>");
+          { Fl_Button* o = forwardButton = new Fl_Button(180, 235, 50, 40, "@|>");
             o->tooltip("Skip Frame forward");
-            o->callback((Fl_Callback*)cb_3);
+            o->callback((Fl_Callback*)cb_forwardButton);
           }
           o->end();
         }
@@ -506,6 +521,10 @@ void NleUI::show( int argc, char **argv ) {
 g_scrollBar = scaleBar;
 g_trashCan = trashCan;
 g_playButton = playButton;
+g_firstButton = firstButton;
+g_lastButton = lastButton;
+g_forwardButton = forwardButton;
+g_backButton = backButton;
 scaleBar->slider_size_i(300);
 mainWindow->show(argc, argv);
 projectNameInput->value("Project 1");
@@ -5681,3 +5700,7 @@ AboutDialog::~AboutDialog() {
   delete aboutDialog;
 }
 Fl_Button* g_playButton;
+Fl_Button* g_firstButton;
+Fl_Button* g_lastButton;
+Fl_Button* g_backButton;
+Fl_Button* g_forwardButton;

@@ -137,6 +137,10 @@ void SimplePlaybackCore::checkPlayButton()
 	if ( !Pa_StreamActive( g_stream ) ) {
 		stop();
 		g_playButton->label( "@>" );
+		g_firstButton->activate();
+		g_lastButton->activate();
+		g_forwardButton->activate();
+		g_backButton->activate();
 	} else {
 		Fl::repeat_timeout( 0.1, timer_callback, this );
 	}

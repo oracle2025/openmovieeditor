@@ -41,6 +41,7 @@
 #include "AutomationDragHandler.H"
 #include "ShiftAutomationDragHandler.H"
 #include "IClipArtist.H"
+#include "SimplePlaybackCore.H"
 
 #include "audio.xpm"
 #include "video.xpm"
@@ -71,6 +72,9 @@ TimelineView::~TimelineView()
 }
 int TimelineView::handle( int event )
 {
+	if ( g_simplePlaybackCore->active() ) {
+		return Fl_Widget::handle( event );
+	}
 	int _x = Fl::event_x();
 	int _y = Fl::event_y() - y();
 	switch ( event ) {
