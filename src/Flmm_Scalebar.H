@@ -31,8 +31,8 @@
 class FL_EXPORT Flmm_Scalebar : public Fl_Scrollbar 
 {
   short pushed_;
-  short slider_size_i_;
-  short min_sash_size_;
+  double slider_size_i_;
+  double min_sash_size_;
   
 private:
   void drawSlider( int x, int y, int w, int h );
@@ -44,11 +44,11 @@ protected:
   
 public:  
   Flmm_Scalebar(int x,int y,int w,int h, const char *l = 0);
-  int value();
-  int value(int position, int size, int top, int total);
-  int scrollvalue(int position, int size, int top, int total);
-  void slider_size_i( int v );
-  int slider_size_i();
+  double value();
+  double value(double position, double size, double top, double total);
+  double scrollvalue(double position, double size, double top, double total);
+  void slider_size_i( double v );
+  double slider_size_i();
 };
 
 #endif

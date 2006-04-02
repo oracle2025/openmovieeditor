@@ -42,18 +42,18 @@ Flmm_Scalebar::Flmm_Scalebar( int x, int y, int w, int h, const char *l )
   min_sash_size_ = 0;
 }
 
-int Flmm_Scalebar::value() {
-  return int(Fl_Slider::value());
+double Flmm_Scalebar::value() {
+  return double(Fl_Slider::value());
 }
 
-int Flmm_Scalebar::value(int position, int size, int top, int total) {
+double Flmm_Scalebar::value(double position, double size, double top, double total) {
   return scrollvalue(position, size, top, total);
 }
 
-int Flmm_Scalebar::slider_size_i() { 
+double Flmm_Scalebar::slider_size_i() { 
   return slider_size_i_; 
 }
-void Flmm_Scalebar::slider_size_i( int v ) {
+void Flmm_Scalebar::slider_size_i( double v ) {
   slider_size_i_ = v;
 }
 
@@ -69,13 +69,13 @@ void Flmm_Scalebar::drawSliderBg(int x, int y, int w, int h) {
   }
 }
 
-int Flmm_Scalebar::scrollvalue(int p, int n, int t, int l) {
+double Flmm_Scalebar::scrollvalue(double p, double n, double t, double l) {
   //	p = position, first line displayed
   //	n = window, number of lines displayed
   //	t = top, number of first line
   //	l = length, total number of lines
   step(1, 1);
-  int minSash;
+  double minSash;
   if (horizontal()) {
     if ( w()<3*h() ) {
       minSash = 0;
@@ -232,7 +232,8 @@ void Flmm_Scalebar::draw(){
 }
 
 int Flmm_Scalebar::handle(int event){
-  static int evDown, evVal, evSize;
+  static int evDown;
+  static double evVal, evSize;
   // we have to do a lot of stuff that will be done again in the Scrollbar handle
   if ( event==FL_PUSH ) {
     int X=x(); int Y=y(); int W=w(); int H=h();
@@ -279,9 +280,9 @@ handleEv:
     switch ( event ) {
     case FL_PUSH:
     case FL_DRAG: {
-	int evDelta;
-	int max = (int)maximum(), min = (int)minimum();
-	int v = value(), s = slider_size_i_;
+	double evDelta;
+	double max = (double)maximum(), min = (double)minimum();
+	double v = value(), s = slider_size_i_;
 	if ( horizontal() ) {
 	  evDelta = evDown-Fl::event_x();
 	  int nLines = (int)(maximum() - minimum() + slider_size_i_ + min_sash_size_);
@@ -294,12 +295,12 @@ handleEv:
 	  evDelta = evDelta*nLines/wdt;
 	}
 	if ( pushed_ == 4 ) { // left or upper sash box
-	  int maxx = max-min+slider_size_i_;
+	  double maxx = max-min+slider_size_i_;
 	  if ( evVal-evDelta < min ) evDelta = evVal-min;
 	  if ( evDelta < -evSize ) evDelta = -evSize;
 	  scrollvalue( evVal-evDelta, evSize+evDelta, min, maxx );
 	} else if ( pushed_ == 5 ) { // right or lower sash box
-	  int maxx = max-min+slider_size_i_;
+	  double maxx = max-min+slider_size_i_;
 	  if ( evDelta > evSize ) evDelta = evSize;
 	  if ( evVal+evSize-evDelta-min > maxx ) evDelta = evVal+evSize-min-maxx;
 	  scrollvalue( evVal, evSize-evDelta, min, maxx );
