@@ -31,6 +31,7 @@ IVideoFile* VideoFileFactory::get( string filename )
 		return vf;
 	}
 	delete vf;
+#ifdef AVCODEC
 	cout << "Trying FFMPEG" << endl;
 	vf = new VideoFileFfmpeg( filename );
 	if ( vf->ok() ) {
@@ -38,6 +39,7 @@ IVideoFile* VideoFileFactory::get( string filename )
 		return vf;
 	}
 	delete vf;
+#endif /* AVCODEC */
 	return 0;
 }
 

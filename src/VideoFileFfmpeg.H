@@ -20,6 +20,8 @@
 #ifndef _VIDEO_FILE_FFMPEG_H_
 #define _VIDEO_FILE_FFMPEG_H_
 
+#ifdef AVCODEC
+
 #include <ffmpeg/avcodec.h>
 #include <ffmpeg/avformat.h>
 
@@ -58,5 +60,7 @@ class VideoFileFfmpeg : public IVideoFile
 };
 	
 } /* namespace nle */
+
+#endif /* AVCODEC */
 
 #endif /* _VIDEO_FILE_FFMPEG_H_ */
