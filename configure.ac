@@ -66,30 +66,45 @@ PKG_CHECK_MODULES(LIBQUICKTIME, libquicktime >= 0.9.7,,
 CPPFLAGS="$CPPFLAGS $LIBQUICKTIME_CFLAGS"
 LDFLAGS="$LDFLAGS $LIBQUICKTIME_LIBS"
 
+HAVE_AVCODEC=false
+PKG_CHECK_MODULES(AVCODEC, libavcodec, [HAVE_AVCODEC=true], [true])
+if test x$HAVE_AVCODEC = xfalse; then
+  AC_MSG_WARN([*** libavcodec not found])
+else
+  CPPFLAGS="$CPPFLAGS $AVCODEC_CFLAGS -DAVCODEC"
+  LDFLAGS="$LDFLAGS $AVCODEC_LIBS"
+fi
 
-PKG_CHECK_MODULES(AVCODEC, avcodec_acl = "CVSacl5110",,
-  AC_MSG_ERROR([*** avcodec_acl CVSacl5110 not found ***]))
-CPPFLAGS="$CPPFLAGS $AVCODEC_CFLAGS"
-LDFLAGS="$LDFLAGS $AVCODEC_LIBS"
-PKG_CHECK_MODULES(AVFORMAT, avformat_acl = "CVSacl5110",,
-  AC_MSG_ERROR([*** avformat_acl CVSacl5110 not found ***]))
-CPPFLAGS="$CPPFLAGS $AVFORMAT_CFLAGS"
-LDFLAGS="$LDFLAGS $AVFORMAT_LIBS"
+if test x$HAVE_AVCODEC = xfalse; then
+  HAVE_AVCODEC_ACL=false
+  PKG_CHECK_MODULES(AVCODEC_ACL, avcodec_acl, [HAVE_AVCODEC_ACL=true], [true])
+  if test x$HAVE_AVCODEC_ACL = xfalse; then
+    AC_MSG_WARN([*** libavcodec_acl not found])
+  else
+    CPPFLAGS="$CPPFLAGS $AVCODEC_ACL_CFLAGS -DAVCODEC"
+    LDFLAGS="$LDFLAGS $AVCODEC_ACL_LIBS"
+  fi
+fi
 
-#PKG_CHECK_MODULES(AVCODEC, libavcodec = "50.0.0",,
-#  AC_MSG_ERROR([*** avcodec 50.0.0 not found ***]))
-#CPPFLAGS="$CPPFLAGS $AVCODEC_CFLAGS"
-#LDFLAGS="$LDFLAGS $AVCODEC_LIBS"
-#PKG_CHECK_MODULES(AVFORMAT, libavformat = "49.1.0",,
-#  AC_MSG_ERROR([*** avformat 49.1.0 not found ***]))
-#CPPFLAGS="$CPPFLAGS $AVFORMAT_CFLAGS"
-#LDFLAGS="$LDFLAGS $AVFORMAT_LIBS"
+HAVE_AVFORMAT=false
+PKG_CHECK_MODULES(AVFORMAT, libavformat, [HAVE_AVFORMAT=true], [true])
+if test x$HAVE_AVFORMAT = xfalse; then
+  AC_MSG_WARN([*** libavformat not found])
+else
+  CPPFLAGS="$CPPFLAGS $AVFORMAT_CFLAGS"
+  LDFLAGS="$LDFLAGS $AVFORMAT_LIBS"
+fi
 
-#PKG_CHECK_MODULES(JACK, jack >= 0.99.0,,
-#  AC_MSG_ERROR([*** jack 0.99.0 not found - this program requires the jack audio
-#  connection kit >= 0.99.0 http://jackit.sourceforge.net/ ***]))
-#CPPFLAGS="$CPPFLAGS $JACK_CFLAGS"
-#LDFLAGS="$LDFLAGS $JACK_LIBS"
+if test x$HAVE_AVFORMAT = xfalse; then
+  HAVE_AVFORMAT_ACL=false
+  PKG_CHECK_MODULES(AVFORMAT_ACL, avformat_acl, [HAVE_AVFORMAT_ACL=true], [true])
+  if test x$HAVE_AVFORMAT_ACL = xfalse; then
+    AC_MSG_WARN([*** libavformat_acl not found])
+  else
+    CPPFLAGS="$CPPFLAGS $AVFORMAT_ACL_CFLAGS"
+    LDFLAGS="$LDFLAGS $AVFORMAT_ACL_LIBS"
+  fi
+fi
 
 dnl FLTK-Check Shamelessly stolen from SpiralSynthModular
 AC_PATH_PROG(FLTK_CONFIG, fltk-config, no)

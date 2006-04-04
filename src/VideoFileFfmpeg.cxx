@@ -155,3 +155,6 @@ void VideoFileFfmpeg::seek( int64_t frame )
 }
 
 } /* namespace nle */
+
+#endif /* AVCODEC */
+
