@@ -14,7 +14,6 @@ IUSE=""
 DEPEND=">=media-libs/libquicktime-0.9.7
         x11-libs/fltk
         media-libs/gavl
-        media-sound/jack-audio-connection-kit
         media-libs/libsndfile"
 
 src_install () {
