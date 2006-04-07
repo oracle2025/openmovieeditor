@@ -25,6 +25,7 @@
 namespace nle
 {
 
+	
 void scale_it( frame_struct* src, frame_struct* dst );
 void scale_it_alpha( frame_struct* src, frame_struct* dst );
 	
@@ -32,6 +33,10 @@ void blend( unsigned char* dst, unsigned char* src1, unsigned char* src2, float 
 void blend_alpha( unsigned char* dst, unsigned char* rgb, unsigned char* rgba, float alpha, int len );
 
 unsigned int mixChannels( float *A, float *B, float* out, unsigned int frames );
+
+//shamelessly extracted from libquicktime
+void decode_int16_to_float(void * _in, float ** out, int num_channels, int num_samples);
+void decode_uint8_to_float(void * _in, float ** out, int num_channels, int num_samples);
 
 } /* namespace nle */
 

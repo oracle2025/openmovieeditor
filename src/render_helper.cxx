@@ -211,6 +211,45 @@ unsigned int mixChannels( float *A, float *B, float* out, unsigned int frames )
 	}
 	return frames;
 }
+#define UINT8_TO_FLOAT(src, dst) dst = (float)src / 127.0 - 1.0
+#define INT16_TO_FLOAT(src, dst) dst = (float)src / 32768.0
+void decode_int16_to_float(void * _in, float ** out, int num_channels, int num_samples)
+  {
+  int i, j;
+  int16_t * in;
+  for(i = 0; i < num_channels; i++)
+    {
+    if(out[i])
+      {
+      in = ((int16_t*)_in) + i;
+      for(j = 0; j < num_samples; j++)
+        {
+        INT16_TO_FLOAT((*in), out[i][j]);
+        in += num_channels;
+        }
+      }
+    }
+  }
+
+// useless, because it wont do interleaved sample, and this is what it's all
+// about.
+void decode_uint8_to_float(void * _in, float ** out, int num_channels, int num_samples)
+  {
+  int i, j;
+  uint8_t * in;
+  for(i = 0; i < num_channels; i++)
+    {
+    if(out[i])
+      {
+      in = ((uint8_t*)_in) + i;
+      for(j = 0; j < num_samples; j++)
+        {
+        UINT8_TO_FLOAT((*in), out[i][j]);
+        in += num_channels;
+        }
+      }
+    }
+  }
 
 } /* namespace nle */
 

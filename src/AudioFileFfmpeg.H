@@ -1,6 +1,6 @@
-/*  AudioFileQT.H
+/*  AudioFileFfmpeg.H
  *
- *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,35 +17,39 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _AUDIO_FILE_QT_H_
-#define _AUDIO_FILE_QT_H_
 
-#include <stdint.h>
-
-#include <lqt.h>
+#ifndef _AUDIO_FILE_FFMPEG_H_
+#define _AUDIO_FILE_FFMPEG_H_
 
 #include "global_includes.H"
 #include "IAudioFile.H"
-#include "globals.H"
 
 namespace nle
 {
 
-class AudioFileQT : public IAudioFile
+class AudioFileFfmpeg : public IAudioFile
 {
 	public:
-		AudioFileQT( string filename );
+		AudioFileFfmpeg( string filename );
 		~AudioFileQT();
 		void seek( int64_t sample );
 		int fillBuffer( float* output, unsigned long frames );
-			// sizof(output) == frames * 2
-			// File Format: 48000 stereo interleaved
 	private:
-		quicktime_t* m_qt;
-		bool m_oneShot;
+		AVFormatContext* m_formatContext;
+		AVCodecContext*  m_codecContext;
+		AVCodec*         m_codec;
+		AVFrame*         m_avFrame;
+		AVFrame*         m_avFrameRGB;
+		AVPacket         m_packet;
+		int              m_audioStream;
+		float            m_buffer[256];
+		int16_t          m_tmpBuffer[AVCODEC_MAX_AUDIO_FRAME_SIZE];
+		int16_t*         m_tmpBufferStart;
+		unsigned long    m_tmpBufferLen;
 };
+	
+} /* namespace  nle */
 
-}
 
-#endif /* _AUDIO_FILE_QT_H_ */
 
+#endif /* _AUDIO_FILE_FFMPEG_H_ */
