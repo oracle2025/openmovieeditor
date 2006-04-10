@@ -7,14 +7,14 @@ class ErrorDialog {open
   Function {ErrorDialog()} {open
   } {
     Fl_Window errorDialog {
-      label Error open
-      xywh {499 222 375 290} type Double visible
+      label Error open selected
+      xywh {499 222 375 290} type Double modal visible
     } {
       Fl_Box {} {
         image {/home/oracle/Projekte/OpenME/code/src/icons/dialog-warning.xpm} xywh {30 40 50 50}
       }
       Fl_Box errorBox {
-        label {Could  not load File} selected
+        label {Could  not load File}
         xywh {115 30 250 60} labelfont 1 labelsize 16 align 20
       }
       Fl_Button detailsButton {

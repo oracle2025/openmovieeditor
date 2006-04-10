@@ -43,6 +43,8 @@ void AudioClipBase::reset()
 		m_audioFile->seek( audioTrimA() );
 	}
 	m_lastSamplePosition = -256; // FIXME no hardcoded number!
+	//This es especially dangerous, because it forces continous seeking when
+	//rendereing
 }
 
 int64_t AudioClipBase::audioLength()

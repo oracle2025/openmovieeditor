@@ -198,7 +198,7 @@ int Timeline::fillBuffer( float* output, unsigned long frames )
 		max_frames++;
 	}
 	m_samplePosition += max_frames;
-	
+
 	return max_frames;
 }
 void Timeline::getBlendedFrame( frame_struct* dst )

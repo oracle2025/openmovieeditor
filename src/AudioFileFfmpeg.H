@@ -21,6 +21,9 @@
 #ifndef _AUDIO_FILE_FFMPEG_H_
 #define _AUDIO_FILE_FFMPEG_H_
 
+#include <ffmpeg/avcodec.h>
+#include <ffmpeg/avformat.h>
+
 #include "global_includes.H"
 #include "IAudioFile.H"
 
@@ -31,21 +34,19 @@ class AudioFileFfmpeg : public IAudioFile
 {
 	public:
 		AudioFileFfmpeg( string filename );
-		~AudioFileQT();
+		~AudioFileFfmpeg();
 		void seek( int64_t sample );
 		int fillBuffer( float* output, unsigned long frames );
 	private:
 		AVFormatContext* m_formatContext;
 		AVCodecContext*  m_codecContext;
 		AVCodec*         m_codec;
-		AVFrame*         m_avFrame;
-		AVFrame*         m_avFrameRGB;
 		AVPacket         m_packet;
 		int              m_audioStream;
-		float            m_buffer[256];
 		int16_t          m_tmpBuffer[AVCODEC_MAX_AUDIO_FRAME_SIZE];
 		int16_t*         m_tmpBufferStart;
 		unsigned long    m_tmpBufferLen;
+		int              m_samplerate;
 };
 	
 } /* namespace  nle */

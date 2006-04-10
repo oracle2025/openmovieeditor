@@ -22,6 +22,7 @@
 #include "AudioTrack.H"
 #include "AudioFileQT.H"
 #include "AudioFileSnd.H"
+#include "AudioFileFfmpeg.H"
 #include "AudioClip.H"
 #include "ErrorDialog/IErrorHandler.H"
 
@@ -41,6 +42,10 @@ void AudioTrack::addFile( int64_t position, string filename, int64_t trimA, int6
 	if ( !af->ok() ) {
 		delete af;
 		af = new AudioFileQT( filename );
+	}
+	if ( !af->ok() ) {
+		delete af;
+		af = new AudioFileFfmpeg( filename );
 	}
 	if ( !af->ok() ) {
 		delete af;

@@ -25,13 +25,24 @@ namespace nle
 
 AudioFileFfmpeg::AudioFileFfmpeg( string filename )
 {
+	cout << "AudioFileFfmpeg: " << filename.c_str() << endl;
 	m_ok = false;
 	m_filename = filename;
 	m_formatContext = NULL;
-	if ( av_open_input_file( &m_formatContect, filename.c_str(), NULL, 0, NULL ) < 0 ) {
+	av_register_all(); // TODO: once should be enought -> main
+
+	AVInputFormat *file_iformat = av_find_input_format( filename.c_str() );
+	
+	if ( av_open_input_file( &m_formatContext, filename.c_str(), file_iformat, 0, NULL ) < 0 ) {
+		cout << "A: " << filename << endl;
 		return;
 	}
+/*	if ( av_open_input_file( &m_formatContext, filename.c_str(), file_iformat, 0, NULL ) < 0 ) {
+		cerr << "Fail: av_open_input_file" << endl;
+		return;
+	}*/
 	if ( av_find_stream_info( m_formatContext ) < 0 ) {
+		cerr << "Fail: av_find_stream_info" << endl;
 		return;
 	}
 	m_audioStream = -1;
@@ -42,22 +53,22 @@ AudioFileFfmpeg::AudioFileFfmpeg( string filename )
 		}
 	}
 	if ( m_audioStream == -1 ) {
+		cerr << "Fail: no audio stream" << endl;
 		return;
 	}
 	m_codecContext = m_formatContext->streams[m_audioStream]->codec;
-	
-	m_codecContext->sample_rate;
-
+	m_samplerate = m_codecContext->sample_rate;
 	m_codec = avcodec_find_decoder( m_codecContext->codec_id );
 	if ( m_codec == NULL ) {
+		cerr << "Fail: no codec" << endl;
 		return;
 	}
 	if ( avcodec_open( m_codecContext, m_codec ) < 0 ) {
+		cerr << "Fail: avcodec_open" << endl;
 		return;
 	}
-	m_framerate = av_q2d( m_formatContext->streams[m_audioStream]->r_frame_rate );
-	int64_t len = m_formatContect->duration - m_formatContext->start_time;
-	m_length = (int64_t)( len * m_framerate / AV_TIME_BASE );
+	int64_t len = m_formatContext->duration - m_formatContext->start_time;
+	m_length = (int64_t)( len * m_samplerate / AV_TIME_BASE );
 	m_ok = true;
 }
 AudioFileFfmpeg::~AudioFileFfmpeg()
@@ -72,6 +83,7 @@ void AudioFileFfmpeg::seek( int64_t sample )
 	const int64_t time_base = 1;
 	int64_t timestamp = ( sample * AV_TIME_BASE * time_base ) / (int64_t)m_samplerate;
 	av_seek_frame( m_formatContext, -1, timestamp, 0 );
+	cout << "Seek: " << timestamp << endl;
 
 	m_tmpBufferStart = m_tmpBuffer;
 	m_tmpBufferLen = 0;
@@ -87,10 +99,19 @@ int AudioFileFfmpeg::fillBuffer( float* output, unsigned long frames )
 	while ( ret >= 0 && written < frames ) {
 		if ( m_tmpBufferLen > 0 ) {
 			int s = min( m_tmpBufferLen, frames - written );
-			decode_uint8_to_float( m_tmpBufferStart, &optr, 1, s * 2 );
+			//decode_uint8_to_float( m_tmpBufferStart, &optr, 1, s * 2 );
+			decode_int16_to_float( m_tmpBufferStart, &optr, 1, s * m_codecContext->channels );
+			
+			if ( m_codecContext->channels == 1 ) {
+				for ( int i = s - 1; i >= 0; i-- ) {
+					optr[2 * i + 1] = optr[i];
+					optr[2 * i] = optr[i];
+				}
+			}
 			optr += s;
 			m_tmpBufferStart += s;
 			m_tmpBufferLen -= s;
+			written += s;
 			ret = 0;
 		} else {
 			ret = av_read_frame( m_formatContext, &m_packet );
@@ -107,7 +128,7 @@ int AudioFileFfmpeg::fillBuffer( float* output, unsigned long frames )
 				ptr += ret;
 				if ( data_size > 0 ) {
 					m_tmpBufferStart = m_tmpBuffer;
-					m_tmpBufferLen = data_size / 2;
+					m_tmpBufferLen = data_size / 2 / m_codecContext->channels;
 				}
 			}
 			av_free_packet( &m_packet );

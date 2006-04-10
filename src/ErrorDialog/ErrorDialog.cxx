@@ -547,6 +547,7 @@ ErrorDialog::ErrorDialog() {
       w->hotspot(o);
     }
     errorDisplay = new Fl_Text_Display(5, 125, 365, 130);
+    o->set_modal();
     o->end();
   }
   errorDisplay->buffer( textBuffer );
