@@ -42,7 +42,7 @@ void AudioClipBase::reset()
 	if ( m_audioFile ) {
 		m_audioFile->seek( audioTrimA() );
 	}
-	m_lastSamplePosition = -256; // FIXME no hardcoded number!
+	m_lastSamplePosition = 0; // FIXME no hardcoded number!
 	//This es especially dangerous, because it forces continous seeking when
 	//rendereing
 }
@@ -83,7 +83,7 @@ int AudioClipBase::fillBuffer( float* output, unsigned long frames, int64_t posi
 	if ( m_lastSamplePosition + frames != position ) {
 		m_audioFile->seek( position - frames_written - currentPosition + trimA );
 	}
-	m_lastSamplePosition += frames;
+	m_lastSamplePosition = position;
 	return frames_written + m_audioFile->fillBuffer(
 			&output[frames_written], frames - frames_written
 			);
