@@ -21,6 +21,7 @@
 
 #include "VideoFileFfmpeg.H"
 #include "render_helper.H"
+#include "ErrorDialog/IErrorHandler.H"
 
 namespace nle
 {
@@ -40,10 +41,11 @@ VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 	AVInputFormat *file_iformat = av_find_input_format( filename.c_str() );
 	
 	if ( av_open_input_file( &m_formatContext, filename.c_str(), file_iformat, 0, NULL ) < 0 ) {
-		cout << "A: " << filename << endl;
+		ERROR_DETAIL( "This file cannot be read by ffmpeg" );
 		return;
 	}
 	if ( av_find_stream_info( m_formatContext ) < 0 ) {
+		ERROR_DETAIL( "av_find_stream_info failed" );
 		return;
 	}
 	m_videoStream = -1;
@@ -54,19 +56,23 @@ VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 		}
 	}
 	if ( m_videoStream == -1 ) {
+		ERROR_DETAIL( "No Video Stream found in file" );
 		return;
 	}
 	m_codecContext = m_formatContext->streams[m_videoStream]->codec;
 	m_codec = avcodec_find_decoder( m_codecContext->codec_id );
 	if ( m_codec == NULL ) {
+		ERROR_DETAIL( "Codec not supported" );
 		return;
 	}
 	if ( avcodec_open( m_codecContext, m_codec ) < 0 ) {
+		ERROR_DETAIL( "avcodec_open failed" );
 		return;
 	}
 	m_avFrame = avcodec_alloc_frame();
 	m_avFrameRGB = avcodec_alloc_frame();
 	if ( m_avFrame == NULL || m_avFrameRGB == NULL ) {
+		ERROR_DETAIL( "could not allocate frames" );
 		return;
 	}
 	m_width = m_codecContext->width;
@@ -93,6 +99,10 @@ VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 	//m_formatContext->streams[m_videoStream]->r_frame_rate;
 	//time_base
 	m_framerate = av_q2d( m_formatContext->streams[m_videoStream]->r_frame_rate );
+	if ( m_framerate != 25.0 ) {
+		ERROR_DETAIL( "Video framerates other than 25 are not supported" );
+		return;
+	}
 
 	cout << "FFMPEG Framerate: " << m_framerate << endl;
 	

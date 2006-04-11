@@ -36,15 +36,11 @@ AudioFileFfmpeg::AudioFileFfmpeg( string filename )
 	AVInputFormat *file_iformat = av_find_input_format( filename.c_str() );
 	
 	if ( av_open_input_file( &m_formatContext, filename.c_str(), file_iformat, 0, NULL ) < 0 ) {
-		cout << "A: " << filename << endl;
+		ERROR_DETAIL( "This file cannot be read by ffmpeg" );
 		return;
 	}
-/*	if ( av_open_input_file( &m_formatContext, filename.c_str(), file_iformat, 0, NULL ) < 0 ) {
-		cerr << "Fail: av_open_input_file" << endl;
-		return;
-	}*/
 	if ( av_find_stream_info( m_formatContext ) < 0 ) {
-		cerr << "Fail: av_find_stream_info" << endl;
+		ERROR_DETAIL( "av_find_stream_info failed" );
 		return;
 	}
 	m_audioStream = -1;
@@ -55,20 +51,29 @@ AudioFileFfmpeg::AudioFileFfmpeg( string filename )
 		}
 	}
 	if ( m_audioStream == -1 ) {
-		cerr << "Fail: no audio stream" << endl;
+		ERROR_DETAIL( "No Audio Stream found in file" );
 		return;
 	}
 	m_codecContext = m_formatContext->streams[m_audioStream]->codec;
 	m_samplerate = m_codecContext->sample_rate;
 	m_codec = avcodec_find_decoder( m_codecContext->codec_id );
 	if ( m_codec == NULL ) {
-		cerr << "Fail: no codec" << endl;
+		ERROR_DETAIL( "Codec not supported" );
 		return;
 	}
 	if ( avcodec_open( m_codecContext, m_codec ) < 0 ) {
-		cerr << "Fail: avcodec_open" << endl;
+		ERROR_DETAIL( "avcodec_open failed" );
 		return;
 	}
+	if ( m_samplerate != 48000 ) {
+		ERROR_DETAIL( "Audio samplerates other than 48000 are not supported" );
+		return;
+	}
+	if ( m_codecContext->channels != 2 && m_codecContext->channels != 1) {
+		ERROR_DETAIL( "Only Stereo and Mono audio files are supported" );
+		return;
+	}
+
 	int64_t len = m_formatContext->duration - m_formatContext->start_time;
 	m_length = (int64_t)( len * m_samplerate / AV_TIME_BASE );
 	m_ok = true;
