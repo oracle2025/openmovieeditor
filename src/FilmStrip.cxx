@@ -22,6 +22,7 @@
 #include "IVideoFile.H"
 #include "TimelineView.H"
 #include "SwitchBoard.H"
+#include "VideoFileFactory.H"
 
 namespace nle
 {
