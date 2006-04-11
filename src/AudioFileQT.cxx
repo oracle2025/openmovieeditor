@@ -50,10 +50,12 @@ AudioFileQT::AudioFileQT( string filename )
 	}
 	m_length = quicktime_audio_length( m_qt, 0 );
 	if ( quicktime_sample_rate( m_qt, 0 ) != 48000 ) {
+		CLEAR_ERRORS();
 		ERROR_DETAIL( "Audio samplerates other than 48000 are not supported" );
 		return;
 	}
 	if ( quicktime_track_channels( m_qt, 0 ) != 2 ) {
+		CLEAR_ERRORS();
 		ERROR_DETAIL( "Only Stereo audio files are supported" );
 		return;
 	}
