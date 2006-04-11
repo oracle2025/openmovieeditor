@@ -30,8 +30,8 @@ namespace nle
 #define PIC_HEIGHT 30
 
 FilmStrip::FilmStrip( IVideoFile* vfile )
-	: m_vfile( vfile )
 {
+	m_vfile = VideoFileFactory::get( vfile->filename() );
 	m_rows  = new unsigned char*[PIC_HEIGHT];
 	m_countAll = m_vfile->length() / 100;
 	m_pics = new pic_struct[m_countAll];
@@ -44,6 +44,10 @@ bool FilmStrip::process()
 		if ( m_rows ) {
 			delete [] m_rows;
 			m_rows = 0;
+		}
+		if ( m_vfile ) {
+			delete m_vfile;
+			m_vfile = 0;
 		}
 		return false;
 	}
@@ -71,6 +75,9 @@ FilmStrip::~FilmStrip()
 	delete [] m_pics;
 	if ( m_rows ) {
 		delete [] m_rows;
+	}
+	if ( m_vfile ) {
+		delete m_vfile;
 	}
 }
 
