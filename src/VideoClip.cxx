@@ -24,6 +24,7 @@
 #include "ErrorDialog/IErrorHandler.H"
 #include "VideoClipArtist.H"
 #include "FilmStripFactory.H"
+#include "IAudioFile.H"
 
 namespace nle
 {
