@@ -122,5 +122,7 @@ openmovieeditor_SOURCES = nle.cxx\
 	AudioFileFfmpeg.cxx\
 	AudioFileFfmpeg.H\
 	AudioFileFactory.cxx\
-	AudioFileFactory.H
+	AudioFileFactory.H\
+	WaveForm.H\
+	WaveForm.cxx
 

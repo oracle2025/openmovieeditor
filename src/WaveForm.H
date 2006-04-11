@@ -1,6 +1,6 @@
-/*  WavArtist.H
+/*  WaveForm.H
  *
- *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,41 +17,26 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _WAV_ARTIST_H_
-#define _WAV_ARTIST_H_
-
-#include "globals.H"
-#include "Rect.H"
 #include "global_includes.H"
-
-#define PEAK_RANGE 1000
+#include "IdleHandler.H"
 
 namespace nle
 {
 
 class IAudioFile;
-class WaveForm;
 
-typedef struct _peakfile_node {
-	struct _peakfile_node *next;
-	WaveForm* wav;
-	string filename;
-	int refCount;
-} peakfile_node;
-
-class WavArtist
+class WaveForm : public IdleHandler
 {
 	public:
-		WavArtist();
-		~WavArtist();
-		void add( IAudioFile* file );
-		void remove( string filename );
-		void render( string filename, Rect& rect, int64_t start, int64_t stop );
+		WaveForm( string filename );
+		~WaveForm();
+		bool process();
+		float* m_peaks;
+		inline int64_t length() { return m_peakLength; }
 	private:
-		peakfile_node* m_peaks;
+		int64_t m_peakLength;
+		int64_t m_finalLength;
+		IAudioFile* m_af;
 };
 
 } /* namespace nle */
-
-
-#endif /* _WAV_ARTIST_H_ */
