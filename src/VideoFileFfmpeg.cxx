@@ -100,6 +100,7 @@ VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 	//time_base
 	m_framerate = av_q2d( m_formatContext->streams[m_videoStream]->r_frame_rate );
 	if ( m_framerate != 25.0 ) {
+		CLEAR_ERRORS();
 		ERROR_DETAIL( "Video framerates other than 25 are not supported" );
 		return;
 	}

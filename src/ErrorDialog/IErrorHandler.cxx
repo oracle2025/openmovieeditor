@@ -34,6 +34,7 @@ void IErrorHandler::error( string msg )
 }
 void IErrorHandler::clear()
 {
+	cout << "clear" << endl;
 	m_details = "";
 }
 

@@ -67,10 +67,12 @@ AudioFileFfmpeg::AudioFileFfmpeg( string filename )
 		return;
 	}
 	if ( m_samplerate != 48000 ) {
+		CLEAR_ERRORS();
 		ERROR_DETAIL( "Audio samplerates other than 48000 are not supported" );
 		return;
 	}
 	if ( m_codecContext->channels != 2 && m_codecContext->channels != 1) {
+		CLEAR_ERRORS();
 		ERROR_DETAIL( "Only Stereo and Mono audio files are supported" );
 		return;
 	}
