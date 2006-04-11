@@ -120,5 +120,7 @@ openmovieeditor_SOURCES = nle.cxx\
 	FilmStripFactory.H\
 	FilmStripFactory.cxx\
 	AudioFileFfmpeg.cxx\
-	AudioFileFfmpeg.H
+	AudioFileFfmpeg.H\
+	AudioFileFactory.cxx\
+	AudioFileFactory.H
 

@@ -35,8 +35,7 @@
 #include "AudioTrack.H"
 #include "VideoTrack.H"
 #include "VideoFileQT.H"
-#include "AudioFileQT.H"
-#include "AudioFileSnd.H"
+#include "AudioFileFactory.H"
 #include "VideoClip.H"
 #include "AudioClip.H"
 #include "TimelineView.H"
@@ -203,13 +202,8 @@ int Project::read( string filename )
 			strlcpy( filename, j->Attribute( "filename" ), sizeof(filename) );
 			if ( ! filename )
 				continue;
-			IAudioFile *af = new AudioFileSnd( filename );
-			if ( !af->ok() ) {
-				delete af;
-				af = new AudioFileQT( filename );
-			}
-			if ( !af->ok() ) {
-				delete af;
+			IAudioFile *af = AudioFileFactory::get( filename );
+			if ( !af ) {
 				continue;
 			}
 			AudioClip* ac = new AudioClip( tr, position, af, trimA, trimB );

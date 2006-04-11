@@ -20,9 +20,7 @@
 #include <FL/filename.H>
 
 #include "AudioTrack.H"
-#include "AudioFileQT.H"
-#include "AudioFileSnd.H"
-#include "AudioFileFfmpeg.H"
+#include "AudioFileFactory.H"
 #include "AudioClip.H"
 #include "ErrorDialog/IErrorHandler.H"
 
@@ -38,17 +36,8 @@ AudioTrack::~AudioTrack()
 }
 void AudioTrack::addFile( int64_t position, string filename, int64_t trimA, int64_t trimB, int mute )
 {
-	IAudioFile *af = new AudioFileSnd( filename );
-	if ( !af->ok() ) {
-		delete af;
-		af = new AudioFileQT( filename );
-	}
-	if ( !af->ok() ) {
-		delete af;
-		af = new AudioFileFfmpeg( filename );
-	}
-	if ( !af->ok() ) {
-		delete af;
+	IAudioFile *af = AudioFileFactory::get( filename );
+	if ( !af ) {
 		SHOW_ERROR( string( "Audio file failed to load:\n" ) + fl_filename_name( filename.c_str() ) );
 		return;
 	}
