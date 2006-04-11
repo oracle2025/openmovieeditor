@@ -21,6 +21,8 @@
 #ifndef _AUDIO_FILE_FFMPEG_H_
 #define _AUDIO_FILE_FFMPEG_H_
 
+#ifdef AVCODEC
+
 #include <ffmpeg/avcodec.h>
 #include <ffmpeg/avformat.h>
 
@@ -51,6 +53,6 @@ class AudioFileFfmpeg : public IAudioFile
 	
 } /* namespace  nle */
 
-
+#endif /* AVCODEC */
 
 #endif /* _AUDIO_FILE_FFMPEG_H_ */

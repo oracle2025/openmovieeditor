@@ -17,6 +17,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#ifdef AVCODEC
+
 #include "render_helper.H"
 #include "AudioFileFfmpeg.H"
 
@@ -138,3 +140,6 @@ int AudioFileFfmpeg::fillBuffer( float* output, unsigned long frames )
 }
 
 } /* namespace nle */
+
+#endif /* AVCODEC */
+
