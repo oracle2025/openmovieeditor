@@ -20,7 +20,7 @@
 #include "VideoClip.H"
 #include "IVideoFile.H"
 #include "FilmStrip.H"
-#include "AudioFileQT.H"
+#include "AudioFileFactory.H"
 #include "ErrorDialog/IErrorHandler.H"
 #include "VideoClipArtist.H"
 #include "FilmStripFactory.H"
@@ -39,13 +39,7 @@ VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A,
 	m_filmStrip = g_filmStripFactory->get( vf ); //new FilmStrip( vf );
 	
 	m_lastFramePosition = -1;
-	IAudioFile* af = new AudioFileQT( m_videoFile->filename() );
-	if ( af->ok() ) {
-		m_audioFile = af;
-	} else {
-		delete af;
-		af = 0;
-	}
+	m_audioFile = AudioFileFactory::get( m_videoFile->filename() );
 	CLEAR_ERRORS();
 	m_artist = new VideoClipArtist( this );
 }
