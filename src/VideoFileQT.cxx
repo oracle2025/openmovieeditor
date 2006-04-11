@@ -76,15 +76,6 @@ VideoFileQT::VideoFileQT( string filename )
 	m_framestruct.alpha = 1.0;
 	m_framestruct.has_alpha_channel = false;
 	m_framestruct.cacheable = false;
-/*	cout << "Video Duration: " << lqt_video_duration( m_qt, 0 ) << endl;
-	cout << "Width: " << quicktime_video_width( m_qt, 0 ) << endl;
-	cout << "Height: " << quicktime_video_height( m_qt, 0 ) << endl;
-	cout << "Video FPS: " << quicktime_frame_rate( m_qt, 0 ) << endl;
-	cout << "Video Frame Duration: " << lqt_frame_duration( m_qt, 0, 0 ) << endl;
-	cout << "Video Length: " << quicktime_video_length( m_qt, 0 ) << endl;
-	cout << "Video Timescale: " << lqt_video_time_scale( m_qt, 0 ) << endl;
-	cout << "Audio Length: " << quicktime_audio_length( m_qt, 0 ) << endl;
-	cout << "Audio Samplerate: " << quicktime_sample_rate( m_qt, 0 ) << endl;*/
 	m_filename = filename;
 	m_ok = true;
 }
