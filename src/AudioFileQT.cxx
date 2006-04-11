@@ -68,7 +68,6 @@ void AudioFileQT::seek( int64_t sample )
 {
 	quicktime_set_audio_position( m_qt, sample, 0 );
 	m_oneShot = true;
-	
 }
 int AudioFileQT::fillBuffer( float* output, unsigned long frames )
 {
