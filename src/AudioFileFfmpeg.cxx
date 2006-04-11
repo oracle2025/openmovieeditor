@@ -21,6 +21,7 @@
 
 #include "render_helper.H"
 #include "AudioFileFfmpeg.H"
+#include "ErrorDialog/IErrorHandler.H"
 
 namespace nle
 {
