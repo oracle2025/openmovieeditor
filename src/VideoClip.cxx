@@ -96,6 +96,7 @@ frame_struct* VideoClip::getFrame( int64_t position )
 		m_videoFile->seek( s_pos );
 	} 
 	m_lastFramePosition = position;
+	//TODO perform 2x2 pulldown
 	return m_videoFile->read();
 }
 int64_t VideoClip::fileLength()

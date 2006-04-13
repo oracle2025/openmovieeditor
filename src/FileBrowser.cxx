@@ -34,6 +34,7 @@ FileBrowser::FileBrowser( int x, int y, int w, int h, const char *l )
 	type( 1 );
 	m_path = g_preferences->getBrowserFolder();
 	load( m_path.c_str() );
+	filter( "[!.]*" );
 }
 
 int FileBrowser::handle( int event )
