@@ -21,20 +21,20 @@ priorities, and this document will outline the proposed future direction.
 <h2>Issues</h2>
 
 <p>Well, I'm pretty satisfied with the current state, a lot of improvements have
-been added over the last weeks, Fade Overs and Automations are implemented, and
+been added over the last weeks, Fade Overs and Automation's are implemented, and
 a lot of smaller bugs have been fixed.
 </p>
 
 <p>Some small issues remain, but these will be fixed eventually. I've dropped
-the Title Maker for now, because essentiall this job can be easily done in the
+the Title Maker for now, because essentially this job can be easily done in the
 Gimp, and added as a transparent PNG.
 </p>
 
 <h2>RAM usage</h2>
 
-<p>The biggest issue is propably that the usage of RAM as you add more
+<p>The biggest issue is probably that the usage of RAM as you add more
 and more clips. While this is unavoidable as the whole composite has to be kept
-in memory, I'm referring to the Thumbnails and Waveforms in the Timeline, as
+in memory, I'm referring to the Thumbnails and Waveforms in the Time line, as
 these might get out of control in bigger movies.
 </p>
 
@@ -43,14 +43,14 @@ done, to ensure scalability.
 </p>
 
 <p>Therefore the plan is to cache the thumbnails to disk, and keep only a cache
-of limited size in the memory. This will also improve the startup time of the
-application, as this disk-cache will remain on the harddisk to be reused on the
-next application startup.
+of limited size in the memory. This will also improve the start up time of the
+application, as this disk-cache will remain on the hard disk to be reused on the
+next application start up.
 </p>
 
 <p>The same thing will be done for the audio waveforms, which need to be kept in
 different resolutions, to make up for different zoom factors. This should
-provide a really responsive interface even when dealing with lot's of large
+provide a really responsive interface even when dealing with lots of large
 files.
 </p>
 
@@ -58,17 +58,17 @@ files.
 
 <p>A primary goal of OpenME is to be fast, really fast. Most of the RAM
 optimizations proposed above, will also result in a blazing performance,
-especially when you consider application startup time. The current version
+especially when you consider application start up time. The current version
 actually keeps very responsive while generating thumbnails and waveforms due to
 the use if "idle handlers". This means the data is generated in the background,
 while the interface remains fully usable.
 </p>
 
 <p>
-At the moment the internal representation of the timeline is handled as a bunch
+At the moment the internal representation of the time line is handled as a bunch
 of linked lists, because this is the simplest approach and it works very well,
 however it could be that when people create absurdly huge projects this will be
-a bottleneck. If this proves to be the case, I will definitly check out whether
+a bottleneck. If this proves to be the case, I will definitely check out whether
 something like a <a href="http://en.wikipedia.org/wiki/Tree_data_structure">Tree
 data structure</a> could be used to work around any limitations.
 </p>
@@ -76,14 +76,14 @@ data structure</a> could be used to work around any limitations.
 <h2>Compatibility</h2>
 
 <p>
-With the introduction of ffmpeg into OpenME, a whole bunch of fileformats is
+With the introduction of ffmpeg into OpenME, a whole bunch of file formats is
 suddenly supported, provided it has the appropriate framerate and samplerate. I
-choose to standardize on 25fps (PAL) and 48000Hz, unfortunatly, sometimes files
+choose to standardize on 25fps (PAL) and 48000Hz, unfortunately, sometimes files
 exist with different resolutions.
 </p>
 
-<p>Handling different samplerates on the fly is no problem, althoug it is a
-performance and quality tradeoff. It might also have some implications when
+<p>Handling different samplerates on the fly is no problem, although it is a
+performance and quality trade off. It might also have some implications when
 trying to keep audio and video in sync, which might get tricky anyways.
 </p>
 <h2>User Interface</h2>
@@ -98,6 +98,8 @@ I'm looking forward to enhance the file browser as well.
 </p>
 
 <p>
+I think a convenient way to browse files and directories might be two separate
+views, that could be arranged and resized as the user prefers.
 </p>
 
 <div style="clear: both;"></div>
