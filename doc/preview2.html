@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='ISO-8859-15'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-15" />
+  <title>Open Movie Editor Preview</title>
+  <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+
+<img src="images/openmovieeditor.png" width="128" height="128" style=" border: none; " />
+
+<h1>Open Movie Editor Preview</h1>
+
+<p>This is the second edition of the <a href="http://openmovieeditor.sourceforge.net/">Open Movie Editor</a>, some things from the <a
+href="preview.html">first edition</a> were successfully implemented, others have
+been postponed, like the Title Maker. I refactored my ideas and shifted my
+priorities, and this document will outline the proposed future direction.
+</p>
+
+<h2>Issues</h2>
+
+<p>Well, I'm pretty satisfied with the current state, a lot of improvements have
+been added over the last weeks, Fade Overs and Automations are implemented, and
+a lot of smaller bugs have been fixed.
+</p>
+
+<p>Some small issues remain, but these will be fixed eventually. I've dropped
+the Title Maker for now, because essentiall this job can be easily done in the
+Gimp, and added as a transparent PNG.
+</p>
+
+<h2>RAM usage</h2>
+
+<p>The biggest issue is propably that the usage of RAM as you add more
+and more clips. While this is unavoidable as the whole composite has to be kept
+in memory, I'm referring to the Thumbnails and Waveforms in the Timeline, as
+these might get out of control in bigger movies.
+</p>
+
+<p>It works surprisingly well, even with big files, but something needs to be
+done, to ensure scalability.
+</p>
+
+<p>Therefore the plan is to cache the thumbnails to disk, and keep only a cache
+of limited size in the memory. This will also improve the startup time of the
+application, as this disk-cache will remain on the harddisk to be reused on the
+next application startup.
+</p>
+
+<p>The same thing will be done for the audio waveforms, which need to be kept in
+different resolutions, to make up for different zoom factors. This should
+provide a really responsive interface even when dealing with lot's of large
+files.
+</p>
+
+<h2>Performance</h2>
+
+<p>A primary goal of OpenME is to be fast, really fast. Most of the RAM
+optimizations proposed above, will also result in a blazing performance,
+especially when you consider application startup time. The current version
+actually keeps very responsive while generating thumbnails and waveforms due to
+the use if "idle handlers". This means the data is generated in the background,
+while the interface remains fully usable.
+</p>
+
+<p>
+At the moment the internal representation of the timeline is handled as a bunch
+of linked lists, because this is the simplest approach and it works very well,
+however it could be that when people create absurdly huge projects this will be
+a bottleneck. If this proves to be the case, I will definitly check out whether
+something like a <a href="http://en.wikipedia.org/wiki/Tree_data_structure">Tree
+data structure</a> could be used to work around any limitations.
+</p>
+
+<h2>Compatibility</h2>
+
+<p>
+With the introduction of ffmpeg into OpenME, a whole bunch of fileformats is
+suddenly supported, provided it has the appropriate framerate and samplerate. I
+choose to standardize on 25fps (PAL) and 48000Hz, unfortunatly, sometimes files
+exist with different resolutions.
+</p>
+
+<p>Handling different samplerates on the fly is no problem, althoug it is a
+performance and quality tradeoff. It might also have some implications when
+trying to keep audio and video in sync, which might get tricky anyways.
+</p>
+<h2>User Interface</h2>
+
+<p>
+On thing that might be annoying in real usage is the lack of preview thumbnails
+in the file browser. This has been a low priority, because up to now more
+important pieces were missing, however as the current state is quite acceptable,
+I'm looking forward to enhance the file browser as well.
+</p>
+
+<div style="clear: both;"></div>
+</body>
