@@ -41,7 +41,7 @@ VideoFileQT::VideoFileQT( string filename )
 	}
 	m_qt = quicktime_open( lqt_sucks_filename, true, false );
 	if ( !m_qt ) {
-		ERROR_DETAIL( "This is not a Quicktime video file" );
+		ERROR_DETAIL( "Could not open Quicktime file" );
 		return;
 	}
 	if ( quicktime_video_tracks( m_qt ) == 0 ) {
