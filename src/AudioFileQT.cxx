@@ -40,6 +40,10 @@ AudioFileQT::AudioFileQT( string filename )
 	}
 	m_qt = quicktime_open( lqt_sucks_filename, true, false );
 	free( lqt_sucks_filename );
+	if ( !m_qt ) {
+		ERROR_DETAIL( "Could not open Quicktime file" );
+		return;
+	}
 	if ( quicktime_audio_tracks( m_qt ) == 0 ) {
 		ERROR_DETAIL( "This Quicktime file does not have a audio track" );
 		return;
