@@ -105,6 +105,9 @@ int TimelineView::handle( int event )
 			window()->cursor( FL_CURSOR_DEFAULT );
 			return 1;
 		case FL_MOVE:
+			if ( g_ui->automationsMode() != 0 ) {
+				return 1;
+			}
 			Clip* cl = get_clip( _x, _y );
 			if ( cl && ( _x < get_screen_position( cl->position(), cl->track()->stretchFactor() ) + 8 
 					|| _x > get_screen_position( cl->position() + cl->length(), cl->track()->stretchFactor() ) - 8 ) ) {
