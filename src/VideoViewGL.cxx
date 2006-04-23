@@ -154,63 +154,9 @@ void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 }
 void VideoViewGL::pushFrame( frame_struct* fs, bool move_cursor )
 {
-	if ( move_cursor ) {
-		SwitchBoard::i()->move_cursor();
-	}
-	make_current();
-	if ( !valid() ) {
-		glLoadIdentity(); glViewport( 0, 0, w(), h() ); // glViewport( _x, _y, _w, _h );
-		glOrtho( 0, 10, 10, 0, -20000, 10000 ); glEnable( GL_BLEND );
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		glEnable (GL_TEXTURE_2D);
-	}
-
-	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-	glBindTexture( GL_TEXTURE_2D, video_canvas[0] );
-	if ( fs ) {
-		glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs->w, fs->h, GL_RGB, GL_UNSIGNED_BYTE, fs->RGB );
-	} else {
-		static unsigned char p[3 * T_W * T_H] = { 0 };
-		glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, T_W, T_H, GL_RGB, GL_UNSIGNED_BYTE, p );
-		swap_buffers();
-		return;
-	}
-
-	float gl_x, gl_y, gl_w, gl_h;
-	{
-		float f_v = ( (float)fs->w / (float)fs->h );
-		float f_w = ( (float)w() / (float)h() );
-		float f_g = f_v / f_w;
-		if ( f_g > 1.0 ) {
-			gl_h = 10.0 / f_g;
-			gl_w = 10.0;
-		} else {
-			gl_h = 10.0;
-			gl_w = f_g * 10.0;
-		}
-		gl_x = ( 10.0 - gl_w ) / 2;
-		gl_y = ( 10.0 - gl_h ) / 2;
-
-	}
-
-	
-
-	float ww = fs->w / TEXTURE_WIDTH;
-	float hh = fs->h / TEXTURE_HEIGHT;
-	glBegin (GL_QUADS);
-		glTexCoord2f (  0.0,      0.0 );
-		glVertex3f   (  gl_x,      gl_y, 0.0 );
-		glTexCoord2f (  ww,  0.0 );  // (fs->w / 512.0)
-		glVertex3f   ( gl_x + gl_w,      gl_y, 0.0 );
-		glTexCoord2f (  ww,  hh ); // (368.0 / 512.0) (240.0 / 512.0)
-		glVertex3f   ( gl_x + gl_w,     gl_y + gl_h, 0.0 );
-		glTexCoord2f (  0.0,      hh ); // (fs->h / 512.0)
-		glVertex3f   (  gl_x,     gl_y + gl_h, 0.0 );
-	glEnd ();
-
-	
-	swap_buffers();
+	frame_struct* fstack[2] = {0};
+	fstack[0] = fs;
+	pushFrameStack( fstack, move_cursor );
 }
 /*
  *  GL_NVX_ycrcb
