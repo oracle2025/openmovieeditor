@@ -54,6 +54,7 @@ bool USING_AUDIO = 0;
 	
 TimelineView* g_timelineView = 0;
 
+static Fl_Cursor current_cursor;
 TimelineView::TimelineView( int x, int y, int w, int h, const char *label )
 	: Fl_Widget( x, y, w, h, label )
 {
@@ -64,7 +65,7 @@ TimelineView::TimelineView( int x, int y, int w, int h, const char *label )
 	m_scrollPosition = 0;
 	m_stylusPosition = 0;
 	SwitchBoard::i()->timelineView(this);
-
+	current_cursor = FL_CURSOR_DEFAULT;
 	
 }
 TimelineView::~TimelineView()
@@ -95,6 +96,28 @@ int TimelineView::handle( int event )
 		case FL_DND_RELEASE:
 		case FL_DND_ENTER:
 		case FL_DND_LEAVE:
+		case FL_ENTER:
+			return 1;
+	/*	case FL_ENTER:
+			window()->cursor( FL_CURSOR_WE );
+			return 1;*/
+		case FL_LEAVE:
+			window()->cursor( FL_CURSOR_DEFAULT );
+			return 1;
+		case FL_MOVE:
+			Clip* cl = get_clip( _x, _y );
+			if ( cl && ( _x < get_screen_position( cl->position(), cl->track()->stretchFactor() ) + 8 
+					|| _x > get_screen_position( cl->position() + cl->length(), cl->track()->stretchFactor() ) - 8 ) ) {
+				if ( current_cursor != FL_CURSOR_WE ) {
+					window()->cursor( FL_CURSOR_WE );
+					current_cursor = FL_CURSOR_WE;
+				}
+			} else {
+				if ( current_cursor != FL_CURSOR_DEFAULT ) {
+					window()->cursor( FL_CURSOR_DEFAULT );
+					current_cursor = FL_CURSOR_DEFAULT;
+				}
+			}
 			return 1;
 		case FL_PUSH: {
 				Clip* cl = get_clip( _x, _y );
