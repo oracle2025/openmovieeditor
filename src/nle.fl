@@ -11,7 +11,7 @@ class NleUI {open
       callback {if (Fl::event()==FL_SHORTCUT && Fl::event_key()==FL_Escape) 
     return; // ignore Escape
 mainWindow->hide();} open
-      private xywh {398 151 515 465} type Double resizable visible
+      private xywh {887 363 515 465} type Double resizable visible
     } {
       Fl_Menu_Bar {} {open
         xywh {0 0 345 25}
@@ -118,7 +118,7 @@ while (dlg.shown())
           }
         }
       }
-      Fl_Tile {} {
+      Fl_Tile {} {open
         xywh {0 25 515 440} resizable
       } {
         Fl_Group {} {open
@@ -129,7 +129,7 @@ while (dlg.shown())
           } {
             Fl_Box {} {
               label Ruler
-              xywh {40 275 475 25} box UP_BOX align 16
+              xywh {65 275 450 25} box UP_BOX align 16
               code0 {\#include "Ruler.H"}
               class {nle::Ruler}
             }
@@ -146,11 +146,14 @@ m_timelineView->zoom( zoom );}
               code2 {using namespace std;}
               class Flmm_Scalebar
             }
-            Fl_Group m_timelineView {open
+            Fl_Group m_timelineView {
               xywh {40 300 475 145}
               code0 {\#include "TimelineView.H"}
               class {nle::TimelineView}
             } {}
+            Fl_Button {} {
+              tooltip Snapping image {/home/oracle/Projekte/OpenME/code/src/icons/snap.xpm} xywh {40 275 25 25} type Toggle value 1
+            }
           }
           Fl_Group {} {open
             xywh {0 275 40 190} labelsize 12

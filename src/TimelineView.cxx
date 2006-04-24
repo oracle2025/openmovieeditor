@@ -112,7 +112,7 @@ int TimelineView::handle( int event )
 			if ( cl && ( _x < get_screen_position( cl->position(), cl->track()->stretchFactor() ) + 8 
 					|| _x > get_screen_position( cl->position() + cl->length(), cl->track()->stretchFactor() ) - 8 ) ) {
 				if ( current_cursor != FL_CURSOR_WE ) {
-					window()->cursor( FL_CURSOR_WE );
+					window()->cursor( FL_CURSOR_WE, fl_rgb_color(254,254,254), fl_rgb_color(1,1,1) );
 					current_cursor = FL_CURSOR_WE;
 				}
 			} else {
