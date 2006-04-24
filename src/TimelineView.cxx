@@ -73,6 +73,7 @@ TimelineView::~TimelineView()
 }
 int TimelineView::handle( int event )
 {
+  Clip* cl;
 	if ( g_simplePlaybackCore->active() ) {
 		return Fl_Widget::handle( event );
 	}
@@ -108,7 +109,7 @@ int TimelineView::handle( int event )
 			if ( g_ui->automationsMode() != 0 ) {
 				return 1;
 			}
-			Clip* cl = get_clip( _x, _y );
+			cl = get_clip( _x, _y );
 			if ( cl && ( _x < get_screen_position( cl->position(), cl->track()->stretchFactor() ) + 8 
 					|| _x > get_screen_position( cl->position() + cl->length(), cl->track()->stretchFactor() ) - 8 ) ) {
 				if ( current_cursor != FL_CURSOR_WE ) {
@@ -123,7 +124,7 @@ int TimelineView::handle( int event )
 			}
 			return 1;
 		case FL_PUSH: {
-				Clip* cl = get_clip( _x, _y );
+				cl = get_clip( _x, _y );
 				VideoClip* vcl = 0;
 				if ( cl ) {
 					vcl = dynamic_cast<VideoClip*>(cl);
@@ -190,7 +191,7 @@ int TimelineView::handle( int event )
 				return 1;
 			}
 			if ( g_ui->automationsMode() == 2 ) {
-				Clip* cl = get_clip( _x, _y );
+				cl = get_clip( _x, _y );
 				if ( cl ) {
 					split_clip( cl, _x );
 					redraw();
