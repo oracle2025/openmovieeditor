@@ -24,6 +24,37 @@
 
 namespace nle
 {
+	
+/*
+  optr is a pointer to a place to store the output image.
+  iptr is a pointer to the input image.
+  iw and ih are the width and height of the input image respectively.
+*/
+
+void halve_image ( unsigned char *optr,
+                   unsigned char *iptr,
+                   int iw, int ih )
+{
+  int ow   = iw >> 1 ;
+  int oh   = ih >> 1 ;
+  int iw3  = iw * 3 ;     /* Offset to get to the pixel below */
+  int iw33 = iw * 3 + 3 ; /* Offset to get to the pixel below/right */
+
+  for ( int i = 0 ; i < oh ; i++ )
+  {
+    for ( int j = 0 ; j < ow ; j++ )
+    {
+      /* Average red/green/blue for each pixel */
+      *optr++=(*iptr+*(iptr+3)+*(iptr+iw3)+*(iptr+iw33))>>2;iptr++;
+      *optr++=(*iptr+*(iptr+3)+*(iptr+iw3)+*(iptr+iw33))>>2;iptr++;
+      *optr++=(*iptr+*(iptr+3)+*(iptr+iw3)+*(iptr+iw33))>>2;iptr++;
+      iptr += 3 ;  /* Skip to the next pixel */
+    }
+
+    iptr += iw3 ;  /* Skip to the next row of pixels */
+  }
+}
+
 static void scale_it_raw( frame_struct* src, frame_struct* dst, gavl_pixelformat_t colorspace, int bits )
 {
 	gavl_rectangle_i_t src_rect;

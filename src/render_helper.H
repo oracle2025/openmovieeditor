@@ -25,7 +25,8 @@
 namespace nle
 {
 
-	
+void halve_image( unsigned char *optr, unsigned char *iptr, int iw, int ih );
+
 void scale_it( frame_struct* src, frame_struct* dst );
 void scale_it_alpha( frame_struct* src, frame_struct* dst );
 	

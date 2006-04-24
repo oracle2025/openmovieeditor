@@ -26,6 +26,7 @@
 #include "SimplePlaybackCore.H"
 #include "Timeline.H"
 #include "events.H"
+#include "render_helper.H"
 
 namespace nle
 {
@@ -68,6 +69,8 @@ static GLuint video_canvas[10];
 #define TEXTURE_WIDTH 512.0 
 #define TEXTURE_HEIGHT 512.0
 
+static unsigned char pulldown_frame[3 * 512 * 512];
+
 void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 {
 	if ( move_cursor ) {
@@ -109,7 +112,13 @@ void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 		if ( fs[i]->has_alpha_channel ) {
 			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGBA, GL_UNSIGNED_BYTE, fs[i]->RGB );
 		} else {
-			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGB, GL_UNSIGNED_BYTE, fs[i]->RGB );
+			// Pulldown large Image
+			if ( fs[i]->w > T_W || fs[i]->h > T_H  ) {
+				halve_image( pulldown_frame, fs[i]->RGB, fs[i]->w, fs[i]->h );
+				glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w >> 1, fs[i]->h >> 1, GL_RGB, GL_UNSIGNED_BYTE, pulldown_frame );
+			} else {
+				glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGB, GL_UNSIGNED_BYTE, fs[i]->RGB );
+			}
 		}
 	}
 	for ( int i = count; i>=0; i-- ) {
@@ -152,6 +161,7 @@ void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 	swap_buffers();
 
 }
+
 void VideoViewGL::pushFrame( frame_struct* fs, bool move_cursor )
 {
 	frame_struct* fstack[2] = {0};
