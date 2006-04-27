@@ -145,6 +145,7 @@ AC_SUBST(FLTK_LIBS)
 
 AC_CONFIG_FILES([
    Makefile
+   ebuilds/Makefile
    doc/Makefile
    doc/images/Makefile
    icons/Makefile
