@@ -145,6 +145,7 @@ AC_SUBST(FLTK_LIBS)
 
 AC_CONFIG_FILES([
    Makefile
+   debian/Makefile
    ebuilds/Makefile
    doc/Makefile
    doc/images/Makefile

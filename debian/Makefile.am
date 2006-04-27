@@ -1,4 +1,4 @@
-# Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
+# Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -8,5 +8,6 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-SUBDIRS=src icons doc ebuilds debian
-EXTRA_DIST=openmovieeditor.spec 
+
+EXTRA_DIST=changelog control docs openmovieeditor.doc-base rules\
+           compat copyright menu openmovieeditor.sgml
