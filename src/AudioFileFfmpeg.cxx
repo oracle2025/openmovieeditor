@@ -93,7 +93,6 @@ void AudioFileFfmpeg::seek( int64_t sample )
 	const int64_t time_base = 1;
 	int64_t timestamp = ( sample * AV_TIME_BASE * time_base ) / (int64_t)m_samplerate;
 	av_seek_frame( m_formatContext, -1, timestamp, 0 );
-	cout << "Seek: " << timestamp << endl;
 
 	m_tmpBufferStart = m_tmpBuffer;
 	m_tmpBufferLen = 0;
