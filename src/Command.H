@@ -1,4 +1,4 @@
-/*  DocManager.H
+/*  Command.H
  *
  *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,27 +17,24 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _DOC_MANAGER_H_
-#define _DOC_MANAGER_H_
+#ifndef _COMMAND_H_
+#define _COMMAND_H_
 
 namespace nle
 {
 
-class Command;
-
-class DocManager
+class Command
 {
 	public:
-		DocManager();
-		~DocManager();
-		void undo();
-		void redo();
-		void submit( Command* cmd );
-		bool canUndo();
-		bool canRedo();
+		virtual ~Command();
+		virtual void do() = 0;
+		virtual void undo() = 0;
+	protected:
+		Command();
 	private:
 };
 
 } /* namespace nle */
 
-#endif /* _DOC_MANAGER_H_ */
+#endif /* _COMMAND_H_ */
+
