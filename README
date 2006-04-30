@@ -14,4 +14,4 @@ fltk
 libquicktime
 gavl (gmerlin audio video library)
 libsndfile
-jack (jack audio connection kit)
+ffmpeg

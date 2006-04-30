@@ -1,4 +1,5 @@
  * Update Adress of the FSF
+ * Name für Tracks ändern
 
 
 What needs to be done for 0.1.0 ?
@@ -6,16 +7,6 @@ What needs to be done for 0.1.0 ?
  * Render to different Formats
 
 
-  - Decode Video in a seperate Thread to avoid GUI-Blocking??
-  - Final Render to File
-  - Realtime Preview Render to OpenGL
-    - Transparenzy
-  - Auto Crossfade (Audio/Video)
-  - Video Automations ?
-  - Audio Automations !! ( Volume / Balance )
-  - Status Zeile für Automation Zahlenparameter
-  - Video/AudioClip can be splitted (Context Menü für Tracks)
-  - Umschalten zwischen Dateiliste und Thumbnails per Contextmenü
   - Titelgenerator
     - statischer Text
     - Lauftitel Horizontal / Vertikal
@@ -26,17 +17,9 @@ What needs to be done for 0.1.0 ?
     - http://gltt.sourceforge.net/
     - Mit ImageMagick auf ein Canvas schreiben, und das auf eine Textur legen
   - Farbkorrektur wird eine Diagonale durch das Bild gelegt, die man an zwei Punkten manipulieren kann, und die Links und Rechts je das alte bzw. neue Bild anzeigt
-  - Fehlermeldung wenn die FrameRate nicht PAL ist (25fps??) und Audio nicht 48000 Samples hat.
-
 
 http://invisible-island.net/bcpp/ in build process einbauen (http://www.mrunix.de/forums/showthread.php?t=40602)
 	bcpp -nc 0 -f 2 -i 2 -s -lg -tbnl -bnl -fnc /dev/null -na -nb -nbbi -nbi -ylcnc -nq -no -qb 1345 "$f" "$TMP_FILE"
-
-
-  - restrict Fileformats temporarily to 25 FPS and 48000  
-
-  - restrict CODECS to DV-PAL
-                       24 bit PCM
 
 
 	/*
@@ -45,7 +28,3 @@ http://invisible-island.net/bcpp/ in build process einbauen (http://www.mrunix.d
 	http://developer.apple.com/samplecode/OpenGL_Movie/listing4.html
 	 */
 
-
-redirect cout:
-
-	std::streambuf* old = std::cout.rdbuf( &my_custom_streambuf_instance);
