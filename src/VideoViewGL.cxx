@@ -61,15 +61,15 @@ VideoViewGL::~VideoViewGL()
 }
 
 static GLuint video_canvas[10];
-#define T_W_F 512.0 
-#define T_H_F 512.0
-#define T_W 512 //368
-#define T_H 512 //240
+#define T_W_F 1024.0 
+#define T_H_F 1024.0
+#define T_W 1024 //368
+#define T_H 1024 //240
 
-#define TEXTURE_WIDTH 512.0 
-#define TEXTURE_HEIGHT 512.0
+#define TEXTURE_WIDTH 1024.0 
+#define TEXTURE_HEIGHT 1024.0
 
-static unsigned char pulldown_frame[3 * 512 * 512];
+//static unsigned char pulldown_frame[3 * 1024 * 1024];
 
 void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 {
@@ -113,12 +113,12 @@ void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGBA, GL_UNSIGNED_BYTE, fs[i]->RGB );
 		} else {
 			// Pulldown large Image
-			if ( fs[i]->w > T_W || fs[i]->h > T_H  ) {
+/*			if ( fs[i]->w > T_W || fs[i]->h > T_H  ) {
 				halve_image( pulldown_frame, fs[i]->RGB, fs[i]->w, fs[i]->h );
 				glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w >> 1, fs[i]->h >> 1, GL_RGB, GL_UNSIGNED_BYTE, pulldown_frame );
-			} else {
+			} else {*/
 				glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGB, GL_UNSIGNED_BYTE, fs[i]->RGB );
-			}
+/*			}*/
 		}
 	}
 	for ( int i = count; i>=0; i-- ) {
