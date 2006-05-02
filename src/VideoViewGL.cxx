@@ -65,11 +65,9 @@ static GLuint video_canvas[10];
 #define T_H_F 1024.0
 #define T_W 1024 //368
 #define T_H 1024 //240
-
 #define TEXTURE_WIDTH 1024.0 
 #define TEXTURE_HEIGHT 1024.0
-
-//static unsigned char pulldown_frame[3 * 1024 * 1024];
+static unsigned char pulldown_frame[3 * 1024 * 1024];
 
 void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 {
@@ -214,7 +212,16 @@ void VideoViewGL::draw()
 			if ( fs[i]->has_alpha_channel ) {
 				glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGBA, GL_UNSIGNED_BYTE, fs[i]->RGB );
 			} else {
-				glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGB, GL_UNSIGNED_BYTE, fs[i]->RGB );
+				if ( fs[i]->w > 512 || fs[i]->h > 512  ) {
+					cout << "HELLO" << endl;
+					halve_image( pulldown_frame, fs[i]->RGB, fs[i]->w, fs[i]->h );
+					//glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGB, GL_UNSIGNED_BYTE, pulldown_frame );
+					glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w >> 1, fs[i]->h >> 1, GL_RGB, GL_UNSIGNED_BYTE, pulldown_frame );
+				} else {
+					glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGB, GL_UNSIGNED_BYTE, fs[i]->RGB );
+				}
+
+				//glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGB, GL_UNSIGNED_BYTE, fs[i]->RGB );
 			}
 			float gl_x, gl_y, gl_w, gl_h;
 			{

@@ -35,6 +35,12 @@ void halve_image ( unsigned char *optr,
                    unsigned char *iptr,
                    int iw, int ih )
 {
+/*	for ( int i = 0; i < ih >> 1; i++ ) {
+		for ( int j = 0; j < iw; j++ ) {
+			*optr++ = *iptr++;
+		}
+	}
+	return;*/
   int ow   = iw >> 1 ;
   int oh   = ih >> 1 ;
   int iw3  = iw * 3 ;     /* Offset to get to the pixel below */
@@ -45,9 +51,9 @@ void halve_image ( unsigned char *optr,
     for ( int j = 0 ; j < ow ; j++ )
     {
       /* Average red/green/blue for each pixel */
-      *optr++=(*iptr+*(iptr+3)+*(iptr+iw3)+*(iptr+iw33))>>2;iptr++;
-      *optr++=(*iptr+*(iptr+3)+*(iptr+iw3)+*(iptr+iw33))>>2;iptr++;
-      *optr++=(*iptr+*(iptr+3)+*(iptr+iw3)+*(iptr+iw33))>>2;iptr++;
+      *optr++ = ( *iptr + *(iptr + 3) + *(iptr + iw3) + *(iptr + iw33) ) >> 2; iptr++;
+      *optr++ = ( *iptr + *(iptr + 3) + *(iptr + iw3) + *(iptr + iw33) ) >> 2; iptr++;
+      *optr++ = ( *iptr + *(iptr + 3) + *(iptr + iw3) + *(iptr + iw33) ) >> 2; iptr++;
       iptr += 3 ;  /* Skip to the next pixel */
     }
 
