@@ -8,5 +8,5 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-SUBDIRS=src icons doc ebuilds debian
+SUBDIRS=src icons doc ebuilds 
 EXTRA_DIST=openmovieeditor.spec 
