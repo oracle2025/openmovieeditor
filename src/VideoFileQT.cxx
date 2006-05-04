@@ -53,8 +53,9 @@ VideoFileQT::VideoFileQT( string filename )
 		return;
 	}
 	// check frame rate
-	if ( quicktime_frame_rate( m_qt, 0 ) != 25.0 ) { // This is a double (DANGEROUS)
+	if ( quicktime_frame_rate( m_qt, 0 ) < 24.9 || quicktime_frame_rate( m_qt, 0 ) > 25.1 ) {
 		CLEAR_ERRORS();
+		cout << "Wrong Framerate: " << quicktime_frame_rate( m_qt, 0 ) << endl;
 		ERROR_DETAIL( "Video framerates other than 25 are not supported" );
 		return;
 	}

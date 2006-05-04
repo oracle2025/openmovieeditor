@@ -99,8 +99,9 @@ VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 	//m_formatContext->streams[m_videoStream]->r_frame_rate;
 	//time_base
 	m_framerate = av_q2d( m_formatContext->streams[m_videoStream]->r_frame_rate );
-	if ( m_framerate != 25.0 ) {
+	if ( m_framerate < 24.9 || m_framerate > 25.1 ) {
 		CLEAR_ERRORS();
+		cout << "Wrong Framerate: " << m_framerate << endl;
 		ERROR_DETAIL( "Video framerates other than 25 are not supported" );
 		return;
 	}
