@@ -10,12 +10,12 @@
 #include "Codecs.H"
 #include <FL/Fl_Tile.H>
 #include <FL/Fl_Group.H>
-#include "Ruler.H"
 #include "Flmm_Scalebar.H"
 #include "globals.H"
 using namespace std;
 #include "TimelineView.H"
 #include <FL/Fl_Button.H>
+#include "Ruler.H"
 #include <FL/Fl_Box.H>
 #include "VideoViewGL.H"
 #include <FL/Fl_Tabs.H>
@@ -51,6 +51,10 @@ private:
   static void cb_scaleBar(Flmm_Scalebar*, void*);
 public:
   nle::TimelineView *m_timelineView;
+private:
+  inline void cb__i(Fl_Button*, void*);
+  static void cb_(Fl_Button*, void*);
+public:
   Fl_Button *positioningButton;
   Fl_Button *automationsButton;
 private:
@@ -224,4 +228,5 @@ extern Fl_Button* g_firstButton;
 extern Fl_Button* g_lastButton;
 extern Fl_Button* g_backButton;
 extern Fl_Button* g_forwardButton;
+extern bool g_snap;
 #endif

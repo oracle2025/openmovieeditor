@@ -11,7 +11,7 @@ class NleUI {open
       callback {if (Fl::event()==FL_SHORTCUT && Fl::event_key()==FL_Escape) 
     return; // ignore Escape
 mainWindow->hide();} open
-      private xywh {887 363 515 465} type Double resizable visible
+      private xywh {776 363 515 465} type Double resizable visible
     } {
       Fl_Menu_Bar {} {open
         xywh {0 0 345 25}
@@ -89,7 +89,7 @@ if ( fullscreen_on ) {
         }
         submenu {} {
           label {P&references} open
-          xywh {0 0 100 20}
+          xywh {0 0 100 20} hide
         } {
           menuitem {} {
             label {No SW Scaling}
@@ -127,12 +127,6 @@ while (dlg.shown())
           Fl_Group {} {open
             xywh {40 275 475 190} resizable
           } {
-            Fl_Box {} {
-              label Ruler
-              xywh {65 275 450 25} box UP_BOX align 16
-              code0 {\#include "Ruler.H"}
-              class {nle::Ruler}
-            }
             Fl_Scrollbar scaleBar {
               callback {Flmm_Scalebar *sb = (Flmm_Scalebar *)o;
 float width = sb->w();
@@ -151,8 +145,19 @@ m_timelineView->zoom( zoom );}
               code0 {\#include "TimelineView.H"}
               class {nle::TimelineView}
             } {}
-            Fl_Button {} {
-              tooltip Snapping image {/home/oracle/Projekte/OpenME/code/src/icons/snap.xpm} xywh {40 275 25 25} type Toggle value 1
+            Fl_Group {} {open
+              xywh {40 275 475 25}
+            } {
+              Fl_Button {} {
+                callback {g_snap = o->value();}
+                tooltip Snapping image {/home/oracle/Projekte/OpenME/code/src/icons/snap.xpm} xywh {40 275 25 25} type Toggle value 1
+              }
+              Fl_Box {} {
+                label Ruler selected
+                xywh {65 275 450 25} box UP_BOX align 16 resizable
+                code0 {\#include "Ruler.H"}
+                class {nle::Ruler}
+              }
             }
           }
           Fl_Group {} {open
@@ -214,7 +219,7 @@ fb->load_rel();}
               }
             }
             Fl_Input projectNameInput {
-              callback {nle::g_loadSaveManager->name( o->value() );} selected
+              callback {nle::g_loadSaveManager->name( o->value() );}
               xywh {0 25 280 25} box FLAT_BOX color 49 textfont 1
               code0 {\#include "LoadSaveManager/LoadSaveManager.H"}
               code1 {\#include "NoDropInput.H"}
@@ -282,7 +287,8 @@ g_forwardButton = forwardButton;
 g_backButton = backButton;
 scaleBar->slider_size_i(300);
 mainWindow->show(argc, argv);
-projectNameInput->value("Project 1");} {}
+projectNameInput->value("Project 1");
+g_snap = true;} {}
   }
   Function {~NleUI()} {open
   } {
@@ -648,4 +654,7 @@ decl {Fl_Button* g_backButton;} {public
 } 
 
 decl {Fl_Button* g_forwardButton;} {public
+} 
+
+decl {bool g_snap;} {public
 } 

@@ -99,6 +99,11 @@ Fl_Menu_Item NleUI::menu_[] = {
  {"&View", 0,  0, 0, 64, 0, 0, 14, 56},
  {"Fullscreen", 0xffc8,  (Fl_Callback*)NleUI::cb_Fullscreen, 0, 0, 0, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0},
+ {"P&references", 0,  0, 0, 80, 0, 0, 14, 56},
+ {"No SW Scaling", 0,  0, 0, 0, 0, 0, 14, 56},
+ {"2x2 Scaling good", 0,  0, 0, 0, 0, 0, 14, 56},
+ {"2x2 Scaling bad", 0,  0, 0, 0, 0, 0, 14, 56},
+ {0,0,0,0,0,0,0,0,0},
  {"&Help", 0,  0, 0, 64, 0, 0, 14, 56},
  {"About...", 0,  (Fl_Callback*)NleUI::cb_About, 0, 0, 0, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0},
@@ -117,7 +122,39 @@ void NleUI::cb_scaleBar(Flmm_Scalebar* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_scaleBar_i(o,v);
 }
 
+inline void NleUI::cb__i(Fl_Button* o, void*) {
+  g_snap = o->value();
+}
+void NleUI::cb_(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb__i(o,v);
+}
+
 #include <FL/Fl_Pixmap.H>
+static const char *idata_snap[] = {
+"16 16 4 1",
+" \tc None",
+".\tc #000000",
+"+\tc #E2E2E2",
+"@\tc #888888",
+"                ",
+"                ",
+"                ",
+"    ........    ",
+"   .+++++@@. ...",
+"  .++++++@@.    ",
+" .+++....... ...",
+" .++.           ",
+" .++.           ",
+" .++.           ",
+" .+++....... ...",
+"  .++++++@@.    ",
+"   .+++++@@. ...",
+"    ........    ",
+"                ",
+"                "
+};
+static Fl_Pixmap image_snap(idata_snap);
+
 static const char *idata_tool_positioning[] = {
 "32 32 2 1",
 " \tc None",
@@ -345,17 +382,6 @@ NleUI::NleUI() {
     { Fl_Tile* o = new Fl_Tile(0, 25, 515, 440);
       { Fl_Group* o = new Fl_Group(0, 275, 515, 190);
         { Fl_Group* o = new Fl_Group(40, 275, 475, 190);
-          { nle::Ruler* o = new nle::Ruler(40, 275, 475, 25, "Ruler");
-            o->box(FL_UP_BOX);
-            o->color(FL_BACKGROUND_COLOR);
-            o->selection_color(FL_BACKGROUND_COLOR);
-            o->labeltype(FL_NORMAL_LABEL);
-            o->labelfont(0);
-            o->labelsize(14);
-            o->labelcolor(FL_BLACK);
-            o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
-            o->when(FL_WHEN_RELEASE);
-          }
           { Flmm_Scalebar* o = scaleBar = new Flmm_Scalebar(40, 445, 475, 20);
             o->type(1);
             o->box(FL_FLAT_BOX);
@@ -381,6 +407,28 @@ NleUI::NleUI() {
             o->labelcolor(FL_BLACK);
             o->align(FL_ALIGN_TOP);
             o->when(FL_WHEN_RELEASE);
+            o->end();
+          }
+          { Fl_Group* o = new Fl_Group(40, 275, 475, 25);
+            { Fl_Button* o = new Fl_Button(40, 275, 25, 25);
+              o->tooltip("Snapping");
+              o->type(1);
+              o->value(1);
+              o->image(image_snap);
+              o->callback((Fl_Callback*)cb_);
+            }
+            { nle::Ruler* o = new nle::Ruler(65, 275, 450, 25, "Ruler");
+              o->box(FL_UP_BOX);
+              o->color(FL_BACKGROUND_COLOR);
+              o->selection_color(FL_BACKGROUND_COLOR);
+              o->labeltype(FL_NORMAL_LABEL);
+              o->labelfont(0);
+              o->labelsize(14);
+              o->labelcolor(FL_BLACK);
+              o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
+              o->when(FL_WHEN_RELEASE);
+              Fl_Group::current()->resizable(o);
+            }
             o->end();
           }
           o->end();
@@ -528,6 +576,7 @@ g_backButton = backButton;
 scaleBar->slider_size_i(300);
 mainWindow->show(argc, argv);
 projectNameInput->value("Project 1");
+g_snap = true;
 }
 
 NleUI::~NleUI() {
@@ -5704,3 +5753,4 @@ Fl_Button* g_firstButton;
 Fl_Button* g_lastButton;
 Fl_Button* g_backButton;
 Fl_Button* g_forwardButton;
+bool g_snap;

@@ -100,7 +100,7 @@ void Track::sort()
 	m_clips = (clip_node*)sl_mergesort( m_clips, cmp_clip );
 	sl_map( m_clips, reset_clip, 0 );
 }
-#define SNAP_TOLERANCE 10
+#define SNAP_TOLERANCE 20
 static bool is_in_tolerance( int64_t A, int64_t B, unsigned int tolerance )
 {
 	return ( B - tolerance <= A && B + tolerance >= A );

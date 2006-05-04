@@ -66,6 +66,7 @@ extern Fl_Button* g_firstButton;
 extern Fl_Button* g_lastButton;
 extern Fl_Button* g_forwardButton;
 extern Fl_Button* g_backButton;
+extern bool g_snap;
 
 #endif /* _GLOBALS_H_ */
 
