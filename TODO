@@ -2,29 +2,3 @@
  * Name für Tracks ändern
 
 
-What needs to be done for 0.1.0 ?
-
- * Render to different Formats
-
-
-  - Titelgenerator
-    - statischer Text
-    - Lauftitel Horizontal / Vertikal
-    - Drop Shadow ?
-    - http://sourceforge.net/projects/oglft
-    - http://sourceforge.net/projects/gltext/
-    - http://freshmeat.net/search/?q=fonts+opengl
-    - http://gltt.sourceforge.net/
-    - Mit ImageMagick auf ein Canvas schreiben, und das auf eine Textur legen
-  - Farbkorrektur wird eine Diagonale durch das Bild gelegt, die man an zwei Punkten manipulieren kann, und die Links und Rechts je das alte bzw. neue Bild anzeigt
-
-http://invisible-island.net/bcpp/ in build process einbauen (http://www.mrunix.de/forums/showthread.php?t=40602)
-	bcpp -nc 0 -f 2 -i 2 -s -lg -tbnl -bnl -fnc /dev/null -na -nb -nbbi -nbi -ylcnc -nq -no -qb 1345 "$f" "$TMP_FILE"
-
-
-	/*
-	glTexSubImage2D
-	http://www.gamedev.net/reference/articles/article947.asp
-	http://developer.apple.com/samplecode/OpenGL_Movie/listing4.html
-	 */
-
