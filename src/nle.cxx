@@ -110,6 +110,70 @@ Fl_Menu_Item NleUI::menu_[] = {
  {0,0,0,0,0,0,0,0,0}
 };
 
+inline void NleUI::cb_fileBrowser_i(nle::FileBrowser* o, void*) {
+  nle::FileBrowser *fb = (nle::FileBrowser*)o;
+fb->load_rel();
+}
+void NleUI::cb_fileBrowser(nle::FileBrowser* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_fileBrowser_i(o,v);
+}
+
+inline void NleUI::cb_projectNameInput_i(NoDropInput* o, void*) {
+  nle::g_loadSaveManager->name( o->value() );
+}
+void NleUI::cb_projectNameInput(NoDropInput* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_projectNameInput_i(o,v);
+}
+
+inline void NleUI::cb_playButton_i(Fl_Button* o, void*) {
+  if ( strcmp( o->label(), "@>" ) == 0 ) {
+	o->label( "@||" );
+	lastButton->deactivate();
+	firstButton->deactivate();
+	forwardButton->deactivate();
+	backButton->deactivate();
+	m_videoView->play();
+} else {
+	o->label( "@>" );
+	m_videoView->stop();
+	lastButton->activate();
+	firstButton->activate();
+	forwardButton->activate();
+	backButton->activate();
+};
+}
+void NleUI::cb_playButton(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_playButton_i(o,v);
+}
+
+inline void NleUI::cb_lastButton_i(Fl_Button*, void*) {
+  nle::g_ruler->skipLast();
+}
+void NleUI::cb_lastButton(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_lastButton_i(o,v);
+}
+
+inline void NleUI::cb_firstButton_i(Fl_Button*, void*) {
+  nle::g_ruler->skipFirst();
+}
+void NleUI::cb_firstButton(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_firstButton_i(o,v);
+}
+
+inline void NleUI::cb_backButton_i(Fl_Button*, void*) {
+  nle::g_ruler->skipBackward();
+}
+void NleUI::cb_backButton(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_backButton_i(o,v);
+}
+
+inline void NleUI::cb_forwardButton_i(Fl_Button*, void*) {
+  nle::g_ruler->skipForward();
+}
+void NleUI::cb_forwardButton(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_forwardButton_i(o,v);
+}
+
 inline void NleUI::cb_scaleBar_i(Flmm_Scalebar* o, void*) {
   Flmm_Scalebar *sb = (Flmm_Scalebar *)o;
 float width = sb->w();
@@ -299,70 +363,6 @@ static const char *idata_razor[] = {
 };
 static Fl_Pixmap image_razor(idata_razor);
 
-inline void NleUI::cb_fileBrowser_i(nle::FileBrowser* o, void*) {
-  nle::FileBrowser *fb = (nle::FileBrowser*)o;
-fb->load_rel();
-}
-void NleUI::cb_fileBrowser(nle::FileBrowser* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_fileBrowser_i(o,v);
-}
-
-inline void NleUI::cb_projectNameInput_i(NoDropInput* o, void*) {
-  nle::g_loadSaveManager->name( o->value() );
-}
-void NleUI::cb_projectNameInput(NoDropInput* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_projectNameInput_i(o,v);
-}
-
-inline void NleUI::cb_playButton_i(Fl_Button* o, void*) {
-  if ( strcmp( o->label(), "@>" ) == 0 ) {
-	o->label( "@||" );
-	lastButton->deactivate();
-	firstButton->deactivate();
-	forwardButton->deactivate();
-	backButton->deactivate();
-	m_videoView->play();
-} else {
-	o->label( "@>" );
-	m_videoView->stop();
-	lastButton->activate();
-	firstButton->activate();
-	forwardButton->activate();
-	backButton->activate();
-};
-}
-void NleUI::cb_playButton(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_playButton_i(o,v);
-}
-
-inline void NleUI::cb_lastButton_i(Fl_Button*, void*) {
-  nle::g_ruler->skipLast();
-}
-void NleUI::cb_lastButton(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_lastButton_i(o,v);
-}
-
-inline void NleUI::cb_firstButton_i(Fl_Button*, void*) {
-  nle::g_ruler->skipFirst();
-}
-void NleUI::cb_firstButton(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_firstButton_i(o,v);
-}
-
-inline void NleUI::cb_backButton_i(Fl_Button*, void*) {
-  nle::g_ruler->skipBackward();
-}
-void NleUI::cb_backButton(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_backButton_i(o,v);
-}
-
-inline void NleUI::cb_forwardButton_i(Fl_Button*, void*) {
-  nle::g_ruler->skipForward();
-}
-void NleUI::cb_forwardButton(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_forwardButton_i(o,v);
-}
-
 inline void NleUI::cb_projectChoice_i(Fl_Choice* o, void*) {
   char* name = (char*)o->mvalue()->user_data();
 nle::g_loadSaveManager->load( name );
@@ -380,6 +380,83 @@ NleUI::NleUI() {
       o->menu(menu_);
     }
     { Fl_Tile* o = new Fl_Tile(0, 25, 515, 440);
+      { Fl_Tile* o = new Fl_Tile(0, 25, 515, 250);
+        { Fl_Group* o = new Fl_Group(280, 25, 235, 250);
+          { nle::VideoViewGL* o = m_videoView = new nle::VideoViewGL(280, 25, 235, 250, "VideoView");
+            o->box(FL_DOWN_BOX);
+            o->color(FL_BACKGROUND_COLOR);
+            o->selection_color(FL_BACKGROUND_COLOR);
+            o->labeltype(FL_NORMAL_LABEL);
+            o->labelfont(0);
+            o->labelsize(14);
+            o->labelcolor(FL_GRAY0);
+            o->align(FL_ALIGN_CENTER);
+            o->when(FL_WHEN_RELEASE);
+            Fl_Group::current()->resizable(o);
+          }
+          o->end();
+        }
+        { Fl_Group* o = new Fl_Group(0, 25, 280, 250);
+          { Fl_Tabs* o = new Fl_Tabs(0, 50, 280, 185);
+            o->box(FL_UP_BOX);
+            o->labelcolor(FL_GRAY0);
+            { Fl_Group* o = new Fl_Group(0, 75, 280, 160, "Files");
+              { nle::FileBrowser* o = fileBrowser = new nle::FileBrowser(5, 80, 270, 150);
+                o->box(FL_NO_BOX);
+                o->color(FL_BACKGROUND2_COLOR);
+                o->selection_color(FL_SELECTION_COLOR);
+                o->labeltype(FL_NORMAL_LABEL);
+                o->labelfont(0);
+                o->labelsize(14);
+                o->labelcolor(FL_BLACK);
+                o->callback((Fl_Callback*)cb_fileBrowser);
+                o->align(FL_ALIGN_BOTTOM);
+                o->when(FL_WHEN_RELEASE_ALWAYS);
+                Fl_Group::current()->resizable(o);
+              }
+              o->end();
+              Fl_Group::current()->resizable(o);
+            }
+            o->end();
+            Fl_Group::current()->resizable(o);
+          }
+          { NoDropInput* o = projectNameInput = new NoDropInput(0, 25, 280, 25);
+            o->box(FL_FLAT_BOX);
+            o->color(FL_BACKGROUND_COLOR);
+            o->selection_color(FL_SELECTION_COLOR);
+            o->labeltype(FL_NORMAL_LABEL);
+            o->labelfont(0);
+            o->labelsize(14);
+            o->labelcolor(FL_BLACK);
+            o->textfont(1);
+            o->callback((Fl_Callback*)cb_projectNameInput);
+            o->align(FL_ALIGN_LEFT);
+            o->when(FL_WHEN_RELEASE);
+          }
+          { Fl_Button* o = playButton = new Fl_Button(100, 235, 80, 40, "@>");
+            o->tooltip("Play");
+            o->callback((Fl_Callback*)cb_playButton);
+          }
+          { Fl_Button* o = lastButton = new Fl_Button(230, 235, 50, 40, "@>|");
+            o->tooltip("Goto End");
+            o->callback((Fl_Callback*)cb_lastButton);
+          }
+          { Fl_Button* o = firstButton = new Fl_Button(0, 235, 50, 40, "@|<");
+            o->tooltip("Goto Start");
+            o->callback((Fl_Callback*)cb_firstButton);
+          }
+          { Fl_Button* o = backButton = new Fl_Button(50, 235, 50, 40, "@<|");
+            o->tooltip("Skip Frame backwards");
+            o->callback((Fl_Callback*)cb_backButton);
+          }
+          { Fl_Button* o = forwardButton = new Fl_Button(180, 235, 50, 40, "@|>");
+            o->tooltip("Skip Frame forward");
+            o->callback((Fl_Callback*)cb_forwardButton);
+          }
+          o->end();
+        }
+        o->end();
+      }
       { Fl_Group* o = new Fl_Group(0, 275, 515, 190);
         { Fl_Group* o = new Fl_Group(40, 275, 475, 190);
           { Flmm_Scalebar* o = scaleBar = new Flmm_Scalebar(40, 445, 455, 20);
@@ -479,84 +556,6 @@ NleUI::NleUI() {
           o->end();
         }
         o->end();
-      }
-      { Fl_Tile* o = new Fl_Tile(0, 25, 515, 250);
-        { Fl_Group* o = new Fl_Group(280, 25, 235, 250);
-          { nle::VideoViewGL* o = m_videoView = new nle::VideoViewGL(280, 25, 235, 250, "VideoView");
-            o->box(FL_DOWN_BOX);
-            o->color(FL_BACKGROUND_COLOR);
-            o->selection_color(FL_BACKGROUND_COLOR);
-            o->labeltype(FL_NORMAL_LABEL);
-            o->labelfont(0);
-            o->labelsize(14);
-            o->labelcolor(FL_GRAY0);
-            o->align(FL_ALIGN_CENTER);
-            o->when(FL_WHEN_RELEASE);
-            Fl_Group::current()->resizable(o);
-          }
-          o->end();
-        }
-        { Fl_Group* o = new Fl_Group(0, 25, 280, 250);
-          { Fl_Tabs* o = new Fl_Tabs(0, 50, 280, 185);
-            o->box(FL_UP_BOX);
-            o->labelcolor(FL_GRAY0);
-            { Fl_Group* o = new Fl_Group(0, 75, 280, 160, "Files");
-              { nle::FileBrowser* o = fileBrowser = new nle::FileBrowser(5, 80, 270, 150);
-                o->box(FL_NO_BOX);
-                o->color(FL_BACKGROUND2_COLOR);
-                o->selection_color(FL_SELECTION_COLOR);
-                o->labeltype(FL_NORMAL_LABEL);
-                o->labelfont(0);
-                o->labelsize(14);
-                o->labelcolor(FL_BLACK);
-                o->callback((Fl_Callback*)cb_fileBrowser);
-                o->align(FL_ALIGN_BOTTOM);
-                o->when(FL_WHEN_RELEASE_ALWAYS);
-                Fl_Group::current()->resizable(o);
-              }
-              o->end();
-              Fl_Group::current()->resizable(o);
-            }
-            o->end();
-            Fl_Group::current()->resizable(o);
-          }
-          { NoDropInput* o = projectNameInput = new NoDropInput(0, 25, 280, 25);
-            o->box(FL_FLAT_BOX);
-            o->color(FL_BACKGROUND_COLOR);
-            o->selection_color(FL_SELECTION_COLOR);
-            o->labeltype(FL_NORMAL_LABEL);
-            o->labelfont(0);
-            o->labelsize(14);
-            o->labelcolor(FL_BLACK);
-            o->textfont(1);
-            o->callback((Fl_Callback*)cb_projectNameInput);
-            o->align(FL_ALIGN_LEFT);
-            o->when(FL_WHEN_RELEASE);
-          }
-          { Fl_Button* o = playButton = new Fl_Button(100, 235, 80, 40, "@>");
-            o->tooltip("Play");
-            o->callback((Fl_Callback*)cb_playButton);
-          }
-          { Fl_Button* o = lastButton = new Fl_Button(230, 235, 50, 40, "@>|");
-            o->tooltip("Goto End");
-            o->callback((Fl_Callback*)cb_lastButton);
-          }
-          { Fl_Button* o = firstButton = new Fl_Button(0, 235, 50, 40, "@|<");
-            o->tooltip("Goto Start");
-            o->callback((Fl_Callback*)cb_firstButton);
-          }
-          { Fl_Button* o = backButton = new Fl_Button(50, 235, 50, 40, "@<|");
-            o->tooltip("Skip Frame backwards");
-            o->callback((Fl_Callback*)cb_backButton);
-          }
-          { Fl_Button* o = forwardButton = new Fl_Button(180, 235, 50, 40, "@|>");
-            o->tooltip("Skip Frame forward");
-            o->callback((Fl_Callback*)cb_forwardButton);
-          }
-          o->end();
-        }
-        o->end();
-        Fl_Group::current()->resizable(o);
       }
       o->end();
       Fl_Group::current()->resizable(o);

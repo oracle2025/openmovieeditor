@@ -13,11 +13,11 @@ class NleUI {open
 mainWindow->hide();} open
       private xywh {491 296 515 465} type Double resizable visible
     } {
-      Fl_Menu_Bar {} {open
+      Fl_Menu_Bar {} {
         xywh {0 0 345 25}
       } {
         submenu {} {
-          label {&Project} open
+          label {&Project}
           xywh {0 0 100 20}
         } {
           menuitem {} {
@@ -121,76 +121,10 @@ while (dlg.shown())
       Fl_Tile {} {open
         xywh {0 25 515 440} resizable
       } {
-        Fl_Group {} {open
-          xywh {0 275 515 190}
+        Fl_Tile {} {selected
+          xywh {0 25 515 250}
         } {
-          Fl_Group {} {open
-            xywh {40 275 475 190} resizable
-          } {
-            Fl_Scrollbar scaleBar {
-              callback {Flmm_Scalebar *sb = (Flmm_Scalebar *)o;
-float width = sb->w();
-float slider_size = sb->slider_size_i();
-float zoom = width / slider_size;
-m_timelineView->scroll( (int64_t)sb->value() );
-m_timelineView->zoom( zoom );}
-              private xywh {40 445 455 20} type Horizontal maximum 1024 slider_size 0.40404
-              code0 {\#include "Flmm_Scalebar.H"}
-              code1 {\#include "globals.H"}
-              code2 {using namespace std;}
-              class Flmm_Scalebar
-            }
-            Fl_Group m_timelineView {
-              xywh {40 300 455 145} resizable
-              code0 {\#include "TimelineView.H"}
-              class {nle::TimelineView}
-            } {}
-            Fl_Group {} {
-              xywh {40 275 475 25}
-            } {
-              Fl_Button {} {
-                callback {g_snap = o->value();}
-                tooltip Snapping image {/home/oracle/Projekte/OpenME/code/src/icons/snap.xpm} xywh {40 275 25 25} type Toggle value 1
-              }
-              Fl_Box {} {
-                label Ruler
-                xywh {65 275 450 25} box UP_BOX align 16 resizable
-                code0 {\#include "Ruler.H"}
-                class {nle::Ruler}
-              }
-            }
-            Fl_Scrollbar vScrollBar {selected
-              xywh {495 300 20 145} maximum 100 slider_size 0.40404
-            }
-          }
-          Fl_Group {} {open
-            xywh {0 275 40 190} labelsize 12
-          } {
-            Fl_Button positioningButton {
-              tooltip {Positioning (S)} image {/home/oracle/Projekte/OpenME/code/src/icons/tool_positioning.xpm} xywh {0 300 40 40} type Radio shortcut 0x73 value 1 align 16
-            }
-            Fl_Button automationsButton {
-              tooltip {Automations (A)} image {/home/oracle/Projekte/OpenME/code/src/icons/tool_automations.xpm} xywh {0 340 40 40} type Radio shortcut 0x61 align 18
-            }
-            Fl_Box {} {
-              xywh {0 420 40 5} box THIN_UP_BOX resizable
-            }
-            Fl_Box {} {
-              label Tools
-              xywh {0 275 40 25} box UP_BOX labelsize 12
-            }
-            Fl_Box trashCan {
-              private tooltip Trash image {/home/oracle/Projekte/OpenME/code/src/icons/trash.xpm} xywh {0 425 40 40} box UP_BOX
-            }
-            Fl_Button razorButton {
-              tooltip {Split (R)} image {/home/oracle/Projekte/OpenME/code/src/icons/razor.xpm} xywh {0 380 40 40} type Radio shortcut 0x72 align 18
-            }
-          }
-        }
-        Fl_Tile {} {open
-          xywh {0 25 515 250} resizable
-        } {
-          Fl_Group {} {open
+          Fl_Group {} {
             xywh {280 25 235 250}
           } {
             Fl_Box m_videoView {
@@ -200,7 +134,7 @@ m_timelineView->zoom( zoom );}
               class {nle::VideoViewGL}
             }
           }
-          Fl_Group {} {open
+          Fl_Group {} {
             xywh {0 25 280 250}
           } {
             Fl_Tabs {} {open
@@ -266,6 +200,72 @@ fb->load_rel();}
               label {@|>}
               callback {nle::g_ruler->skipForward();}
               tooltip {Skip Frame forward} xywh {180 235 50 40}
+            }
+          }
+        }
+        Fl_Group {} {
+          xywh {0 275 515 190}
+        } {
+          Fl_Group {} {open
+            xywh {40 275 475 190} resizable
+          } {
+            Fl_Scrollbar scaleBar {
+              callback {Flmm_Scalebar *sb = (Flmm_Scalebar *)o;
+float width = sb->w();
+float slider_size = sb->slider_size_i();
+float zoom = width / slider_size;
+m_timelineView->scroll( (int64_t)sb->value() );
+m_timelineView->zoom( zoom );}
+              private xywh {40 445 455 20} type Horizontal maximum 1024 slider_size 0.40404
+              code0 {\#include "Flmm_Scalebar.H"}
+              code1 {\#include "globals.H"}
+              code2 {using namespace std;}
+              class Flmm_Scalebar
+            }
+            Fl_Group m_timelineView {
+              xywh {40 300 455 145} resizable
+              code0 {\#include "TimelineView.H"}
+              class {nle::TimelineView}
+            } {}
+            Fl_Group {} {
+              xywh {40 275 475 25}
+            } {
+              Fl_Button {} {
+                callback {g_snap = o->value();}
+                tooltip Snapping image {/home/oracle/Projekte/OpenME/code/src/icons/snap.xpm} xywh {40 275 25 25} type Toggle value 1
+              }
+              Fl_Box {} {
+                label Ruler
+                xywh {65 275 450 25} box UP_BOX align 16 resizable
+                code0 {\#include "Ruler.H"}
+                class {nle::Ruler}
+              }
+            }
+            Fl_Scrollbar vScrollBar {
+              xywh {495 300 20 145} maximum 100 slider_size 0.40404
+            }
+          }
+          Fl_Group {} {
+            xywh {0 275 40 190} labelsize 12
+          } {
+            Fl_Button positioningButton {
+              tooltip {Positioning (S)} image {/home/oracle/Projekte/OpenME/code/src/icons/tool_positioning.xpm} xywh {0 300 40 40} type Radio shortcut 0x73 value 1 align 16
+            }
+            Fl_Button automationsButton {
+              tooltip {Automations (A)} image {/home/oracle/Projekte/OpenME/code/src/icons/tool_automations.xpm} xywh {0 340 40 40} type Radio shortcut 0x61 align 18
+            }
+            Fl_Box {} {
+              xywh {0 420 40 5} box THIN_UP_BOX resizable
+            }
+            Fl_Box {} {
+              label Tools
+              xywh {0 275 40 25} box UP_BOX labelsize 12
+            }
+            Fl_Box trashCan {
+              private tooltip Trash image {/home/oracle/Projekte/OpenME/code/src/icons/trash.xpm} xywh {0 425 40 40} box UP_BOX
+            }
+            Fl_Button razorButton {
+              tooltip {Split (R)} image {/home/oracle/Projekte/OpenME/code/src/icons/razor.xpm} xywh {0 380 40 40} type Radio shortcut 0x72 align 18
             }
           }
         }
