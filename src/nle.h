@@ -16,6 +16,7 @@ using namespace std;
 #include "TimelineView.H"
 #include <FL/Fl_Button.H>
 #include "Ruler.H"
+#include <FL/Fl_Scrollbar.H>
 #include <FL/Fl_Box.H>
 #include "VideoViewGL.H"
 #include <FL/Fl_Tabs.H>
@@ -55,6 +56,7 @@ private:
   inline void cb__i(Fl_Button*, void*);
   static void cb_(Fl_Button*, void*);
 public:
+  Fl_Scrollbar *vScrollBar;
   Fl_Button *positioningButton;
   Fl_Button *automationsButton;
 private:

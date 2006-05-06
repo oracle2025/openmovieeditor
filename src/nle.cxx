@@ -382,7 +382,7 @@ NleUI::NleUI() {
     { Fl_Tile* o = new Fl_Tile(0, 25, 515, 440);
       { Fl_Group* o = new Fl_Group(0, 275, 515, 190);
         { Fl_Group* o = new Fl_Group(40, 275, 475, 190);
-          { Flmm_Scalebar* o = scaleBar = new Flmm_Scalebar(40, 445, 475, 20);
+          { Flmm_Scalebar* o = scaleBar = new Flmm_Scalebar(40, 445, 455, 20);
             o->type(1);
             o->box(FL_FLAT_BOX);
             o->color(FL_DARK2);
@@ -397,7 +397,7 @@ NleUI::NleUI() {
             o->align(FL_ALIGN_BOTTOM);
             o->when(FL_WHEN_CHANGED);
           }
-          { nle::TimelineView* o = m_timelineView = new nle::TimelineView(40, 300, 475, 145);
+          { nle::TimelineView* o = m_timelineView = new nle::TimelineView(40, 300, 455, 145);
             o->box(FL_NO_BOX);
             o->color(FL_BACKGROUND_COLOR);
             o->selection_color(FL_BACKGROUND_COLOR);
@@ -408,6 +408,7 @@ NleUI::NleUI() {
             o->align(FL_ALIGN_TOP);
             o->when(FL_WHEN_RELEASE);
             o->end();
+            Fl_Group::current()->resizable(o);
           }
           { Fl_Group* o = new Fl_Group(40, 275, 475, 25);
             { Fl_Button* o = new Fl_Button(40, 275, 25, 25);
@@ -430,6 +431,10 @@ NleUI::NleUI() {
               Fl_Group::current()->resizable(o);
             }
             o->end();
+          }
+          { Fl_Scrollbar* o = vScrollBar = new Fl_Scrollbar(495, 300, 20, 145);
+            o->maximum(100);
+            o->slider_size(0.40404);
           }
           o->end();
           Fl_Group::current()->resizable(o);
