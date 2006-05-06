@@ -537,7 +537,7 @@ void TimelineView::move_cursor( int64_t position )
 		adjustScrollbar();
 		redraw();
 	} else if ( screen_pos > w() + x() - TRACK_SPACING - 50 ) {
-		m_scrollPosition = get_real_position( screen_pos ); //(25 = stylus_width)
+		m_scrollPosition = get_real_position( screen_pos );
 		adjustScrollbar();
 		redraw();
 	} else {
