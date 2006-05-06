@@ -104,13 +104,11 @@ int AudioFileFfmpeg::fillBuffer( float* output, unsigned long frames )
 	unsigned long written = 0;
 	float* optr = output;
 	int ret = 0;
-
 	while ( ret >= 0 && written < frames ) {
 		if ( m_tmpBufferLen > 0 ) {
-			int s = min( m_tmpBufferLen, frames - written );
-			//decode_uint8_to_float( m_tmpBufferStart, &optr, 1, s * 2 );
-			decode_int16_to_float( m_tmpBufferStart, &optr, 1, s * m_codecContext->channels );
-			
+			int s = min( m_tmpBufferLen / m_codecContext->channels, frames - written );
+			s = s * m_codecContext->channels;
+			decode_int16_to_float( m_tmpBufferStart, &optr, 1, s );
 			if ( m_codecContext->channels == 1 ) {
 				for ( int i = s - 1; i >= 0; i-- ) {
 					optr[2 * i + 1] = optr[i];
@@ -120,7 +118,7 @@ int AudioFileFfmpeg::fillBuffer( float* output, unsigned long frames )
 			optr += s;
 			m_tmpBufferStart += s;
 			m_tmpBufferLen -= s;
-			written += s;
+			written += s / m_codecContext->channels;
 			ret = 0;
 		} else {
 			ret = av_read_frame( m_formatContext, &m_packet );
@@ -137,7 +135,7 @@ int AudioFileFfmpeg::fillBuffer( float* output, unsigned long frames )
 				ptr += ret;
 				if ( data_size > 0 ) {
 					m_tmpBufferStart = m_tmpBuffer;
-					m_tmpBufferLen = data_size / 2 / m_codecContext->channels;
+					m_tmpBufferLen = data_size / 2;
 				}
 			}
 			av_free_packet( &m_packet );
