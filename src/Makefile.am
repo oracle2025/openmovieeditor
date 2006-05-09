@@ -14,7 +14,7 @@ EXTRA_DIST = nle.fl
 AM_CPPFLAGS = -ggdb @CPPFLAGS@ -I$(top_srcdir)/icons -I$(top_srcdir)/src -I$(top_srcdir)/src/tinyxml -I$(top_srcdir)/src/sl
 
 bin_PROGRAMS = openmovieeditor
-openmovieeditor_LDADD = portaudio/libportaudio.a\
+openmovieeditor_LDADD = -ljack portaudio/libportaudio.a\
 	tinyxml/libtinyxml.a timeline/libtimeline.a\
 	ProgressDialog/libProgressDialog.a\
 	sl/libsl.a\
