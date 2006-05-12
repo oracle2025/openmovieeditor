@@ -420,7 +420,7 @@ void SimplePlaybackCore::flipFrame()
 		m_videoWriter->pushFrameStack( fs );
 	}
 	fs = m_videoReader->getFrameStack( m_lastFrame );
-noflip:	
+//noflip:	
 	Fl::repeat_timeout( 0.04, video_idle_callback, this );
 }
 
