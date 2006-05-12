@@ -86,6 +86,7 @@ static int audio_length_helper( void* p, void* data )
 	}
 	return 0;
 }
+
 void Timeline::sort()
 {
 	TimelineBase::sort();
@@ -180,7 +181,8 @@ int Timeline::fillBuffer( float* output, unsigned long frames )
 			output[max_frames] = 0.0;
 			max_frames++;
 		}
-		m_samplePosition += max_frames;
+// 		this is done via sampleseek() from the audio thread
+//		m_samplePosition += max_frames;
 		return max_frames;
 	}
 	rv = (dynamic_cast<TrackBase*>(p->track))->fillBuffer( buffer2, frames, m_samplePosition );
@@ -197,7 +199,8 @@ int Timeline::fillBuffer( float* output, unsigned long frames )
 		output[max_frames] = 0.0;
 		max_frames++;
 	}
-	m_samplePosition += max_frames;
+//	this is done via sampleseek() from the audio thread
+//	m_samplePosition += max_frames;
 
 	return max_frames;
 }

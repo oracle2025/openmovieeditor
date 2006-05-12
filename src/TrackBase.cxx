@@ -26,13 +26,19 @@ namespace nle
 TrackBase::TrackBase( int num )
 	: Track( num )
 {
+	prev_position = 0;
 }
+
 int TrackBase::fillBuffer( float* output, unsigned long frames, int64_t position )
 {
 	unsigned long inc;
 	unsigned long written = 0;
 	unsigned long emptyItems = 0;
 	float* incBuffer = output;
+	// allow backwards seeks. (reinit whole track)
+	if (prev_position > position ) m_current=m_clips;
+	prev_position = position;
+
 //	ASSERT(m_current)
 	while ( m_current && m_current->clip->type() != CLIP_TYPE_VIDEO && m_current->clip->type() != CLIP_TYPE_AUDIO ) {
 		m_current = m_current->next;

@@ -51,6 +51,7 @@ void NleUI::cb_Render(Fl_Menu_* o, void* v) {
 }
 
 inline void NleUI::cb_Quit_i(Fl_Menu_* o, void*) {
+  m_videoView->stop(); 
   o->window()->hide();
 }
 void NleUI::cb_Quit(Fl_Menu_* o, void* v) {

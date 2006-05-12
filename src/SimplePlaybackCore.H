@@ -21,6 +21,7 @@
 #define _SIMPLE_PLAYBACK_CORE_H_
 
 #include <stdint.h>
+#include <jack/jack.h>
 
 namespace nle
 {
@@ -40,6 +41,7 @@ class SimplePlaybackCore
 		void stop();
 		inline bool active() { return m_active; }
 		int readAudio( float* output, unsigned long frames );
+		void jackreadAudio( void *outL, void *outR, jack_nframes_t position, jack_nframes_t nframes );
 		void flipFrame();
 		void checkPlayButton();
 	private:

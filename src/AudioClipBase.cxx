@@ -81,7 +81,7 @@ int AudioClipBase::fillBuffer( float* output, unsigned long frames, int64_t posi
 		}
 	}
 	if ( m_lastSamplePosition + frames != position ) {
-		m_audioFile->seek( position - frames_written - currentPosition + trimA );
+		m_audioFile->seek( position + frames_written - currentPosition + trimA );
 	}
 	m_lastSamplePosition = position;
 	return frames_written + m_audioFile->fillBuffer(

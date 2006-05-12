@@ -28,6 +28,7 @@ class IAudioReader
 	public:
 		virtual ~IAudioReader() {}
 		virtual int fillBuffer( float* buffer, unsigned long frames ) = 0;
+		virtual void sampleseek( int mode, int64_t position ) = 0;
 };
 
 } /* namespace nle */
