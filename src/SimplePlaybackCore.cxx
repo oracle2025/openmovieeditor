@@ -47,9 +47,8 @@
 #include "IVideoWriter.H"
 #include "Timeline.H"
  
-#define FRAMES 256
 #define VIDEO_DRIFT_LIMIT 2
-
+#define FRAMES 4096
 namespace nle
 {
 

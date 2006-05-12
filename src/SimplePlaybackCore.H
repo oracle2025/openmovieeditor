@@ -43,6 +43,7 @@ class SimplePlaybackCore
 		int readAudio( float* output, unsigned long frames );
 		void jackreadAudio( void *outL, void *outR, jack_nframes_t position, jack_nframes_t nframes );
 		void flipFrame();
+		void deactivate() { m_active=false; } /* deactivate() use only for error abort - else use stop */
 		void checkPlayButton();
 	private:
 		IAudioReader* m_audioReader;

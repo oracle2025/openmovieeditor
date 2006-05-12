@@ -22,7 +22,6 @@
 #include "AudioFileQT.H"
 #include "ErrorDialog/IErrorHandler.H"
 
-#define FRAMES_PER_BUFFER 256
 
 namespace nle
 {
@@ -77,12 +76,12 @@ void AudioFileQT::seek( int64_t sample )
 }
 int AudioFileQT::fillBuffer( float* output, unsigned long frames )
 {
-	static float l_buffer[FRAMES_PER_BUFFER];
-	static float r_buffer[FRAMES_PER_BUFFER];
+	static float l_buffer[4096];
+	static float r_buffer[4096];
 	float *left_buffer = l_buffer;
 	float *right_buffer = r_buffer;
 	int64_t diff = lqt_last_audio_position( m_qt, 0 );
-	if ( frames > FRAMES_PER_BUFFER ) {
+	if ( frames > 4096) {
 		left_buffer = new float[frames];
 		right_buffer = new float[frames];
 	}
@@ -97,7 +96,7 @@ int AudioFileQT::fillBuffer( float* output, unsigned long frames )
 		output[i * 2] = left_buffer[i]; // use left shift for *2 ??
 		output[i * 2 + 1] = right_buffer[i];
 	}
-	if ( frames > FRAMES_PER_BUFFER ) {
+	if ( frames > 4096) {
 		delete [] left_buffer;
 		delete [] right_buffer;
 	}

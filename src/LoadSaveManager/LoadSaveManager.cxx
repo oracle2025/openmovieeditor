@@ -83,8 +83,6 @@ LoadSaveManager::LoadSaveManager( Fl_Choice* projectChoice, Fl_Input* projectInp
 	}
 	g_timeline->saving();
 	Fl::add_timeout( 10.0, save_timeout );
-//	cout << name_from_projectfile( "/home/oracle/.openme.project" ) << endl;
-//	cout << name_to_filename( "Hello World 2" ) << endl;
 }
 LoadSaveManager::~LoadSaveManager()
 {

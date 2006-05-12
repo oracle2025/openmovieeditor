@@ -158,11 +158,10 @@ frame_struct** Timeline::getFrameStack( int64_t position )
 }
 
 
-#define FRAMES_PER_BUFFER 256
 int Timeline::fillBuffer( float* output, unsigned long frames )
 {
-	static float buffer1[FRAMES_PER_BUFFER*2] = {0};
-	static float buffer2[FRAMES_PER_BUFFER*2] = {0};
+	static float buffer1[4096*2] = {0};
+	static float buffer2[4096*2] = {0};
 	unsigned int rv;
 	unsigned int max_frames = 0;
 	track_node* p = m_allTracks;
