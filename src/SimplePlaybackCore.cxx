@@ -370,7 +370,7 @@ void SimplePlaybackCore::jackreadAudio( void *outL, void *outR, jack_nframes_t p
 	jackbufL= (jack_default_audio_sample_t*)outL;
 	jackbufR= (jack_default_audio_sample_t*)outR;
 	
-	for (int i=0;i<nframes && i< rv;i++) {
+	for (unsigned int i=0;i<nframes && i< rv;i++) {
 		jackbufL[i]= stereobuf[2*i];
 		jackbufR[i]= stereobuf[2*i+1];
 	}
