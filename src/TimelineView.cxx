@@ -66,7 +66,7 @@ TimelineView::TimelineView( int x, int y, int w, int h, const char *label )
 	m_stylusPosition = 0;
 	SwitchBoard::i()->timelineView(this);
 	current_cursor = FL_CURSOR_DEFAULT;
-	
+	m_vscroll = 0;
 }
 TimelineView::~TimelineView()
 {

@@ -21,9 +21,10 @@
 #include "Flmm_Scalebar.H"
 #include "globals.H"
 using namespace std;
-#include "TimelineView.H"
 #include "Ruler.H"
 #include <FL/Fl_Scrollbar.H>
+#include "TimelineScroll.H"
+#include "TimelineView.H"
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Choice.H>
 
@@ -86,13 +87,20 @@ private:
   Flmm_Scalebar *scaleBar;
   inline void cb_scaleBar_i(Flmm_Scalebar*, void*);
   static void cb_scaleBar(Flmm_Scalebar*, void*);
-public:
-  nle::TimelineView *m_timelineView;
-private:
   inline void cb__i(Fl_Button*, void*);
   static void cb_(Fl_Button*, void*);
 public:
   Fl_Scrollbar *vScrollBar;
+private:
+  inline void cb_vScrollBar_i(Fl_Scrollbar*, void*);
+  static void cb_vScrollBar(Fl_Scrollbar*, void*);
+public:
+  nle::TimelineScroll *scroll_area;
+private:
+  inline void cb_scroll_area_i(nle::TimelineScroll*, void*);
+  static void cb_scroll_area(nle::TimelineScroll*, void*);
+public:
+  nle::TimelineView *m_timelineView;
   Fl_Button *positioningButton;
   Fl_Button *automationsButton;
 private:

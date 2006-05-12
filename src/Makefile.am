@@ -124,5 +124,7 @@ openmovieeditor_SOURCES = nle.cxx\
 	AudioFileFactory.cxx\
 	AudioFileFactory.H\
 	WaveForm.H\
-	WaveForm.cxx
+	WaveForm.cxx\
+	TimelineScroll.H\
+	TimelineScroll.cxx
 

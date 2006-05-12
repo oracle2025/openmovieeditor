@@ -51,8 +51,8 @@ void NleUI::cb_Render(Fl_Menu_* o, void* v) {
 }
 
 inline void NleUI::cb_Quit_i(Fl_Menu_* o, void*) {
-  m_videoView->stop(); 
-  o->window()->hide();
+  m_videoView->stop();
+o->window()->hide();
 }
 void NleUI::cb_Quit(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Quit_i(o,v);
@@ -219,6 +219,20 @@ static const char *idata_snap[] = {
 "                "
 };
 static Fl_Pixmap image_snap(idata_snap);
+
+inline void NleUI::cb_vScrollBar_i(Fl_Scrollbar* o, void*) {
+  scroll_area->position( 0, o->value() );
+}
+void NleUI::cb_vScrollBar(Fl_Scrollbar* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_vScrollBar_i(o,v);
+}
+
+inline void NleUI::cb_scroll_area_i(nle::TimelineScroll*, void*) {
+  cout << "scrollarea" << endl;
+}
+void NleUI::cb_scroll_area(nle::TimelineScroll* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_scroll_area_i(o,v);
+}
 
 static const char *idata_tool_positioning[] = {
 "32 32 2 1",
@@ -475,19 +489,6 @@ NleUI::NleUI() {
             o->align(FL_ALIGN_BOTTOM);
             o->when(FL_WHEN_CHANGED);
           }
-          { nle::TimelineView* o = m_timelineView = new nle::TimelineView(40, 300, 455, 145);
-            o->box(FL_NO_BOX);
-            o->color(FL_BACKGROUND_COLOR);
-            o->selection_color(FL_BACKGROUND_COLOR);
-            o->labeltype(FL_NORMAL_LABEL);
-            o->labelfont(0);
-            o->labelsize(14);
-            o->labelcolor(FL_BLACK);
-            o->align(FL_ALIGN_TOP);
-            o->when(FL_WHEN_RELEASE);
-            o->end();
-            Fl_Group::current()->resizable(o);
-          }
           { Fl_Group* o = new Fl_Group(40, 275, 475, 25);
             { Fl_Button* o = new Fl_Button(40, 275, 25, 25);
               o->tooltip("Snapping");
@@ -511,8 +512,35 @@ NleUI::NleUI() {
             o->end();
           }
           { Fl_Scrollbar* o = vScrollBar = new Fl_Scrollbar(495, 300, 20, 145);
-            o->maximum(100);
+            o->maximum(50);
             o->slider_size(0.40404);
+            o->callback((Fl_Callback*)cb_vScrollBar);
+          }
+          { nle::TimelineScroll* o = scroll_area = new nle::TimelineScroll(40, 300, 455, 145);
+            o->box(FL_NO_BOX);
+            o->color(FL_BACKGROUND_COLOR);
+            o->selection_color(FL_BACKGROUND_COLOR);
+            o->labeltype(FL_NORMAL_LABEL);
+            o->labelfont(0);
+            o->labelsize(14);
+            o->labelcolor(FL_BLACK);
+            o->callback((Fl_Callback*)cb_scroll_area);
+            o->align(FL_ALIGN_TOP);
+            o->when(FL_WHEN_CHANGED);
+            { nle::TimelineView* o = m_timelineView = new nle::TimelineView(40, 300, 455, 145);
+              o->box(FL_NO_BOX);
+              o->color(FL_BACKGROUND_COLOR);
+              o->selection_color(FL_BACKGROUND_COLOR);
+              o->labeltype(FL_NORMAL_LABEL);
+              o->labelfont(0);
+              o->labelsize(14);
+              o->labelcolor(FL_BLACK);
+              o->align(FL_ALIGN_TOP);
+              o->when(FL_WHEN_RELEASE);
+              o->end();
+            }
+            o->end();
+            Fl_Group::current()->resizable(o);
           }
           o->end();
           Fl_Group::current()->resizable(o);
@@ -582,6 +610,7 @@ scaleBar->slider_size_i(300);
 mainWindow->show(argc, argv);
 projectNameInput->value("Project 1");
 g_snap = true;
+scroll_area->type(0);
 }
 
 NleUI::~NleUI() {
