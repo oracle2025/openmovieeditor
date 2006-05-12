@@ -349,12 +349,12 @@ void SimplePlaybackCore::jackreadAudio( void *outL, void *outR, jack_nframes_t p
 
 	if ( !m_active || nframes==0 )  return; 
 
-	if (nframes >= FRAMES) { // FIXME: check  buffer size during open_jack(). 
+	if (nframes > FRAMES) { // FIXME: check  buffer size during open_jack(). 
 		cerr << "Soundoutput : please decrease jackd buffer size :)"  << endl;
 		exit (1);
 	}
 
-	float stereobuf[FRAMES];  // combined stereo signals in one buffer from OME
+	float stereobuf[2*FRAMES];  // combined stereo signals in one buffer from OME
 	unsigned long rv = m_audioReader->fillBuffer(stereobuf, nframes);
 
 	if (rv != nframes) {
