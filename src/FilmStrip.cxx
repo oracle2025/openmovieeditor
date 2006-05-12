@@ -23,6 +23,8 @@
 #include "TimelineView.H"
 #include "SwitchBoard.H"
 #include "VideoFileFactory.H"
+#include <exception>
+
 
 namespace nle
 {
@@ -35,7 +37,11 @@ FilmStrip::FilmStrip( IVideoFile* vfile )
 	m_vfile = VideoFileFactory::get( vfile->filename() );
 	m_rows  = new unsigned char*[PIC_HEIGHT];
 	m_countAll = m_vfile->length() / 100;
-	m_pics = new pic_struct[m_countAll];
+	try {
+		m_pics = new pic_struct[m_countAll];
+	} catch(std::exception &e) {
+		cerr << "Out of Memory? " << e.what() << endl;
+	}
 	m_count = 0;
 	start();
 }
