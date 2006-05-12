@@ -58,7 +58,8 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
           }
           menuitem {} {
             label Quit
-            callback {o->window()->hide();}
+            callback {m_videoView->stop();
+o->window()->hide();} selected
             xywh {5 5 100 20} shortcut 0x40071
           }
         }
@@ -121,7 +122,7 @@ while (dlg.shown())
       Fl_Tile {} {open
         xywh {0 25 515 440} resizable
       } {
-        Fl_Tile {} {selected
+        Fl_Tile {} {
           xywh {0 25 515 250}
         } {
           Fl_Group {} {
