@@ -31,7 +31,7 @@ TimelineScroll::TimelineScroll(  int x, int y, int w, int h, const char *label  
 TimelineScroll::~TimelineScroll() {}
 void TimelineScroll::resize( int x, int y, int w, int h )
 {
-	child(0)->size( w, h );
+	child(0)->size( w, child(0)->h() );
 	Fl_Scroll::resize( x, y, w, h );
 }
 

@@ -13,7 +13,7 @@ class NleUI {open
 mainWindow->hide();} open
       private xywh {491 296 515 465} type Double resizable visible
     } {
-      Fl_Menu_Bar {} {
+      Fl_Menu_Bar {} {open
         xywh {0 0 345 25}
       } {
         submenu {} {
@@ -64,7 +64,20 @@ o->window()->hide();}
           }
         }
         submenu {} {
-          label {&View} open
+          label {&Tracks} open
+          xywh {0 0 100 20}
+        } {
+          menuitem {} {
+            label {Add Video Track}
+            xywh {0 0 100 20}
+          }
+          menuitem {} {
+            label {Add Audio Track}
+            xywh {0 0 100 20}
+          }
+        }
+        submenu {} {
+          label {&View}
           xywh {0 0 100 20}
         } {
           menuitem {} {
@@ -89,7 +102,7 @@ if ( fullscreen_on ) {
           }
         }
         submenu {} {
-          label {P&references} open
+          label {P&references}
           xywh {0 0 100 20} hide
         } {
           menuitem {} {
@@ -238,7 +251,7 @@ m_timelineView->zoom( zoom );}
               }
             }
             Fl_Scrollbar vScrollBar {
-              callback {scroll_area->position( 0, o->value() );} selected
+              callback {scroll_area->position( 0, o->value() );}
               xywh {495 300 20 145} maximum 50 slider_size 0.40404
             }
             Fl_Scroll scroll_area {
