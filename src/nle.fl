@@ -290,6 +290,7 @@ nle::g_loadSaveManager->load( name );} open
   Function {show( int argc, char **argv )} {open
   } {
     code {g_fps = 25.0;
+g_backseek = false;
 g_scrollBar = scaleBar;
 g_trashCan = trashCan;
 g_playButton = playButton;
@@ -670,4 +671,7 @@ decl {Fl_Button* g_forwardButton;} {public
 } 
 
 decl {bool g_snap;} {public
+} 
+
+decl {bool g_backseek;} {selected public
 } 

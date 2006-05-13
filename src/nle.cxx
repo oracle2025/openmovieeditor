@@ -599,6 +599,7 @@ NleUI::NleUI() {
 
 void NleUI::show( int argc, char **argv ) {
   g_fps = 25.0;
+  g_backseek = false;
 g_scrollBar = scaleBar;
 g_trashCan = trashCan;
 g_playButton = playButton;
@@ -814,6 +815,7 @@ ChangesDialog::ChangesDialog() {
 }
 Fl_Box *g_trashCan;
 float g_fps;
+bool g_backseek;
 
 inline void CodecOptions::cb_parameters_browser_i(Fl_Hold_Browser*, void*) {
   if ( parameters_browser->value() ) {

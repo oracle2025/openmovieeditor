@@ -171,6 +171,7 @@ void VideoViewGL::pushFrame( frame_struct* fs, bool move_cursor )
  */
 void VideoViewGL::draw()
 {
+	if (g_backseek) { reset_cache(); g_backseek=false; }
 	if ( !valid() ) {
 		glLoadIdentity(); glViewport( 0, 0, w(), h() ); // glViewport( _x, _y, _w, _h );
 		glOrtho( 0, 10, 10, 0, -20000, 10000 ); glEnable( GL_BLEND );

@@ -68,5 +68,8 @@ extern Fl_Button* g_forwardButton;
 extern Fl_Button* g_backButton;
 extern bool g_snap;
 
+/* g_backseek: if set to 1 - GL cache will be flushed on next drawGL event, then g_backseek is automatically re-set to 0 */
+extern bool g_backseek;
+
 #endif /* _GLOBALS_H_ */
 

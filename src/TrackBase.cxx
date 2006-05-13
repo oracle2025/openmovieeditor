@@ -19,6 +19,7 @@
 
 #include "TrackBase.H"
 #include "AudioClipBase.H"
+#include "globals.H"
 
 namespace nle
 {
@@ -36,7 +37,7 @@ int TrackBase::fillBuffer( float* output, unsigned long frames, int64_t position
 	unsigned long emptyItems = 0;
 	float* incBuffer = output;
 	// allow backwards seeks. (reinit whole track)
-	if (prev_position > position ) m_current=m_clips;
+	if (prev_position > position ) { m_current=m_clips; g_backseek = true; }
 	prev_position = position;
 
 //	ASSERT(m_current)
