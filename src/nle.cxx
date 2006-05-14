@@ -97,6 +97,13 @@ Fl_Menu_Item NleUI::menu_[] = {
  {"Render...", 0,  (Fl_Callback*)NleUI::cb_Render, 0, 128, 0, 0, 14, 56},
  {"Quit", 0x40071,  (Fl_Callback*)NleUI::cb_Quit, 0, 0, 0, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0},
+ {"&Tracks", 0,  0, 0, 64, 0, 0, 14, 56},
+ {"Add Video Track", 0,  0, 0, 0, 0, 0, 14, 56},
+ {"Add Audio Track", 0,  0, 0, 0, 0, 0, 14, 56},
+ {0,0,0,0,0,0,0,0,0},
+ {"JACK", 0,  0, 0, 64, 0, 0, 14, 56},
+ {"Transport connect", 0,  0, 0, 2, 0, 0, 14, 56},
+ {0,0,0,0,0,0,0,0,0},
  {"&View", 0,  0, 0, 64, 0, 0, 14, 56},
  {"Fullscreen", 0xffc8,  (Fl_Callback*)NleUI::cb_Fullscreen, 0, 0, 0, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0},
@@ -312,30 +319,47 @@ static const char *idata_tool_automations[] = {
 };
 static Fl_Pixmap image_tool_automations(idata_tool_automations);
 
-static const char *idata_trash[] = {
-"16 16 4 1",
+static const char *idata_trash_big[] = {
+"27 33 4 1",
 " \tc None",
 ".\tc #000000",
 "+\tc #B3B3B3",
 "@\tc #404040",
-"     .......    ",
-"   ...+++++...  ",
-"  ..+++...+++.. ",
-" ..+++.+++.+++..",
-" ..+++++++++++..",
-"  ..+++++++++.. ",
-"  ....+++++.... ",
-"  .++.......++. ",
-"  .++@++@++@++. ",
-"  .++@++@++@++. ",
-"  .++@++@++@++. ",
-"  .++@++@++@++. ",
-"  .++@++@++@++. ",
-"  ..+@++@++@+.. ",
-"   ...++@++...  ",
-"     .......    "
+"        ...........        ",
+"    .....+++++++++.....    ",
+"  ...+++++++++++++++++...  ",
+" ..+++++++.......+++++++.. ",
+"..+++++++.+++++++.+++++++..",
+".+++++++..+++++++..+++++++.",
+".+++++++++++++++++++++++++.",
+"..+++++++++++++++++++++++..",
+"...+++++++++++++++++++++...",
+".+...+++++++++++++++++...+.",
+"..++.....+++++++++.....++..",
+"...+++++...........+++++...",
+".+...+++++++++++++++++...+.",
+".+++.....+++++++++.....+++.",
+".++++@@+...........++@@+++.",
+".++++@@++++++@@++++++@@+++.",
+".++++@@++++++@@++++++@@+++.",
+".++++@@++++++@@++++++@@+++.",
+".++++@@++++++@@++++++@@+++.",
+".++++@@++++++@@++++++@@+++.",
+".++++@@++++++@@++++++@@+++.",
+".++++@@++++++@@++++++@@+++.",
+".++++@@++++++@@++++++@@+++.",
+".++++@@++++++@@++++++@@+++.",
+".++++@@++++++@@++++++@@+++.",
+".++++@@++++++@@++++++@@+++.",
+".++++@@++++++@@++++++@@+++.",
+".++++@@++++++@@++++++@@+++.",
+"..+++@@++++++@@++++++@@++..",
+" ..++@@++++++@@++++++@@+.. ",
+"  ...@@++++++@@++++++@...  ",
+"    .....++++@@+++.....    ",
+"        ...........        "
 };
-static Fl_Pixmap image_trash(idata_trash);
+static Fl_Pixmap image_trash_big(idata_trash_big);
 
 static const char *idata_razor[] = {
 "32 32 4 1",
@@ -573,7 +597,7 @@ NleUI::NleUI() {
           { Fl_Box* o = trashCan = new Fl_Box(0, 425, 40, 40);
             o->tooltip("Trash");
             o->box(FL_UP_BOX);
-            o->image(image_trash);
+            o->image(image_trash_big);
           }
           { Fl_Button* o = razorButton = new Fl_Button(0, 380, 40, 40);
             o->tooltip("Split (R)");
@@ -599,7 +623,7 @@ NleUI::NleUI() {
 
 void NleUI::show( int argc, char **argv ) {
   g_fps = 25.0;
-  g_backseek = false;
+g_backseek = false;
 g_scrollBar = scaleBar;
 g_trashCan = trashCan;
 g_playButton = playButton;
@@ -815,7 +839,6 @@ ChangesDialog::ChangesDialog() {
 }
 Fl_Box *g_trashCan;
 float g_fps;
-bool g_backseek;
 
 inline void CodecOptions::cb_parameters_browser_i(Fl_Hold_Browser*, void*) {
   if ( parameters_browser->value() ) {
@@ -5790,3 +5813,4 @@ Fl_Button* g_lastButton;
 Fl_Button* g_backButton;
 Fl_Button* g_forwardButton;
 bool g_snap;
+bool g_backseek;

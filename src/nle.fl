@@ -64,6 +64,19 @@ o->window()->hide();}
           }
         }
         submenu {} {
+          label {&Edit} open
+          xywh {0 0 100 20}
+        } {
+          menuitem {} {
+            label Undo
+            xywh {0 0 100 20} shortcut 0x4007a
+          }
+          menuitem {} {
+            label Redo
+            xywh {0 0 100 20} shortcut 0x40079 deactivate
+          }
+        }
+        submenu {} {
           label {&Tracks} open
           xywh {0 0 100 20}
         } {
@@ -77,7 +90,16 @@ o->window()->hide();}
           }
         }
         submenu {} {
-          label {&View}
+          label {&JACK} open
+          xywh {0 0 100 20}
+        } {
+          menuitem {} {
+            label {Transport connect}
+            xywh {0 0 100 20} type Toggle
+          }
+        }
+        submenu {} {
+          label {&View} open
           xywh {0 0 100 20}
         } {
           menuitem {} {
@@ -99,6 +121,10 @@ if ( fullscreen_on ) {
 	fullscreen_on = true;
 }}
             xywh {0 0 100 20} shortcut 0xffc8
+          }
+          menuitem {} {
+            label {Track Overview} selected
+            xywh {0 0 100 20} type Toggle
           }
         }
         submenu {} {
@@ -284,7 +310,7 @@ m_timelineView->zoom( zoom );}
               xywh {0 275 40 25} box UP_BOX labelsize 12
             }
             Fl_Box trashCan {
-              private tooltip Trash image {/home/oracle/Projekte/OpenME/code/src/icons/trash.xpm} xywh {0 425 40 40} box UP_BOX
+              private tooltip Trash image {/home/oracle/Projekte/OpenME/code/src/icons/trash_big.xpm} xywh {0 425 40 40} box UP_BOX
             }
             Fl_Button razorButton {
               tooltip {Split (R)} image {/home/oracle/Projekte/OpenME/code/src/icons/razor.xpm} xywh {0 380 40 40} type Radio shortcut 0x72 align 18
@@ -686,5 +712,5 @@ decl {Fl_Button* g_forwardButton;} {public
 decl {bool g_snap;} {public
 } 
 
-decl {bool g_backseek;} {selected public
+decl {bool g_backseek;} {public
 } 

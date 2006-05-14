@@ -239,4 +239,5 @@ extern Fl_Button* g_lastButton;
 extern Fl_Button* g_backButton;
 extern Fl_Button* g_forwardButton;
 extern bool g_snap;
+extern bool g_backseek;
 #endif
