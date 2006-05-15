@@ -47,7 +47,7 @@ class Timeline : public TimelineBase, public IAudioReader, public IVideoReader
 		frame_struct** getFrameStack( int64_t position );
 		int fillBuffer( float* output, unsigned long frames );
 		inline void seek( int64_t position ) { m_seekPosition = position; }
-		inline void sampleseek( int mode, int64_t position ) { if (mode) m_samplePosition = position; else m_samplePosition += position; }
+		inline void sampleseek( int mode, int64_t position ) { if (mode) m_samplePosition = position; else m_samplePosition += position; /* m_playPosition = m_samplePosition*25/48000; m_seekPosition= m_playPosition;*/ }
 		inline int64_t soundLength() { return m_soundLength; }
 		bool changed() { return m_changed; }
 		void changing() { m_changed = true; }

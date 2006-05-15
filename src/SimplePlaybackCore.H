@@ -41,9 +41,9 @@ class SimplePlaybackCore
 		void stop();
 		inline bool active() { return m_active; }
 		int readAudio( float* output, unsigned long frames );
-		void jackreadAudio( void *outL, void *outR, jack_nframes_t position, jack_nframes_t nframes );
+		void jackreadAudio( void *outL, void *outR, jack_transport_state_t ts, jack_nframes_t position, jack_nframes_t nframes );
 		void flipFrame();
-		void deactivate() { m_active=false; } /* deactivate() use only for error abort - else use stop */
+		void hardstop() { m_active=false; } /* hardstop() use only for error abort - else use stop */
 		void checkPlayButton();
 	private:
 		IAudioReader* m_audioReader;
@@ -53,6 +53,9 @@ class SimplePlaybackCore
 		int64_t m_audioPosition;
 		int64_t m_currentFrame;
 		int64_t m_lastFrame;
+		int64_t m_nexttolastFrame;
+		int64_t m_prevSeek;
+		int m_scrubpos,m_scrubmax;
 };
 
 } /* namespace nle */
