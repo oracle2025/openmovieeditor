@@ -43,7 +43,7 @@ class AudioClipBase : public Clip
 		virtual void reset();
 		bool m_mute;
 	protected:
-		AudioClipBase( Track *track, int64_t position, IAudioFile* af = 0 );
+		AudioClipBase( Track *track, int64_t position, IAudioFile* af = 0, int id = -1 );
 		virtual int64_t audioTrimA() = 0;
 		virtual int64_t audioTrimB() = 0;
 		int64_t audioLength();

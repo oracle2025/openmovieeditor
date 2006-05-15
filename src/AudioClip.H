@@ -38,7 +38,7 @@ typedef struct _auto_node {
 class AudioClip : public AudioClipBase
 {
 	public:
-		AudioClip( Track *track, int64_t position, IAudioFile* af, int64_t trimA = 0, int64_t trimB = 0 );
+		AudioClip( Track *track, int64_t position, IAudioFile* af, int64_t trimA = 0, int64_t trimB = 0, int id = -1 );
 		~AudioClip();
 		int64_t length();
 		string filename();

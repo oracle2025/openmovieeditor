@@ -27,8 +27,8 @@
 namespace nle
 {
 
-AudioClip::AudioClip( Track *track, int64_t position, IAudioFile* af, int64_t trimA, int64_t trimB )
-	: AudioClipBase( track, position, af )
+AudioClip::AudioClip( Track *track, int64_t position, IAudioFile* af, int64_t trimA, int64_t trimB, int id )
+	: AudioClipBase( track, position, af, id )
 {
 	m_trimA = trimA;
 	m_trimB = trimB;

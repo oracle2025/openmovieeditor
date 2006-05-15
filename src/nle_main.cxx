@@ -46,6 +46,7 @@ namespace nle
 
 int main( int argc, char** argv )
 {
+	nle::g_clipId = 1;
 	fl_register_images();
 	nle::g_SEEKING = false;
 	srand( time( 0 ) );

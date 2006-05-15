@@ -35,7 +35,7 @@ class IClipArtist;
 class VideoClip : public AudioClipBase, public IVideoReader
 {
 	public:
-		VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A = 0, int64_t B = 0 );
+		VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A = 0, int64_t B = 0, int id = -1 );
 		~VideoClip();
 		int64_t length();
 		void reset();

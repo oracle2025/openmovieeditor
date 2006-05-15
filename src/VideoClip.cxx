@@ -29,8 +29,8 @@
 namespace nle
 {
 	
-VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A, int64_t B )
-	: AudioClipBase( track, position )
+VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A, int64_t B, int id )
+	: AudioClipBase( track, position, 0, id )
 {
 	m_trimA = A;
 	m_trimB = B;

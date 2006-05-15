@@ -23,8 +23,8 @@
 namespace nle
 {
 
-AudioClipBase::AudioClipBase( Track *track, int64_t position, IAudioFile* af )
-	: Clip( track, position )
+AudioClipBase::AudioClipBase( Track *track, int64_t position, IAudioFile* af, int id )
+	: Clip( track, position, id )
 {
 	m_audioFile = af;
 	m_mute = false;

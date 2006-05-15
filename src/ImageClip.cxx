@@ -28,8 +28,8 @@ namespace nle
 {
 
 
-ImageClip::ImageClip( Track* track, int64_t position, string filename )
-	: Clip( track, position ), m_filename( filename )
+ImageClip::ImageClip( Track* track, int64_t position, string filename, int id )
+	: Clip( track, position, id ), m_filename( filename )
 {
 	m_ok = false;
 	m_artist = 0;

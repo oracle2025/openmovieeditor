@@ -57,6 +57,9 @@ extern lqt_codec_info_t** g_video_codec_info;
 extern NleUI* g_ui;
 extern bool g_SEEKING;
 
+extern int g_clipId;
+
+
 } /* namespace nle */
 
 extern float g_fps;

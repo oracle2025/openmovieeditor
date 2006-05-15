@@ -22,12 +22,27 @@
 namespace nle
 {
 
-Clip::Clip( Track *track, int64_t position )
+int g_clipId;
+int getClipId() { return g_clipId++; }
+void updateClipId( int id )
+{
+	if ( id >= g_clipId ) {
+		g_clipId = id + 1;
+	}	
+}
+
+Clip::Clip( Track *track, int64_t position, int id )
 {
 	m_position = position;
 	m_track = track;
 	m_trimA = 0;
 	m_trimB = 0;
+	if ( id < 0 ) {
+		m_id = getClipId();
+	} else {
+		m_id = id;
+		updateClipId( id );
+	}
 }
 void Clip::trimA( int64_t trim )
 {
