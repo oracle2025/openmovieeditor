@@ -83,14 +83,20 @@ int TimelineView::handle( int event )
 		case FL_PASTE:
 			{
 				Track* t = get_track( _x, _y );
-				if (t && !fl_filename_isdir(Fl::event_text()) ) {
+				char *fn,*filename=strdup(Fl::event_text());
+				int i=strlen(filename);
+				while (i>0 && (iscntrl(filename[i]) || isspace(filename[i])) ) filename[i--]=0;
+				if (!strncmp(filename,"file://",7)) fn=&(filename[7]); 
+				else fn=filename;
+				if (t && !fl_filename_isdir(fn)) {
 					int64_t rp = get_real_position( _x, t->stretchFactor() );
-					t->addFile( rp, Fl::event_text() );
+					t->addFile( rp, fn );
 					adjustScrollbar();
 					redraw();
 					g_videoView->seek( m_stylusPosition );
 					g_timeline->changing();
 				}
+				free(filename);
 			}
 			return 1;
 		case FL_DND_DRAG:
