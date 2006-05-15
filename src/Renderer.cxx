@@ -180,6 +180,7 @@ void Renderer::go( IProgressListener* l )
 		}
 		
 		res = g_timeline->fillBuffer( buffer, 256 );
+		g_timeline->sampleseek(0,256); 
 		
 		for ( int i = 0; i < res; i++ ) {
 			left_buffer[i] = buffer[i*2];
