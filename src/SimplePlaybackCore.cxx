@@ -115,7 +115,7 @@ error:
 static jack_client_t *jack_client = NULL;
 static jack_port_t *output_port[2]; // stereo
 static char jackid[16];
-static int scrub_pos,scrub_max = 0; 
+//static int scrub_pos,scrub_max = 0; 
 static jack_nframes_t jack_bufsiz = 64;
 
 /*
