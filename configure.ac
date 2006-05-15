@@ -106,6 +106,16 @@ if test x$HAVE_AVFORMAT = xfalse; then
   fi
 fi
 
+
+AC_CHECK_LIB(jack, main, [ac_jack_lib="yes"], [ac_jack_lib="no"])
+AC_CHECK_HEADER(jack/jack.h, [ac_jack_h="yes"], [ac_jack_h="no"])
+if test "x$ac_jack_lib$ac_jack_h" = "xyesyes"; then
+   LDFLAGS="$LDFLAGS -ljack"
+else 
+   AC_MSG_ERROR([*** You need JACK audio library (libjack-dev) installed.  http://jackit.sf.net/])
+fi
+
+
 dnl FLTK-Check Shamelessly stolen from SpiralSynthModular
 AC_PATH_PROG(FLTK_CONFIG, fltk-config, no)
 if test "$FLTK_CONFIG" = "no"; then
