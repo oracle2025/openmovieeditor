@@ -214,8 +214,8 @@ fade_over* create_fade_over( Clip* a, Clip* b )
 void get_alpha_values( fade_over* o, float& a, float& b, int64_t position )
 {
 	int64_t p = position - fade_over_start( o );
-	b = 1.0;
 	a = 1.0 - ( o->inc * p );
+	b = 1.0 - a;
 }
 int VideoTrack::fillBuffer( float* output, unsigned long frames, int64_t position )
 {
