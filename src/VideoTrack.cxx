@@ -118,7 +118,7 @@ static int find_fade_over_helper( void* p, void* data )
 {
 	fade_over* node = (fade_over*)p;
 	int64_t position = *((int64_t*)data);
-	return ( fade_over_start( node ) <= position && fade_over_end( node ) >= position );
+	return ( fade_over_start( node ) <= position && fade_over_end( node ) > position );
 }
 frame_struct** VideoTrack::getFrameStack( int64_t position )
 {
