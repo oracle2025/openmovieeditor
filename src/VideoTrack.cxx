@@ -145,6 +145,9 @@ frame_struct** VideoTrack::getFrameStack( int64_t position )
 		frameStack[1] = B->getFrame( position );
 		if ( frameStack[0] && frameStack[1] ) {
 			get_alpha_values( o, frameStack[0]->alpha, frameStack[1]->alpha, position );
+			if ( !frameStack[0]->has_alpha_channel ) {
+				frameStack[1]->alpha = 1.0;
+			}
 		}
 		return frameStack;
 	} else {
