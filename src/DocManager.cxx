@@ -78,6 +78,10 @@ command_node* new_command_node( Command* cmd )
 void DocManager::submit( Command* cmd )
 {
 	cmd->doo();
+	if ( cmd->error() ) {
+		delete cmd;
+		return;
+	}
 	m_undoList = (command_node*)sl_push( m_undoList, new_command_node( cmd ) );
 	clear_command_list( &m_redoList );
 }
