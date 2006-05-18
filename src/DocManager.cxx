@@ -26,10 +26,13 @@
 namespace nle
 {
 
+DocManager* g_docManager;
+
 DocManager::DocManager()
 {
 	m_undoList = 0;
 	m_redoList = 0;
+	g_docManager = this;
 }
 
 void clear_command_list( command_node** l )
@@ -45,6 +48,7 @@ DocManager::~DocManager()
 {
 	clear_command_list( &m_undoList );
 	clear_command_list( &m_redoList );
+	g_docManager = 0;
 }
 
 void DocManager::undo()
