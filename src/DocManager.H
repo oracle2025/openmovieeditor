@@ -25,6 +25,11 @@ namespace nle
 
 class Command;
 
+typedef struct _command_node {
+	struct _command_node *next;
+	Command* command;
+} command_node;
+
 class DocManager
 {
 	public:
@@ -36,6 +41,8 @@ class DocManager
 		bool canUndo();
 		bool canRedo();
 	private:
+		command_node m_undoList;
+		command_node m_redoList;
 };
 
 } /* namespace nle */
