@@ -84,6 +84,15 @@ Clip *Track::find( int64_t position )
 	}
 	return 0;
 }
+Clip* Track::getClip( int id )
+{
+	clip_node* node = m_clips;
+	while ( node && node->clip->id() != id ) {
+		node = node->next;
+	}
+	if ( node ) { return node->clip; }
+	return 0;
+}
 static int reset_clip( void* p, void* data )
 {
 	clip_node* node = (clip_node*)p;

@@ -126,5 +126,11 @@ openmovieeditor_SOURCES = nle.cxx\
 	WaveForm.H\
 	WaveForm.cxx\
 	TimelineScroll.H\
-	TimelineScroll.cxx
+	TimelineScroll.cxx\
+	DocManager.cxx\
+	DocManager.H\
+	Command.H\
+	Command.cxx\
+	MoveCommand.cxx\
+	MoveCommand.H
 

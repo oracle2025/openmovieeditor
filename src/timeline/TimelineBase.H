@@ -54,8 +54,9 @@ class TimelineBase
 		int64_t length();
 		inline track_node* getTracks() { return m_allTracks; }
 		void clear();
-	protected:
 		Track* getTrack( int track );
+		Clip* getClip( int track, int clip );
+	protected:
 		// member variable declerations
 		track_node* m_allTracks;
 };

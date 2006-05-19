@@ -42,6 +42,8 @@
 #include "ShiftAutomationDragHandler.H"
 #include "IClipArtist.H"
 #include "SimplePlaybackCore.H"
+#include "DocManager.H"
+#include "MoveCommand.H"
 
 #include "audio.xpm"
 #include "video.xpm"
@@ -486,27 +488,10 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 	if ( new_position < 0 ) {
 		new_position = 0;
 	}
-	clip->position( new_position );
-	adjustScrollbar();
-	if ( new_tr == old_tr ) {
-		VideoTrack* t = dynamic_cast<VideoTrack*>(new_tr);
-		if ( t ) {
-			t->reconsiderFadeOver();
-		}
-		return;
-	}
-	old_tr->removeClip( clip );
-	clip->track( new_tr );
-	new_tr->addClip( clip );
-	VideoTrack* t = dynamic_cast<VideoTrack*>(new_tr);
-	if ( t ) {
-		t->reconsiderFadeOver();
-	}
-	t = dynamic_cast<VideoTrack*>(old_tr);
-	if ( t ) {
-		t->reconsiderFadeOver();
-	}
 
+	Command* cmd = new MoveCommand( clip, new_tr, new_position );
+	g_docManager->submit( cmd );
+	adjustScrollbar();
 }
 void TimelineView::adjustScrollbar()
 {

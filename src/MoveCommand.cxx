@@ -17,7 +17,12 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "globals.H"
 #include "MoveCommand.H"
+#include "timeline/Clip.H"
+#include "timeline/Track.H"
+#include "Timeline.H"
+#include "VideoTrack.H"
 
 
 
@@ -39,7 +44,7 @@ static void performCommand( int tn1, int tn2, int64_t pos, int clip )
 {
 	Track* t1 = g_timeline->getTrack( tn1 );
 	Track* t2 = g_timeline->getTrack( tn2 );
-	Clip* c = g_timeline->getClip( t1->num(), clip );
+	Clip* c = t1->getClip( clip );
 	c->position( pos );
 	if ( t1 != t2 ) {
 		t1->removeClip( c );
@@ -48,17 +53,10 @@ static void performCommand( int tn1, int tn2, int64_t pos, int clip )
 	}
 	VideoTrack* t;
 	t = dynamic_cast<VideoTrack*>( t1 );
-	if ( t ) {
-		t->reconsiderFadeOver();
-	}
-	if ( t1 == t2 ) {
-		return;
-	}
+	if ( t ) { t->reconsiderFadeOver(); }
+	if ( t1 == t2 ) { return; }
 	t = dynamic_cast<VideoTrack*>( t2 );
-	if ( t ) {
-		t->reconsiderFadeOver();
-	}
-
+	if ( t ) { t->reconsiderFadeOver(); }
 }
 
 void MoveCommand::doo()

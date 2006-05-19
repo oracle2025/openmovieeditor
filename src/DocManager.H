@@ -41,9 +41,11 @@ class DocManager
 		bool canUndo();
 		bool canRedo();
 	private:
-		command_node m_undoList;
-		command_node m_redoList;
+		command_node* m_undoList;
+		command_node* m_redoList;
 };
+
+extern DocManager* g_docManager;
 
 } /* namespace nle */
 

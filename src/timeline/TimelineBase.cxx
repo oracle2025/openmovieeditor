@@ -147,14 +147,19 @@ int64_t TimelineBase::length()
 Track* TimelineBase::getTrack( int track )
 {
 	track_node* node = (track_node*)m_allTracks;
-	while ( node && track ) {
+	while ( node && node->track->num() != track ) {
 		node = node->next;
-		track--;
 	}
 	if ( node ) {
 		return node->track;
 	}
 	return 0;
+}
+Clip* TimelineBase::getClip( int track, int clip )
+{
+	Track* t = getTrack( track );
+	if ( !t ) { return 0; }
+	return t->getClip( clip );
 }
 
 

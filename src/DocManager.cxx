@@ -35,7 +35,7 @@ DocManager::DocManager()
 	g_docManager = this;
 }
 
-void clear_command_list( command_node** l )
+static void clear_command_list( command_node** l )
 {
 	command_node* n;
 	while ( ( n = (command_node*)sl_pop( l ) ) ) {
@@ -67,11 +67,11 @@ void DocManager::redo()
 		return;
 	}
 	command_node* n = (command_node*)sl_pop( &m_redoList );
-	n->command->redo();
+	n->command->doo();
 	m_undoList = (command_node*)sl_push( m_undoList, n );
 }
 
-command_node* new_command_node( Command* cmd )
+static command_node* new_command_node( Command* cmd )
 {
 	command_node* n = new command_node;
 	n->command = cmd;

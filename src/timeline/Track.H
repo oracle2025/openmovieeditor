@@ -56,9 +56,10 @@ class Track
 
 
 	//	void remove( Clip* clip );
-		int num() { return m_num; }
+		inline int num() { return m_num; }
 		int64_t getSnapB( Clip* clip, int64_t a );
 		int64_t getSnapA( Clip* clip, int64_t a );
+		Clip* getClip( int id );
 	protected:
 		Track( int num );
 		clip_node* m_clips;
