@@ -53,9 +53,7 @@ DocManager::~DocManager()
 
 void DocManager::undo()
 {
-	if ( !canUndo() ) {
-		return;
-	}
+	if ( !canUndo() ) { return; }
 	command_node* n = (command_node*)sl_pop( &m_undoList );
 	n->command->undo();
 	m_redoList = (command_node*)sl_push( m_redoList, n );
@@ -63,9 +61,7 @@ void DocManager::undo()
 
 void DocManager::redo()
 {
-	if ( !canRedo() ) {
-		return;
-	}
+	if ( !canRedo() ) { return; }
 	command_node* n = (command_node*)sl_pop( &m_redoList );
 	n->command->doo();
 	m_undoList = (command_node*)sl_push( m_undoList, n );
