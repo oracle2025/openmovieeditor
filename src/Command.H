@@ -26,12 +26,12 @@ namespace nle
 class Command
 {
 	public:
-		virtual ~Command();
+		virtual ~Command() {}
 		virtual void doo() = 0;
 		virtual void undo() = 0;
 		virtual bool error() { return false; }
 	protected:
-		Command();
+		Command() {}
 	private:
 };
 
