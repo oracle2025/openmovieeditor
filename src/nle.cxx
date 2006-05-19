@@ -58,14 +58,20 @@ void NleUI::cb_Quit(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Quit_i(o,v);
 }
 
-inline void NleUI::cb_Scrubaudio(Fl_Menu_ *me, void*) {
-	g_scrub_audio = (me->mvalue())->value();
+inline void NleUI::cb_Transport_i(Fl_Menu_* o, void*) {
+  // FIXME: allow change only if not currently playing ?!
+// -> assign this value in SimplePlaybackCore "on play"
+g_use_jack_transport = (o->mvalue())->value();
+}
+void NleUI::cb_Transport(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_Transport_i(o,v);
 }
 
-inline void NleUI::cb_Jacktransport(Fl_Menu_ *me, void*) {
-	// FIXME: allow change only if not currently playing ?!
-	// -> assign this value in SimplePlaybackCore "on play"
-	g_use_jack_transport = (me->mvalue())->value();
+inline void NleUI::cb_Scrub_i(Fl_Menu_* o, void*) {
+  g_scrub_audio = (o->mvalue())->value();
+}
+void NleUI::cb_Scrub(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_Scrub_i(o,v);
 }
 
 inline void NleUI::cb_Fullscreen_i(Fl_Menu_*, void*) {
@@ -107,16 +113,21 @@ Fl_Menu_Item NleUI::menu_[] = {
  {"Render...", 0,  (Fl_Callback*)NleUI::cb_Render, 0, 128, 0, 0, 14, 56},
  {"Quit", 0x40071,  (Fl_Callback*)NleUI::cb_Quit, 0, 0, 0, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0},
+ {"&Edit", 0,  0, 0, 64, 0, 0, 14, 56},
+ {"Undo", 0x4007a,  0, 0, 0, 0, 0, 14, 56},
+ {"Redo", 0x40079,  0, 0, 1, 0, 0, 14, 56},
+ {0,0,0,0,0,0,0,0,0},
  {"&Tracks", 0,  0, 0, 64, 0, 0, 14, 56},
  {"Add Video Track", 0,  0, 0, 0, 0, 0, 14, 56},
  {"Add Audio Track", 0,  0, 0, 0, 0, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0},
- {"JACK", 0,  0, 0, 64, 0, 0, 14, 56},
- {"Transport connect", 0,  (Fl_Callback*)NleUI::cb_Jacktransport, 0, FL_MENU_TOGGLE|FL_MENU_VALUE, 0, 0, 14, 56},
- {"Scrub audio", 0,  (Fl_Callback*)NleUI::cb_Scrubaudio, 0, FL_MENU_TOGGLE|FL_MENU_VALUE, 0, 0, 14, 56},
+ {"&JACK", 0,  0, 0, 64, 0, 0, 14, 56},
+ {"Transport connect", 0,  (Fl_Callback*)NleUI::cb_Transport, 0, 2, 0, 0, 14, 56},
+ {"Scrub audio", 0,  (Fl_Callback*)NleUI::cb_Scrub, 0, 2, 0, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0},
  {"&View", 0,  0, 0, 64, 0, 0, 14, 56},
  {"Fullscreen", 0xffc8,  (Fl_Callback*)NleUI::cb_Fullscreen, 0, 0, 0, 0, 14, 56},
+ {"Track Overview", 0,  0, 0, 2, 0, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0},
  {"P&references", 0,  0, 0, 80, 0, 0, 14, 56},
  {"No SW Scaling", 0,  0, 0, 0, 0, 0, 14, 56},

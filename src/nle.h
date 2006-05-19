@@ -44,10 +44,12 @@ private:
   static void cb_Render(Fl_Menu_*, void*);
   inline void cb_Quit_i(Fl_Menu_*, void*);
   static void cb_Quit(Fl_Menu_*, void*);
+  inline void cb_Transport_i(Fl_Menu_*, void*);
+  static void cb_Transport(Fl_Menu_*, void*);
+  inline void cb_Scrub_i(Fl_Menu_*, void*);
+  static void cb_Scrub(Fl_Menu_*, void*);
   inline void cb_Fullscreen_i(Fl_Menu_*, void*);
   static void cb_Fullscreen(Fl_Menu_*, void*);
-  static void cb_Jacktransport(Fl_Menu_*, void*);
-  static void cb_Scrubaudio(Fl_Menu_*, void*);
   inline void cb_About_i(Fl_Menu_*, void*);
   static void cb_About(Fl_Menu_*, void*);
 public:

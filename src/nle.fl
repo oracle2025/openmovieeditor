@@ -95,6 +95,14 @@ o->window()->hide();}
         } {
           menuitem {} {
             label {Transport connect}
+            callback {// FIXME: allow change only if not currently playing ?!
+// -> assign this value in SimplePlaybackCore "on play"
+g_use_jack_transport = (o->mvalue())->value();}
+            xywh {0 0 100 20} type Toggle
+          }
+          menuitem {} {
+            label {Scrub audio}
+            callback {g_scrub_audio = (o->mvalue())->value();}
             xywh {0 0 100 20} type Toggle
           }
         }
@@ -123,7 +131,7 @@ if ( fullscreen_on ) {
             xywh {0 0 100 20} shortcut 0xffc8
           }
           menuitem {} {
-            label {Track Overview} selected
+            label {Track Overview}
             xywh {0 0 100 20} type Toggle
           }
         }
@@ -297,10 +305,10 @@ m_timelineView->zoom( zoom );}
             xywh {0 275 40 190} labelsize 12
           } {
             Fl_Button positioningButton {
-              tooltip {Positioning (S)} image {/home/oracle/Projekte/OpenME/code/src/icons/tool_positioning.xpm} xywh {0 300 40 40} type Radio shortcut 0x73 value 1 align 16
+              tooltip {Positioning (S)} image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/tool_positioning.xpm} xywh {0 300 40 40} type Radio shortcut 0x73 value 1 align 16
             }
             Fl_Button automationsButton {
-              tooltip {Automations (A)} image {/home/oracle/Projekte/OpenME/code/src/icons/tool_automations.xpm} xywh {0 340 40 40} type Radio shortcut 0x61 align 18
+              tooltip {Automations (A)} image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/tool_automations.xpm} xywh {0 340 40 40} type Radio shortcut 0x61 align 18
             }
             Fl_Box {} {
               xywh {0 420 40 5} box THIN_UP_BOX resizable
@@ -309,11 +317,11 @@ m_timelineView->zoom( zoom );}
               label Tools
               xywh {0 275 40 25} box UP_BOX labelsize 12
             }
-            Fl_Box trashCan {
-              private tooltip Trash image {/home/oracle/Projekte/OpenME/code/src/icons/trash_big.xpm} xywh {0 425 40 40} box UP_BOX
+            Fl_Box trashCan {selected
+              private tooltip Trash image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/trash_big.xpm} xywh {0 425 40 40} box UP_BOX
             }
             Fl_Button razorButton {
-              tooltip {Split (R)} image {/home/oracle/Projekte/OpenME/code/src/icons/razor.xpm} xywh {0 380 40 40} type Radio shortcut 0x72 align 18
+              tooltip {Split (R)} image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/razor.xpm} xywh {0 380 40 40} type Radio shortcut 0x72 align 18
             }
           }
         }
@@ -341,6 +349,9 @@ scaleBar->slider_size_i(300);
 mainWindow->show(argc, argv);
 projectNameInput->value("Project 1");
 g_snap = true;
+g_use_jack_transport = true;
+g_scrub_audio = true;
+g_seek_audio = true;
 scroll_area->type(0);} {}
   }
   Function {~NleUI()} {open
@@ -713,4 +724,13 @@ decl {bool g_snap;} {public
 } 
 
 decl {bool g_backseek;} {public
+} 
+
+decl {bool g_use_jack_transport;} {public
+} 
+
+decl {bool g_scrub_audio;} {public
+} 
+
+decl {bool g_seek_audio;} {public
 } 
