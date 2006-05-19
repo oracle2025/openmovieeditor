@@ -73,6 +73,12 @@ extern bool g_snap;
 
 /* g_backseek: if set to 1 - GL cache will be flushed on next drawGL event, then g_backseek is automatically re-set to 0 */
 extern bool g_backseek;
+/* g_use_jack_transport: corresponds to menu toggle item state */
+extern bool g_use_jack_transport;
+/* g_scrub_audio: corresponds to menu toggle item state - loop audio on cursor position */
+extern bool g_scrub_audio;
+/* g_seek_audio: corresponds to menu toggle item state - allow cursor seeks during playback*/
+extern bool g_seek_audio;
 
 #endif /* _GLOBALS_H_ */
 

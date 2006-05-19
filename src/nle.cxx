@@ -58,6 +58,16 @@ void NleUI::cb_Quit(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Quit_i(o,v);
 }
 
+inline void NleUI::cb_Scrubaudio(Fl_Menu_ *me, void*) {
+	g_scrub_audio = (me->mvalue())->value();
+}
+
+inline void NleUI::cb_Jacktransport(Fl_Menu_ *me, void*) {
+	// FIXME: allow change only if not currently playing ?!
+	// -> assign this value in SimplePlaybackCore "on play"
+	g_use_jack_transport = (me->mvalue())->value();
+}
+
 inline void NleUI::cb_Fullscreen_i(Fl_Menu_*, void*) {
   static bool fullscreen_on = false;
 static int x;
@@ -102,7 +112,8 @@ Fl_Menu_Item NleUI::menu_[] = {
  {"Add Audio Track", 0,  0, 0, 0, 0, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0},
  {"JACK", 0,  0, 0, 64, 0, 0, 14, 56},
- {"Transport connect", 0,  0, 0, 2, 0, 0, 14, 56},
+ {"Transport connect", 0,  (Fl_Callback*)NleUI::cb_Jacktransport, 0, FL_MENU_TOGGLE|FL_MENU_VALUE, 0, 0, 14, 56},
+ {"Scrub audio", 0,  (Fl_Callback*)NleUI::cb_Scrubaudio, 0, FL_MENU_TOGGLE|FL_MENU_VALUE, 0, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0},
  {"&View", 0,  0, 0, 64, 0, 0, 14, 56},
  {"Fullscreen", 0xffc8,  (Fl_Callback*)NleUI::cb_Fullscreen, 0, 0, 0, 0, 14, 56},
@@ -635,6 +646,9 @@ scaleBar->slider_size_i(300);
 mainWindow->show(argc, argv);
 projectNameInput->value("Project 1");
 g_snap = true;
+g_use_jack_transport = true;
+g_scrub_audio = true;
+g_seek_audio = true;
 scroll_area->type(0);
 }
 
@@ -5814,3 +5828,6 @@ Fl_Button* g_backButton;
 Fl_Button* g_forwardButton;
 bool g_snap;
 bool g_backseek;
+bool g_use_jack_transport;
+bool g_scrub_audio;
+bool g_seek_audio;

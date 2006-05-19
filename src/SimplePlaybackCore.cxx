@@ -41,6 +41,11 @@
  
 #define VIDEO_DRIFT_LIMIT 2
 #define FRAMES 4096
+
+extern bool g_use_jack_transport;
+extern bool g_scrub_audio;
+extern bool g_seek_audio;
+
 namespace nle
 {
 
@@ -115,7 +120,6 @@ error:
 static jack_client_t *jack_client = NULL;
 static jack_port_t *output_port[2]; // stereo
 static char jackid[16];
-//static int scrub_pos,scrub_max = 0; 
 static jack_nframes_t jack_bufsiz = 64;
 
 /*
@@ -249,6 +253,9 @@ void jack_play(void)
 		jack_transport_start (jack_client);
 }
 
+jack_transport_state_t jack_poll_ts(void) {
+	return (jack_transport_query(jack_client, NULL));
+}
 
 /*
  * simple playback core
@@ -266,7 +273,8 @@ SimplePlaybackCore::~SimplePlaybackCore()
 }
 void SimplePlaybackCore::play()
 {
-	int scrublen = 4*1920; // TODO: get from preferences  - good values: 1920 = (48k/25) - 1..50Hz
+	int scrublen = 3*1920;  // TODO: get from preferences :  scrub_freq = sample_rate/scrublen   
+				// good values for scrub_freq are 1..50 Hz
 				// scrub length is rounded up to next multiple of jack buffer size.
 	if ( m_active ) {
 		return;
@@ -279,29 +287,30 @@ void SimplePlaybackCore::play()
 		m_scrubpos = 0;
 		m_scrubmax = (jack_bufsiz!=0)?(int)ceil(scrublen/jack_bufsiz):1;
 
-		jack_reposition(m_currentFrame);
+		if (!g_use_jack_transport) {
+			m_audioPosition = m_currentFrame * ( 48000 / 25 ); 
+		} else {
+			jack_reposition(m_currentFrame);
 
-		/* woraround: possible backwards seek.
-		 *
-		 * if we do not wait for the reposition (seek)
-		 * to complete,  ome already sends few samples
-		 * before the seek reposition is done
-		 * at the latest jack transport time, 
-		 * possibly 
-		 * resulting in a backwards seek.
-		 * the OME timeline audio playback supports
-		 * backwards seek in the current sample only....
-		 * so we better wait.
-		 */
-		int spin = 1000000;
-		while (abs(jack_poll_frame()-m_currentFrame) > 2 && spin-- > 0 );
-	} else {
+			/* woraround: possible backwards seek.
+			 *
+			 * if we do not wait for the reposition (seek)
+			 * to complete,  ome already sends few samples
+			 * at the latest jack transport time, 
+			 * before the seek reposition is done
+			 * possibly resulting in a backwards seek.
+			 */
+			int spin = 1000000;
+			while (abs(jack_poll_frame()-m_currentFrame) > 2 && spin-- > 0 );
+		}
+	} else { // portaudio
 		m_currentFrame = g_timeline->m_seekPosition;
 		m_lastFrame = g_timeline->m_seekPosition;
 		m_audioPosition = m_currentFrame * ( 48000 / 25 );
+		m_audioReader->sampleseek(1, m_audioPosition); // set absolute audio sample start position
 	}
 
-	jack_play();
+	if (g_use_jack_transport) jack_play();
 
 	if (jack_connected() || portaudio_start( 48000, FRAMES, this ) ) 
 	{
@@ -318,7 +327,7 @@ void SimplePlaybackCore::stop()
 	}
 	m_active = false;
 	if (jack_connected()) {
-		jack_stop();
+		if (g_use_jack_transport) jack_stop();
 		close_jack(); 
 	} else portaudio_stop();
 }
@@ -342,27 +351,36 @@ void SimplePlaybackCore::checkPlayButton()
 
 void SimplePlaybackCore::jackreadAudio( void *outL, void *outR, jack_transport_state_t ts, jack_nframes_t position, jack_nframes_t nframes )
 {
-	int scrub_mode = 1; // TODO: get from preferences
+	if (g_use_jack_transport) {
+		if (position < jack_bufsiz || (!g_scrub_audio && ts != JackTransportRolling)) {
+			// if transport is not rolling - remain silent.
+			memset(outR,0, sizeof (jack_default_audio_sample_t) * nframes);
+			memset(outL,0, sizeof (jack_default_audio_sample_t) * nframes);
 
-	if (!scrub_mode && ts != JackTransportRolling) {
-		// if transport is not rolling - remain silent.
-		memset(outR,0, sizeof (jack_default_audio_sample_t) * nframes);
-		memset(outL,0, sizeof (jack_default_audio_sample_t) * nframes);
+			if (ts == JackTransportStarting) {
+				m_audioReader->sampleseek(1, position<jack_bufsiz?0:position-jack_bufsiz); 
+			}
+			return;
+		}
 
-		if (ts == JackTransportStarting) m_audioReader->sampleseek(1, position); 
-		return;
+		position-=jack_bufsiz; // ome has an internal latency of 1 audio frame 
+
+		if (g_scrub_audio && ts == JackTransportStopped) {
+			position+=(m_scrubpos) * jack_bufsiz;
+			m_scrubpos=(m_scrubpos+1)%(m_scrubmax);
+		} else m_scrubpos=0;
+		
+		m_audioReader->sampleseek(1, position); // set absolute audio sample position
+		m_audioPosition = position;
 	}
-
-	if (scrub_mode && ts == JackTransportStopped) {
-		m_scrubpos=(m_scrubpos+1)%(m_scrubmax);
-		position+=(m_scrubpos) * jack_bufsiz;
-	} else m_scrubpos=0;
-	
-	if(position > jack_bufsiz) position-=jack_bufsiz; // ome has an internal latency of 1 audio frame 
-	m_audioReader->sampleseek(1, position); // set absolute audio sample position
 
 	float stereobuf[(2*FRAMES)];  // combined stereo signals in one buffer from OME
 	unsigned long rv = m_audioReader->fillBuffer(stereobuf, nframes);
+
+	if (!g_use_jack_transport) {
+		m_audioReader->sampleseek(0,rv); // set relative sample position;
+		m_audioPosition += rv;
+	}
 
 	if (rv != nframes) {
 	//	cerr << "Soundoutput buffer underrun: " << rv << "/" << nframes << endl;
@@ -402,17 +420,16 @@ void SimplePlaybackCore::flipFrame()
 	if ( !m_active ) {
 		return;
 	}
-	if (jack_connected() ) {
-		int seek_mode = 1; // TODO: get from preferences 
+	if (jack_connected() && g_use_jack_transport ) {
 
-		jack_transport_state_t ts = jack_transport_query(jack_client, NULL);
+		jack_transport_state_t ts = jack_poll_ts();
 		m_currentFrame=jack_poll_frame();
 
-		if( seek_mode  && ts == JackTransportStopped) {
+		if( g_seek_audio  && ts == JackTransportStopped) {
 			if (m_prevSeek != g_timeline->m_seekPosition && 
 		   	    m_currentFrame != g_timeline->m_seekPosition )   {
 		   		m_currentFrame=g_timeline->m_seekPosition;
-		   		jack_transport_locate (jack_client, (48000/25)* m_currentFrame);
+		   		jack_reposition (m_currentFrame);
 				g_timeline->m_playPosition = m_currentFrame ;
 				m_nexttolastFrame=m_lastFrame=-1;
 			}
@@ -425,6 +442,10 @@ void SimplePlaybackCore::flipFrame()
 		m_nexttolastFrame=m_lastFrame; // first flip loads this frame into bg buffer
 		m_lastFrame=m_currentFrame; // this flip display this frame.
 
+	} else if (jack_connected()) { // jack audio with local transport
+		// FIXME: for larger jack buffer sizes, this can become inaccurate due to rounding
+		// issues. -> do something similar as the portaudio drift sync...
+		m_lastFrame=rintl(m_audioPosition*25/48000);
 	} else { // portaudio
 		m_lastFrame++;
 		pthread_mutex_lock( &condition_mutex );

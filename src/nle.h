@@ -46,6 +46,8 @@ private:
   static void cb_Quit(Fl_Menu_*, void*);
   inline void cb_Fullscreen_i(Fl_Menu_*, void*);
   static void cb_Fullscreen(Fl_Menu_*, void*);
+  static void cb_Jacktransport(Fl_Menu_*, void*);
+  static void cb_Scrubaudio(Fl_Menu_*, void*);
   inline void cb_About_i(Fl_Menu_*, void*);
   static void cb_About(Fl_Menu_*, void*);
 public:
@@ -240,4 +242,7 @@ extern Fl_Button* g_backButton;
 extern Fl_Button* g_forwardButton;
 extern bool g_snap;
 extern bool g_backseek;
+extern bool g_use_jack_transport;
+extern bool g_scrub_audio;
+extern bool g_seek_audio;
 #endif
