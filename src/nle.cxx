@@ -37,8 +37,15 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 	ProgressDialog pDlg( "Rendering Project" );
 	render_frame_size* fs = (render_frame_size*)dlg.frameSize();
 	nle::Renderer ren( dlg.export_filename->value(), fs->x, fs->y, 25, 48000, &cp );
+
+	g_playButton->label( "@>" );
+	m_videoView->stop();
+	lastButton->activate();
+	firstButton->activate();
+	forwardButton->activate();
+	backButton->activate();
+
 	ren.go( &pDlg );
-	
 
 //	pDlg.progressDialog->show();
 //	while ( pDlg.progressDialog->shown() )
