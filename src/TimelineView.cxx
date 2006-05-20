@@ -44,6 +44,7 @@
 #include "SimplePlaybackCore.H"
 #include "DocManager.H"
 #include "MoveCommand.H"
+#include "RemoveCommand.H"
 
 #include "audio.xpm"
 #include "video.xpm"
@@ -469,12 +470,17 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 	Track *new_tr = get_track( _x, _y );
 	Track *old_tr = clip->track();
 	if ( inside_widget( g_trashCan, _x, y() + _y ) ) {
-		old_tr->removeClip( clip );
+		Command* cmd = new RemoveCommand( clip );
+		g_docManager->submit( cmd );
+		
+/*		old_tr->removeClip( clip );
 		delete clip;
 		VideoTrack* t = dynamic_cast<VideoTrack*>(old_tr);
 		if ( t ) {
 			t->reconsiderFadeOver();
-		}
+		}*/
+
+		
 		return;
 	}
 	if (!new_tr || new_tr->type() != old_tr->type() ) {

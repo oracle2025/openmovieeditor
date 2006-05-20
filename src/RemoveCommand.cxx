@@ -17,7 +17,16 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+
+#include "globals.H"
+#include "timeline/Clip.H"
+#include "timeline/Track.H"
+#include "Timeline.H"
+#include "VideoTrack.H"
 #include "RemoveCommand.H"
+#include "AudioClip.H"
+#include "VideoClip.H"
+#include "AudioFileFactory.H"
 
 
 namespace nle
@@ -49,17 +58,18 @@ RemoveCommand::RemoveCommand( Clip* clip )
 		i = 0;
 		while ( n ) {
 			m_automationPoints[i] = *n;
-			m_automationPoints[i]->next;
+			m_automationPoints[i].next = 0;
 			n = n->next;
 			i++;
 		}
 	} else {
-		m_mute = dynamic_cast<VideoClip*>(clip)->m_mute;
+		VideoClip* vc = dynamic_cast<VideoClip*>(clip);
+		if ( vc ) { m_mute = vc->m_mute; }
 	}
 }
 RemoveCommand::~RemoveCommand()
 {
-	if ( m_automationsPoints ) {
+	if ( m_automationPoints ) {
 		delete [] m_automationPoints;
 		m_automationPoints = 0;
 	}
@@ -72,7 +82,7 @@ void RemoveCommand::doo()
 	t->removeClip( c );
 	delete c;
 	VideoTrack* vt = dynamic_cast<VideoTrack*>(t);
-	if ( t ) { t->reconsiderFadeOver(); }
+	if ( vt ) { vt->reconsiderFadeOver(); }
 }
 
 void RemoveCommand::undo()
@@ -80,9 +90,9 @@ void RemoveCommand::undo()
 	Track* t = g_timeline->getTrack( m_track );
 	Clip* c;
 	if ( m_audioClip ) {
-		IAudioFile *af = AudioFileFactory::get( filename );
+		IAudioFile *af = AudioFileFactory::get( m_filename );
 		if ( !af ) { return; }
-		AudioClip* ac = new AudioClip( t, m_position, af, m_trimA, m_trimB );
+		AudioClip* ac = new AudioClip( t, m_position, af, m_trimA, m_trimB, m_clip );
 		c = ac;
 		/* add automations */
 		auto_node* n = ac->getAutoPoints();
@@ -100,8 +110,11 @@ void RemoveCommand::undo()
 		}
 		g_timeline->addClip( m_track, c );
 	} else {
-		g_timeline->addFile( m_track, m_position, filename, m_trimA, m_trimB, m_mute );
+		g_timeline->addFile( m_track, m_position, m_filename, m_trimA, m_trimB, m_mute );
+		//TODO clip id is not remembered
 	}
+	VideoTrack* vt = dynamic_cast<VideoTrack*>(t);
+	if ( vt ) { vt->reconsiderFadeOver(); }
 }
 
 } /* namespace nle */

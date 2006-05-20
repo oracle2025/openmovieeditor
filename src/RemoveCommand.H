@@ -21,13 +21,14 @@
 #define _REMOVE_COMMAND_H_
 
 #include "global_includes.H"
+#include "Command.H"
 
 namespace nle
 {
 
-typedef auto_node;
+typedef struct _auto_node auto_node;
 
-class RemoveCommand
+class RemoveCommand : public Command
 {
 	public:
 		RemoveCommand( Clip* clip );
