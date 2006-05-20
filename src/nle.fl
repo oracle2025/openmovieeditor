@@ -98,12 +98,12 @@ o->window()->hide();}
             callback {// FIXME: allow change only if not currently playing ?!
 // -> assign this value in SimplePlaybackCore "on play"
 g_use_jack_transport = (o->mvalue())->value();}
-            xywh {0 0 100 20} type Toggle
+            xywh {0 0 100 20} type Toggle value 1
           }
           menuitem {} {
             label {Scrub audio}
             callback {g_scrub_audio = (o->mvalue())->value();}
-            xywh {0 0 100 20} type Toggle
+            xywh {0 0 100 20} type Toggle value 1
           }
         }
         submenu {} {
