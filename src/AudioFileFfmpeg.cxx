@@ -32,7 +32,6 @@ AudioFileFfmpeg::AudioFileFfmpeg( string filename )
 	m_ok = false;
 	m_filename = filename;
 	m_formatContext = NULL;
-	av_register_all(); // TODO: once should be enought -> main
 
 	AVInputFormat *file_iformat = av_find_input_format( filename.c_str() );
 	

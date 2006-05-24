@@ -23,6 +23,10 @@
 
 #include <lqt.h>
 
+#ifdef AVCODEC
+  #include <ffmpeg/avformat.h>
+#endif
+
 #include "nle.h"
 #include "Prefs.H"
 #include "WavArtist.H"
@@ -47,6 +51,9 @@ namespace nle
 
 int main( int argc, char** argv )
 {
+#ifdef AVCODEC
+	av_register_all();
+#endif	
 	nle::g_clipId = 1;
 	fl_register_images();
 	nle::g_SEEKING = false;

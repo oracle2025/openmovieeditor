@@ -36,8 +36,6 @@ VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 	m_avFrameRGB = NULL;
 	m_formatContext = NULL;
 	
-	av_register_all(); // TODO: once should be enought -> main
-
 	AVInputFormat *file_iformat = av_find_input_format( filename.c_str() );
 	
 	if ( av_open_input_file( &m_formatContext, filename.c_str(), file_iformat, 0, NULL ) < 0 ) {
