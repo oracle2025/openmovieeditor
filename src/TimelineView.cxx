@@ -472,15 +472,6 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 	if ( inside_widget( g_trashCan, _x, y() + _y ) ) {
 		Command* cmd = new RemoveCommand( clip );
 		g_docManager->submit( cmd );
-		
-/*		old_tr->removeClip( clip );
-		delete clip;
-		VideoTrack* t = dynamic_cast<VideoTrack*>(old_tr);
-		if ( t ) {
-			t->reconsiderFadeOver();
-		}*/
-
-		
 		return;
 	}
 	if (!new_tr || new_tr->type() != old_tr->type() ) {
