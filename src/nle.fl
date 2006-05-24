@@ -78,11 +78,17 @@ o->window()->hide();}
         } {
           menuitem {} {
             label Undo
+            callback {nle::g_docManager->undo();
+m_timelineView->redraw();}
             xywh {0 0 100 20} shortcut 0x4007a
+            code0 {\#include "DocManager.H"}
           }
           menuitem {} {
             label Redo
-            xywh {0 0 100 20} shortcut 0x40079 deactivate
+            callback {nle::g_docManager->redo();
+m_timelineView->redraw();} selected
+            xywh {0 0 100 20} shortcut 0x40079
+            code0 {\#include "DocManager.H"}
           }
         }
         submenu {} {
@@ -326,7 +332,7 @@ m_timelineView->zoom( zoom );}
               label Tools
               xywh {0 275 40 25} box UP_BOX labelsize 12
             }
-            Fl_Box trashCan {selected
+            Fl_Box trashCan {
               private tooltip Trash image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/trash_big.xpm} xywh {0 425 40 40} box UP_BOX
             }
             Fl_Button razorButton {

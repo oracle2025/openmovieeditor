@@ -8,6 +8,7 @@
 #include "ProgressDialog/ProgressDialog.h"
 #include "Renderer.H"
 #include "Codecs.H"
+#include "DocManager.H"
 #include <FL/Fl_Tile.H>
 #include <FL/Fl_Group.H>
 #include "VideoViewGL.H"
@@ -44,6 +45,10 @@ private:
   static void cb_Render(Fl_Menu_*, void*);
   inline void cb_Quit_i(Fl_Menu_*, void*);
   static void cb_Quit(Fl_Menu_*, void*);
+  inline void cb_Undo_i(Fl_Menu_*, void*);
+  static void cb_Undo(Fl_Menu_*, void*);
+  inline void cb_Redo_i(Fl_Menu_*, void*);
+  static void cb_Redo(Fl_Menu_*, void*);
   inline void cb_Transport_i(Fl_Menu_*, void*);
   static void cb_Transport(Fl_Menu_*, void*);
   inline void cb_Scrub_i(Fl_Menu_*, void*);

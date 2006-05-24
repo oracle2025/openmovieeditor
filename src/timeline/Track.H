@@ -47,7 +47,7 @@ class Track
 		virtual int type() = 0;
 		virtual float stretchFactor() = 0;
 		virtual void sort();
-		virtual void addFile( int64_t position, std::string filename, int64_t trimA = 0, int64_t trimB = 0, int mute = 0 ) = 0;
+		virtual void addFile( int64_t position, std::string filename, int64_t trimA = 0, int64_t trimB = 0, int mute = 0, int id = -1 ) = 0;
 		
 		void addClip( Clip* clip );
 		void removeClip( Clip* clip );

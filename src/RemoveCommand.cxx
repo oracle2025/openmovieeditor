@@ -110,8 +110,7 @@ void RemoveCommand::undo()
 		}
 		g_timeline->addClip( m_track, c );
 	} else {
-		g_timeline->addFile( m_track, m_position, m_filename, m_trimA, m_trimB, m_mute );
-		//TODO clip id is not remembered
+		g_timeline->addFile( m_track, m_position, m_filename, m_trimA, m_trimB, m_mute, m_clip );
 	}
 	VideoTrack* vt = dynamic_cast<VideoTrack*>(t);
 	if ( vt ) { vt->reconsiderFadeOver(); }

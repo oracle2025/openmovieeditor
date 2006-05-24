@@ -34,14 +34,14 @@ AudioTrack::AudioTrack( int num )
 AudioTrack::~AudioTrack()
 {
 }
-void AudioTrack::addFile( int64_t position, string filename, int64_t trimA, int64_t trimB, int mute )
+void AudioTrack::addFile( int64_t position, string filename, int64_t trimA, int64_t trimB, int mute, int id )
 {
 	IAudioFile *af = AudioFileFactory::get( filename );
 	if ( !af ) {
 		SHOW_ERROR( string( "Audio file failed to load:\n" ) + fl_filename_name( filename.c_str() ) );
 		return;
 	}
-	Clip *clp = new AudioClip( this, position, af, trimA, trimB );
+	Clip *clp = new AudioClip( this, position, af, trimA, trimB, id );
 	addClip( clp );
 }
 void AudioTrack::sort()

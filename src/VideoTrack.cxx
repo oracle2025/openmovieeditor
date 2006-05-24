@@ -54,18 +54,18 @@ void VideoTrack::sort()
 	m_playPosition = 0;
 	m_currentAudioFadeOver = m_fade_overs;
 }
-void VideoTrack::addFile( int64_t position, string filename, int64_t trimA, int64_t trimB, int mute )
+void VideoTrack::addFile( int64_t position, string filename, int64_t trimA, int64_t trimB, int mute, int id )
 {
 //	VideoFileQT *vf = new VideoFileQT( filename );
 	IVideoFile* vf = VideoFileFactory::get( filename );
 	
 	if ( vf ) {
-		VideoClip* c = new VideoClip( this, position, vf, trimA, trimB );
+		VideoClip* c = new VideoClip( this, position, vf, trimA, trimB, id );
 		c->m_mute = mute;
 		addClip( c );
 		return;
 	} else {
-		ImageClip* ic = new ImageClip( this, position, filename );
+		ImageClip* ic = new ImageClip( this, position, filename, id );
 		if ( !ic->ok() ) {
 			delete ic;
 			SHOW_ERROR( string( "Video file failed to load:\n" ) + fl_filename_name( filename.c_str() ) );

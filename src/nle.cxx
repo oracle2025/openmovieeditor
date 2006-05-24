@@ -38,6 +38,7 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 	render_frame_size* fs = (render_frame_size*)dlg.frameSize();
 	nle::Renderer ren( dlg.export_filename->value(), fs->x, fs->y, 25, 48000, &cp );
 
+	/* stop playback before starting to render... */
 	g_playButton->label( "@>" );
 	m_videoView->stop();
 	lastButton->activate();
@@ -46,6 +47,7 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 	backButton->activate();
 
 	ren.go( &pDlg );
+	
 
 //	pDlg.progressDialog->show();
 //	while ( pDlg.progressDialog->shown() )
@@ -63,6 +65,22 @@ o->window()->hide();
 }
 void NleUI::cb_Quit(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Quit_i(o,v);
+}
+
+inline void NleUI::cb_Undo_i(Fl_Menu_*, void*) {
+  nle::g_docManager->undo();
+m_timelineView->redraw();
+}
+void NleUI::cb_Undo(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_Undo_i(o,v);
+}
+
+inline void NleUI::cb_Redo_i(Fl_Menu_*, void*) {
+  nle::g_docManager->redo();
+m_timelineView->redraw();
+}
+void NleUI::cb_Redo(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_Redo_i(o,v);
 }
 
 inline void NleUI::cb_Transport_i(Fl_Menu_* o, void*) {
@@ -121,8 +139,8 @@ Fl_Menu_Item NleUI::menu_[] = {
  {"Quit", 0x40071,  (Fl_Callback*)NleUI::cb_Quit, 0, 0, 0, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0},
  {"&Edit", 0,  0, 0, 64, 0, 0, 14, 56},
- {"Undo", 0x4007a,  0, 0, 0, 0, 0, 14, 56},
- {"Redo", 0x40079,  0, 0, 1, 0, 0, 14, 56},
+ {"Undo", 0x4007a,  (Fl_Callback*)NleUI::cb_Undo, 0, 0, 0, 0, 14, 56},
+ {"Redo", 0x40079,  (Fl_Callback*)NleUI::cb_Redo, 0, 0, 0, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0},
  {"&Tracks", 0,  0, 0, 64, 0, 0, 14, 56},
  {"Add Video Track", 0,  0, 0, 0, 0, 0, 14, 56},
