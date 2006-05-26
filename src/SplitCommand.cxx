@@ -42,6 +42,8 @@ void SplitCommand::doo()
 	}
 	g_timeline->addFile( m_track, m_position, c->filename(), ( m_position - c->position() ) + c->trimA(), c->trimB(), mute, m_clipNr2 );
 	c->trimB( ( c->position() + c->length() ) - m_position );
+	VideoTrack* vt = dynamic_cast<VideoTrack*>(t);
+	if ( vt ) { vt->reconsiderFadeOver(); }
 }
 void SplitCommand::undo()
 {
@@ -52,6 +54,8 @@ void SplitCommand::undo()
 	delete c;
 	c = t->getClip( m_clipNr1 );
 	c->trimB( (-1) * l );
+	VideoTrack* vt = dynamic_cast<VideoTrack*>(t);
+	if ( vt ) { vt->reconsiderFadeOver(); }
 }
 
 } /* namespace nle */

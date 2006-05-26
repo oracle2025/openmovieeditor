@@ -506,13 +506,16 @@ void TimelineView::split_clip( Clip* clip, int _x )
 }
 void TimelineView::trim_clip( Clip* clip, int _x, bool trimRight )
 {
+	Command* cmd = new TrimCommand( clip, get_real_position( _x, clip->track()->stretchFactor() ), trimRight );
+	g_docManager->submit( cmd );
+	/*
 	if (trimRight) {
 		int64_t trimv = int64_t( ( clip->position() + clip->length() ) - ( get_real_position(_x, clip->track()->stretchFactor()) ) );
 		clip->trimB( trimv );
 		adjustScrollbar();
 		return;
 	}
-	clip->trimA( int64_t( get_real_position(_x, clip->track()->stretchFactor())  - clip->position() ) );
+	clip->trimA( int64_t( get_real_position(_x, clip->track()->stretchFactor())  - clip->position() ) );*/
 	adjustScrollbar();
 }
 void TimelineView::move_cursor( int64_t position )

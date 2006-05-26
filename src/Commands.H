@@ -24,6 +24,7 @@
 #include "RemoveCommand.H"
 #include "AddCommand.H"
 #include "SplitCommand.H"
+#include "TrimCommand.H"
 
 #endif /* _COMMANDS_H_ */
 
