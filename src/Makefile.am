@@ -136,5 +136,7 @@ openmovieeditor_SOURCES = nle.cxx\
 	RemoveCommand.cxx\
 	RemoveCommand.H\
 	AddCommand.cxx\
-	AddCommand.H
+	AddCommand.H\
+	SplitCommand.cxx\
+	SplitCommand.H
 

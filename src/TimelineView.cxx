@@ -43,9 +43,7 @@
 #include "IClipArtist.H"
 #include "SimplePlaybackCore.H"
 #include "DocManager.H"
-#include "MoveCommand.H"
-#include "RemoveCommand.H"
-#include "AddCommand.H" //TODO Create "Commands.H"
+#include "Commands.H"
 
 #include "audio.xpm"
 #include "video.xpm"
@@ -503,13 +501,8 @@ void TimelineView::adjustScrollbar()
 void TimelineView::split_clip( Clip* clip, int _x )
 {
 	int64_t split_position = get_real_position(_x, clip->track()->stretchFactor() );
-	int64_t trimv = int64_t( ( clip->position() + clip->length() ) - split_position );
-	int mute = 0;
-	if ( VideoClip* c = dynamic_cast<VideoClip*>(clip) ) {
-		mute = c->m_mute;
-	}
-	clip->track()->addFile( split_position, clip->filename(), ( split_position  - clip->position() ) + clip->trimA(), clip->trimB(), mute );
-	clip->trimB( trimv );
+	Command* cmd = new SplitCommand( clip, split_position );
+	g_docManager->submit( cmd );
 }
 void TimelineView::trim_clip( Clip* clip, int _x, bool trimRight )
 {
