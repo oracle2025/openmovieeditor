@@ -45,6 +45,7 @@
 #include "DocManager.H"
 #include "MoveCommand.H"
 #include "RemoveCommand.H"
+#include "AddCommand.H" //TODO Create "Commands.H"
 
 #include "audio.xpm"
 #include "video.xpm"
@@ -93,7 +94,12 @@ int TimelineView::handle( int event )
 				else fn=filename;
 				if (t && !fl_filename_isdir(fn)) {
 					int64_t rp = get_real_position( _x, t->stretchFactor() );
-					t->addFile( rp, fn );
+					
+					//t->addFile( rp, fn );
+
+					Command* cmd = new AddCommand( fn, t, rp );
+					g_docManager->submit( cmd );
+					
 					adjustScrollbar();
 					redraw();
 					g_videoView->seek( m_stylusPosition );

@@ -55,6 +55,7 @@ class VideoTrack : public TrackBase
 		frame_struct** getFrameStack( int64_t position );
 		void sort();
 		void reconsiderFadeOver();
+		void removeClip( Clip* clip );
 		int fillBuffer( float* output, unsigned long frames, int64_t position ); //Needed for Crossfade handling
 	private:
 		int64_t m_playPosition;

@@ -30,6 +30,8 @@ namespace nle
 class Track;
 class IClipArtist;
 
+int getClipId();
+
 enum Clip_Types {
 	CLIP_TYPE_VIDEO = 0,
 	CLIP_TYPE_AUDIO = 1,

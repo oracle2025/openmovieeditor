@@ -81,8 +81,6 @@ void RemoveCommand::doo()
 	Clip* c = t->getClip( m_clip );
 	t->removeClip( c );
 	delete c;
-	VideoTrack* vt = dynamic_cast<VideoTrack*>(t);
-	if ( vt ) { vt->reconsiderFadeOver(); }
 }
 
 void RemoveCommand::undo()

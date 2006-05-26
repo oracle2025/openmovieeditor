@@ -113,7 +113,11 @@ frame_struct* VideoTrack::getFrame( int64_t position )
 	return NULL;
 
 }
-
+void VideoTrack::removeClip( Clip* clip )
+{
+	Track::removeClip( clip );
+	reconsiderFadeOver();
+}
 static int find_fade_over_helper( void* p, void* data )
 {
 	fade_over* node = (fade_over*)p;

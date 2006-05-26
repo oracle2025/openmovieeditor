@@ -52,10 +52,7 @@ static void performCommand( int tn1, int tn2, int64_t pos, int clip )
 		t2->addClip( c );
 	}
 	VideoTrack* t;
-	t = dynamic_cast<VideoTrack*>( t1 );
-	if ( t ) { t->reconsiderFadeOver(); }
-	if ( t1 == t2 ) { return; }
-	t = dynamic_cast<VideoTrack*>( t2 );
+	t = dynamic_cast<VideoTrack*>( t2 ); //removeClip calls reconsiderFadeOver on t1
 	if ( t ) { t->reconsiderFadeOver(); }
 }
 

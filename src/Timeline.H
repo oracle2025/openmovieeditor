@@ -57,6 +57,8 @@ class Timeline : public TimelineBase, public IAudioReader, public IVideoReader
 		bool m_changed;
 };
 
+extern Timeline* g_timeline;
+
 } /* namespace nle */
 
 #endif /* _TIMELINE_H_ */

@@ -50,7 +50,7 @@ class Track
 		virtual void addFile( int64_t position, std::string filename, int64_t trimA = 0, int64_t trimB = 0, int mute = 0, int id = -1 ) = 0;
 		
 		void addClip( Clip* clip );
-		void removeClip( Clip* clip );
+		virtual void removeClip( Clip* clip );
 		Clip* find( int64_t position );
 		int64_t length(); // <= normalized to stretch factor, therefore not accurate
 

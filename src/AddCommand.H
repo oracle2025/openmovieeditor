@@ -17,3 +17,35 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+
+#ifndef _ADD_COMMAND_H_
+#define _ADD_COMMAND_H_
+
+#include <stdint.h>
+
+#include "Command.H"
+#include "global_includes.H"
+
+namespace nle
+{
+
+class Track;
+
+class AddCommand : public Command
+{
+	public:
+		AddCommand( string filename, Track* target, int64_t position );
+		~AddCommand() {}
+		void doo();
+		void undo();
+	private:
+		int m_track;
+		int m_clipNr;
+		int64_t m_position;
+		string m_filename;
+};
+
+} /* namespace nle */
+
+#endif /* _ADD_COMMAND_H_ */
+
