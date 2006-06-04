@@ -46,6 +46,7 @@ class DocManager
 };
 
 extern DocManager* g_docManager;
+inline void submit( Command* cmd ) { g_docManager->submit( cmd ); }
 
 } /* namespace nle */
 

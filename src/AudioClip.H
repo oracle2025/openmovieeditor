@@ -43,15 +43,12 @@ class AudioClip : public AudioClipBase
 		int64_t length();
 		string filename();
 		inline auto_node* getAutoPoints() { return m_automationPoints; }
+		inline void setAutoPoints( auto_node* a ) { m_automationPoints = a; }
 		inline float basicLevel() { return m_basicLevel; }
 		inline void basicLevel( float o ) { m_basicLevel = o; }
 		bool has_automation() { return true; }
 		int type() { return CLIP_TYPE_AUDIO; }
 		inline IClipArtist* getArtist() { return m_artist; }
-		// vv  What's this? I hate C++
-		//inline int64_t trimA() { return Clip::trimA(); }
-		//inline int64_t trimB() { return Clip::trimB(); }
-		// vv "Fixed", yeah right 
 		using Clip::trimA;
 		using Clip::trimB;
 		void trimA( int64_t trim );
