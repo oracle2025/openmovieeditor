@@ -142,5 +142,11 @@ openmovieeditor_SOURCES = nle.cxx\
 	SplitCommand.cxx\
 	SplitCommand.H\
 	AutomationMoveCommand.H\
-	AutomationMoveCommand.cxx
+	AutomationMoveCommand.cxx\
+	AutomationDuoMoveCommand.H\
+	AutomationDuoMoveCommand.cxx\
+	AutomationAddCommand.H\
+	AutomationAddCommand.cxx\
+	AutomationRemoveCommand.H\
+	AutomationRemoveCommand.cxx
 

@@ -27,6 +27,8 @@
 #include "AudioClip.H"
 #include "timeline/Track.H"
 #include "AutomationMoveCommand.H"
+#include "AutomationAddCommand.H"
+#include "AutomationRemoveCommand.H"
 #include "DocManager.H"
 
 
@@ -165,8 +167,8 @@ void AutomationDragHandler::OnDrag( int x, int y )
 			m_audioClip->setAutoPoints( m_nodesOriginal );
 			m_nodesOriginal = 0;
 			clear_node_list( &m_nodesCopy );
-			//Command* cmd = new AutomationRemoveCommand( m_clip, m_node_number );
-			//submit( cmd );
+			Command* cmd = new AutomationRemoveCommand( m_clip, m_node_number );
+			submit( cmd );
 			m_removed = true;
 		}
 		g_timelineView->redraw();
@@ -188,14 +190,14 @@ void AutomationDragHandler::OnDrop( int x, int y )
 				screen_to_node( p->x, p->y, x, y, p, r, m_outline, m_audioClip );
 				g_timelineView->redraw();
 				
-				//int64_t x_ = p->x;
-				//float y_ = p->y;
+				int64_t x_ = p->x;
+				float y_ = p->y;
 				
 				m_audioClip->setAutoPoints( m_nodesOriginal );
 				m_nodesOriginal = 0;
 				clear_node_list( &m_nodesCopy );
-				//Command* cmd = new AutomationAddCommand( m_clip, x_, y_, i );
-				//submit( cmd );
+				Command* cmd = new AutomationAddCommand( m_clip, x_, y_, i );
+				submit( cmd );
 				break;
 			}
 			i++;

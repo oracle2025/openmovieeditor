@@ -39,9 +39,12 @@ class ShiftAutomationDragHandler : public DragHandler
 		Rect m_outline;
 		struct _auto_node* m_nodeA;
 		struct _auto_node* m_nodeB;
-		bool m_firstA;
-		bool m_lastB;
+		//bool m_firstA;
+		//bool m_lastB;
 		AudioClip* m_audioClip;
+		struct _auto_node* m_nodesCopy;
+		struct _auto_node* m_nodesOriginal;
+		int m_node_number;
 };
 
 } /* namespace nle */
