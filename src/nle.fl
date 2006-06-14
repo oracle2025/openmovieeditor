@@ -130,7 +130,7 @@ g_use_jack_transport = (o->mvalue())->value();}
           }
         }
         submenu {} {
-          label {&View} open
+          label {&View} open selected
           xywh {0 0 100 20}
         } {
           menuitem {} {
@@ -155,7 +155,7 @@ if ( fullscreen_on ) {
           }
           menuitem {} {
             label {Track Overview}
-            xywh {0 0 100 20} type Toggle
+            xywh {0 0 100 20} type Toggle hide
           }
         }
         submenu {} {
@@ -376,8 +376,7 @@ g_use_jack_transport = true;
 g_scrub_audio = true;
 g_seek_audio = true;
 scroll_area->type(0);
-g_v_scrollbar = vScrollBar;} {selected
-    }
+g_v_scrollbar = vScrollBar;} {}
   }
   Function {~NleUI()} {open
   } {

@@ -168,7 +168,7 @@ Fl_Menu_Item NleUI::menu_[] = {
  {0,0,0,0,0,0,0,0,0},
  {"&View", 0,  0, 0, 64, 0, 0, 14, 56},
  {"Fullscreen", 0xffc8,  (Fl_Callback*)NleUI::cb_Fullscreen, 0, 0, 0, 0, 14, 56},
- {"Track Overview", 0,  0, 0, 2, 0, 0, 14, 56},
+ {"Track Overview", 0,  0, 0, 18, 0, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0},
  {"P&references", 0,  0, 0, 80, 0, 0, 14, 56},
  {"No SW Scaling", 0,  0, 0, 0, 0, 0, 14, 56},

@@ -137,6 +137,19 @@ int TimelineView::handle( int event )
 			}
 			return 1;
 		case FL_PUSH: {
+				if ( _x > TRACK_SPACING + x() && _x < TRACK_SPACING + x() + 64 ) {
+					int track_count = -1;
+					for ( track_node* i = g_timeline->getTracks(); i; i = i->next ) {
+						track_count++;
+						int yy = TRACK_SPACING + track_count * TRACK_OFFSET;
+						if ( _y > yy && _y < yy + TRACK_HEIGHT ) {
+							Fl_Menu_Item menuitem[] = { { "Remove Track" }, { 0L } };
+							if ( menuitem->popup( TRACK_SPACING + x(), yy + TRACK_HEIGHT + y() + 1 ) ) {
+							}
+							return 1;
+						}
+					}
+				}
 				cl = get_clip( _x, _y );
 				VideoClip* vcl = 0;
 				if ( cl ) {
