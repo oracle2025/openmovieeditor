@@ -83,6 +83,22 @@ void NleUI::cb_Redo(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Redo_i(o,v);
 }
 
+inline void NleUI::cb_Add_i(Fl_Menu_*, void*) {
+  nle::g_timeline->addTrack( new nle::VideoTrack( 5 ) );
+m_timelineView->redraw();
+}
+void NleUI::cb_Add(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_Add_i(o,v);
+}
+
+inline void NleUI::cb_Add1_i(Fl_Menu_*, void*) {
+  nle::g_timeline->addTrack( new nle::AudioTrack( 7 ) );
+m_timelineView->redraw();
+}
+void NleUI::cb_Add1(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_Add1_i(o,v);
+}
+
 inline void NleUI::cb_Transport_i(Fl_Menu_* o, void*) {
   // FIXME: allow change only if not currently playing ?!
 // -> assign this value in SimplePlaybackCore "on play"
@@ -143,8 +159,8 @@ Fl_Menu_Item NleUI::menu_[] = {
  {"Redo", 0x40079,  (Fl_Callback*)NleUI::cb_Redo, 0, 0, 0, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0},
  {"&Tracks", 0,  0, 0, 64, 0, 0, 14, 56},
- {"Add Video Track", 0,  0, 0, 0, 0, 0, 14, 56},
- {"Add Audio Track", 0,  0, 0, 0, 0, 0, 14, 56},
+ {"Add Video Track", 0,  (Fl_Callback*)NleUI::cb_Add, 0, 0, 0, 0, 14, 56},
+ {"Add Audio Track", 0,  (Fl_Callback*)NleUI::cb_Add1, 0, 0, 0, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0},
  {"&JACK", 0,  0, 0, 64, 0, 0, 14, 56},
  {"Transport connect", 0,  (Fl_Callback*)NleUI::cb_Transport, 0, 6, 0, 0, 14, 56},
@@ -686,6 +702,7 @@ g_use_jack_transport = true;
 g_scrub_audio = true;
 g_seek_audio = true;
 scroll_area->type(0);
+g_v_scrollbar = vScrollBar;
 }
 
 NleUI::~NleUI() {
@@ -5867,3 +5884,4 @@ bool g_backseek;
 bool g_use_jack_transport;
 bool g_scrub_audio;
 bool g_seek_audio;
+Fl_Scrollbar* g_v_scrollbar;

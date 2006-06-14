@@ -86,7 +86,7 @@ m_timelineView->redraw();}
           menuitem {} {
             label Redo
             callback {nle::g_docManager->redo();
-m_timelineView->redraw();} selected
+m_timelineView->redraw();}
             xywh {0 0 100 20} shortcut 0x40079
             code0 {\#include "DocManager.H"}
           }
@@ -97,11 +97,19 @@ m_timelineView->redraw();} selected
         } {
           menuitem {} {
             label {Add Video Track}
+            callback {nle::g_timeline->addTrack( new nle::VideoTrack( 5 ) );
+m_timelineView->redraw();}
             xywh {0 0 100 20}
+            code0 {\#include "Timeline.H"}
+            code1 {\#include "VideoTrack.H"}
           }
           menuitem {} {
             label {Add Audio Track}
+            callback {nle::g_timeline->addTrack( new nle::AudioTrack( 7 ) );
+m_timelineView->redraw();}
             xywh {0 0 100 20}
+            code0 {\#include "Timeline.H"}
+            code1 {\#include "AudioTrack.H"}
           }
         }
         submenu {} {
@@ -367,7 +375,9 @@ g_snap = true;
 g_use_jack_transport = true;
 g_scrub_audio = true;
 g_seek_audio = true;
-scroll_area->type(0);} {}
+scroll_area->type(0);
+g_v_scrollbar = vScrollBar;} {selected
+    }
   }
   Function {~NleUI()} {open
   } {
@@ -748,4 +758,7 @@ decl {bool g_scrub_audio;} {public
 } 
 
 decl {bool g_seek_audio;} {public
+} 
+
+decl {Fl_Scrollbar* g_v_scrollbar;} {public
 } 

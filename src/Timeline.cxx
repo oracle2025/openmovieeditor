@@ -33,6 +33,9 @@ namespace nle
 
 Timeline* g_timeline = 0;
 
+int g_trackId;
+int getTrackId() { return g_trackId++; }
+
 Timeline::Timeline()
 	: TimelineBase()
 {

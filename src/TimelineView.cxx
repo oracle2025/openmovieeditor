@@ -58,7 +58,7 @@ TimelineView* g_timelineView = 0;
 
 static Fl_Cursor current_cursor;
 TimelineView::TimelineView( int x, int y, int w, int h, const char *label )
-	: Fl_Widget( x, y, w, h, label )
+	: Fl_Widget( x, y, w, 200, label )
 {
 	g_timelineView = this;
 	m_dragHandler = NULL;
@@ -219,7 +219,18 @@ int TimelineView::handle( int event )
 }
 void TimelineView::resize(int x, int y, int w, int h)
 {
-	Fl_Widget::resize( x, y, w, h );
+	int track_count = 0;
+	for ( track_node* i = g_timeline->getTracks(); i; i = i->next ) {
+		track_count++;
+	}
+	int h_t = ( 2 * TRACK_SPACING ) + ( TRACK_OFFSET * track_count );
+	int h_r = h_t > h ? h_t : h;
+	Fl_Widget::resize( x, y, w, h_r );
+	int a = g_v_scrollbar->value();
+	int b = h_r - parent()->h();
+	int v = a <= b ? a : b;
+	if ( v < 0 ) { v = 0; }
+	g_v_scrollbar->value( v, parent()->h(), 0, h_r );
 	adjustScrollbar();
 }
 void TimelineView::draw()

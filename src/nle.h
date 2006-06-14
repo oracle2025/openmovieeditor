@@ -9,6 +9,9 @@
 #include "Renderer.H"
 #include "Codecs.H"
 #include "DocManager.H"
+#include "Timeline.H"
+#include "VideoTrack.H"
+#include "AudioTrack.H"
 #include <FL/Fl_Tile.H>
 #include <FL/Fl_Group.H>
 #include "VideoViewGL.H"
@@ -49,6 +52,10 @@ private:
   static void cb_Undo(Fl_Menu_*, void*);
   inline void cb_Redo_i(Fl_Menu_*, void*);
   static void cb_Redo(Fl_Menu_*, void*);
+  inline void cb_Add_i(Fl_Menu_*, void*);
+  static void cb_Add(Fl_Menu_*, void*);
+  inline void cb_Add1_i(Fl_Menu_*, void*);
+  static void cb_Add1(Fl_Menu_*, void*);
   inline void cb_Transport_i(Fl_Menu_*, void*);
   static void cb_Transport(Fl_Menu_*, void*);
   inline void cb_Scrub_i(Fl_Menu_*, void*);
@@ -252,4 +259,5 @@ extern bool g_backseek;
 extern bool g_use_jack_transport;
 extern bool g_scrub_audio;
 extern bool g_seek_audio;
+extern Fl_Scrollbar* g_v_scrollbar;
 #endif
