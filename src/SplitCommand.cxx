@@ -31,6 +31,7 @@ SplitCommand::SplitCommand( Clip* clip, int64_t position )
 	m_clipNr1 = clip->id();
 	m_clipNr2 = getClipId();
 	m_position = position;
+	m_length = clip->length();
 }
 void SplitCommand::doo()
 {
@@ -40,7 +41,7 @@ void SplitCommand::doo()
 	if ( VideoClip* vc = dynamic_cast<VideoClip*>(c) ) {
 		mute = vc->m_mute;
 	}
-	g_timeline->addFile( m_track, m_position, c->filename(), ( m_position - c->position() ) + c->trimA(), c->trimB(), mute, m_clipNr2 );
+	g_timeline->addFile( m_track, m_position, c->filename(), ( m_position - c->position() ) + c->trimA(), c->trimB(), mute, m_clipNr2, m_length );
 	c->trimB( ( c->position() + c->length() ) - m_position );
 	VideoTrack* vt = dynamic_cast<VideoTrack*>(t);
 	if ( vt ) { vt->reconsiderFadeOver(); }

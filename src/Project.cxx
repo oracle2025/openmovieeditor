@@ -39,6 +39,7 @@
 #include "VideoClip.H"
 #include "AudioClip.H"
 #include "TimelineView.H"
+#include "ImageClip.H"
 
 namespace nle
 {
@@ -114,6 +115,10 @@ int Project::write( string filename, string name )
 			clip->SetAttribute( "position", cn->clip->position() );
 			clip->SetAttribute( "trimA", cn->clip->trimA() );
 			clip->SetAttribute( "trimB", cn->clip->trimB() );
+			if ( dynamic_cast<ImageClip*>(cn->clip) ) {
+				clip->SetAttribute( "length", cn->clip->length() );
+			}
+			clip->SetAttribute( "trimB", cn->clip->trimB() );
 			if ( AudioClip* ac = dynamic_cast<AudioClip*>(cn->clip) ) {
 				auto_node* q = ac->getAutoPoints();
 				for ( ; q; q = q->next ) {
@@ -162,10 +167,11 @@ int Project::read( string filename )
 		
 		TiXmlElement* j = TiXmlHandle( track ).FirstChildElement( "clip" ).Element();
 		for ( ; j; j = j->NextSiblingElement( "clip" ) ) {
-			int position;
+			int position; //TODO: int64_t problem
 			int trimA;
 			int trimB;
 			int mute = 0;
+			int length;
 			char filename[1024];
 			if ( ! j->Attribute( "position", &position ) )
 				continue;
@@ -173,11 +179,14 @@ int Project::read( string filename )
 				continue;
 			if ( ! j->Attribute( "trimB", &trimB ) )
 				continue;
+			if ( ! j->Attribute( "length", &length ) ) {
+				length = -1;
+			}
 			strlcpy( filename, j->Attribute( "filename" ), sizeof(filename) );
 			if ( ! filename )
 				continue;
 			j->Attribute( "mute", &mute );
-			g_timeline->addFile( i, position, filename, trimA, trimB, mute );
+			g_timeline->addFile( i, position, filename, trimA, trimB, mute, -1, length );
 		}
 		tr->reconsiderFadeOver();
 		i++;

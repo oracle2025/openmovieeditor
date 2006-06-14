@@ -44,6 +44,7 @@ class SplitCommand : public Command
 		int m_clipNr1;
 		int m_clipNr2;
 		int64_t m_position;
+		int64_t m_length;
 };
 
 } /* namespace nle */

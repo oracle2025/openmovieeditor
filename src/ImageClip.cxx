@@ -28,7 +28,7 @@ namespace nle
 {
 
 
-ImageClip::ImageClip( Track* track, int64_t position, string filename, int id )
+ImageClip::ImageClip( Track* track, int64_t position, string filename, int64_t length, int id )
 	: Clip( track, position, id ), m_filename( filename )
 {
 	m_ok = false;
@@ -46,7 +46,11 @@ ImageClip::ImageClip( Track* track, int64_t position, string filename, int id )
 	
 //	m_image = new Fl_PNG_Image( filename.c_str() );
 	cout << "DEPTH: " << m_image->d() << endl;
-	m_length = 25 * 10;
+	if ( length > 0 ) {
+		m_length = length;
+	} else {
+		m_length = 25 * 10;
+	}
 	m_frame.x = m_frame.y = 0;
 	m_frame.w = m_image->w();
 	m_frame.h = m_image->h();

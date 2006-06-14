@@ -386,7 +386,7 @@ void TimelineView::draw()
 		fl_pop_clip();
 	}
 	fl_pop_clip();
-	fl_overlay_rect( get_screen_position( m_stylusPosition ), y(), 1, h() );
+	fl_overlay_rect( get_screen_position( m_stylusPosition ), parent()->y(), 1, parent()->h() );
 }
 void TimelineView::add_video( int track, int y, string filename )
 {
@@ -547,7 +547,7 @@ void TimelineView::move_cursor( int64_t position )
 		redraw();
 	} else {
 		window()->make_current();
-		fl_overlay_rect( get_screen_position(m_stylusPosition), y(), 1, h() );
+		fl_overlay_rect( get_screen_position(m_stylusPosition), parent()->y(), 1, parent()->h() );
 	}
 	e_stylus_position( get_screen_position(m_stylusPosition) );
 	e_seek_position( m_stylusPosition );

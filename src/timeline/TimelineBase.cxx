@@ -68,11 +68,11 @@ void TimelineBase::addClip( int track, Clip *clip )
 		cerr << "No such track" << endl;
 	}
 }
-void TimelineBase::addFile( int track, int64_t position, std::string filename, int64_t trimA, int64_t trimB, int mute, int id )
+void TimelineBase::addFile( int track, int64_t position, std::string filename, int64_t trimA, int64_t trimB, int mute, int id, int64_t length )
 {
 	Track *t = getTrack( track );
 	if ( t ) {
-		t->addFile( position, filename, trimA, trimB, mute, id );
+		t->addFile( position, filename, trimA, trimB, mute, id, length );
 	} else {
 		cerr << "No such track" << endl;
 	}

@@ -32,7 +32,7 @@ namespace nle
 class ImageClip : public Clip, public IVideoReader
 {
 	public:
-		ImageClip( Track* track, int64_t position, string filename, int id = -1 );
+		ImageClip( Track* track, int64_t position, string filename, int64_t length = -1, int id = -1 );
 		~ImageClip();
 		int64_t length();
 		frame_struct* getFrame( int64_t position );

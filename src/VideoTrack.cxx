@@ -54,7 +54,7 @@ void VideoTrack::sort()
 	m_playPosition = 0;
 	m_currentAudioFadeOver = m_fade_overs;
 }
-void VideoTrack::addFile( int64_t position, string filename, int64_t trimA, int64_t trimB, int mute, int id )
+void VideoTrack::addFile( int64_t position, string filename, int64_t trimA, int64_t trimB, int mute, int id, int64_t length )
 {
 //	VideoFileQT *vf = new VideoFileQT( filename );
 	IVideoFile* vf = VideoFileFactory::get( filename );
@@ -65,14 +65,14 @@ void VideoTrack::addFile( int64_t position, string filename, int64_t trimA, int6
 		addClip( c );
 		return;
 	} else {
-		ImageClip* ic = new ImageClip( this, position, filename, id );
+		ImageClip* ic = new ImageClip( this, position, filename, length - trimA - trimB, id );
 		if ( !ic->ok() ) {
 			delete ic;
 			SHOW_ERROR( string( "Video file failed to load:\n" ) + fl_filename_name( filename.c_str() ) );
 			return;
 		}
-		ic->trimA( trimA );
-		ic->trimB( trimB );
+		//ic->trimA( trimA );
+		//ic->trimB( trimB );
 		addClip( ic );
 	}
 }
