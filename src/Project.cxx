@@ -247,6 +247,7 @@ int Project::read( string filename )
 		i++;
 	}
 	g_timelineView->redraw();
+	g_timelineView->adjustScrollbar();
 	cout << "Read: " << filename << endl;
 	return 1;
 }
