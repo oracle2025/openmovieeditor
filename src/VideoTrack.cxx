@@ -230,7 +230,7 @@ int VideoTrack::fillBuffer( float* output, unsigned long frames, int64_t positio
 	unsigned long written = 0;
 	unsigned long emptyItems = 0;
 	float* incBuffer = output;
-	float buf[512];
+	float buf[4096*2];
 
 	while ( m_current && m_current->clip->type() != CLIP_TYPE_VIDEO && m_current->clip->type() != CLIP_TYPE_AUDIO ) {
 		m_current = m_current->next;
