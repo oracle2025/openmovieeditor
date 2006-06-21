@@ -407,10 +407,13 @@ int SimplePlaybackCore::readAudio( float* output, unsigned long frames )
 	m_audioReader->sampleseek(0,r); // set relative sample position;
 	m_audioPosition += r;
 	pthread_mutex_lock( &condition_mutex );
-	if ( m_audioPosition / ( 48000 / 25 ) > m_currentFrame ) {
+	m_currentFrame = m_audioPosition / ( 48000 / 25 ); //FIXME: highly dependent from 'frames' :(
+	pthread_cond_signal( &condition_cond );
+	/*if ( m_audioPosition / ( 48000 / 25 ) > m_currentFrame ) {
+		//cout << "m_audioPosition: " << m_audioPosition << " m_currentFrame: " << m_currentFrame << " frames: " << frames << endl;
 		m_currentFrame++;
 		pthread_cond_signal( &condition_cond );
-	}
+	}*/
 	pthread_mutex_unlock( &condition_mutex );
 	return r != frames;
 }
@@ -456,7 +459,7 @@ void SimplePlaybackCore::flipFrame()
 					pthread_cond_wait( &condition_cond, &condition_mutex );
 				}
 			} else {
-				m_lastFrame++;
+				m_lastFrame -= diff;
 			}
 		}
 		pthread_mutex_unlock( &condition_mutex );
