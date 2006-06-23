@@ -500,6 +500,7 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 	if ( inside_widget( g_trashCan, _x, y() + _y ) ) {
 		Command* cmd = new RemoveCommand( clip );
 		g_docManager->submit( cmd );
+		adjustScrollbar();
 		return;
 	}
 	if (!new_tr || new_tr->type() != old_tr->type() ) {
