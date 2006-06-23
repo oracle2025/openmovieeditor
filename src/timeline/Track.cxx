@@ -109,10 +109,12 @@ void Track::sort()
 	m_clips = (clip_node*)sl_mergesort( m_clips, cmp_clip );
 	sl_map( m_clips, reset_clip, 0 );
 }
+extern float *g_zoom;
 #define SNAP_TOLERANCE 20
 static bool is_in_tolerance( int64_t A, int64_t B, unsigned int tolerance )
 {
-	return ( B - tolerance <= A && B + tolerance >= A );
+	unsigned int t = (unsigned int)( tolerance / (*g_zoom) );
+	return ( B - t <= A && B + t >= A );
 }
 int64_t Track::getSnapA( Clip* clip, int64_t A )
 {

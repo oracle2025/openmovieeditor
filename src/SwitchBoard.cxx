@@ -27,6 +27,8 @@ namespace nle
 
 //extern bool USING_AUDIO;
 
+float *g_zoom;
+
 SwitchBoard::SwitchBoard()
 {
 	/* len = 1024
@@ -39,6 +41,7 @@ SwitchBoard::SwitchBoard()
 	 * m_zoom = ( width / slider_size ) / len;
 	 */
 	m_zoom = 1.0; //0.2 -> 2.0
+	g_zoom = &m_zoom;
 }
 
 void SwitchBoard::zoom( float zoom )
