@@ -24,6 +24,7 @@
 #include <FL/Fl_Choice.H>
 
 #include <lqt.h>
+#include <lqt_version.h>
 
 #include "sl/sl.h"
 
@@ -69,7 +70,6 @@ void setCodecInfo( CodecOptions* dialog, void* data )
 void updateCodecParameter( CodecOptions* dialog, void* data )
 {
 }
-
 void setCodecParameter( CodecOptions* dialog, void* data )
 {
 	lqt_parameter_info_t* info = (lqt_parameter_info_t*)data;
@@ -87,9 +87,15 @@ void setCodecParameter( CodecOptions* dialog, void* data )
 			dialog->parameter_stringlist_input->deactivate();
 			Fl_Value_Input* o = dialog->parameter_int_input;
 			o->activate();
+#if (LQT_CODEC_API_VERSION & 0xffff) > 6
+			o->minimum( info->val_min.val_int );
+			o->maximum( info->val_max.val_int );
+			if ( info->val_min == info->val_max && info->val_max.val_int == 0 ) {
+#else
 			o->minimum( info->val_min );
 			o->maximum( info->val_max );
 			if ( info->val_min == info->val_max && info->val_max == 0 ) {
+#endif
 				o->step(0);
 			} else {
 				o->step(1);
