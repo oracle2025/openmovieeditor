@@ -108,7 +108,7 @@ VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 	
 	//m_framerate = (double)(m_codecContext->frame_rate) / (double)(m_codecContext->frame_rate_base);
 	int64_t len = m_formatContext->duration - m_formatContext->start_time;
-	m_length = (int64_t)( len * m_framerate / AV_TIME_BASE );
+	m_length = (int64_t)( len * m_framerate / AV_TIME_BASE ) - 1;
 	
 	m_ok = true;
 }
