@@ -136,6 +136,8 @@ void blend_RGB_RGB( unsigned char* dst, unsigned char* src1, unsigned char* src1
 		dst_ptr += 3;
 	}
 }*/
+
+#define AUDIO_BUFFER_SIZE 480
 void Renderer::go( IProgressListener* l )
 {
 	if ( l ) {
@@ -145,9 +147,9 @@ void Renderer::go( IProgressListener* l )
 	g_timeline->sort();
 	
 	int res;
-	float buffer[512];
-	float left_buffer[256];
-	float right_buffer[256];
+	float buffer[AUDIO_BUFFER_SIZE*2];
+	float left_buffer[AUDIO_BUFFER_SIZE];
+	float right_buffer[AUDIO_BUFFER_SIZE];
 	float *buffer_p[2] = { left_buffer, right_buffer };
 
 	int64_t fcnt = 0;
@@ -167,10 +169,10 @@ void Renderer::go( IProgressListener* l )
 	}
 	
 	do {
-		if ( fcnt > 1920 ) { // 1601 für NTSC, 1920 für PAL
+		if ( fcnt >= 1920 ) { // 1601 für NTSC, 1920 für PAL
 			g_timeline->getBlendedFrame( &enc_frame );
 			quicktime_encode_video( qt, enc_frame.rows, 0 );
-			fcnt = 0;
+			fcnt -= 1920;
 			current_frame++;
 			if ( l ) {
 				if ( l->progress( current_frame * 100 / length ) ) {
@@ -179,16 +181,18 @@ void Renderer::go( IProgressListener* l )
 			}
 		}
 		
-		res = g_timeline->fillBuffer( buffer, 256 );
-		g_timeline->sampleseek(0,256); 
+		res = g_timeline->fillBuffer( buffer, AUDIO_BUFFER_SIZE );
+		g_timeline->sampleseek(0,AUDIO_BUFFER_SIZE); 
 		
 		for ( int i = 0; i < res; i++ ) {
 			left_buffer[i] = buffer[i*2];
 			right_buffer[i] = buffer[i*2+1];
 		}
 		lqt_encode_audio_track( qt, 0, buffer_p, res, 0 );
-		fcnt += 256;
-	} while ( res == 256 );
+		fcnt += AUDIO_BUFFER_SIZE;
+	} while ( res == AUDIO_BUFFER_SIZE );
+	cout << "res: " << res << endl;
+	cout << "current_frame: " << current_frame << endl;
 	delete [] enc_frame.RGB;
 	delete [] enc_frame.rows;
 	if ( l ) {
