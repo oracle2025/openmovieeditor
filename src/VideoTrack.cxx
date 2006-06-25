@@ -207,7 +207,7 @@ int64_t fade_over_start( fade_over* o )
 }
 int64_t fade_over_end( fade_over* o )
 {
-	return o->clipA->B();
+	return o->clipA->B()+1;
 }
 fade_over* create_fade_over( Clip* a, Clip* b )
 {

@@ -124,7 +124,7 @@ int TimelineView::handle( int event )
 			}
 			cl = get_clip( _x, _y );
 			if ( cl && ( _x < get_screen_position( cl->position(), cl->track()->stretchFactor() ) + 8 
-					|| _x > get_screen_position( cl->position() + cl->length(), cl->track()->stretchFactor() ) - 8 ) ) {
+					|| _x > get_screen_position( cl->position() + (cl->length()+1), cl->track()->stretchFactor() ) - 8 ) ) {
 				if ( current_cursor != FL_CURSOR_WE ) {
 					window()->cursor( FL_CURSOR_WE, fl_rgb_color(254,254,254), fl_rgb_color(1,1,1) );
 					current_cursor = FL_CURSOR_WE;
@@ -187,7 +187,7 @@ int TimelineView::handle( int event )
 						m_dragHandler = new TrimDragHandler(
 								this, cl, cl->track()->num(),
 								0, 0, false );
-					} else if ( _x > get_screen_position( cl->position() + cl->length(), cl->track()->stretchFactor() ) - 8) {
+					} else if ( _x > get_screen_position( cl->position() + (cl->length()+1), cl->track()->stretchFactor() ) - 8) {
 						m_dragHandler = new TrimDragHandler(
 								this, cl, cl->track()->num(),
 								0, 0, true );
@@ -292,7 +292,7 @@ void TimelineView::draw()
 			Clip* clip = j->clip;
 			int scr_clip_x = get_screen_position( clip->position(), track->stretchFactor() );
 			int scr_clip_y = y_coord;
-			int scr_clip_w = (int)( clip->length() * SwitchBoard::i()->zoom() / track->stretchFactor() );
+			int scr_clip_w = (int)( (clip->length() + 1) * SwitchBoard::i()->zoom() / track->stretchFactor() );
 			int scr_clip_h = TRACK_HEIGHT;
 			
 			fl_draw_box( FL_BORDER_BOX , scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h, FL_DARK3 );
@@ -358,7 +358,7 @@ void TimelineView::draw()
 					Clip* cclip = k->clip;
 					if ( clip->A() < cclip->A() && clip->B() > cclip->A() ) {
 						int x = get_screen_position( cclip->A(), track->stretchFactor() );
-						int w = get_screen_position( clip->B(), track->stretchFactor() ) - x;
+						int w = get_screen_position( clip->B()+1, track->stretchFactor() ) - x;
 						fl_draw_box( FL_FLAT_BOX, x, y_coord, w, TRACK_HEIGHT, FL_DARK_BLUE );
 						fl_draw_box( FL_BORDER_FRAME, x, y_coord, w, TRACK_HEIGHT, FL_RED );
 						fl_color( FL_RED );
@@ -366,7 +366,7 @@ void TimelineView::draw()
 						fl_line( x + w, y_coord, x, y_coord + TRACK_HEIGHT );
 					} else if ( cclip->A() < clip->A() && cclip->B() > clip->A() ) {
 						int x = get_screen_position( clip->A(), track->stretchFactor() );
-						int w = get_screen_position( cclip->B(), track->stretchFactor() ) - x;
+						int w = get_screen_position( cclip->B()+1, track->stretchFactor() ) - x;
 						fl_draw_box( FL_FLAT_BOX, x, y_coord, w, TRACK_HEIGHT, FL_DARK_BLUE );
 						fl_draw_box( FL_BORDER_FRAME, x, y_coord, w, TRACK_HEIGHT, FL_RED );
 						fl_color( FL_RED );
@@ -381,7 +381,7 @@ void TimelineView::draw()
 			Clip* clip = j->clip;
 			int scr_clip_x = get_screen_position( clip->position(), track->stretchFactor() );
 			int scr_clip_y = y_coord;
-			int scr_clip_w = (int)( clip->length() * SwitchBoard::i()->zoom() / track->stretchFactor() );
+			int scr_clip_w = (int)( (clip->length()+1) * SwitchBoard::i()->zoom() / track->stretchFactor() );
 			//int scr_clip_h = TRACK_HEIGHT;
 		     	fl_color( FL_BLACK );
 			fl_begin_polygon();
@@ -469,7 +469,7 @@ Rect TimelineView::get_clip_rect( Clip* clip, bool clipping )
 	Rect tmp(
 			get_screen_position( clip->position(), clip->track()->stretchFactor() ),
 			int( TRACK_SPACING + (TRACK_SPACING + TRACK_HEIGHT) * clip->track()->num() ),
-			int( clip->length() * SwitchBoard::i()->zoom() / clip->track()->stretchFactor() ),
+			int( (clip->length()+1) * SwitchBoard::i()->zoom() / clip->track()->stretchFactor() ),
 			TRACK_HEIGHT
 		);
 	if ( clipping ) {
