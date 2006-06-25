@@ -208,7 +208,7 @@ float AudioClip::getEnvelope( int64_t position )
 			return getEnvelope( position );
 		}
 	}
-	return 1.0;
+	return 0.0;
 }
 int AudioClip::fillBuffer( float* output, unsigned long frames, int64_t position )
 {
@@ -228,6 +228,11 @@ int AudioClip::fillBuffer( float* output, unsigned long frames, int64_t position
 		envelope = getEnvelope( start_clip + i );
 		output[(i*2)] = output[(i*2)] * envelope;
 		output[(i*2) + 1] = output[(i*2) + 1] * envelope;
+	}
+	if ( count < 0 ) { count = 0; }
+	count = count * 2;
+	for ( int64_t i = (frames * 2) - 1; i >= count; i-- ) {
+		output[i] = 0.0;
 	}
 	return result;
 }

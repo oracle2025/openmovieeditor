@@ -231,6 +231,7 @@ int VideoTrack::fillBuffer( float* output, unsigned long frames, int64_t positio
 	unsigned long emptyItems = 0;
 	float* incBuffer = output;
 	float buf[4096*2];
+	assert( frames <= 4096 );
 
 	while ( m_current && m_current->clip->type() != CLIP_TYPE_VIDEO && m_current->clip->type() != CLIP_TYPE_AUDIO ) {
 		m_current = m_current->next;
@@ -241,18 +242,20 @@ int VideoTrack::fillBuffer( float* output, unsigned long frames, int64_t positio
 	if ( m_currentAudioFadeOver && position > fade_over_start( m_currentAudioFadeOver ) * 1920 ) {
 		AudioClipBase* ac1 = dynamic_cast<AudioClipBase*>(m_currentAudioFadeOver->clipA);
 		AudioClipBase* ac2 = dynamic_cast<AudioClipBase*>(m_currentAudioFadeOver->clipB);
+		for ( int i = (frames * 2) - 1; i >= 0; i-- ) {
+			incBuffer[i] = 0.0;
+			buf[i] = 0.0;
+		}
 		if ( ac1 && ac2 ) {
 			ac1->fillBuffer( incBuffer, frames, position );
 			ac2->fillBuffer( buf, frames, position );
 			mixChannels( incBuffer, buf, incBuffer, frames );
-			written = frames;
 		} else if ( ac1 ) {
 			ac1->fillBuffer( incBuffer, frames, position );
 		} else if ( ac2 ) {
 			ac2->fillBuffer( incBuffer, frames, position );
-		} else {
-			memset( incBuffer, 0, frames * 2 * sizeof(float) );
 		}
+		written = frames;
 	} else {
 		while( written < frames && m_current ) {
 			inc = (dynamic_cast<AudioClipBase*>(m_current->clip))->fillBuffer( incBuffer,
