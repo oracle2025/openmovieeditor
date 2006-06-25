@@ -90,7 +90,7 @@ void setCodecParameter( CodecOptions* dialog, void* data )
 #if (LQT_CODEC_API_VERSION & 0xffff) > 6
 			o->minimum( info->val_min.val_int );
 			o->maximum( info->val_max.val_int );
-			if ( info->val_min == info->val_max && info->val_max.val_int == 0 ) {
+			if ( info->val_min.val_int == info->val_max.val_int && info->val_max.val_int == 0 ) {
 #else
 			o->minimum( info->val_min );
 			o->maximum( info->val_max );
