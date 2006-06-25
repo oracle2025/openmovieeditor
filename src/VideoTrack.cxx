@@ -250,6 +250,8 @@ int VideoTrack::fillBuffer( float* output, unsigned long frames, int64_t positio
 			ac1->fillBuffer( incBuffer, frames, position );
 		} else if ( ac2 ) {
 			ac2->fillBuffer( incBuffer, frames, position );
+		} else {
+			memset( incBuffer, 0, frames * 2 * sizeof(float) );
 		}
 	} else {
 		while( written < frames && m_current ) {
