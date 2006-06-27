@@ -39,6 +39,7 @@ TimelineBase::~TimelineBase()
 {
 	clear();
 }
+extern int g_trackId;
 void TimelineBase::clear()
 {
 	track_node* node;
@@ -46,6 +47,7 @@ void TimelineBase::clear()
 		delete node->track;
 		delete node;
 	}
+	g_trackId = 0;
 }
 
 static int sort_track_helper( void* p, void* data )
