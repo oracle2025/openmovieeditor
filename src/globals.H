@@ -41,7 +41,6 @@ class WavArtist;
 class LoadSaveManager;
 class Project;
 
-extern TimelineView* g_timelineView;
 extern Timeline* g_timeline;
 //extern Flmm_Scalebar* g_scrollBar;
 extern Ruler* g_ruler;

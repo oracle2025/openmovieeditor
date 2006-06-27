@@ -77,6 +77,8 @@ class TimelineView : public Fl_Widget
 		int m_vscroll;
 };
 
+extern TimelineView* g_timelineView;
+
 } /* namespace nle */
 
 #endif /* _TIMELINE_VIEW_H_ */

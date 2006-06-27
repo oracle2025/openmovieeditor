@@ -25,6 +25,7 @@
 #include "AddCommand.H"
 #include "SplitCommand.H"
 #include "TrimCommand.H"
+#include "AddTrackCommand.H"
 
 #endif /* _COMMANDS_H_ */
 

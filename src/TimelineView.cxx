@@ -544,19 +544,8 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 }
 void TimelineView::add_track( int type )
 {
-	Track* track = 0;
-	switch ( type ) {
-		case TRACK_TYPE_VIDEO:
-			track = new VideoTrack( getTrackId() );
-			break;
-		case TRACK_TYPE_AUDIO:
-			track = new AudioTrack( getTrackId() );
-			break;
-	}
-	if ( track ) {
-		g_timeline->addTrack( track );
-		redraw();
-	}
+	Command* cmd = new AddTrackCommand( type );
+	submit( cmd );
 }
 void TimelineView::adjustScrollbar()
 {

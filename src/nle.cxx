@@ -84,16 +84,14 @@ void NleUI::cb_Redo(Fl_Menu_* o, void* v) {
 }
 
 inline void NleUI::cb_Add_i(Fl_Menu_*, void*) {
-  nle::g_timeline->addTrack( new nle::VideoTrack( 5 ) );
-m_timelineView->redraw();
+  m_timelineView->add_track( nle::TRACK_TYPE_VIDEO );
 }
 void NleUI::cb_Add(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Add_i(o,v);
 }
 
 inline void NleUI::cb_Add1_i(Fl_Menu_*, void*) {
-  nle::g_timeline->addTrack( new nle::AudioTrack( 7 ) );
-m_timelineView->redraw();
+  m_timelineView->add_track( nle::TRACK_TYPE_AUDIO );
 }
 void NleUI::cb_Add1(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Add1_i(o,v);

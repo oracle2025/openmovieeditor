@@ -149,5 +149,7 @@ openmovieeditor_SOURCES = nle.cxx\
 	AutomationAddCommand.cxx\
 	AutomationRemoveCommand.H\
 	AutomationRemoveCommand.cxx\
+	AddTrackCommand.H\
+	AddTrackCommand.cxx\
 	Commands.H
 

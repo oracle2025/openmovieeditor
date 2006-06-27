@@ -97,16 +97,14 @@ m_timelineView->redraw();}
         } {
           menuitem {} {
             label {Add Video Track}
-            callback {nle::g_timeline->addTrack( new nle::VideoTrack( 5 ) );
-m_timelineView->redraw();}
+            callback {m_timelineView->add_track( nle::TRACK_TYPE_VIDEO );}
             xywh {0 0 100 20}
             code0 {\#include "Timeline.H"}
             code1 {\#include "VideoTrack.H"}
           }
           menuitem {} {
             label {Add Audio Track}
-            callback {nle::g_timeline->addTrack( new nle::AudioTrack( 7 ) );
-m_timelineView->redraw();}
+            callback {m_timelineView->add_track( nle::TRACK_TYPE_AUDIO );} selected
             xywh {0 0 100 20}
             code0 {\#include "Timeline.H"}
             code1 {\#include "AudioTrack.H"}
@@ -130,7 +128,7 @@ g_use_jack_transport = (o->mvalue())->value();}
           }
         }
         submenu {} {
-          label {&View} open selected
+          label {&View} open
           xywh {0 0 100 20}
         } {
           menuitem {} {

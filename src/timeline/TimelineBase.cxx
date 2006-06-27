@@ -99,15 +99,18 @@ void TimelineBase::addTrack( Track* track )
 }
 static int remove_track_helper( void* p, void* data )
 {
-	// This is a little evil
-	// it's a countdown to find the right track
 	int* track = (int*)data;
-	if ( *track > 0 ) {
+	track_node* node = (track_node*)p;
+	if ( node->track->num() == *track ) {
+		return 1;
+	}
+	return 0;
+/*	if ( *track > 0 ) {
 		(*track)--;
 		return 0;
 	} else {
 		return 1;
-	}
+	}*/
 }
 void TimelineBase::removeTrack( int track )
 {
