@@ -432,9 +432,12 @@ void TimelineView::zoom( float zoom )
 }
 Track* TimelineView::get_track( int _x, int _y )
 {
+	int i = -1;
 	for ( track_node* o = g_timeline->getTracks(); o; o = o->next ) {
-		if ( !get_track_rect( o->track ).inside( _x, _y ) )
+		i++;
+		if ( !get_track_rect( i ).inside( _x, _y ) ) {
 			continue;
+		}
 		return o->track;
 	}
 	return NULL;
@@ -453,11 +456,31 @@ Clip* TimelineView::get_clip( int _x, int _y )
 	}
 	return NULL;
 }
+int get_track_order( Track* track ) {
+	int t = -1;
+	for ( track_node* o = g_timeline->getTracks(); o; o = o->next ) {
+		t++;
+		if ( track == o->track ) {
+			return t;
+		}
+	}
+	return 0;
+}
 Rect TimelineView::get_track_rect( Track* track )
 {
 	Rect tmp(
 			x() + LEFT_TRACK_SPACING,
-			TRACK_SPACING + (TRACK_SPACING + TRACK_HEIGHT) * track->num(),
+			TRACK_SPACING + (TRACK_SPACING + TRACK_HEIGHT) * get_track_order( track ),
+			w() - ( TRACK_SPACING + LEFT_TRACK_SPACING ),
+			TRACK_HEIGHT
+		);
+	return tmp;
+}
+Rect TimelineView::get_track_rect( int track )
+{
+	Rect tmp(
+			x() + LEFT_TRACK_SPACING,
+			TRACK_SPACING + (TRACK_SPACING + TRACK_HEIGHT) * track,
 			w() - ( TRACK_SPACING + LEFT_TRACK_SPACING ),
 			TRACK_HEIGHT
 		);
@@ -468,7 +491,7 @@ Rect TimelineView::get_clip_rect( Clip* clip, bool clipping )
 	
 	Rect tmp(
 			get_screen_position( clip->position(), clip->track()->stretchFactor() ),
-			int( TRACK_SPACING + (TRACK_SPACING + TRACK_HEIGHT) * clip->track()->num() ),
+			int( TRACK_SPACING + (TRACK_SPACING + TRACK_HEIGHT) * get_track_order( clip->track() ) ),
 			int( (clip->length()+1) * SwitchBoard::i()->zoom() / clip->track()->stretchFactor() ),
 			TRACK_HEIGHT
 		);
@@ -518,6 +541,22 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 	Command* cmd = new MoveCommand( clip, new_tr, new_position );
 	g_docManager->submit( cmd );
 	adjustScrollbar();
+}
+void TimelineView::add_track( int type )
+{
+	Track* track = 0;
+	switch ( type ) {
+		case TRACK_TYPE_VIDEO:
+			track = new VideoTrack( getTrackId() );
+			break;
+		case TRACK_TYPE_AUDIO:
+			track = new AudioTrack( getTrackId() );
+			break;
+	}
+	if ( track ) {
+		g_timeline->addTrack( track );
+		redraw();
+	}
 }
 void TimelineView::adjustScrollbar()
 {

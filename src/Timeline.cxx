@@ -33,7 +33,7 @@ namespace nle
 
 Timeline* g_timeline = 0;
 
-int g_trackId;
+int g_trackId = 0;
 int getTrackId() { return g_trackId++; }
 
 Timeline::Timeline()
@@ -41,13 +41,13 @@ Timeline::Timeline()
 {
 	VideoTrack *vt;
 	AudioTrack *at;
-	vt = new VideoTrack( 0 );
+	vt = new VideoTrack( getTrackId() );
 	addTrack( vt );
-	vt = new VideoTrack( 1 );
+	vt = new VideoTrack( getTrackId() );
 	addTrack( vt );
-	at = new AudioTrack( 2 );
+	at = new AudioTrack( getTrackId() );
 	addTrack( at );
-	at = new AudioTrack( 3 );
+	at = new AudioTrack( getTrackId() );
 	addTrack( at );
 	m_playPosition = 0;
 	m_samplePosition = 0;

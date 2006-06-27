@@ -159,10 +159,11 @@ int Project::read( string filename )
 	//TiXmlElement* video_tracks = docH.FirstChildElement( "open_movie_editor_project" ).FirstChildElement( "video_tracks" );
 	TiXmlElement* track = docH.FirstChild( "open_movie_editor_project" ).FirstChild( "video_tracks" ).FirstChild( "track" ).Element();
 	
-	int i = 0;
+	int trackId = 0;
 	
 	for ( ; track; track = track->NextSiblingElement( "track" ) ) {
-		VideoTrack *tr = new VideoTrack( i );
+		trackId = getTrackId();
+		VideoTrack *tr = new VideoTrack( trackId );
 		g_timeline->addTrack( tr );
 		
 		TiXmlElement* j = TiXmlHandle( track ).FirstChildElement( "clip" ).Element();
@@ -186,14 +187,14 @@ int Project::read( string filename )
 			if ( ! filename )
 				continue;
 			j->Attribute( "mute", &mute );
-			g_timeline->addFile( i, position, filename, trimA, trimB, mute, -1, length );
+			g_timeline->addFile( trackId, position, filename, trimA, trimB, mute, -1, length );
 		}
 		tr->reconsiderFadeOver();
-		i++;
 	}
 	track = docH.FirstChild( "open_movie_editor_project" ).FirstChild( "audio_tracks" ).FirstChild( "track" ).Element();
 	for ( ; track; track = track->NextSiblingElement( "track" ) ) {
-		Track *tr = new AudioTrack( i );
+		trackId = getTrackId();
+		Track *tr = new AudioTrack( trackId );
 		g_timeline->addTrack( tr );
 		
 		TiXmlElement* j = TiXmlHandle( track ).FirstChildElement( "clip" ).Element();
@@ -242,9 +243,8 @@ int Project::read( string filename )
 				autonode->x = x;
 				autonode->y = y;
 			}
-			g_timeline->addClip( i, clip );
+			g_timeline->addClip( trackId, clip );
 		}
-		i++;
 	}
 	g_timelineView->redraw();
 	g_timelineView->adjustScrollbar();

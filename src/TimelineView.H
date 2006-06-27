@@ -52,11 +52,13 @@ class TimelineView : public Fl_Widget
 		void scroll( int64_t position );
 		Track* get_track( int _x, int _y);
 		Clip* get_clip( int _x, int _y );
+		Rect get_track_rect( int track );
 		Rect get_track_rect( Track* track );
 		Rect get_clip_rect( Clip* clip, bool clipping = true );
 		void move_clip( Clip* clip, int _x, int _y, int offset );
 		void trim_clip( Clip* clip, int _x, bool trimRight );
 		void split_clip( Clip* clip, int _x );
+		void add_track( int type );
 		void move_cursor( int64_t position );
 		void stylus( long stylus_pos );
 		long stylus();

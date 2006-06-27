@@ -62,7 +62,8 @@ class Timeline : public TimelineBase, public IAudioReader, public IVideoReader
 };
 
 extern Timeline* g_timeline;
-
+int getTrackId();
+	
 } /* namespace nle */
 
 #endif /* _TIMELINE_H_ */
