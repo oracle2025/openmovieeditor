@@ -35,6 +35,12 @@ RemoveTrackCommand::RemoveTrackCommand( Track* track )
 {
 	m_track = track->num();
 	m_trackPosition = 0;
+	for ( track_node* i = g_timeline->getTracks(); i; i = i->next ) {
+		if ( i->track == track ) {
+			break;
+		}
+		m_trackPosition++;
+	}
 	m_type = track->type();
 	m_subCmdList = 0;
 	for ( clip_node* n = track->getClips(); n; n = n->next ) {
