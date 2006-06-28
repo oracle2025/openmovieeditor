@@ -145,6 +145,8 @@ int TimelineView::handle( int event )
 						if ( _y > yy && _y < yy + TRACK_HEIGHT ) {
 							Fl_Menu_Item menuitem[] = { { "Remove Track" }, { 0L } };
 							if ( menuitem->popup( TRACK_SPACING + x(), yy + TRACK_HEIGHT + y() + 1 ) ) {
+								Command* cmd = new RemoveTrackCommand( i->track );
+								submit( cmd );
 							}
 							return 1;
 						}
