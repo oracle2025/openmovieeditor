@@ -7,10 +7,10 @@ class NleUI {open
   Function {NleUI()} {open
   } {
     Fl_Window mainWindow {
-      label MovieEditor
+      label {Open Movie Editor}
       callback {if (Fl::event()==FL_SHORTCUT && Fl::event_key()==FL_Escape) 
     return; // ignore Escape
-mainWindow->hide();} open
+mainWindow->hide();} open selected
       private xywh {491 296 515 465} type Double resizable visible
     } {
       Fl_Menu_Bar {} {open
@@ -104,7 +104,7 @@ m_timelineView->redraw();}
           }
           menuitem {} {
             label {Add Audio Track}
-            callback {m_timelineView->add_track( nle::TRACK_TYPE_AUDIO );} selected
+            callback {m_timelineView->add_track( nle::TRACK_TYPE_AUDIO );}
             xywh {0 0 100 20}
             code0 {\#include "Timeline.H"}
             code1 {\#include "AudioTrack.H"}

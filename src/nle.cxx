@@ -473,7 +473,7 @@ void NleUI::cb_projectChoice(Fl_Choice* o, void* v) {
 
 NleUI::NleUI() {
   Fl_Double_Window* w;
-  { Fl_Double_Window* o = mainWindow = new Fl_Double_Window(515, 465, "MovieEditor");
+  { Fl_Double_Window* o = mainWindow = new Fl_Double_Window(515, 465, "Open Movie Editor");
     w = o;
     o->callback((Fl_Callback*)cb_mainWindow, (void*)(this));
     { Fl_Menu_Bar* o = new Fl_Menu_Bar(0, 0, 345, 25);
