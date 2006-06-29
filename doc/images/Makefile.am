@@ -10,5 +10,5 @@
 
 EXTRA_DIST = openme_1.png openme_2.png openme_3.png openme_4.png\
              openme_5.png openme_6.png openme_7.png openme_8.png\
-						 openme_9.png
+						 openme_9.png openme_10.png openme_11.png openme_12.png
 
