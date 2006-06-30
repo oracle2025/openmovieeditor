@@ -15,7 +15,7 @@ libquicktime
 gavl (gmerlin audio video library)
 libsndfile
 ffmpeg (optional but recommended)
-
+jack audio connection kit
 
 Installation Hints for Dependencies:
 
@@ -35,3 +35,10 @@ libsndfile:
  There is a yet to be merged variant of libsndfile that supports ogg files. It's
  at http://www.metadecks.org/software/libsndfile/ . However, I do not use it
  because ffmpeg does ogg as well.
+
+
+CREDITS:
+
+One Icon from http://tango.freedesktop.org/ is used in the error dialog, which
+is licensed under the "Creative Commons Attribution Share-Alike license"
+http://creativecommons.org/licenses/by-sa/2.5/
