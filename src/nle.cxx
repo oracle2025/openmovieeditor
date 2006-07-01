@@ -534,7 +534,8 @@ NleUI::NleUI() {
             o->when(FL_WHEN_RELEASE);
           }
           { Fl_Button* o = playButton = new Fl_Button(100, 235, 80, 40, "@>");
-            o->tooltip("Play");
+            o->tooltip("Play (F7)");
+            o->shortcut(0xffc4);
             o->callback((Fl_Callback*)cb_playButton);
           }
           { Fl_Button* o = lastButton = new Fl_Button(230, 235, 50, 40, "@>|");

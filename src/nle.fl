@@ -10,7 +10,7 @@ class NleUI {open
       label {Open Movie Editor}
       callback {if (Fl::event()==FL_SHORTCUT && Fl::event_key()==FL_Escape) 
     return; // ignore Escape
-mainWindow->hide();} open selected
+mainWindow->hide();} open
       private xywh {491 296 515 465} type Double resizable visible
     } {
       Fl_Menu_Bar {} {open
@@ -247,8 +247,8 @@ fb->load_rel();}
 	firstButton->activate();
 	forwardButton->activate();
 	backButton->activate();
-}}
-              tooltip Play xywh {100 235 80 40}
+}} selected
+              tooltip {Play (F7)} xywh {100 235 80 40} shortcut 0xffc4
             }
             Fl_Button lastButton {
               label {@>|}
