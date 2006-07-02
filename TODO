@@ -1,4 +1,14 @@
  * Update Adress of the FSF
  * Name für Tracks ändern
 
+Long Term:
 
+Use MiniCppUnit for unit testing:
+http://minicppunit.sourceforge.net/
+
+Use ggcov for test coverage:
+http://ggcov.sourceforge.net/
+
+Maybe:
+Use Uncrustify for source beautification
+http://uncrustify.sourceforge.net/
