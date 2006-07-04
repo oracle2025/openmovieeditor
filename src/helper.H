@@ -26,7 +26,8 @@ namespace nle
 {
 
 const char* timestamp_to_string( int64_t timestamp );
-
+int mkdirp( const char* pathname );
+void findpath( const char* filename, char* buffer, int bufferlen );
 
 } /* namespace nle */
 

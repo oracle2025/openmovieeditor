@@ -37,6 +37,8 @@ class WaveForm : public IdleHandler
 		int64_t m_peakLength;
 		int64_t m_finalLength;
 		IAudioFile* m_af;
+		FILE* m_waveformCache;
+		bool m_readFromCache;
 };
 
 } /* namespace nle */
