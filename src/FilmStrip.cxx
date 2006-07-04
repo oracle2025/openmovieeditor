@@ -56,6 +56,7 @@ bool FilmStrip::process()
 			delete m_vfile;
 			m_vfile = 0;
 		}
+		g_timelineView->redraw();
 		return false;
 	}
 	m_vfile->seek( m_count * 100 );
@@ -66,10 +67,6 @@ bool FilmStrip::process()
 		m_rows[j] = m_pics[m_count].data + PIC_WIDTH * 3 * j;
 	}
 	m_vfile->read( m_rows, PIC_WIDTH, PIC_HEIGHT );
-	int64_t inc = 1 + (int64_t)( 0.5 / SwitchBoard::i()->zoom() );
-	if ( m_count % inc == 0 ) {
-		g_timelineView->redraw();
-	}
 	m_count++;
 	return true;
 }

@@ -60,6 +60,7 @@ bool WaveForm::process()
 			delete m_af;
 			m_af = 0;
 		}
+		g_timelineView->redraw();
 		return false;
 	}
 	static float buffer[PEAK_RANGE * 2];
@@ -72,10 +73,6 @@ bool WaveForm::process()
 	}
 	m_peaks[m_peakLength] = max;
 	m_peakLength++;
-	int64_t inc = 1 + (int64_t)( 0.5 / SwitchBoard::i()->zoom() );
-	if ( m_peakLength % inc == 0 ) {
-		g_timelineView->redraw();
-	}
 	return true;
 }
 
