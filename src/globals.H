@@ -57,7 +57,7 @@ extern NleUI* g_ui;
 extern bool g_SEEKING;
 
 extern int g_clipId;
-
+extern char* g_homefolder;
 
 } /* namespace nle */
 

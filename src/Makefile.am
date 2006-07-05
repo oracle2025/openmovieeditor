@@ -153,5 +153,7 @@ openmovieeditor_SOURCES = nle.cxx\
 	RemoveTrackCommand.cxx\
 	AddTrackCommand.H\
 	AddTrackCommand.cxx\
-	Commands.H
+	Commands.H\
+	DiskCache.H\
+	DiskCache.cxx
 

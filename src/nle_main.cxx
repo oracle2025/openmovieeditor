@@ -17,6 +17,9 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <sys/stat.h>
+#include <sys/types.h>
+
 #include <FL/Fl.H>
 #include <FL/Fl_Tooltip.H>
 #include <FL/Fl_Shared_Image.H>
@@ -47,10 +50,12 @@ namespace nle
 	lqt_codec_info_t** g_video_codec_info;
 	NleUI* g_ui;
 	bool g_SEEKING;
+	char* g_homefolder;
 } /* namespace nle */
 
 int main( int argc, char** argv )
 {
+	nle::g_homefolder = getenv( "HOME" );
 #ifdef AVCODEC
 	av_register_all();
 #endif	

@@ -1,4 +1,4 @@
-/*  WaveForm.H
+/*  DiskCache.H
  *
  *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,30 +17,28 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "global_includes.H"
-#include "IdleHandler.H"
+#ifndef _DISK_CACHE_H_
+#define _DISK_CACHE_H_
 
+#include "global_includes.H"
 namespace nle
 {
 
-class IAudioFile;
-class DiskCache;
-
-class WaveForm : public IdleHandler
+class DiskCache
 {
 	public:
-		WaveForm( string filename );
-		~WaveForm();
-		bool process();
-		float* m_peaks;
-		inline int64_t length() { return m_peakLength; }
+		DiskCache( string filename, string type );
+		~DiskCache();
+		bool isEmpty();
+		void size( int64_t s ) { m_size = s; }
+		inline int64_t size() { return m_size; }
+		int read( void* buffer, int count );
+		void write( void* buffer, int count );
 	private:
-		int64_t m_peakLength;
-		int64_t m_finalLength;
-		IAudioFile* m_af;
-		//FILE* m_waveformCache;
-		//bool m_readFromCache;
-		DiskCache* m_cache;
+		bool m_empty;
+		int64_t m_size;
+		FILE* m_file;
 };
-
 } /* namespace nle */
+
+#endif /* _DISC_CACHE_H_ */
