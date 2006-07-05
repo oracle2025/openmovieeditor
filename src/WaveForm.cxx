@@ -62,7 +62,6 @@ WaveForm::~WaveForm()
 		delete [] m_peaks;
 	}
 	if ( m_cache ) {
-		m_cache->clean();
 		delete m_cache;
 		m_cache = 0;
 	}
@@ -77,6 +76,7 @@ bool WaveForm::process()
 			m_af = 0;
 		}
 		if ( m_cache ) {
+			m_cache->clean();
 			delete m_cache;
 			m_cache = 0;
 		}
