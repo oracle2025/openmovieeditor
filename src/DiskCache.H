@@ -40,6 +40,7 @@ class DiskCache
 		int64_t m_size;
 		FILE* m_file;
 		bool m_dirty;
+		string m_cachefile;
 };
 } /* namespace nle */
 

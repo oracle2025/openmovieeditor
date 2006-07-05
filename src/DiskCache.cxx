@@ -37,20 +37,20 @@ DiskCache::DiskCache( string filename, string type )
 	char buffer[BUFFER_LEN];
 	findpath( filename.c_str(), buffer, BUFFER_LEN );
 	string cachepath = string(g_homefolder) + "/.openme" + buffer;
-	string cachefile = string(g_homefolder) + "/.openme" + filename + "." + type;
-	m_file = fopen( cachefile.c_str(), "r" );
+	m_cachefile = string(g_homefolder) + "/.openme" + filename + "." + type;
+	m_file = fopen( m_cachefile.c_str(), "r" );
 	m_size = -1;
 	m_dirty = false;
 	if ( m_file ) {
 		m_empty = false;
-		int r = stat( cachefile.c_str(), &statbuf );
+		int r = stat( m_cachefile.c_str(), &statbuf );
 		assert( r != -1 );
 		m_size = statbuf.st_size;
 	} else {
 		m_dirty = true;
 		m_empty = true;
 		mkdirp( cachepath.c_str() );
-		m_file = fopen( cachefile.c_str(), "w" );
+		m_file = fopen( m_cachefile.c_str(), "w" );
 		assert( m_file );
 	}
 }
@@ -60,6 +60,9 @@ DiskCache::~DiskCache()
 	if ( m_file ) {
 		fclose( m_file );
 		m_file = 0;
+	}
+	if ( m_dirty ) {
+		unlink( m_cachefile.c_str() );
 	}
 }
 
