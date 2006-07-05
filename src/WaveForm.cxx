@@ -38,7 +38,7 @@ WaveForm::WaveForm( string filename )
 	m_peaks = 0;
 	m_peakLength = 0;
 	m_finalLength = 0;
-
+	m_af = 0;
 	m_cache = new DiskCache( filename, "wavform" );
 
 	if ( m_cache->isEmpty() ) {
