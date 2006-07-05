@@ -62,6 +62,7 @@ WaveForm::~WaveForm()
 		delete [] m_peaks;
 	}
 	if ( m_cache ) {
+		m_cache->clean();
 		delete m_cache;
 		m_cache = 0;
 	}

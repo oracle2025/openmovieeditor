@@ -17,13 +17,14 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <exception>
 
 #include "FilmStrip.H"
 #include "IVideoFile.H"
 #include "TimelineView.H"
 #include "SwitchBoard.H"
 #include "VideoFileFactory.H"
-#include <exception>
+#include "DiskCache.H"
 
 
 namespace nle
@@ -34,9 +35,20 @@ namespace nle
 
 FilmStrip::FilmStrip( IVideoFile* vfile )
 {
-	m_vfile = VideoFileFactory::get( vfile->filename() );
+	m_vfile = 0;
+	m_cache = new DiskCache( vfile->filename(), "thumbs" );
 	m_rows  = new unsigned char*[PIC_HEIGHT];
-	m_countAll = m_vfile->length() / 100;
+
+	if ( m_cache->isEmpty() ) {
+		m_vfile = VideoFileFactory::get( vfile->filename() );
+		m_countAll = m_vfile->length() / 100;
+	} else {
+		m_countAll = m_cache->size() / ( 3 * PIC_WIDTH * PIC_HEIGHT );
+	}
+	
+/*	m_vfile = VideoFileFactory::get( vfile->filename() );
+	m_rows  = new unsigned char*[PIC_HEIGHT];
+	m_countAll = m_vfile->length() / 100;*/
 	try {
 		m_pics = new pic_struct[m_countAll];
 	} catch(std::exception &e) {
@@ -56,18 +68,36 @@ bool FilmStrip::process()
 			delete m_vfile;
 			m_vfile = 0;
 		}
+		if ( m_cache ) {
+			m_cache->clean();
+			delete m_cache;
+			m_cache = 0;
+		}
 		g_timelineView->redraw();
 		return false;
 	}
-	m_vfile->seek( m_count * 100 );
-	m_pics[m_count].data = new unsigned char[PIC_WIDTH * PIC_HEIGHT * 3];
-	m_pics[m_count].w = PIC_WIDTH;
-	m_pics[m_count].h = PIC_HEIGHT;
-	for ( int j = 0; j < PIC_HEIGHT; j++ ) {
-		m_rows[j] = m_pics[m_count].data + PIC_WIDTH * 3 * j;
+	if ( m_cache->isEmpty() ) {
+		m_vfile->seek( m_count * 100 );
+		m_pics[m_count].data = new unsigned char[PIC_WIDTH * PIC_HEIGHT * 3];
+		m_pics[m_count].w = PIC_WIDTH;
+		m_pics[m_count].h = PIC_HEIGHT;
+		for ( int j = 0; j < PIC_HEIGHT; j++ ) {
+			m_rows[j] = m_pics[m_count].data + PIC_WIDTH * 3 * j;
+		}
+		m_vfile->read( m_rows, PIC_WIDTH, PIC_HEIGHT );
+		m_cache->write( m_pics[m_count].data, (PIC_WIDTH * PIC_HEIGHT * 3) );
+		m_count++;
+	} else {
+		m_pics[m_count].data = new unsigned char[PIC_WIDTH * PIC_HEIGHT * 3];
+		m_pics[m_count].w = PIC_WIDTH;
+		m_pics[m_count].h = PIC_HEIGHT;
+		int64_t c = m_cache->read( m_pics[m_count].data, (PIC_WIDTH * PIC_HEIGHT * 3) );
+		if ( c < (PIC_WIDTH * PIC_HEIGHT * 3) ) {
+			cout << "WARNING FilmStrip::process c < PIC_SIZE" << endl;
+			m_count = m_countAll;
+		}
+		m_count++;
 	}
-	m_vfile->read( m_rows, PIC_WIDTH, PIC_HEIGHT );
-	m_count++;
 	return true;
 }
 FilmStrip::~FilmStrip()
@@ -82,6 +112,10 @@ FilmStrip::~FilmStrip()
 	}
 	if ( m_vfile ) {
 		delete m_vfile;
+	}
+	if ( m_cache ) {
+		delete m_cache;
+		m_cache = 0;
 	}
 }
 

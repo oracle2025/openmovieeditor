@@ -34,10 +34,12 @@ class DiskCache
 		inline int64_t size() { return m_size; }
 		int read( void* buffer, int count );
 		void write( void* buffer, int count );
+		inline void clean() { m_dirty = false; }
 	private:
 		bool m_empty;
 		int64_t m_size;
 		FILE* m_file;
+		bool m_dirty;
 };
 } /* namespace nle */
 

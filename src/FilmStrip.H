@@ -35,6 +35,7 @@ typedef struct
 } pic_struct;
 
 class IVideoFile;
+class DiskCache;
 
 class FilmStrip : public IdleHandler
 {
@@ -51,6 +52,7 @@ class FilmStrip : public IdleHandler
 		pic_struct *m_pics;
 		unsigned char **m_rows;
 		IVideoFile* m_vfile;
+		DiskCache* m_cache;
 };
 
 
