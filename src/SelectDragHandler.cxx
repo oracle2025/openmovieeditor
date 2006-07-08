@@ -1,4 +1,4 @@
-/*  Clip.cxx
+/*  SelectDragHandler.cxx
  *
  *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,53 +17,36 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "Clip.H"
+#include <FL/Fl.H>
+#include <FL/Fl_Widget.H>
+#include <FL/Fl_Window.H>
+#include <FL/fl_draw.H>
+
+#include "SelectDragHandler.H"
+#include "TimelineView.H"
 
 namespace nle
 {
 
-int g_clipId;
-int getClipId() { return g_clipId++; }
-void updateClipId( int id )
+SelectDragHandler::SelectDragHandler( int x, int y )
+	: DragHandler( 0, 0 ), m_x( x ), m_y( g_timelineView->y() + y )
 {
-	if ( id >= g_clipId ) {
-		g_clipId = id + 1;
-	}	
 }
-
-Clip::Clip( Track *track, int64_t position, int id )
+SelectDragHandler::~SelectDragHandler()
 {
-	m_position = position;
-	m_track = track;
-	m_trimA = 0;
-	m_trimB = 0;
-	if ( id < 0 ) {
-		m_id = getClipId();
-	} else {
-		m_id = id;
-		updateClipId( id );
-	}
-	m_selected = false;
 }
-void Clip::trimA( int64_t trim )
+void SelectDragHandler::OnDrag( int x, int y )
 {
-	if ( length() - trim <= 0 ) {
-		return;
-	}
-	m_position = m_position - m_trimA;
-	m_trimA += trim;
-	if ( m_trimA < 0 )
-		m_trimA = 0;
-	m_position = m_position + m_trimA;
+	g_timelineView->window()->make_current();
+	fl_overlay_rect( m_x, m_y, x - m_x, (g_timelineView->y() + y) - m_y );
 }
-void Clip::trimB( int64_t trim )
+void SelectDragHandler::OnDrop( int x, int y )
 {
-	if ( length() - trim <= 0 ) {
-		return;
-	}
-	m_trimB += trim;
-	if ( m_trimB < 0 )
-		m_trimB = 0;
+	g_timelineView->window()->make_current();
+	fl_overlay_clear();
+	g_timelineView->select_clips( m_x, m_y, x, y );
+	g_timelineView->redraw();
 }
 
 } /* namespace nle */
+

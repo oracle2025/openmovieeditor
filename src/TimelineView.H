@@ -35,6 +35,8 @@ namespace nle
 #define LEFT_TRACK_SPACING 74
 #define TRACK_OFFSET ( TRACK_HEIGHT + TRACK_SPACING )
 
+struct clip_node_;
+typedef struct clip_node_ clip_node;
 
 class Track;
 class Clip;
@@ -58,6 +60,8 @@ class TimelineView : public Fl_Widget
 		void move_clip( Clip* clip, int _x, int _y, int offset );
 		void trim_clip( Clip* clip, int _x, bool trimRight );
 		void split_clip( Clip* clip, int _x );
+		void clear_selection();
+		void select_clips( int _x1, int _y1, int _x2, int _y2 );
 		void add_track( int type );
 		void move_cursor( int64_t position );
 		void stylus( long stylus_pos );
@@ -75,6 +79,7 @@ class TimelineView : public Fl_Widget
 		DragHandler *m_dragHandler;
 		int64_t m_scrollPosition;
 		int m_vscroll;
+		clip_node* m_selectedClips;
 };
 
 extern TimelineView* g_timelineView;

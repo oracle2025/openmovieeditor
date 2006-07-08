@@ -155,5 +155,9 @@ openmovieeditor_SOURCES = nle.cxx\
 	AddTrackCommand.cxx\
 	Commands.H\
 	DiskCache.H\
-	DiskCache.cxx
+	DiskCache.cxx\
+	SelectDragHandler.H\
+	SelectDragHandler.cxx\
+	MoveSelectionCommand.H\
+	MoveSelectionCommand.cxx
 

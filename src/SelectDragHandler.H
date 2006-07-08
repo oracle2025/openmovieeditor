@@ -1,4 +1,4 @@
-/*  Clip.cxx
+/*  SelectDragHandler.H
  *
  *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,53 +17,26 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "Clip.H"
+#ifndef _SELECT_DRAG_HANDLER_H_
+#define _SELECT_DRAG_HANDLER_H_
+
+#include "DragHandler.H"
 
 namespace nle
 {
 
-int g_clipId;
-int getClipId() { return g_clipId++; }
-void updateClipId( int id )
+class SelectDragHandler : public DragHandler
 {
-	if ( id >= g_clipId ) {
-		g_clipId = id + 1;
-	}	
-}
-
-Clip::Clip( Track *track, int64_t position, int id )
-{
-	m_position = position;
-	m_track = track;
-	m_trimA = 0;
-	m_trimB = 0;
-	if ( id < 0 ) {
-		m_id = getClipId();
-	} else {
-		m_id = id;
-		updateClipId( id );
-	}
-	m_selected = false;
-}
-void Clip::trimA( int64_t trim )
-{
-	if ( length() - trim <= 0 ) {
-		return;
-	}
-	m_position = m_position - m_trimA;
-	m_trimA += trim;
-	if ( m_trimA < 0 )
-		m_trimA = 0;
-	m_position = m_position + m_trimA;
-}
-void Clip::trimB( int64_t trim )
-{
-	if ( length() - trim <= 0 ) {
-		return;
-	}
-	m_trimB += trim;
-	if ( m_trimB < 0 )
-		m_trimB = 0;
-}
+	public:
+		SelectDragHandler( int x, int y );
+		virtual ~SelectDragHandler();
+		void OnDrag( int x, int y );
+		void OnDrop( int x, int y );
+	private:
+		int m_x;
+		int m_y;
+};
 
 } /* namespace nle */
+
+#endif /* _SELECT_DRAG_HANDLER_H_ */

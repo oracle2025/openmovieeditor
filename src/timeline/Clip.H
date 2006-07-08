@@ -61,6 +61,8 @@ class Clip
 		virtual int type() = 0;
 		virtual IClipArtist* getArtist() { return 0; }
 		inline int id() { return m_id; }
+		inline void selected( bool s ) { m_selected = s; }
+		inline bool selected() { return m_selected; }
 	protected:
 		Clip( Track *track, int64_t position, int id = -1 );
 		int64_t m_position;
@@ -68,6 +70,7 @@ class Clip
 		int64_t m_trimA;
 		int64_t m_trimB; // wird von hinten gemessen.
 		int m_id;
+		bool m_selected;
 };
 
 } /* namespace nle */

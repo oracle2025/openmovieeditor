@@ -1,4 +1,4 @@
-/*  Commands.H
+/*  MoveSelectionCommand.H
  *
  *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,17 +17,30 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _COMMANDS_H_
-#define _COMMANDS_H_
+#ifndef _MOVE_SELECTION_COMMAND_H_
+#define _MOVE_SELECTION_COMMAND_H_
 
-#include "MoveCommand.H"
-#include "RemoveCommand.H"
-#include "AddCommand.H"
-#include "SplitCommand.H"
-#include "TrimCommand.H"
-#include "AddTrackCommand.H"
-#include "RemoveTrackCommand.H"
-#include "MoveSelectionCommand.H"
+#include <stdint.h>
+#include "Command.H"
 
-#endif /* _COMMANDS_H_ */
+namespace nle
+{
 
+class Clip;
+typedef struct clip_node_ clip_node;
+typedef struct _command_node command_node;
+
+class MoveSelectionCommand : public Command
+{
+	public:
+		MoveSelectionCommand( Clip* clip, int64_t position, clip_node* m_selectedClips );
+		~MoveSelectionCommand();
+		void doo();
+		void undo();
+	private:
+		command_node* m_subCmdList;
+};
+
+} /* namespace nle */
+
+#endif /* _MOVE_SELECTION_COMMAND_H_ */

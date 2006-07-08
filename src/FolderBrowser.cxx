@@ -1,4 +1,4 @@
-/*  Commands.H
+/*  FolderBrowser.cxx
  *
  *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,17 +17,32 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _COMMANDS_H_
-#define _COMMANDS_H_
+#include "FolderBrowser.H"
 
-#include "MoveCommand.H"
-#include "RemoveCommand.H"
-#include "AddCommand.H"
-#include "SplitCommand.H"
-#include "TrimCommand.H"
-#include "AddTrackCommand.H"
-#include "RemoveTrackCommand.H"
-#include "MoveSelectionCommand.H"
+namespace nle
+{
+FolderBrowser::FolderBrowser( int x, int y, int w, int h, const char *l )
+	: Fl_Browser( x, y, w, h, l )
+{
+	load( getenv( "HOME" ) );
+}
+void FolderBrowser::load( string folder )
+{
+	dirent	**folders;
+	int count;
+	count = fl_filename_list( folder.c_str(), &folders, fl_casealphasort );
+	for ( int i = 0; i < count; i++ ) {
+		if ( files[i]->d_name[0] != '.' && fl_filename_isdir( files[i]->d_name ) ) {
+			add( files[i]->d_name );
+		}
+	}
+	for ( int i = count; i > 0; ) {
+		free( (void*)(folders[--i]) );
+	}
+	free( (void*)folders );
+}
+void FolderBrowser::up()
+{
+}
 
-#endif /* _COMMANDS_H_ */
-
+} /* namespace nle */

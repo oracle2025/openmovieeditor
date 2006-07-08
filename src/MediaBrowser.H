@@ -1,4 +1,4 @@
-/*  Commands.H
+/*  MediaBrowser.H
  *
  *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,17 +17,21 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _COMMANDS_H_
-#define _COMMANDS_H_
+#ifndef _MEDIA_BROWSER_H_
+#define _MEDIA_BROWSER_H_
 
-#include "MoveCommand.H"
-#include "RemoveCommand.H"
-#include "AddCommand.H"
-#include "SplitCommand.H"
-#include "TrimCommand.H"
-#include "AddTrackCommand.H"
-#include "RemoveTrackCommand.H"
-#include "MoveSelectionCommand.H"
 
-#endif /* _COMMANDS_H_ */
+namespace nle
+{
 
+class MediaBrowser : public Fl_Group
+{
+	public:
+		MediaBrowser( int x, int y, int w, int h );
+		~MediaBrowser();
+	private:
+};
+
+} /* namespace nle */
+
+#endif /* _MEDIA_BROWSER_H_ */

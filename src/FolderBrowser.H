@@ -1,4 +1,4 @@
-/*  Commands.H
+/*  FolderBrowser.H
  *
  *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,17 +17,26 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _COMMANDS_H_
-#define _COMMANDS_H_
+#ifndef _FOLDER_BROWSER_H_
+#define _FOLDER_BROWSER_H_
 
-#include "MoveCommand.H"
-#include "RemoveCommand.H"
-#include "AddCommand.H"
-#include "SplitCommand.H"
-#include "TrimCommand.H"
-#include "AddTrackCommand.H"
-#include "RemoveTrackCommand.H"
-#include "MoveSelectionCommand.H"
+#include <FL/Fl_Browser.H>
 
-#endif /* _COMMANDS_H_ */
+
+namespace nle
+{
+
+class FolderBrowser : public Fl_Browser
+{
+	public:
+		FolderBrowser( int x, int y, int w, int h, const char *l = 0 );
+		virtual ~FileBrowser() {}
+		void load( string folder );
+		void up();
+	private:
+}
+
+} /* namespace nle */
+
+#endif /* _FOLDER_BROWSER_H_ */
 

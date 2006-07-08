@@ -24,6 +24,8 @@
 #include <FL/Fl_Window.H>
 #include <FL/fl_draw.H>
 
+#include "sl/sl.h"
+
 #include "nle.h"
 #include "TimelineView.H"
 #include "Timeline.H"
@@ -31,6 +33,7 @@
 #include "VideoClip.H"
 #include "VideoTrack.H"
 #include "MoveDragHandler.H"
+#include "SelectDragHandler.H"
 #include "TrimDragHandler.H"
 #include "Rect.H"
 #include "events.H"
@@ -69,6 +72,7 @@ TimelineView::TimelineView( int x, int y, int w, int h, const char *label )
 	SwitchBoard::i()->timelineView(this);
 	current_cursor = FL_CURSOR_DEFAULT;
 	m_vscroll = 0;
+	m_selectedClips = 0;
 }
 TimelineView::~TimelineView()
 {
@@ -200,8 +204,9 @@ int TimelineView::handle( int event )
 					}
 					return 1;
 				}
-			}// vv-- Fall Through
-			return Fl_Widget::handle( event );	
+			}
+			m_dragHandler = new SelectDragHandler( _x, _y );
+			return 1;
 		case FL_DRAG:
 			if ( m_dragHandler ) {
 				m_dragHandler->OnDrag( _x, _y );
@@ -304,8 +309,11 @@ void TimelineView::draw()
 			if ( artist ) {
 				artist->render( r, 0, 0 );
 			}
-
-			fl_draw_box( FL_BORDER_FRAME, scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h, FL_DARK3 );
+			if ( clip->selected() ) {
+				fl_draw_box( FL_BORDER_FRAME, scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h, FL_RED );
+			} else {
+				fl_draw_box( FL_BORDER_FRAME, scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h, FL_DARK3 );
+			}
 		//     - Draw Trim Triangles
 		    /* 	fl_color( FL_BLACK );
 			fl_begin_polygon();
@@ -385,7 +393,7 @@ void TimelineView::draw()
 			int scr_clip_y = y_coord;
 			int scr_clip_w = (int)( (clip->length()+1) * SwitchBoard::i()->zoom() / track->stretchFactor() );
 			//int scr_clip_h = TRACK_HEIGHT;
-		     	fl_color( FL_BLACK );
+			fl_color( FL_BLACK );
 			fl_begin_polygon();
 			fl_vertex( scr_clip_x, scr_clip_y + TRACK_HEIGHT / 2 );
 			fl_vertex( scr_clip_x + 8, scr_clip_y + TRACK_HEIGHT / 2 - 5 );
@@ -539,9 +547,13 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 	if ( new_position < 0 ) {
 		new_position = 0;
 	}
-
-	Command* cmd = new MoveCommand( clip, new_tr, new_position );
-	g_docManager->submit( cmd );
+	Command* cmd;
+	if ( m_selectedClips && new_tr == old_tr ) {
+		cmd = new MoveSelectionCommand( clip, new_position, m_selectedClips );
+	} else {
+		cmd = new MoveCommand( clip, new_tr, new_position );
+	}
+	submit( cmd );
 	adjustScrollbar();
 }
 void TimelineView::add_track( int type )
@@ -558,6 +570,41 @@ void TimelineView::split_clip( Clip* clip, int _x )
 	int64_t split_position = get_real_position(_x, clip->track()->stretchFactor() );
 	Command* cmd = new SplitCommand( clip, split_position );
 	g_docManager->submit( cmd );
+}
+void TimelineView::clear_selection()
+{
+	clip_node* node;
+	while ( ( node = (clip_node*)sl_pop( &m_selectedClips ) ) ) {
+		node->clip->selected( false );
+		delete node;
+	}
+}
+void TimelineView::select_clips( int _x1, int _y1, int _x2, int _y2 )
+{
+	clear_selection();
+	if ( _x1 > _x2 ) { int k; k = _x1; _x1 = _x2; _x2 = k; }
+	if ( _y1 > _y2 ) { int k; k = _y1; _y1 = _y2; _y2 = k; }
+	int i = -1;
+	Rect r;
+	for ( track_node* o = g_timeline->getTracks(); o; o = o->next ) {
+		i++;
+		r = get_track_rect( i );
+		if ( !( _y1 <= r.y && _y2 >= y() + r.y + r.h ) ) {
+			continue;
+		}
+		for ( clip_node* c = o->track->getClips(); c; c = c->next ) {
+			r = get_clip_rect( c->clip, false );
+			if ( !(_x1 <= r.x && _x2 >= r.x + r.w) ) {
+				continue;
+			}
+			// Add Clip to Selection and mark them
+			clip_node* n = new clip_node;
+			n->next = 0;
+			n->clip = c->clip;
+			c->clip->selected( true );
+			m_selectedClips = (clip_node*)sl_push( m_selectedClips, n );
+		}
+	}
 }
 void TimelineView::trim_clip( Clip* clip, int _x, bool trimRight )
 {
