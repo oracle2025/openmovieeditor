@@ -73,7 +73,7 @@ o->window()->hide();}
           }
         }
         submenu {} {
-          label {&Edit} open
+          label {&Edit} open selected
           xywh {0 0 100 20}
         } {
           menuitem {} {
@@ -88,7 +88,7 @@ m_timelineView->redraw();}
             label Redo
             callback {m_timelineView->clear_selection();
 nle::g_docManager->redo();
-m_timelineView->redraw();} selected
+m_timelineView->redraw();}
             xywh {0 0 100 20} shortcut 0x40079
             code0 {\#include "DocManager.H"}
           }
