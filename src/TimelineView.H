@@ -62,6 +62,8 @@ class TimelineView : public Fl_Widget
 		void split_clip( Clip* clip, int _x );
 		void clear_selection();
 		void select_clips( int _x1, int _y1, int _x2, int _y2 );
+		void select_all_after_cursor();
+		void toggle_selection( Clip* clip );
 		void add_track( int type );
 		void move_cursor( int64_t position );
 		void stylus( long stylus_pos );

@@ -68,7 +68,8 @@ void NleUI::cb_Quit(Fl_Menu_* o, void* v) {
 }
 
 inline void NleUI::cb_Undo_i(Fl_Menu_*, void*) {
-  nle::g_docManager->undo();
+  m_timelineView->clear_selection();
+nle::g_docManager->undo();
 m_timelineView->redraw();
 }
 void NleUI::cb_Undo(Fl_Menu_* o, void* v) {
@@ -76,7 +77,8 @@ void NleUI::cb_Undo(Fl_Menu_* o, void* v) {
 }
 
 inline void NleUI::cb_Redo_i(Fl_Menu_*, void*) {
-  nle::g_docManager->redo();
+  m_timelineView->clear_selection();
+nle::g_docManager->redo();
 m_timelineView->redraw();
 }
 void NleUI::cb_Redo(Fl_Menu_* o, void* v) {

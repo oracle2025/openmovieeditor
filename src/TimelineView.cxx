@@ -149,6 +149,7 @@ int TimelineView::handle( int event )
 						if ( _y > yy && _y < yy + TRACK_HEIGHT ) {
 							Fl_Menu_Item menuitem[] = { { "Remove Track" }, { 0L } };
 							if ( menuitem->popup( TRACK_SPACING + x(), yy + TRACK_HEIGHT + y() + 1 ) ) {
+								clear_selection();
 								Command* cmd = new RemoveTrackCommand( i->track );
 								submit( cmd );
 							}
@@ -161,25 +162,43 @@ int TimelineView::handle( int event )
 				if ( cl ) {
 					vcl = dynamic_cast<VideoClip*>(cl);
 				}
+				if ( cl && Fl::event_ctrl() ) {
+					toggle_selection( cl );
+					return 1;
+				}
 				if ( cl && g_ui->automationsMode() == 2 ) {
 					return 1;
 				}
 				if ( cl && vcl && vcl->hasAudio() && ( Fl::event_button() == FL_RIGHT_MOUSE ) ) {
 					if ( vcl->m_mute ) {
-						Fl_Menu_Item menuitem[] = { { "Unmute Original Sound" }, { 0L } };
-						if ( menuitem->popup( Fl::event_x(), Fl::event_y() ) ) {
+						Fl_Menu_Item menuitem[] = { { "Unmute Original Sound" }, { "Select all Clips after Cursor" }, { 0L } };
+						Fl_Menu_Item* r = (Fl_Menu_Item*)menuitem->popup( Fl::event_x(), Fl::event_y() );
+						if ( r == &menuitem[0] ) {
 							vcl->m_mute = false;
 							redraw();
 							g_timeline->changing();
+						} else if ( r == &menuitem[1] ) {
+							select_all_after_cursor();	
 						}
 					} else {
-						Fl_Menu_Item menuitem[] = { { "Mute Original Sound" }, { 0L } };
-						if ( menuitem->popup( Fl::event_x(), Fl::event_y() ) ) {
+						Fl_Menu_Item menuitem[] = { { "Mute Original Sound" }, { "Select all Clips after Cursor" }, { 0L } };
+						Fl_Menu_Item* r = (Fl_Menu_Item*)menuitem->popup( Fl::event_x(), Fl::event_y() );
+						if ( r == &menuitem[0] ) {
 							vcl->m_mute = true;
 							redraw();
 							g_timeline->changing();
+						} else if ( r == &menuitem[1] ) {
+							select_all_after_cursor();	
 						}
 					}
+					return 1;
+				}
+				if ( Fl::event_button() == FL_RIGHT_MOUSE ) {
+					Fl_Menu_Item menuitem[] = { { "Select all Clips after Cursor" }, { 0L } };
+					if ( menuitem->popup( Fl::event_x(), Fl::event_y() ) ) {
+						select_all_after_cursor();
+					}
+					return 1;
 				}
 				if ( cl && g_ui->automationsMode() == 1 && cl->has_automation() ) {
 					if ( FL_SHIFT & Fl::event_state() ) {
@@ -531,6 +550,7 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 	Track *new_tr = get_track( _x, _y );
 	Track *old_tr = clip->track();
 	if ( inside_widget( g_trashCan, _x, y() + _y ) ) {
+		clear_selection();
 		Command* cmd = new RemoveCommand( clip );
 		g_docManager->submit( cmd );
 		adjustScrollbar();
@@ -551,6 +571,7 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 	if ( m_selectedClips && new_tr == old_tr ) {
 		cmd = new MoveSelectionCommand( clip, new_position, m_selectedClips );
 	} else {
+		clear_selection();
 		cmd = new MoveCommand( clip, new_tr, new_position );
 	}
 	submit( cmd );
@@ -605,6 +626,50 @@ void TimelineView::select_clips( int _x1, int _y1, int _x2, int _y2 )
 			m_selectedClips = (clip_node*)sl_push( m_selectedClips, n );
 		}
 	}
+}
+void TimelineView::select_all_after_cursor()
+{
+	clear_selection();
+	for ( track_node* o = g_timeline->getTracks(); o; o = o->next ) {
+		for ( clip_node* c = o->track->getClips(); c; c = c->next ) {
+			if ( c->clip->position() / c->clip->track()->stretchFactor() >= m_stylusPosition ) {
+				clip_node* n = new clip_node;
+				n->next = 0;
+				n->clip = c->clip;
+				c->clip->selected( true );
+				m_selectedClips = (clip_node*)sl_push( m_selectedClips, n );
+			}
+		}
+	}
+	redraw();
+}
+static int remove_clip_helper( void* p, void* data )
+{
+	Clip* clip = (Clip*)data;
+	clip_node* node = (clip_node*)p;
+	if ( node->clip == clip ) {
+		return 1;
+	} else {
+		return 0;
+	}
+}
+void TimelineView::toggle_selection( Clip* clip )
+{
+	if ( clip->selected() ) {
+		clip->selected( false );
+		clip_node* n = (clip_node*)sl_remove( &m_selectedClips, remove_clip_helper, clip );
+		if ( n ) {
+			delete n;
+		}
+	} else {
+		clip->selected( true );
+		clip_node* n = new clip_node;
+		n->next = 0;
+		n->clip = clip;
+		clip->selected( true );
+		m_selectedClips = (clip_node*)sl_push( m_selectedClips, n );
+	}
+	redraw();
 }
 void TimelineView::trim_clip( Clip* clip, int _x, bool trimRight )
 {

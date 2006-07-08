@@ -63,7 +63,10 @@ static int remove_clip_helper( void* p, void* data )
 }
 void Track::removeClip( Clip* clip )
 {
-	sl_remove( &m_clips, remove_clip_helper, clip );
+	clip_node* n = (clip_node*)sl_remove( &m_clips, remove_clip_helper, clip );
+	if ( n ) {
+		delete n;
+	}
 }
 static int find_clip_helper( void* p, void* data )
 {

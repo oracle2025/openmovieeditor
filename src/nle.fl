@@ -78,15 +78,17 @@ o->window()->hide();}
         } {
           menuitem {} {
             label Undo
-            callback {nle::g_docManager->undo();
+            callback {m_timelineView->clear_selection();
+nle::g_docManager->undo();
 m_timelineView->redraw();}
             xywh {0 0 100 20} shortcut 0x4007a
             code0 {\#include "DocManager.H"}
           }
           menuitem {} {
             label Redo
-            callback {nle::g_docManager->redo();
-m_timelineView->redraw();}
+            callback {m_timelineView->clear_selection();
+nle::g_docManager->redo();
+m_timelineView->redraw();} selected
             xywh {0 0 100 20} shortcut 0x40079
             code0 {\#include "DocManager.H"}
           }
@@ -247,7 +249,7 @@ fb->load_rel();}
 	firstButton->activate();
 	forwardButton->activate();
 	backButton->activate();
-}} selected
+}}
               tooltip {Play (F7)} xywh {100 235 80 40} shortcut 0xffc4
             }
             Fl_Button lastButton {
