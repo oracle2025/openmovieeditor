@@ -589,7 +589,7 @@ void TimelineView::select_clips( int _x1, int _y1, int _x2, int _y2 )
 	for ( track_node* o = g_timeline->getTracks(); o; o = o->next ) {
 		i++;
 		r = get_track_rect( i );
-		if ( !( _y1 <= r.y && _y2 >= y() + r.y + r.h ) ) {
+		if ( !( _y1 <= y() + r.y && _y2 >= y() + r.y + r.h ) ) {
 			continue;
 		}
 		for ( clip_node* c = o->track->getClips(); c; c = c->next ) {

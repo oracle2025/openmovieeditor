@@ -44,7 +44,7 @@ void SelectDragHandler::OnDrop( int x, int y )
 {
 	g_timelineView->window()->make_current();
 	fl_overlay_clear();
-	g_timelineView->select_clips( m_x, m_y, x, y );
+	g_timelineView->select_clips( m_x, m_y, x, y + g_timelineView->y() );
 	g_timelineView->redraw();
 }
 
