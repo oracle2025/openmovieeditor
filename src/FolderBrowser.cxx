@@ -16,24 +16,53 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-
+#include <FL/filename.H>
 #include "FolderBrowser.H"
+
+#include <iostream>
 
 namespace nle
 {
+
+void strip_dots( char* out, const char* in ) 
+{
+	char* dirptr;
+	char buffer[FL_PATH_MAX];
+	strncpy( buffer, in, FL_PATH_MAX );
+	dirptr = buffer + strlen(buffer) - 1;
+	if ( ( *dirptr == '/' || *dirptr == '\\' ) && dirptr > buffer )
+		*dirptr = '\0';
+
+	dirptr = buffer + strlen( buffer ) - 3;
+	if ( dirptr >= buffer && strcmp( dirptr, "/.." ) == 0 )  {
+		*dirptr = '\0';
+		while ( dirptr > buffer ) {
+			if ( *dirptr == '/' ) break;
+			dirptr --;
+		}
+		if ( dirptr >= buffer && *dirptr == '/' )
+			*dirptr = '\0';
+	} else if ( ( dirptr + 1 ) >= buffer && strcmp( dirptr + 1, "/." ) == 0 ) {
+		dirptr[1] = '\0';
+	}
+	strncpy( out, buffer, FL_PATH_MAX );
+}
+	
 FolderBrowser::FolderBrowser( int x, int y, int w, int h, const char *l )
-	: Fl_Browser( x, y, w, h, l )
+	: Fl_Hold_Browser( x, y, w, h, l )
 {
 	load( getenv( "HOME" ) );
 }
 void FolderBrowser::load( string folder )
 {
+	m_folder = folder;
+	clear();
 	dirent	**folders;
 	int count;
 	count = fl_filename_list( folder.c_str(), &folders, fl_casealphasort );
 	for ( int i = 0; i < count; i++ ) {
-		if ( files[i]->d_name[0] != '.' && fl_filename_isdir( files[i]->d_name ) ) {
-			add( files[i]->d_name );
+		if ( folders[i]->d_name[0] != '.' && fl_filename_isdir( string(folder + "/" + folders[i]->d_name).c_str() ) ) {
+			add( folders[i]->d_name );
 		}
 	}
 	for ( int i = count; i > 0; ) {
@@ -43,6 +72,14 @@ void FolderBrowser::load( string folder )
 }
 void FolderBrowser::up()
 {
+	char buffer[FL_PATH_MAX];
+	strip_dots( buffer, string( m_folder + "/.." ).c_str() );
+	load( buffer );
+}
+
+void FolderBrowser::click()
+{
+	load( m_folder + "/" + text( value() ) );
 }
 
 } /* namespace nle */

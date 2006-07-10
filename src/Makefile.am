@@ -39,7 +39,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	Project.cxx\
 	MoveDragHandler.cxx\
 	TrimDragHandler.cxx\
-	FileBrowser.cxx\
 	VideoFileQT.cxx\
 	TrackBase.cxx\
 	AudioTrack.cxx\
@@ -92,7 +91,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	IAudioReader.H\
 	Project.H\
 	TrackBase.H\
-	FileBrowser.H\
 	IProject.H\
 	Rect.H\
 	TrimDragHandler.H\
@@ -159,5 +157,13 @@ openmovieeditor_SOURCES = nle.cxx\
 	SelectDragHandler.H\
 	SelectDragHandler.cxx\
 	MoveSelectionCommand.H\
-	MoveSelectionCommand.cxx
+	MoveSelectionCommand.cxx\
+	MediaPanel.cxx\
+	MediaPanel.H\
+	FolderBrowser.H\
+	FolderBrowser.cxx\
+	MediaBrowser.cxx\
+	MediaBrowser.H\
+	FileBrowser.cxx\
+	FileBrowser.H
 

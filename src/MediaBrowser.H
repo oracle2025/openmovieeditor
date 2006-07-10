@@ -20,16 +20,42 @@
 #ifndef _MEDIA_BROWSER_H_
 #define _MEDIA_BROWSER_H_
 
+#include <string>
+#include <FL/Fl_Browser_.H>
+
+using namespace std;
 
 namespace nle
 {
 
-class MediaBrowser : public Fl_Group
+typedef struct file_item_ {
+	struct file_item_* next;
+	struct file_item_* prev;
+	string value;
+} file_item;
+
+class MediaBrowser : public Fl_Browser_
 {
 	public:
-		MediaBrowser( int x, int y, int w, int h );
+		MediaBrowser( int x, int y, int w, int h, const char *l = 0 );
 		~MediaBrowser();
+		void load( string folder );
+		void click();
+		int handle( int event );
+
+		void item_draw( void* p, int x, int y, int w, int h ) const;
+		void* item_first() const;
+		int item_height( void* p ) const;
+		void* item_next( void* p ) const;
+		void* item_prev( void* p ) const;
+		int item_width( void* p ) const;
 	private:
+		void clear();
+		void append( file_item* f );
+		string m_folder;
+		file_item* m_items;
+		file_item* m_last;
+		file_item* m_item_selected;
 };
 
 } /* namespace nle */

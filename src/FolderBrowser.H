@@ -20,21 +20,26 @@
 #ifndef _FOLDER_BROWSER_H_
 #define _FOLDER_BROWSER_H_
 
-#include <FL/Fl_Browser.H>
+#include <FL/Fl_Hold_Browser.H>
+#include <string>
 
+using namespace std;
 
 namespace nle
 {
 
-class FolderBrowser : public Fl_Browser
+class FolderBrowser : public Fl_Hold_Browser
 {
 	public:
 		FolderBrowser( int x, int y, int w, int h, const char *l = 0 );
-		virtual ~FileBrowser() {}
+		virtual ~FolderBrowser() {}
 		void load( string folder );
 		void up();
+		void click();
+		inline const char* folder() { return m_folder.c_str(); }
 	private:
-}
+		string m_folder;
+};
 
 } /* namespace nle */
 

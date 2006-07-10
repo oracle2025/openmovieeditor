@@ -16,9 +16,8 @@
 #include <FL/Fl_Group.H>
 #include "VideoViewGL.H"
 #include <FL/Fl_Tabs.H>
-#include <iostream>
-#include <string>
 #include "FileBrowser.H"
+#include "MediaPanel.H"
 #include "LoadSaveManager/LoadSaveManager.H"
 #include "NoDropInput.H"
 #include <FL/Fl_Button.H>
@@ -66,10 +65,9 @@ private:
   static void cb_About(Fl_Menu_*, void*);
 public:
   nle::VideoViewGL *m_videoView;
-  nle::FileBrowser *fileBrowser;
 private:
-  inline void cb_fileBrowser_i(nle::FileBrowser*, void*);
-  static void cb_fileBrowser(nle::FileBrowser*, void*);
+  inline void cb__i(nle::FileBrowser*, void*);
+  static void cb_(nle::FileBrowser*, void*);
 public:
   NoDropInput *projectNameInput;
 private:
@@ -103,8 +101,8 @@ private:
   Flmm_Scalebar *scaleBar;
   inline void cb_scaleBar_i(Flmm_Scalebar*, void*);
   static void cb_scaleBar(Flmm_Scalebar*, void*);
-  inline void cb__i(Fl_Button*, void*);
-  static void cb_(Fl_Button*, void*);
+  inline void cb_1_i(Fl_Button*, void*);
+  static void cb_1(Fl_Button*, void*);
 public:
   Fl_Scrollbar *vScrollBar;
 private:
@@ -136,6 +134,7 @@ extern Flmm_Scalebar* g_scrollBar;
 #include "IVideoReader.H"
 #include "IAudioReader.H"
 #include <FL/Fl_Return_Button.H>
+#include <iostream>
 #include <FL/Fl_File_Input.H>
 #include <stdlib.h>
 #include <FL/Fl_File_Chooser.H>

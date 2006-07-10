@@ -181,12 +181,12 @@ Fl_Menu_Item NleUI::menu_[] = {
  {0,0,0,0,0,0,0,0,0}
 };
 
-inline void NleUI::cb_fileBrowser_i(nle::FileBrowser* o, void*) {
-  nle::FileBrowser *fb = (nle::FileBrowser*)o;
+inline void NleUI::cb__i(nle::FileBrowser* o, void*) {
+  nle::FileBrowser* fb = (nle::FileBrowser*)o;
 fb->load_rel();
 }
-void NleUI::cb_fileBrowser(nle::FileBrowser* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_fileBrowser_i(o,v);
+void NleUI::cb_(nle::FileBrowser* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb__i(o,v);
 }
 
 inline void NleUI::cb_projectNameInput_i(NoDropInput* o, void*) {
@@ -257,11 +257,11 @@ void NleUI::cb_scaleBar(Flmm_Scalebar* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_scaleBar_i(o,v);
 }
 
-inline void NleUI::cb__i(Fl_Button* o, void*) {
+inline void NleUI::cb_1_i(Fl_Button* o, void*) {
   g_snap = o->value();
 }
-void NleUI::cb_(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb__i(o,v);
+void NleUI::cb_1(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_1_i(o,v);
 }
 
 #include <FL/Fl_Pixmap.H>
@@ -503,7 +503,7 @@ NleUI::NleUI() {
             o->box(FL_UP_BOX);
             o->labelcolor(FL_GRAY0);
             { Fl_Group* o = new Fl_Group(0, 75, 280, 160, "Files");
-              { nle::FileBrowser* o = fileBrowser = new nle::FileBrowser(5, 80, 270, 150);
+              { nle::FileBrowser* o = new nle::FileBrowser(5, 80, 270, 150);
                 o->box(FL_NO_BOX);
                 o->color(FL_BACKGROUND2_COLOR);
                 o->selection_color(FL_SELECTION_COLOR);
@@ -511,13 +511,30 @@ NleUI::NleUI() {
                 o->labelfont(0);
                 o->labelsize(14);
                 o->labelcolor(FL_BLACK);
-                o->callback((Fl_Callback*)cb_fileBrowser);
+                o->callback((Fl_Callback*)cb_);
                 o->align(FL_ALIGN_BOTTOM);
                 o->when(FL_WHEN_RELEASE_ALWAYS);
                 Fl_Group::current()->resizable(o);
               }
               o->end();
               Fl_Group::current()->resizable(o);
+            }
+            { Fl_Group* o = new Fl_Group(0, 75, 280, 160, "Media Browser");
+              o->hide();
+              { nle::MediaPanel* o = new nle::MediaPanel(5, 80, 270, 150);
+                o->box(FL_NO_BOX);
+                o->color(FL_BACKGROUND_COLOR);
+                o->selection_color(FL_BACKGROUND_COLOR);
+                o->labeltype(FL_NORMAL_LABEL);
+                o->labelfont(0);
+                o->labelsize(14);
+                o->labelcolor(FL_BLACK);
+                o->align(FL_ALIGN_TOP);
+                o->when(FL_WHEN_RELEASE);
+                o->end();
+                Fl_Group::current()->resizable(o);
+              }
+              o->end();
             }
             o->end();
             Fl_Group::current()->resizable(o);
@@ -583,7 +600,7 @@ NleUI::NleUI() {
               o->type(1);
               o->value(1);
               o->image(image_snap);
-              o->callback((Fl_Callback*)cb_);
+              o->callback((Fl_Callback*)cb_1);
             }
             { nle::Ruler* o = new nle::Ruler(65, 275, 450, 25, "Ruler");
               o->box(FL_UP_BOX);
