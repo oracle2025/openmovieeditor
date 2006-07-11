@@ -63,8 +63,8 @@ RemoveTrackCommand::~RemoveTrackCommand()
 
 void RemoveTrackCommand::doo()
 {
-	Track* t = g_timeline->getTrack( m_track );
-	g_timeline->removeTrack( t->num() );
+//	Track* t = g_timeline->getTrack( m_track );
+	g_timeline->removeTrack( m_track );
 	g_timelineView->redraw();
 }
 

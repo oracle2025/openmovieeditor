@@ -34,6 +34,7 @@ namespace nle
 DiskCache::DiskCache( string filename, string type )
 {
 	struct stat statbuf;
+	struct stat statbuf2;
 	char buffer[BUFFER_LEN];
 	findpath( filename.c_str(), buffer, BUFFER_LEN );
 	string cachepath = string(g_homefolder) + "/.openme/cache" + buffer;
@@ -46,6 +47,15 @@ DiskCache::DiskCache( string filename, string type )
 		int r = stat( m_cachefile.c_str(), &statbuf );
 		assert( r != -1 );
 		m_size = statbuf.st_size;
+		r = stat( filename.c_str(), &statbuf2 );
+		assert( r != -1 );
+		if ( statbuf2.st_mtime > statbuf.st_mtime ) {
+			fclose( m_file );
+			unlink( m_cachefile.c_str() );
+			m_file = fopen( m_cachefile.c_str(), "w" );
+			m_dirty = true;
+			m_empty = true;
+		}
 	} else {
 		m_dirty = true;
 		m_empty = true;

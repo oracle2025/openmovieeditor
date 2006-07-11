@@ -79,7 +79,10 @@ void FolderBrowser::up()
 
 void FolderBrowser::click()
 {
-	load( m_folder + "/" + text( value() ) );
+	int v = value();
+	if ( v ) {
+		load( m_folder + "/" + text( v ) );
+	}
 }
 
 } /* namespace nle */

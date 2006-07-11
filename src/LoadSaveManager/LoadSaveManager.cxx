@@ -155,6 +155,7 @@ void LoadSaveManager::startup()
 		item = m_projectChoice->find_item( m_currentName.c_str() );
 		if ( item ) {
 			m_currentFilename = (char*)item->user_data();
+			g_project->read( m_video_projects + "/" + m_currentFilename );
 		} else {
 			m_currentName = nodups("New Project");
 			m_currentFilename = name_to_filename( m_currentName );
