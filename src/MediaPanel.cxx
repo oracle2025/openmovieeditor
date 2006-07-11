@@ -49,7 +49,15 @@ namespace nle
 
 	inline void MediaPanel::cb_81_i(Fl_Button*, void*) {
 	  browser->size( bt->w(), bt->h() / 2 );
-	files->resize(  bt->x(), bt->y() + bt->h() / 2, bt->w(), bt->h() - bt->h() / 2 );
+	  int x, y, w, h;
+	  x =  bt->x();
+	  y = bt->y() + bt->h() / 2;
+	  w = bt->w();
+	  h = bt->h() - bt->h() / 2;
+	  if ( bt->h() % 2 == 1 ) {
+		  h++;
+	  }
+	files->resize( x, y, w, h );
 	bt->remove( browser );
 	bt->remove( files );
 	bt->add( browser );
@@ -62,7 +70,15 @@ namespace nle
 
 	inline void MediaPanel::cb__i(Fl_Button*, void*) {
 	  browser->resize( bt->x(), bt->y(), bt->w() / 2, bt->h() );
-	files->resize( bt->x() + bt->w() / 2, bt->y(), bt->w() / 2, bt->h() );
+	  int x, y, w, h;
+	  x = bt->x() + bt->w() / 2;
+	  y = bt->y();
+	  w = bt->w() / 2;
+	  h = bt->h();
+	  if ( bt->w() % 2 == 1 ) {
+		  w++;
+	  }
+	files->resize( x, y, w, h );
 	bt->remove( browser );
 	bt->remove( files );
 	bt->add( browser );
