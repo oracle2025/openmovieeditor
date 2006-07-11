@@ -32,6 +32,9 @@ typedef struct file_item_ {
 	struct file_item_* next;
 	struct file_item_* prev;
 	string value;
+	int w;
+	int h;
+	unsigned char* rgb;
 } file_item;
 
 class MediaBrowser : public Fl_Browser_

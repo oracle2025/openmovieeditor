@@ -165,5 +165,7 @@ openmovieeditor_SOURCES = nle.cxx\
 	MediaBrowser.cxx\
 	MediaBrowser.H\
 	FileBrowser.cxx\
-	FileBrowser.H
+	FileBrowser.H\
+	VideoThumbnails.H\
+	VideoThumbnails.cxx
 

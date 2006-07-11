@@ -26,7 +26,7 @@
 #include "MediaBrowser.H"
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Button.H>
-#include <FL/Fl_File_Input.H>
+#include <FL/Fl_Output.H>
 
 namespace nle
 {
@@ -36,8 +36,9 @@ class MediaPanel : public Fl_Group
 	public:
 		MediaPanel( int x, int y, int w, int h, const char *l = 0 );
 		~MediaPanel();
+		void load( const char* folder );
 		MediaBrowser *files;
-		Fl_File_Input *folderDisplay;
+		Fl_Output *folderDisplay;
 		Fl_Tile *bt;
 		nle::FolderBrowser *browser;
 	private:
@@ -47,8 +48,6 @@ class MediaPanel : public Fl_Group
 		static void cb_files(nle::MediaBrowser*, void*);
 		inline void cb_8_i(Fl_Button*, void*);
 		static void cb_8(Fl_Button*, void*);
-		inline void cb_folderDisplay_i(Fl_File_Input*, void*);
-		static void cb_folderDisplay(Fl_File_Input*, void*);
 		inline void cb_81_i(Fl_Button*, void*);
 		static void cb_81(Fl_Button*, void*);
 		inline void cb__i(Fl_Button*, void*);

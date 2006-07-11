@@ -25,7 +25,7 @@
 #include <FL/fl_draw.H>
 
 #include "MediaBrowser.H"
-
+#include "VideoThumbnails.H"
 
 namespace nle
 {
@@ -54,6 +54,21 @@ void MediaBrowser::load( string folder )
 		if ( files[i]->d_name[0] != '.' && !fl_filename_isdir( string(folder + "/" + files[i]->d_name).c_str() ) ) {
 			file_item* f = new file_item;
 			f->value = files[i]->d_name;
+			string s = m_folder + "/" + f->value;
+			f->rgb = 0;
+			const char* ext = fl_filename_ext( s.c_str() );
+			if ( ( strcmp( ext, ".mov" ) == 0 ) ||
+					( strcmp( ext, ".avi" ) == 0 ) ||
+					( strcmp( ext, ".jpg" ) == 0 ) ||
+					( strcmp( ext, ".png" ) == 0 ) ||
+					( strcmp( ext, ".jpeg" ) == 0 ) ) {
+				f->rgb = new unsigned char[VIDEO_THUMBNAIL_WIDTH*VIDEO_THUMBNAIL_HEIGHT*3];
+				if ( !VideoThumbnails::get( s.c_str(), f->rgb, f->w, f->h ) ) {
+					delete [] f->rgb;
+					f->w = f->h = 0;
+					f->rgb = 0;
+				}
+			}
 			append( f );
 			//add( files[i]->d_name );
 		}
@@ -86,6 +101,9 @@ void MediaBrowser::clear()
 	while ( m_items ) {
 		file_item* f = m_items;
 		m_items = m_items->next;
+		if ( f->rgb ) {
+			delete [] f->rgb;
+		}
 		delete f;
 	}
 	m_last = 0;
@@ -133,13 +151,23 @@ void MediaBrowser::item_draw( void* p, int x, int y, int w, int h ) const
 {
 	file_item* f = (file_item*)p;
 	if ( m_item_selected == f ) {
-		fl_draw_box( FL_UP_BOX, x, y, w, h, FL_SELECTION_COLOR );
+		fl_draw_box( FL_FLAT_BOX, x, y, w, h, FL_SELECTION_COLOR );
 	} else {
-		fl_draw_box( FL_UP_BOX, x, y, w, h, FL_BACKGROUND_COLOR );
+		fl_draw_box( FL_FLAT_BOX, x, y, w, h, FL_BACKGROUND2_COLOR );
 	}
 	fl_font( FL_HELVETICA, 14 );
 	fl_color( FL_FOREGROUND_COLOR );
-	fl_draw( f->value.c_str(), x, y + 20 );
+	fl_draw( f->value.c_str(), x + 53, y + 15 );
+	if ( f->rgb ) {
+		fl_draw_image( f->rgb, x, y, VIDEO_THUMBNAIL_WIDTH, VIDEO_THUMBNAIL_HEIGHT );
+		fl_font( FL_HELVETICA, 12 );
+		fl_color( FL_FOREGROUND_COLOR );
+		char buffer[255];
+		snprintf( buffer, 255, "%dx%d", f->w, f->h );
+		buffer[254] = '\0';
+		fl_draw( buffer, x + 53, y + 33 );
+	}
+	fl_draw_box( FL_BORDER_FRAME, x, y, VIDEO_THUMBNAIL_WIDTH, VIDEO_THUMBNAIL_HEIGHT, FL_DARK3 );
 }
 void* MediaBrowser::item_first() const
 {
@@ -147,7 +175,7 @@ void* MediaBrowser::item_first() const
 }
 int MediaBrowser::item_height( void* p ) const
 {
-	return 40;
+	return 42;
 }
 void* MediaBrowser::item_next( void* p ) const
 {

@@ -47,13 +47,6 @@ namespace nle
 	  ((MediaPanel*)(o->parent()->parent()->user_data()))->cb_8_i(o,v);
 	}
 
-	inline void MediaPanel::cb_folderDisplay_i(Fl_File_Input* o, void*) {
-	  browser->load( o->value() );
-	}
-	void MediaPanel::cb_folderDisplay(Fl_File_Input* o, void* v) {
-	  ((MediaPanel*)(o->parent()->parent()->user_data()))->cb_folderDisplay_i(o,v);
-	}
-
 	inline void MediaPanel::cb_81_i(Fl_Button*, void*) {
 	  browser->size( bt->w(), bt->h() / 2 );
 	files->resize(  bt->x(), bt->y() + bt->h() / 2, bt->w(), bt->h() - bt->h() / 2 );
@@ -91,8 +84,8 @@ namespace nle
 	  { //Fl_Double_Window* o = mainWindow = new Fl_Double_Window(360, 245);
 	    Fl_Group* o = this;
 	    o->user_data((void*)(this));
-	    { Fl_Tile* o = bt = new Fl_Tile(0, 35, 360, 210);
-	      { nle::FolderBrowser* o = browser = new nle::FolderBrowser(0, 35, 190, 210);
+	    { Fl_Tile* o = bt = new Fl_Tile(0, 20, 360, 225);
+	      { nle::FolderBrowser* o = browser = new nle::FolderBrowser(0, 20, 185, 225);
 		o->box(FL_NO_BOX);
 		o->color(FL_BACKGROUND2_COLOR);
 		o->selection_color(FL_SELECTION_COLOR);
@@ -104,7 +97,7 @@ namespace nle
 		o->align(FL_ALIGN_BOTTOM);
 		o->when(FL_WHEN_RELEASE_ALWAYS);
 	      }
-	      { nle::MediaBrowser* o = files = new nle::MediaBrowser(190, 35, 170, 210);
+	      { nle::MediaBrowser* o = files = new nle::MediaBrowser(185, 20, 175, 225);
 		o->box(FL_NO_BOX);
 		o->color(FL_BACKGROUND2_COLOR);
 		o->selection_color(FL_SELECTION_COLOR);
@@ -119,18 +112,21 @@ namespace nle
 	      o->end();
 	      Fl_Group::current()->resizable(o);
 	    }
-	    { Fl_Group* o = new Fl_Group(0, 0, 360, 35);
-	      { Fl_Button* o = new Fl_Button(0, 10, 25, 25, "@8>");
+	    { Fl_Group* o = new Fl_Group(0, 0, 360, 20);
+	      { Fl_Button* o = new Fl_Button(0, 0, 20, 20, "@-28>");
 		o->callback((Fl_Callback*)cb_8);
 	      }
-	      { Fl_File_Input* o = folderDisplay = new Fl_File_Input(25, 0, 285, 35);
-		o->callback((Fl_Callback*)cb_folderDisplay);
+	      { Fl_Output* o = folderDisplay = new Fl_Output(20, 0, 300, 20);
+                o->box(FL_FLAT_BOX);
+		o->color(FL_BACKGROUND_COLOR);
+		//Fl_File_Input* o = folderDisplay = new Fl_File_Input(25, 0, 285, 35);
+		//o->callback((Fl_Callback*)cb_folderDisplay);
 		Fl_Group::current()->resizable(o);
 	      }
-	      { Fl_Button* o = new Fl_Button(335, 10, 25, 25, "@8||");
+	      { Fl_Button* o = new Fl_Button(340, 0, 20, 20, "@-28||");
 		o->callback((Fl_Callback*)cb_81);
 	      }
-	      { Fl_Button* o = new Fl_Button(310, 10, 25, 25, "@||");
+	      { Fl_Button* o = new Fl_Button(320, 0, 20, 20, "@-2||");
 		o->callback((Fl_Callback*)cb_);
 	      }
 	      o->end();
@@ -138,6 +134,13 @@ namespace nle
 	    o->end();
 	  }
 	  resize( x, y, w, h );
+	  folderDisplay->value( browser->folder() );
+	}
+	void MediaPanel::load( const char* folder )
+	{
+		browser->load( folder );
+		folderDisplay->value( folder );
+		files->load( folder );
 	}
 
 
