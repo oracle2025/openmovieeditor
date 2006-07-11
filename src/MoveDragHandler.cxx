@@ -56,6 +56,8 @@ void MoveDragHandler::OnDrag( int x, int y )
 			tmp.x = tr->getSnapA( m_clip, tmp.x );
 			tmp.x = tr->getSnapB( m_clip, tmp.x );
 			tmp.x = m_tlv->get_screen_position( tmp.x, tr->stretchFactor() );
+		} else {
+			tmp.x = m_tlv->get_screen_position( m_tlv->get_real_position( tmp.x, tr->stretchFactor() ), tr->stretchFactor() );
 		}
 	}
 	m_tlv->window()->make_current();
