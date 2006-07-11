@@ -316,10 +316,26 @@ void TimelineView::draw()
 		
 		for ( clip_node* j = track->getClips(); j; j = j->next ) {
 			Clip* clip = j->clip;
-			int scr_clip_x = get_screen_position( clip->position(), track->stretchFactor() );
-			int scr_clip_y = y_coord;
-			int scr_clip_w = (int)( (clip->length() + 1) * SwitchBoard::i()->zoom() / track->stretchFactor() );
-			int scr_clip_h = TRACK_HEIGHT;
+			int64_t scr_clip_x = get_screen_position( clip->position(), track->stretchFactor() );
+			int64_t scr_clip_y = y_coord;
+			int64_t scr_clip_w = (int)( (clip->length() + 1) * SwitchBoard::i()->zoom() / track->stretchFactor() );
+			int64_t scr_clip_h = TRACK_HEIGHT;
+
+			if ( scr_clip_x + scr_clip_w < 0 )
+				continue;
+			if ( scr_clip_x > (int64_t)w() + (int64_t)x() )
+				continue;
+
+			if ( scr_clip_x < (int64_t)x() ) {
+				scr_clip_w = scr_clip_w + scr_clip_x - x() + 5;
+				scr_clip_x = x() - 5;
+			}
+
+			if ( scr_clip_x + scr_clip_w > (int64_t)w() + (int64_t)x() ) {
+				scr_clip_w = (int64_t)(x() + w()) - scr_clip_x;
+			}
+
+			
 			
 			fl_draw_box( FL_BORDER_BOX , scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h, FL_DARK3 );
 			
@@ -438,9 +454,9 @@ int64_t TimelineView::get_real_position( int p, float stretchFactor )
 {
 	return int64_t( ( ( float(p - LEFT_TRACK_SPACING - x() ) / SwitchBoard::i()->zoom() ) + m_scrollPosition ) * stretchFactor );
 }
-int TimelineView::get_screen_position( int64_t p, float stretchFactor )
+int64_t TimelineView::get_screen_position( int64_t p, float stretchFactor )
 {
-	return int ( float( p - ( m_scrollPosition * stretchFactor ) ) * SwitchBoard::i()->zoom() / stretchFactor ) + LEFT_TRACK_SPACING + x();
+	return int64_t ( float( p - ( m_scrollPosition * stretchFactor ) ) * SwitchBoard::i()->zoom() / stretchFactor ) + LEFT_TRACK_SPACING + x();
 
 }
 void TimelineView::scroll( int64_t position )
