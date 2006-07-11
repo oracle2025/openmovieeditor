@@ -18,14 +18,16 @@
  */
 
 #include "MediaPanel.H"
+#include "Prefs.H"
 
 namespace nle
 {
 
 	inline void MediaPanel::cb_browser_i(nle::FolderBrowser*, void*) {
 	  browser->click();
-	folderDisplay->value( browser->folder() );
-	files->load( browser->folder() );
+	  load2( browser->folder() );
+//	folderDisplay->value( browser->folder() );
+//	files->load( browser->folder() );
 	}
 	void MediaPanel::cb_browser(nle::FolderBrowser* o, void* v) {
 	  ((MediaPanel*)(o->parent()->parent()->user_data()))->cb_browser_i(o,v);
@@ -40,8 +42,9 @@ namespace nle
 
 	inline void MediaPanel::cb_8_i(Fl_Button*, void*) {
 	  browser->up();
-	folderDisplay->value( browser->folder() );
-	files->load( browser->folder() );
+	  load2( browser->folder() );
+	//folderDisplay->value( browser->folder() );
+	//files->load( browser->folder() );
 	}
 	void MediaPanel::cb_8(Fl_Button* o, void* v) {
 	  ((MediaPanel*)(o->parent()->parent()->user_data()))->cb_8_i(o,v);
@@ -150,13 +153,21 @@ namespace nle
 	    o->end();
 	  }
 	  resize( x, y, w, h );
-	  folderDisplay->value( browser->folder() );
+	  //folderDisplay->value( browser->folder() );
+	  load( g_preferences->getMediaFolder().c_str() );
+	}
+	void MediaPanel::load2( const char* folder )
+	{
+		folderDisplay->value( folder );
+		files->load( folder );
+		g_preferences->setMediaFolder( folder );
 	}
 	void MediaPanel::load( const char* folder )
 	{
 		browser->load( folder );
 		folderDisplay->value( folder );
 		files->load( folder );
+		g_preferences->setMediaFolder( folder );
 	}
 
 

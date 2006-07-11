@@ -42,6 +42,7 @@ Prefs::Prefs()
 	preferences_filename += "/.openme.prefs";
 	g_preferences = this;
 	m_browserFolder = getenv( "HOME" );
+	m_mediaFolder = getenv( "HOME" );
 	TiXmlDocument doc( preferences_filename.c_str() );
 	if ( !doc.LoadFile() ) {
 		return;
@@ -58,6 +59,10 @@ Prefs::Prefs()
 		m_lastProject = text->Value();
 	} else {
 		m_lastProject = "";
+	}
+	text = docH.FirstChildElement( "mediaFolder" ).Child( 0 ).Text();
+	if ( text ) {
+		m_mediaFolder = text->Value();
 	}
 
 }
@@ -79,6 +84,11 @@ Prefs::~Prefs()
 	item = new TiXmlElement( "browserFolder" );
 	doc.LinkEndChild( item );
 	text = new TiXmlText( m_browserFolder.c_str() );
+	item->LinkEndChild( text );
+	
+	item = new TiXmlElement( "mediaFolder" );
+	doc.LinkEndChild( item );
+	text = new TiXmlText( m_mediaFolder.c_str() );
 	item->LinkEndChild( text );
 
 	item = new TiXmlElement( "lastProject" );

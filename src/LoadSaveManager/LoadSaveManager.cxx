@@ -55,6 +55,25 @@ static void save_timeout( void* )
 	Fl::repeat_timeout( 10.0, save_timeout );
 }
 
+string LoadSaveManager::nodups( string name )
+{
+	if ( m_projectChoice->find_item( name.c_str() ) ) {
+		int i = 1;
+		stringstream o;
+		string a;
+		o << name << " " << i;
+		a = o.str();
+		while (  m_projectChoice->find_item( a.c_str() ) ) {
+			o.str("");
+			i++;
+			o << name << " " << i;
+			a = o.str();
+		}
+		name = a;
+	}
+	return name;
+}
+
 LoadSaveManager::LoadSaveManager( Fl_Choice* projectChoice, Fl_Input* projectInput )
 	: m_projectChoice( projectChoice ), m_projectInput( projectInput )
 {
@@ -69,6 +88,7 @@ LoadSaveManager::LoadSaveManager( Fl_Choice* projectChoice, Fl_Input* projectInp
 			if ( !fl_filename_isdir( string( m_video_projects + "/" + list[i]->d_name ).c_str() ) ) {
 				string name = name_from_projectfile( m_video_projects + "/" + list[i]->d_name );
 				if ( name != "" ) {
+					name = nodups( name );
 					char* cname = strdup( list[i]->d_name );
 					m_projectChoice->add( name.c_str(), 0, 0, cname );
 				}
@@ -125,15 +145,32 @@ static string name_to_filename( string name )
 }
 void LoadSaveManager::startup()
 {
-	m_currentFilename = g_preferences->lastProject();
+	m_currentName = g_preferences->lastProject();
+	if ( m_currentName == "" ) {
+		m_currentName = nodups("New Project");
+		m_currentFilename = name_to_filename( m_currentName );
+		m_projectChoice->add( m_currentName.c_str(), 0, 0, strdup( m_currentFilename.c_str() ) );
+	} else {
+		const Fl_Menu_Item* item;
+		item = m_projectChoice->find_item( m_currentName.c_str() );
+		if ( item ) {
+			m_currentFilename = (char*)item->user_data();
+		} else {
+			m_currentName = nodups("New Project");
+			m_currentFilename = name_to_filename( m_currentName );
+			m_projectChoice->add( m_currentName.c_str(), 0, 0, strdup( m_currentFilename.c_str() ) );
+		}
+	}
+	
+/*	m_currentFilename = g_preferences->lastProject();
 	if ( m_currentFilename == "" ) {
 		m_currentFilename = "default.vproj";
-		m_currentName = "New Project";
+		m_currentName = nodups("New Project");
 		m_projectChoice->add( m_currentName.c_str(), 0, 0, strdup( m_currentFilename.c_str() ) );
 	} else {
 		g_project->read( m_video_projects + "/" + m_currentFilename );
 		m_currentName = name_from_projectfile( m_video_projects + "/" + m_currentFilename );
-	}
+	}*/
 	/* vv  Put this in a function */
 	m_projectInput->value( m_currentName.c_str() );
 	const Fl_Menu_Item* item;
@@ -145,7 +182,7 @@ void LoadSaveManager::startup()
 void LoadSaveManager::shutdown()
 {
 	g_project->write( m_video_projects + "/" + m_currentFilename, m_currentName );
-	g_preferences->lastProject( m_currentFilename );
+	g_preferences->lastProject( m_currentName );
 	// free all strings from m_projectChoice;
 	Fl_Menu_Item* item = (Fl_Menu_Item*)m_projectChoice->menu();
 	int i = 0;
@@ -168,8 +205,8 @@ void LoadSaveManager::save()
 void LoadSaveManager::newProject()
 {
 	g_project->write( m_video_projects + "/" + m_currentFilename, m_currentName );
-	m_currentFilename = "new_project.vproj";
 	m_currentName = "New Project";
+	m_currentFilename = name_to_filename( m_currentName );
 	g_timeline->clear();
 	{
 		VideoTrack *vt;
@@ -183,22 +220,7 @@ void LoadSaveManager::newProject()
 		at = new AudioTrack( 3 );
 		g_timeline->addTrack( at );
 	}
-
-	if ( m_projectChoice->find_item( m_currentName.c_str() ) ) {
-		int i = 1;
-		stringstream o;
-		string a;
-		o << m_currentName << " " << i;
-		a = o.str();
-		while (  m_projectChoice->find_item( a.c_str() ) ) {
-			o.str("");
-			i++;
-			o << m_currentName << " " << i;
-			a = o.str();
-		}
-		m_currentName = a;
-		m_currentFilename = name_to_filename( m_currentName );
-	}
+	m_currentName = nodups( m_currentName );
 	
 	char* cname = strdup( m_currentFilename.c_str() );
 	m_projectChoice->add( m_currentName.c_str(), 0, 0, cname );
@@ -234,6 +256,7 @@ void LoadSaveManager::saveAs()
 }
 void LoadSaveManager::name( string v )
 {
+	v = nodups( v );
 	string new_file = name_to_filename( v );
 	if ( access( string( m_video_projects + "/" + m_currentFilename ).c_str(), R_OK | W_OK ) == 0 ) {
 		rename( string( m_video_projects + "/" + m_currentFilename ).c_str(), string( m_video_projects + "/" + new_file).c_str() );
@@ -249,7 +272,8 @@ void LoadSaveManager::load( string v )
 	g_project->write( m_video_projects + "/" + m_currentFilename, m_currentName );
 	m_currentFilename = v;
 	cout << "LOAD: " << m_currentFilename << endl;
-	m_currentName = name_from_projectfile( m_video_projects + "/" + m_currentFilename );
+	m_currentName = m_projectChoice->mvalue()->text;
+	//m_currentName = name_from_projectfile( m_video_projects + "/" + m_currentFilename );
 	g_project->read( m_video_projects + "/" + m_currentFilename );
 	const Fl_Menu_Item* item;
 	m_projectInput->value( m_currentName.c_str() );

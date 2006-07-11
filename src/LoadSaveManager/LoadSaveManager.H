@@ -41,6 +41,7 @@ class LoadSaveManager
 		void name( string v );
 		void load( string v );
 	private:
+		string nodups( string name );
 		Fl_Choice* m_projectChoice;
 		Fl_Input* m_projectInput;
 		string m_currentName;

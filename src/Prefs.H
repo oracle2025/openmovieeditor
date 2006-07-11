@@ -34,13 +34,17 @@ class Prefs
 		~Prefs();
 		string getBrowserFolder();
 		void setBrowserFolder( string filename );
+		string getMediaFolder() { return m_mediaFolder; }
+		void setMediaFolder( string filename ) { m_mediaFolder = filename; }
 		string lastProject();
 		void lastProject( string filename );
 	private:
+		string m_mediaFolder;
 		string m_browserFolder;
 		string m_lastProject;
 		
 };
+extern Prefs* g_preferences;
 
 } /* namespace nle */
 
