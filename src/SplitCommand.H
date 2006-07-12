@@ -31,12 +31,13 @@ namespace nle
 
 class Clip;
 class Track;
+typedef struct _auto_node auto_node;
 
 class SplitCommand : public Command
 {
 	public:
 		SplitCommand( Clip* clip, int64_t position );
-		~SplitCommand() {}
+		~SplitCommand();
 		void doo();
 		void undo();
 	private:
@@ -45,6 +46,9 @@ class SplitCommand : public Command
 		int m_clipNr2;
 		int64_t m_position;
 		int64_t m_length;
+		auto_node* m_automationPoints;
+		int m_automationsCount;
+		bool m_audioClip;
 };
 
 } /* namespace nle */
