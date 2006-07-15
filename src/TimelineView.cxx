@@ -428,17 +428,33 @@ void TimelineView::draw()
 			int scr_clip_y = y_coord;
 			int scr_clip_w = (int)( (clip->length()+1) * SwitchBoard::i()->zoom() / track->stretchFactor() );
 			//int scr_clip_h = TRACK_HEIGHT;
-			fl_color( FL_BLACK );
-			fl_begin_polygon();
-			fl_vertex( scr_clip_x, scr_clip_y + TRACK_HEIGHT / 2 );
-			fl_vertex( scr_clip_x + 8, scr_clip_y + TRACK_HEIGHT / 2 - 5 );
-			fl_vertex( scr_clip_x + 8, scr_clip_y + TRACK_HEIGHT / 2 + 5 );
-			fl_end_polygon();
-			fl_begin_polygon();
-			fl_vertex( scr_clip_x + scr_clip_w, scr_clip_y + TRACK_HEIGHT / 2 );
-			fl_vertex( scr_clip_x + scr_clip_w - 8, scr_clip_y + TRACK_HEIGHT / 2 - 5 );
-			fl_vertex( scr_clip_x + scr_clip_w - 8, scr_clip_y + TRACK_HEIGHT / 2 + 5 );
-			fl_end_polygon();
+			for ( int k = 0; k < 2; k++ ) {
+				if ( !k ) {
+					fl_color( FL_BLACK );
+					fl_begin_polygon();
+				} else {
+					fl_color( FL_DARK2 );
+					fl_begin_loop();
+				}
+				fl_vertex( scr_clip_x, scr_clip_y + TRACK_HEIGHT / 2 );
+				fl_vertex( scr_clip_x + 8, scr_clip_y + TRACK_HEIGHT / 2 - 5 );
+				fl_vertex( scr_clip_x + 8, scr_clip_y + TRACK_HEIGHT / 2 + 5 );
+				if ( !k ) {
+					fl_end_polygon();
+					fl_begin_polygon();
+				} else {
+					fl_end_loop();
+					fl_begin_loop();
+				}
+				fl_vertex( scr_clip_x + scr_clip_w, scr_clip_y + TRACK_HEIGHT / 2 );
+				fl_vertex( scr_clip_x + scr_clip_w - 8, scr_clip_y + TRACK_HEIGHT / 2 - 5 );
+				fl_vertex( scr_clip_x + scr_clip_w - 8, scr_clip_y + TRACK_HEIGHT / 2 + 5 );
+				if ( !k ) {
+					fl_end_polygon();
+				} else {
+					fl_end_loop();
+				}
+			}
 		}
 
 		fl_pop_clip();
