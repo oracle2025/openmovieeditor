@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-int strlcpy(char *dst, const char *src, int dstsize);
+int strlcpy(char *dst, const char *src, unsigned int dstsize);
 
 #ifdef __cplusplus
 }

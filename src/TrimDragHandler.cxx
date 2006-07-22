@@ -46,7 +46,7 @@ TrimDragHandler::TrimDragHandler( TimelineView *tlv, Clip *clip,
 	m_right( right ), m_trimRight( trimRight )
 {
 }
-void TrimDragHandler::OnDrag( int x, int y )
+void TrimDragHandler::OnDrag( int x, int )
 {
 	m_x = x;
 	int64_t pos = g_timelineView->get_real_position( x, m_clip->track()->stretchFactor() ) - ( m_clip->position() - m_clip->trimA() );
@@ -66,7 +66,7 @@ void TrimDragHandler::OnDrag( int x, int y )
 		Fl::add_check( preview_callback, this );
 	}
 }
-void TrimDragHandler::OnDrop( int x, int y )
+void TrimDragHandler::OnDrop( int x, int )
 {
 	m_tlv->window()->make_current();
 	fl_overlay_clear();

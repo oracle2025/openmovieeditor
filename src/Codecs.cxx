@@ -67,9 +67,9 @@ void setCodecInfo( CodecOptions* dialog, void* data )
 
 }
 
-void updateCodecParameter( CodecOptions* dialog, void* data )
+/*void updateCodecParameter( CodecOptions* dialog, void* data )
 {
-}
+}*/
 void setCodecParameter( CodecOptions* dialog, void* data )
 {
 	lqt_parameter_info_t* info = (lqt_parameter_info_t*)data;

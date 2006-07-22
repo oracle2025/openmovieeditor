@@ -32,7 +32,7 @@ namespace nle
 
 
 
-ShiftAutomationDragHandler::ShiftAutomationDragHandler( Clip* clip, const Rect& rect, int x_, int y_ )
+ShiftAutomationDragHandler::ShiftAutomationDragHandler( Clip* clip, const Rect& rect, int x_, int )
 	: DragHandler( g_timelineView, clip )
 {
 	m_outline = rect;
@@ -80,7 +80,7 @@ ShiftAutomationDragHandler::ShiftAutomationDragHandler( Clip* clip, const Rect& 
 ShiftAutomationDragHandler::~ShiftAutomationDragHandler()
 {
 }
-void ShiftAutomationDragHandler::OnDrag( int x, int y )
+void ShiftAutomationDragHandler::OnDrag( int, int y )
 {
 	if ( y < m_outline.y ) { y = m_outline.y; }
 	if ( y > m_outline.y + m_outline.h - 10 ) { y = m_outline.y + m_outline.h - 10; }
@@ -97,7 +97,7 @@ static void clear_node_list( auto_node** l )
 	}
 }
 
-void ShiftAutomationDragHandler::OnDrop( int x, int y )
+void ShiftAutomationDragHandler::OnDrop( int, int y )
 {
 	if ( y < m_outline.y ) { y = m_outline.y; }
 	if ( y > m_outline.y + m_outline.h - 10 ) { y = m_outline.y + m_outline.h - 10; }

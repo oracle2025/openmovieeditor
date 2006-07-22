@@ -60,7 +60,7 @@ bool USING_AUDIO = 0;
 TimelineView* g_timelineView = 0;
 
 static Fl_Cursor current_cursor;
-TimelineView::TimelineView( int x, int y, int w, int h, const char *label )
+TimelineView::TimelineView( int x, int y, int w, int, const char *label )
 	: Fl_Widget( x, y, w, 200, label )
 {
 	g_timelineView = this;
@@ -77,6 +77,7 @@ TimelineView::TimelineView( int x, int y, int w, int h, const char *label )
 TimelineView::~TimelineView()
 {
 }
+#define MENU_ITEM_INIT 0, 0, 0, 0, 0, 0, 0, 0
 int TimelineView::handle( int event )
 {
   Clip* cl;
@@ -147,7 +148,7 @@ int TimelineView::handle( int event )
 						track_count++;
 						int yy = TRACK_SPACING + track_count * TRACK_OFFSET;
 						if ( _y > yy && _y < yy + TRACK_HEIGHT ) {
-							Fl_Menu_Item menuitem[] = { { "Remove Track" }, { 0L } };
+							Fl_Menu_Item menuitem[] = { { "Remove Track", MENU_ITEM_INIT }, { 0L, MENU_ITEM_INIT } };
 							if ( menuitem->popup( TRACK_SPACING + x(), yy + TRACK_HEIGHT + y() + 1 ) ) {
 								clear_selection();
 								Command* cmd = new RemoveTrackCommand( i->track );
@@ -171,7 +172,7 @@ int TimelineView::handle( int event )
 				}
 				if ( cl && vcl && vcl->hasAudio() && ( Fl::event_button() == FL_RIGHT_MOUSE ) ) {
 					if ( vcl->m_mute ) {
-						Fl_Menu_Item menuitem[] = { { "Unmute Original Sound" }, { "Select all Clips after Cursor" }, { 0L } };
+						Fl_Menu_Item menuitem[] = { { "Unmute Original Sound", MENU_ITEM_INIT }, { "Select all Clips after Cursor", MENU_ITEM_INIT }, { 0L, MENU_ITEM_INIT } };
 						Fl_Menu_Item* r = (Fl_Menu_Item*)menuitem->popup( Fl::event_x(), Fl::event_y() );
 						if ( r == &menuitem[0] ) {
 							vcl->m_mute = false;
@@ -181,7 +182,7 @@ int TimelineView::handle( int event )
 							select_all_after_cursor();	
 						}
 					} else {
-						Fl_Menu_Item menuitem[] = { { "Mute Original Sound" }, { "Select all Clips after Cursor" }, { 0L } };
+						Fl_Menu_Item menuitem[] = { { "Mute Original Sound", MENU_ITEM_INIT }, { "Select all Clips after Cursor", MENU_ITEM_INIT }, { 0L, MENU_ITEM_INIT } };
 						Fl_Menu_Item* r = (Fl_Menu_Item*)menuitem->popup( Fl::event_x(), Fl::event_y() );
 						if ( r == &menuitem[0] ) {
 							vcl->m_mute = true;
@@ -194,7 +195,7 @@ int TimelineView::handle( int event )
 					return 1;
 				}
 				if ( Fl::event_button() == FL_RIGHT_MOUSE ) {
-					Fl_Menu_Item menuitem[] = { { "Select all Clips after Cursor" }, { 0L } };
+					Fl_Menu_Item menuitem[] = { { "Select all Clips after Cursor", MENU_ITEM_INIT }, { 0L, MENU_ITEM_INIT } };
 					if ( menuitem->popup( Fl::event_x(), Fl::event_y() ) ) {
 						select_all_after_cursor();
 					}
@@ -462,10 +463,10 @@ void TimelineView::draw()
 	fl_pop_clip();
 	fl_overlay_rect( get_screen_position( m_stylusPosition ), parent()->y(), 1, parent()->h() );
 }
-void TimelineView::add_video( int track, int y, string filename )
+/*void TimelineView::add_video( int track, int y, string filename )
 {
 	//m_timeline->add_video( track, get_real_position( y ), filename );
-}
+}*/
 int64_t TimelineView::get_real_position( int p, float stretchFactor )
 {
 	return int64_t( ( ( float(p - LEFT_TRACK_SPACING - x() ) / SwitchBoard::i()->zoom() ) + m_scrollPosition ) * stretchFactor );

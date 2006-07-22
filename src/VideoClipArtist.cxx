@@ -40,7 +40,7 @@ VideoClipArtist::VideoClipArtist( VideoClip* clip )
 VideoClipArtist::~VideoClipArtist()
 {
 }
-void VideoClipArtist::render( Rect& rect, int64_t start, int64_t stop )
+void VideoClipArtist::render( Rect& rect, int64_t, int64_t )
 {
 	fl_push_clip( rect.x, rect.y, rect.w, rect.h );		
 	int _x;

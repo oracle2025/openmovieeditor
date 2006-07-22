@@ -44,7 +44,7 @@ DiskCache::DiskCache( string filename, string type )
 	m_dirty = false;
 	if ( m_file ) {
 		m_empty = false;
-		int r = stat( m_cachefile.c_str(), &statbuf );
+		int r = fstat( fileno( m_file ), &statbuf );
 		assert( r != -1 );
 		m_size = statbuf.st_size;
 		r = stat( filename.c_str(), &statbuf2 );

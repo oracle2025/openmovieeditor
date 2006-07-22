@@ -36,7 +36,7 @@ ImageClipArtist::~ImageClipArtist()
 		delete m_image;
 	}
 }
-void ImageClipArtist::render( Rect& rect, int64_t start, int64_t stop )
+void ImageClipArtist::render( Rect& rect, int64_t, int64_t )
 {
 	fl_push_clip( rect.x, rect.y, rect.w, rect.h );		
 	m_image->draw( rect.x, rect.y );

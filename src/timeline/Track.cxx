@@ -96,7 +96,7 @@ Clip* Track::getClip( int id )
 	if ( node ) { return node->clip; }
 	return 0;
 }
-static int reset_clip( void* p, void* data )
+static int reset_clip( void* p, void* )
 {
 	clip_node* node = (clip_node*)p;
 	node->clip->reset();

@@ -56,7 +56,8 @@ namespace nle
 pthread_mutex_t condition_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t  condition_cond  = PTHREAD_COND_INITIALIZER;
 
-static int portaudio_callback( void *input, void *output, unsigned long frames, PaTimestamp time, void* data )
+//static int portaudio_callback( void *input, void *output, unsigned long frames, PaTimestamp time, void* data )
+static int portaudio_callback( void *, void *output, unsigned long frames, PaTimestamp, void* data )
 {
 	SimplePlaybackCore* pc = (SimplePlaybackCore*)data;
 	return pc->readAudio( (float*)output, frames );

@@ -31,7 +31,7 @@ AudioClipArtist::AudioClipArtist( AudioClip* clip )
 AudioClipArtist::~AudioClipArtist()
 {
 }
-void AudioClipArtist::render( Rect& rect, int64_t start, int64_t stop )
+void AudioClipArtist::render( Rect& rect, int64_t, int64_t )
 {
 	g_wavArtist->render( m_clip->filename(), rect, m_clip->trimA(), m_clip->trimA() + m_clip->length() );
 }

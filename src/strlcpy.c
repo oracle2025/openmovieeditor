@@ -2,7 +2,7 @@
 
 #include "strlcpy.h"
 
-int strlcpy(char *dst, const char *src, int dstsize)
+int strlcpy(char *dst, const char *src, unsigned int dstsize)
 {
 	if (strlen(src) < dstsize) {
 		strcpy(dst,src);

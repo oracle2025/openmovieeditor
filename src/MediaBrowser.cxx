@@ -173,7 +173,7 @@ void* MediaBrowser::item_first() const
 {
 	return m_items;
 }
-int MediaBrowser::item_height( void* p ) const
+int MediaBrowser::item_height( void* ) const
 {
 	return 42;
 }
@@ -187,7 +187,7 @@ void* MediaBrowser::item_prev( void* p ) const
 	file_item* f = (file_item*)p;
 	return f->prev;
 }
-int MediaBrowser::item_width( void* p ) const
+int MediaBrowser::item_width( void* ) const
 {
 	return 20;
 }

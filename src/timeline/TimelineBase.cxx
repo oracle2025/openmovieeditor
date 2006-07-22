@@ -50,7 +50,7 @@ void TimelineBase::clear()
 	g_trackId = 0;
 }
 
-static int sort_track_helper( void* p, void* data )
+static int sort_track_helper( void* p, void* )
 {
 	track_node* node = (track_node*) p;
 	node->track->sort();
