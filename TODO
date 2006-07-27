@@ -25,5 +25,11 @@ http://freshmeat.net/projects/pootle/
 
 Project Stacking, Prerendering changed parts to mjpeg
 
+Don't do stupid things during directory scanning, like parsing xml over and over
+use strace-account to find stupid places
 
+int addvec(int n, int arr[n]);
 
+use realpath or better? canonicalize_file_name
+
+compile with -Wextra, hint: If you don't intend to use a parameter, don't give it a name.
