@@ -41,6 +41,7 @@ class DocManager
 		bool canUndo();
 		bool canRedo();
 	private:
+		void setButtons();
 		command_node* m_undoList;
 		command_node* m_redoList;
 };

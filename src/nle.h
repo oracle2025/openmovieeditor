@@ -47,10 +47,16 @@ private:
   static void cb_Render(Fl_Menu_*, void*);
   inline void cb_Quit_i(Fl_Menu_*, void*);
   static void cb_Quit(Fl_Menu_*, void*);
-  inline void cb_Undo_i(Fl_Menu_*, void*);
-  static void cb_Undo(Fl_Menu_*, void*);
-  inline void cb_Redo_i(Fl_Menu_*, void*);
-  static void cb_Redo(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *undo_item;
+private:
+  inline void cb_undo_item_i(Fl_Menu_*, void*);
+  static void cb_undo_item(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *redo_item;
+private:
+  inline void cb_redo_item_i(Fl_Menu_*, void*);
+  static void cb_redo_item(Fl_Menu_*, void*);
   inline void cb_Add_i(Fl_Menu_*, void*);
   static void cb_Add(Fl_Menu_*, void*);
   inline void cb_Add1_i(Fl_Menu_*, void*);

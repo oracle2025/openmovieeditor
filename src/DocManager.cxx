@@ -21,6 +21,8 @@
 
 #include "DocManager.H"
 #include "Command.H"
+#include "globals.H"
+#include "nle.h"
 
 
 namespace nle
@@ -57,15 +59,30 @@ void DocManager::undo()
 	command_node* n = (command_node*)sl_pop( &m_undoList );
 	n->command->undo();
 	m_redoList = (command_node*)sl_push( m_redoList, n );
+	setButtons();
 }
-
 void DocManager::redo()
 {
 	if ( !canRedo() ) { return; }
 	command_node* n = (command_node*)sl_pop( &m_redoList );
 	n->command->doo();
 	m_undoList = (command_node*)sl_push( m_undoList, n );
+	setButtons();
 }
+void DocManager::setButtons()
+{
+	if ( canUndo() ) {
+		g_ui->undo_item->activate();
+	} else {
+		g_ui->undo_item->deactivate();
+	}
+	if ( canRedo() ) {
+		g_ui->redo_item->activate();
+	} else {
+		g_ui->redo_item->deactivate();
+	}
+}
+
 
 static command_node* new_command_node( Command* cmd )
 {
@@ -84,6 +101,8 @@ void DocManager::submit( Command* cmd )
 	}
 	m_undoList = (command_node*)sl_push( m_undoList, new_command_node( cmd ) );
 	clear_command_list( &m_redoList );
+	g_ui->redo_item->deactivate();
+	g_ui->undo_item->activate();
 }
 
 bool DocManager::canUndo()

@@ -67,22 +67,22 @@ void NleUI::cb_Quit(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Quit_i(o,v);
 }
 
-inline void NleUI::cb_Undo_i(Fl_Menu_*, void*) {
+inline void NleUI::cb_undo_item_i(Fl_Menu_*, void*) {
   m_timelineView->clear_selection();
 nle::g_docManager->undo();
 m_timelineView->redraw();
 }
-void NleUI::cb_Undo(Fl_Menu_* o, void* v) {
-  ((NleUI*)(o->parent()->user_data()))->cb_Undo_i(o,v);
+void NleUI::cb_undo_item(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_undo_item_i(o,v);
 }
 
-inline void NleUI::cb_Redo_i(Fl_Menu_*, void*) {
+inline void NleUI::cb_redo_item_i(Fl_Menu_*, void*) {
   m_timelineView->clear_selection();
 nle::g_docManager->redo();
 m_timelineView->redraw();
 }
-void NleUI::cb_Redo(Fl_Menu_* o, void* v) {
-  ((NleUI*)(o->parent()->user_data()))->cb_Redo_i(o,v);
+void NleUI::cb_redo_item(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_redo_item_i(o,v);
 }
 
 inline void NleUI::cb_Add_i(Fl_Menu_*, void*) {
@@ -155,8 +155,8 @@ Fl_Menu_Item NleUI::menu_[] = {
  {"Quit", 0x40071,  (Fl_Callback*)NleUI::cb_Quit, 0, 0, 0, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0},
  {"&Edit", 0,  0, 0, 64, 0, 0, 14, 56},
- {"Undo", 0x4007a,  (Fl_Callback*)NleUI::cb_Undo, 0, 0, 0, 0, 14, 56},
- {"Redo", 0x40079,  (Fl_Callback*)NleUI::cb_Redo, 0, 0, 0, 0, 14, 56},
+ {"Undo", 0x4007a,  (Fl_Callback*)NleUI::cb_undo_item, 0, 1, 0, 0, 14, 56},
+ {"Redo", 0x40079,  (Fl_Callback*)NleUI::cb_redo_item, 0, 1, 0, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0},
  {"&Tracks", 0,  0, 0, 64, 0, 0, 14, 56},
  {"Add Video Track", 0,  (Fl_Callback*)NleUI::cb_Add, 0, 0, 0, 0, 14, 56},
@@ -180,6 +180,8 @@ Fl_Menu_Item NleUI::menu_[] = {
  {0,0,0,0,0,0,0,0,0},
  {0,0,0,0,0,0,0,0,0}
 };
+Fl_Menu_Item* NleUI::undo_item = NleUI::menu_ + 7;
+Fl_Menu_Item* NleUI::redo_item = NleUI::menu_ + 8;
 
 inline void NleUI::cb__i(nle::FileBrowser* o, void*) {
   nle::FileBrowser* fb = (nle::FileBrowser*)o;

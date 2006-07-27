@@ -13,7 +13,7 @@ class NleUI {open
 mainWindow->hide();} open
       private xywh {491 296 515 465} type Double resizable visible
     } {
-      Fl_Menu_Bar {} {
+      Fl_Menu_Bar {} {open
         xywh {0 0 345 25}
       } {
         submenu {} {
@@ -76,20 +76,20 @@ o->window()->hide();}
           label {&Edit} open
           xywh {0 0 100 20}
         } {
-          menuitem {} {
+          menuitem undo_item {
             label Undo
             callback {m_timelineView->clear_selection();
 nle::g_docManager->undo();
 m_timelineView->redraw();}
-            xywh {0 0 100 20} shortcut 0x4007a
+            xywh {0 0 100 20} shortcut 0x4007a deactivate
             code0 {\#include "DocManager.H"}
           }
-          menuitem {} {
+          menuitem redo_item {
             label Redo
             callback {m_timelineView->clear_selection();
 nle::g_docManager->redo();
-m_timelineView->redraw();}
-            xywh {0 0 100 20} shortcut 0x40079
+m_timelineView->redraw();} selected
+            xywh {0 0 100 20} shortcut 0x40079 deactivate
             code0 {\#include "DocManager.H"}
           }
         }
@@ -217,7 +217,7 @@ while (dlg.shown())
               } {
                 Fl_File_Browser {} {
                   callback {nle::FileBrowser* fb = (nle::FileBrowser*)o;
-fb->load_rel();} selected
+fb->load_rel();}
                   xywh {5 80 270 150} resizable
                   code0 {\#include "FileBrowser.H"}
                   class {nle::FileBrowser}
@@ -691,7 +691,7 @@ class AboutDialog {open
   } {
     Fl_Window aboutDialog {
       label {About Dialog} open
-      xywh {1019 328 340 370} type Double modal visible
+      xywh {1013 296 340 370} type Double modal visible
     } {
       Fl_Box {} {
         image {/home/oracle/Projekte/OpenME/code/src/icons/logo.xpm} xywh {0 0 340 155}
