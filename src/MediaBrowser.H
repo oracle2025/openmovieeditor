@@ -35,6 +35,7 @@ typedef struct file_item_ {
 	int w;
 	int h;
 	unsigned char* rgb;
+	bool empty;
 } file_item;
 
 class MediaBrowser : public Fl_Browser_

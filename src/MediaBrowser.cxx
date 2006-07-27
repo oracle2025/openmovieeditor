@@ -54,21 +54,11 @@ void MediaBrowser::load( string folder )
 		if ( files[i]->d_name[0] != '.' && !fl_filename_isdir( string(folder + "/" + files[i]->d_name).c_str() ) ) {
 			file_item* f = new file_item;
 			f->value = files[i]->d_name;
-			string s = m_folder + "/" + f->value;
 			f->rgb = 0;
-			const char* ext = fl_filename_ext( s.c_str() );
-			if ( ( strcmp( ext, ".mov" ) == 0 ) ||
-					( strcmp( ext, ".avi" ) == 0 ) ||
-					( strcmp( ext, ".jpg" ) == 0 ) ||
-					( strcmp( ext, ".png" ) == 0 ) ||
-					( strcmp( ext, ".jpeg" ) == 0 ) ) {
-				f->rgb = new unsigned char[VIDEO_THUMBNAIL_WIDTH*VIDEO_THUMBNAIL_HEIGHT*3];
-				if ( !VideoThumbnails::get( s.c_str(), f->rgb, f->w, f->h ) ) {
-					delete [] f->rgb;
-					f->w = f->h = 0;
-					f->rgb = 0;
-				}
-			}
+			f->empty = true;
+
+
+			
 			append( f );
 			//add( files[i]->d_name );
 		}
@@ -158,6 +148,24 @@ void MediaBrowser::item_draw( void* p, int x, int y, int w, int h ) const
 	fl_font( FL_HELVETICA, 14 );
 	fl_color( FL_FOREGROUND_COLOR );
 	fl_draw( f->value.c_str(), x + 53, y + 15 );
+
+	if ( f->empty ) {
+		string s = m_folder + "/" + f->value;
+		const char* ext = fl_filename_ext( s.c_str() );
+		if ( ( strcmp( ext, ".mov" ) == 0 ) ||
+				( strcmp( ext, ".avi" ) == 0 ) ||
+				( strcmp( ext, ".jpg" ) == 0 ) ||
+				( strcmp( ext, ".png" ) == 0 ) ||
+				( strcmp( ext, ".jpeg" ) == 0 ) ) {
+			f->rgb = new unsigned char[VIDEO_THUMBNAIL_WIDTH*VIDEO_THUMBNAIL_HEIGHT*3];
+			if ( !VideoThumbnails::get( s.c_str(), f->rgb, f->w, f->h ) ) {
+				delete [] f->rgb;
+				f->w = f->h = 0;
+				f->rgb = 0;
+			}
+		}
+		f->empty = false;
+	}
 	if ( f->rgb ) {
 		fl_draw_image( f->rgb, x, y, VIDEO_THUMBNAIL_WIDTH, VIDEO_THUMBNAIL_HEIGHT );
 		fl_font( FL_HELVETICA, 12 );
