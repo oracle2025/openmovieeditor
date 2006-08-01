@@ -153,6 +153,7 @@ void MediaBrowser::item_draw( void* p, int x, int y, int w, int h ) const
 		string s = m_folder + "/" + f->value;
 		const char* ext = fl_filename_ext( s.c_str() );
 		if ( ( strcmp( ext, ".mov" ) == 0 ) ||
+				( strcmp( ext, ".dv" ) == 0 ) ||
 				( strcmp( ext, ".avi" ) == 0 ) ||
 				( strcmp( ext, ".jpg" ) == 0 ) ||
 				( strcmp( ext, ".png" ) == 0 ) ||

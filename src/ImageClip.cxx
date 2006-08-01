@@ -89,7 +89,7 @@ int64_t ImageClip::length()
 frame_struct* ImageClip::getFrame( int64_t position )
 {
 	m_frame.alpha = 1.0;
-	if ( position > m_position && position < m_position + m_length ) {
+	if ( position >= m_position && position <= m_position + m_length ) {
 		return &m_frame;
 	} else {
 		return 0;
