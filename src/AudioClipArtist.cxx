@@ -34,9 +34,6 @@ AudioClipArtist::~AudioClipArtist()
 void AudioClipArtist::render( Rect& rect, int64_t start, int64_t stop )
 {
 	int64_t start_, stop_;
-	m_clip->position();
-	m_clip->trimA();
-	m_clip->length();
 	if ( m_clip->position() < start ) {
 		start_ = m_clip->trimA() + ( start - m_clip->position() );
 	} else {
