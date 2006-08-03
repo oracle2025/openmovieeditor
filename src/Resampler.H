@@ -1,6 +1,6 @@
-/*  IAudioFile.H
+/*  Resampler.H
  *
- *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,34 +17,36 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _I_AUDIO_FILE_H_
-#define _I_AUDIO_FILE_H_
+#ifndef _RESAMPLER_H_
+#define _RESAMPLER_H_
 
 #include <stdint.h>
 
+#include "IAudioFile.H"
+
+typedef struct gavl_audio_converter_s gavl_audio_converter_t;
+typedef struct gavl_audio_frame_s gavl_audio_frame_t;
 
 namespace nle
 {
 
-class IAudioFile
+class IAudioFile;
+
+class Resampler : public IAudioFile
 {
 	public:
-		virtual ~IAudioFile() {}
-		inline bool ok() { return m_ok; }
-		inline int64_t length() { return m_length; }
-			// <= number of floats: 2 * length (left, right)
-		virtual void seek( int64_t sample ) = 0;
-		virtual int fillBuffer( float* output, unsigned long frames ) = 0;
-			//sizof(output) = frames * 2
-			//File Format: 48000 stereo interleaved
-		inline string filename() { return m_filename; }
-		
-	protected:
-		int64_t m_length;
-		bool m_ok;
-		string m_filename;
+		Resampler( IAudioFile* audiofile );
+		~Resampler();
+		void seek( int64_t sample );
+		int fillBuffer( float* output, unsigned long frames );
+	private:
+		gavl_audio_converter_t* m_converter;
+		gavl_audio_frame_t m_output_frame;
+		gavl_audio_frame_t m_input_frame;
+		IAudioFile* m_audiofile;
+		int m_samplerate;
 };
 
 } /* namespace nle */
 
-#endif /* _I_AUDIO_FILE_H_ */
+#endif /* _RESAMPLER_H_ */
