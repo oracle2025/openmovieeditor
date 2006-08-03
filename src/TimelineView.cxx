@@ -343,7 +343,8 @@ void TimelineView::draw()
 			Rect r( scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h );
 			IClipArtist* artist = clip->getArtist();
 			if ( artist ) {
-				artist->render( r, 0, 0 );
+				artist->render( r, get_real_position( scr_clip_x, track->stretchFactor() ),
+						get_real_position( scr_clip_x + scr_clip_w, track->stretchFactor() ) );
 			}
 			if ( clip->selected() ) {
 				fl_draw_box( FL_BORDER_FRAME, scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h, FL_RED );

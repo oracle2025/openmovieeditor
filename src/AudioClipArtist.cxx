@@ -31,9 +31,23 @@ AudioClipArtist::AudioClipArtist( AudioClip* clip )
 AudioClipArtist::~AudioClipArtist()
 {
 }
-void AudioClipArtist::render( Rect& rect, int64_t, int64_t )
+void AudioClipArtist::render( Rect& rect, int64_t start, int64_t stop )
 {
-	g_wavArtist->render( m_clip->filename(), rect, m_clip->trimA(), m_clip->trimA() + m_clip->length() );
+	int64_t start_, stop_;
+	m_clip->position();
+	m_clip->trimA();
+	m_clip->length();
+	if ( m_clip->position() < start ) {
+		start_ = m_clip->trimA() + ( start - m_clip->position() );
+	} else {
+		start_ = m_clip->trimA();
+	}
+	if ( m_clip->position() + m_clip->length() > stop ) {
+		stop_ = m_clip->trimA() + ( stop - m_clip->position() );
+	} else {
+		stop_ = m_clip->trimA() + m_clip->length();
+	}
+	g_wavArtist->render( m_clip->filename(), rect, start_, stop_ );
 }
 
 	
