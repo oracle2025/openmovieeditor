@@ -74,6 +74,9 @@ void FolderBrowser::up()
 {
 	char buffer[FL_PATH_MAX];
 	strip_dots( buffer, string( m_folder + "/.." ).c_str() );
+	if ( buffer[0] == '\0' ) {
+		strncpy( buffer, "/", FL_PATH_MAX );
+	}
 	load( buffer );
 }
 
