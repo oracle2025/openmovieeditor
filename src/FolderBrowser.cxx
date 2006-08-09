@@ -84,7 +84,11 @@ void FolderBrowser::click()
 {
 	int v = value();
 	if ( v ) {
-		load( m_folder + "/" + text( v ) );
+		if ( m_folder == "/" ) {
+			load( m_folder + text( v ) );
+		} else {
+			load( m_folder + "/" + text( v ) );
+		}
 	}
 }
 
