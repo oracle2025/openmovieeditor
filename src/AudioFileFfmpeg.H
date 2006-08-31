@@ -48,7 +48,6 @@ class AudioFileFfmpeg : public IAudioFile
 		int16_t          m_tmpBuffer[AVCODEC_MAX_AUDIO_FRAME_SIZE];
 		int16_t*         m_tmpBufferStart;
 		unsigned long    m_tmpBufferLen;
-		int              m_samplerate;
 };
 	
 } /* namespace  nle */

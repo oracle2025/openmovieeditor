@@ -21,6 +21,7 @@
 #include "AudioFileQT.H"
 #include "AudioFileSnd.H"
 #include "AudioFileFfmpeg.H"
+#include "Resampler.H"
 
 
 namespace nle
@@ -29,23 +30,27 @@ namespace nle
 IAudioFile* AudioFileFactory::get( string filename )
 {
 	IAudioFile *af = new AudioFileSnd( filename );
-	if ( af->ok() ) {
-		return af;
+	if ( !af->ok() ) {
+		delete af;
+		af = new AudioFileQT( filename );
 	}
-	delete af;
-	af = new AudioFileQT( filename );
-	if ( af->ok() ) {
-		return af;
-	}
-	delete af;
+	if ( !af->ok() ) {
+		delete af;
+		af = 0;
 #ifdef AVCODEC
-	af = new AudioFileFfmpeg( filename );
-	if ( af->ok() ) {
-		return af;
-	}
-	delete af;
+		af = new AudioFileFfmpeg( filename );
 #endif /* AVCODEC */
-	return 0;
+	}
+#ifdef AVCODEC
+	if ( !af->ok() ) {
+		delete af;
+		af = 0;
+	}
+#endif /* AVCODEC */
+	if ( af && af->samplerate() == 44100 ) {
+		af = new Resampler( af );
+	}
+	return af;
 }
 
 

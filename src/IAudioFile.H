@@ -38,11 +38,12 @@ class IAudioFile
 			//sizof(output) = frames * 2
 			//File Format: 48000 stereo interleaved
 		inline string filename() { return m_filename; }
-		
+		inline int samplerate() { return m_samplerate; }
 	protected:
 		int64_t m_length;
 		bool m_ok;
 		string m_filename;
+		int m_samplerate;
 };
 
 } /* namespace nle */

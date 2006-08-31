@@ -52,9 +52,10 @@ AudioFileQT::AudioFileQT( string filename )
 		return;
 	}
 	m_length = quicktime_audio_length( m_qt, 0 );
-	if ( quicktime_sample_rate( m_qt, 0 ) != 48000 ) {
+	m_samplerate = quicktime_sample_rate( m_qt, 0 );
+	if ( m_samplerate != 48000 && m_samplerate != 44100 ) {
 		CLEAR_ERRORS();
-		ERROR_DETAIL( "Audio samplerates other than 48000 are not supported" );
+		ERROR_DETAIL( "Audio samplerates other than 48000 and 44100 are not supported" );
 		return;
 	}
 	if ( quicktime_track_channels( m_qt, 0 ) != 2 ) {

@@ -22,10 +22,9 @@
 
 #include <stdint.h>
 
-#include "IAudioFile.H"
+#include <samplerate.h>
 
-typedef struct gavl_audio_converter_s gavl_audio_converter_t;
-typedef struct gavl_audio_frame_s gavl_audio_frame_t;
+#include "IAudioFile.H"
 
 namespace nle
 {
@@ -39,12 +38,12 @@ class Resampler : public IAudioFile
 		~Resampler();
 		void seek( int64_t sample );
 		int fillBuffer( float* output, unsigned long frames );
-	private:
-		gavl_audio_converter_t* m_converter;
-		gavl_audio_frame_t m_output_frame;
-		gavl_audio_frame_t m_input_frame;
+		float m_buffer[4096*2];
 		IAudioFile* m_audiofile;
+	private:
 		int m_samplerate;
+		SRC_STATE* m_state;
+		int m_error;
 };
 
 } /* namespace nle */

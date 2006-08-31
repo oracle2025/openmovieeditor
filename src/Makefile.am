@@ -167,5 +167,7 @@ openmovieeditor_SOURCES = nle.cxx\
 	FileBrowser.cxx\
 	FileBrowser.H\
 	VideoThumbnails.H\
-	VideoThumbnails.cxx
+	VideoThumbnails.cxx\
+	Resampler.cxx\
+	Resampler.H
 

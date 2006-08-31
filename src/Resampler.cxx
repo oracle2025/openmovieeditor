@@ -17,7 +17,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <gavl.h>
+#include "global_includes.H"
 
 #include "Resampler.H"
 
@@ -25,55 +25,41 @@
 namespace nle
 {
 
+static long resampler_callback( void* data, float** output )
+{
+	Resampler* res = (Resampler*)data;
+	long frames = res->m_audiofile->fillBuffer( res->m_buffer, 4096 );
+	*output = res->m_buffer;
+	return frames;
+}
+
 Resampler::Resampler( IAudioFile* audiofile )
 	: m_audiofile( audiofile )
 {
 	m_filename = audiofile->filename();
-	gavl_audio_format_t input_format;
-	gavl_audio_format_t output_format;
-	input_format.samplerate = 44100; //TODO: Change this
-	input_format.num_channels = 2;
-	input_format.sample_format = GAVL_SAMPLE_FLOAT;
-	input_format.interleave_mode = GAVL_INTERLEAVE_2;
-	
-	output_format.samplerate = 48000;
-	output_format.num_channels = 2;
-	output_format.sample_format = GAVL_SAMPLE_FLOAT;
-	output_format.interleave_mode = GAVL_INTERLEAVE_2;
-	
-	
-	m_converter = gavl_audio_converter_create();
-	gavl_audio_converter_init( m_converter, &input_format, &output_format );
-
-	m_output_frame.samples.f = new float[4096 * 2 + 20];
-	m_output_frame.valid_samples.f = 4096 * 2 + 20;
-	
-	m_input_frame; // TODO: errechnit sich aus der Samplerate
-	
+	m_state = src_callback_new( resampler_callback, SRC_SINC_MEDIUM_QUALITY, 2, &m_error, this  );
+	src_set_ratio( m_state, ( 48000.0 / 44100.0 ) );
+	m_length = ( m_audiofile->length() * 48000 ) / 44100;
+	m_samplerate = 48000;
 	m_ok = true;
 }
 
 Resampler::~Resampler()
 {
-	gavl_audio_converter_destroy( m_converter );
 	delete m_audiofile;
-	delete m_output_frame.samples.f;
-	delete m_input_frame.samples.f;
+	m_state = src_delete( m_state );
 }
 
 void Resampler::seek( int64_t sample )
 {
-	//Verhältnis berechnen
-	m_audiofile->seek();
+	m_audiofile->seek( ( sample * 44100 ) / 48000 );
+	src_reset( m_state );
 }
 
 int Resampler::fillBuffer( float* output, unsigned long frames )
 {
-	int c = m_audiofile->fillBuffer( m_input_frame.samples.f, 1234 );
-	m_input_frame.valid_samples = c * 2;
-	
-	gavl_audio_convert( m_converter, &m_input_frame, &m_output_frame );
-	//Minimum size is input_frame_size * output_samplerate / input_samplerate + 10
+	long c = src_callback_read ( m_state, ( 48000.0 / 44100.0 ), frames, output );
+	return c;
 }
 
 } /* namespace nle */

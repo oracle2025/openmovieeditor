@@ -65,9 +65,9 @@ AudioFileFfmpeg::AudioFileFfmpeg( string filename )
 		ERROR_DETAIL( "avcodec_open failed" );
 		return;
 	}
-	if ( m_samplerate != 48000 ) {
+	if ( m_samplerate != 48000 && m_samplerate != 44100 ) {
 		CLEAR_ERRORS();
-		ERROR_DETAIL( "Audio samplerates other than 48000 are not supported" );
+		ERROR_DETAIL( "Audio samplerates other than 48000 and 44100 are not supported" );
 		return;
 	}
 	if ( m_codecContext->channels != 2 && m_codecContext->channels != 1) {

@@ -40,8 +40,9 @@ AudioFileSnd::AudioFileSnd( string filename )
 		ERROR_DETAIL( "This is an empty audio file" );
 		return;
 	}
-	if ( sfinfo.samplerate != 48000 ) {
-		ERROR_DETAIL( "Audio samplerates other than 48000 are not supported" );
+	m_samplerate = sfinfo.samplerate;
+	if ( sfinfo.samplerate != 48000 && sfinfo.samplerate != 44100 ) {
+		ERROR_DETAIL( "Audio samplerates other than 48000 and 44100 are not supported" );
 		return;
 	}
 	m_length = sfinfo.frames;
