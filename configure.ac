@@ -48,7 +48,10 @@ AC_CHECK_FUNCS([gettimeofday memset select strchr strdup strstr])
  AC_CHECK_HEADER(sys/soundcard.h,,
   AC_MSG_ERROR([*** sys/soundcard.h not found - this program requires the Open Sound System (http://4front-tech.com) or compatible (http://www.alsa-project.com) ***]))
 
-
+PKG_CHECK_MODULES(SAMPLERATE, samplerate >= 0.1.1,,
+  AC_MSG_ERROR([*** libsamplerate not found - this program requires libsamplerate >= 0.1.1 http://www.mega-nerd.com/SRC/ ***]))
+CPPFLAGS="$CPPFLAGS $SAMPLERATE_CFLAGS"
+LDFLAGS="$LDFLAGS $SAMPLERATE_LIBS"
 
 PKG_CHECK_MODULES(SNDFILE, sndfile >= 1.0.0,,
   AC_MSG_ERROR([*** libsndfile 1.0.0 not found - this program requires libsndfile >= 1.0.0 http://www.mega-nerd.com/libsndfile/ ***]))
