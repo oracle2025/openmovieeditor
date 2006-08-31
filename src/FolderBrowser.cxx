@@ -55,6 +55,9 @@ FolderBrowser::FolderBrowser( int x, int y, int w, int h, const char *l )
 }
 void FolderBrowser::load( string folder )
 {
+	if ( !fl_filename_isdir( folder.c_str() ) ) {
+		return;
+	}
 	m_folder = folder;
 	clear();
 	dirent	**folders;
@@ -68,7 +71,9 @@ void FolderBrowser::load( string folder )
 	for ( int i = count; i > 0; ) {
 		free( (void*)(folders[--i]) );
 	}
-	free( (void*)folders );
+	if ( count >= 0 )  {
+		free( (void*)folders );
+	}
 }
 void FolderBrowser::up()
 {

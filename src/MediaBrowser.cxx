@@ -66,7 +66,9 @@ void MediaBrowser::load( string folder )
 	for ( int i = count; i > 0; ) {
 		free( (void*)(files[--i]) );
 	}
-	free( (void*)files );
+	if ( count >= 0 ) {
+		free( (void*)files );
+	}
 	new_list();
 	redraw_lines();
 }
