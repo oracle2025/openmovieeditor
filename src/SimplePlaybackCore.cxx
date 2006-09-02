@@ -286,7 +286,7 @@ void SimplePlaybackCore::play()
 		m_currentFrame = g_timeline->m_seekPosition;
 		m_lastFrame = g_timeline->m_seekPosition;
 		m_scrubpos = 0;
-		m_scrubmax = (jack_bufsiz!=0)?(int)ceil(scrublen/jack_bufsiz):1;
+		m_scrubmax = (jack_bufsiz!=0)?(int)ceil((double)(scrublen/jack_bufsiz)):1;
 
 		if (!g_use_jack_transport) {
 			m_audioPosition = m_currentFrame * ( 48000 / 25 ); 
