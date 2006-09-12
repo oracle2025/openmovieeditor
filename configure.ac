@@ -45,6 +45,11 @@ AC_FUNC_MALLOC
 AC_FUNC_SELECT_ARGTYPES
 AC_CHECK_FUNCS([gettimeofday memset select strchr strdup strstr])
 
+AC_SYS_LARGEFILE
+LARGEFILE_FLAGS=`getconf LFS_CFLAGS`
+CPPFLAGS="$CPPFLAGS $LARGEFILE_FLAGS"
+CFLAGS="$CFLAGS $LARGEFILE_FLAGS"
+
  AC_CHECK_HEADER(sys/soundcard.h,,
   AC_MSG_ERROR([*** sys/soundcard.h not found - this program requires the Open Sound System (http://4front-tech.com) or compatible (http://www.alsa-project.com) ***]))
 
