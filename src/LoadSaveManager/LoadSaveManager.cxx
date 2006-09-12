@@ -17,11 +17,14 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "config.h"
+
 #include <algorithm>
 #include <sstream>
 
 #include <sys/stat.h>
 #include <sys/types.h>
+
 
 #include <FL/filename.H>
 #include <FL/Fl_Choice.H>

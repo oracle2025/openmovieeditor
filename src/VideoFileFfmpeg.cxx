@@ -104,7 +104,6 @@ VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 		return;
 	}
 
-	cout << "FFMPEG Framerate: " << m_framerate << endl;
 	
 	//m_framerate = (double)(m_codecContext->frame_rate) / (double)(m_codecContext->frame_rate_base);
 	int64_t len = m_formatContext->duration - m_formatContext->start_time;

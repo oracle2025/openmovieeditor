@@ -53,6 +53,11 @@ FilmStrip::FilmStrip( IVideoFile* vfile )
 		m_pics = new pic_struct[m_countAll];
 	} catch(std::exception &e) {
 		cerr << "Out of Memory? " << e.what() << endl;
+		m_pics = 0;
+	}
+	if ( !m_pics ) {
+		m_countAll = 5;
+		m_pics = new pic_struct[m_countAll];
 	}
 	m_count = 0;
 	start();
