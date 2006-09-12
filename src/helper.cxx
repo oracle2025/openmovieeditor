@@ -17,6 +17,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "config.h"
+
 #include <cstdio>
 #include <cstring>
 #include <cerrno>
@@ -85,5 +87,13 @@ void findpath( const char* filename, char* buffer, int bufferlen )
 	}
 	return;
 }
+
+void secs2HMS( double secs, int &H, int &M, int &S )
+{
+  S = (int)secs;
+  M = S / 60; S -= M*60;
+  H = M / 60; M -= H*60;
+}
+
 
 } /* namespace nle */

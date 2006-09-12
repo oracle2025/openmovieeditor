@@ -28,6 +28,7 @@ namespace nle
 const char* timestamp_to_string( int64_t timestamp );
 int mkdirp( const char* pathname );
 void findpath( const char* filename, char* buffer, int bufferlen );
+void secs2HMS( double secs, int &H, int &M, int &S ); /* copied from FLU */
 
 } /* namespace nle */
 

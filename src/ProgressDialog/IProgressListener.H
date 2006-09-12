@@ -27,7 +27,7 @@ class IProgressListener
 {
 	public:
 		virtual ~IProgressListener() {}
-		virtual bool progress( int percent ) = 0;
+		virtual bool progress( double percent ) = 0;
 		virtual void start() = 0;
 		virtual void end() = 0;
 };

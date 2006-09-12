@@ -175,7 +175,7 @@ void Renderer::go( IProgressListener* l )
 			fcnt -= 1920;
 			current_frame++;
 			if ( l ) {
-				if ( l->progress( current_frame * 100 / length ) ) {
+				if ( l->progress( (double)current_frame / length ) ) {
 					break;
 				}
 			}
