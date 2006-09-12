@@ -65,6 +65,10 @@ void FolderBrowser::load( string folder )
 	count = fl_filename_list( folder.c_str(), &folders, fl_casealphasort );
 	for ( int i = 0; i < count; i++ ) {
 		if ( folders[i]->d_name[0] != '.' && fl_filename_isdir( string(folder + "/" + folders[i]->d_name).c_str() ) ) {
+			int l = strlen( folders[i]->d_name );
+			if ( folders[i]->d_name[l-1] == '/' ) {
+				folders[i]->d_name[l-1] = '\0';
+			}
 			add( folders[i]->d_name );
 		}
 	}
