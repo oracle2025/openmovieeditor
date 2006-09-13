@@ -93,7 +93,10 @@ LoadSaveManager::LoadSaveManager( Fl_Choice* projectChoice, Fl_Input* projectInp
 				if ( name != "" ) {
 					name = nodups( name );
 					char* cname = strdup( list[i]->d_name );
-					m_projectChoice->add( name.c_str(), 0, 0, cname );
+					char* n = strdup( name.c_str() );
+					n[1023] = '\0';
+					m_projectChoice->add( n, 0, 0, cname );
+					free(n);
 				}
 			}
 		}
