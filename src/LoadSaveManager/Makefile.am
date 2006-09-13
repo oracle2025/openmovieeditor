@@ -9,6 +9,6 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 noinst_LIBRARIES = libLoadSaveManager.a
-AM_CPPFLAGS = @CPPFLAGS@ -I$(top_srcdir)/src -I$(top_srcdir)/src/sl -I$(top_srcdir)/src/tinyxml
+AM_CPPFLAGS = @CPPFLAGS@ -ggdb -I$(top_srcdir)/src -I$(top_srcdir)/src/sl -I$(top_srcdir)/src/tinyxml
 libLoadSaveManager_a_SOURCES = \
 	LoadSaveManager.cxx  LoadSaveManager.H
