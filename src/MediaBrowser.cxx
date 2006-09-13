@@ -127,7 +127,7 @@ int MediaBrowser::handle( int event )
 				string s = m_folder + "/" + m_item_selected->value;
 				cout << s << endl;
 				const char* c = s.c_str();
-				Fl::copy( c, strlen(c), 0 );
+				Fl::copy( c, strlen(c) + 1, 0 );
 				Fl::dnd();
 				redraw_line( m_item_selected );
 				m_item_selected = 0;

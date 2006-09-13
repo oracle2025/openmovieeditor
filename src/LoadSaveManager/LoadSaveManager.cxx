@@ -94,7 +94,9 @@ LoadSaveManager::LoadSaveManager( Fl_Choice* projectChoice, Fl_Input* projectInp
 					name = nodups( name );
 					char* cname = strdup( list[i]->d_name );
 					char* n = strdup( name.c_str() );
-					n[1023] = '\0';
+					if ( strlen(n) >= 1024 ) {
+						n[1023] = '\0';
+					}
 					m_projectChoice->add( n, 0, 0, cname );
 					free(n);
 				}
