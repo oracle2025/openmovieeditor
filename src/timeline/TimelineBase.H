@@ -47,7 +47,7 @@ class TimelineBase
 		void addClip( int track, Clip *clip );
 		void addFile( int track, int64_t position, std::string filename, int64_t trimA = 0, int64_t trimB = 0, int mute = 0, int id = -1, int64_t length = -1 );
 		void removeClip( int track, Clip *clip );
-		void addTrack( Track* track );
+		void addTrack( Track* track, int position = -1 );
 		void removeTrack( int track );
 		void moveClip( int srcTrack, Clip *srcClip, int dstTrack, int64_t dstPosition );
 		Clip* find( int track, int64_t position );

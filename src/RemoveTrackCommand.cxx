@@ -80,7 +80,7 @@ void RemoveTrackCommand::undo()
 			break;
 	}
 	if ( track ) {
-		g_timeline->addTrack( track );
+		g_timeline->addTrack( track, m_trackPosition );
 		for( command_node* n = m_subCmdList; n; n = n->next ) {
 			n->command->undo();
 		}

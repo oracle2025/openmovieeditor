@@ -90,12 +90,25 @@ void TimelineBase::removeClip( int track, Clip *clip )
 	}
 }
 
-void TimelineBase::addTrack( Track* track )
+void TimelineBase::addTrack( Track* track, int position )
 {
 	track_node* node = new track_node;
 	node->track = track;
 	node->next = 0;
-	m_allTracks = (track_node*)sl_unshift( m_allTracks, node );
+	if ( position < 0 ) {
+		m_allTracks = (track_node*)sl_unshift( m_allTracks, node );
+	} else if ( position == 0 ) {
+		node->next = m_allTracks;
+		m_allTracks = node;
+	} else {
+		track_node* p;
+		int i = 1;
+		for ( p = m_allTracks; p->next && i < position; p = p->next, i++ ) {
+			// nothing;
+		}
+		node->next = p->next;
+		p->next = node;
+	}
 }
 static int remove_track_helper( void* p, void* data )
 {

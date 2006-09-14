@@ -32,7 +32,15 @@ namespace nle
 AddTrackCommand::AddTrackCommand( int type )
 	: m_type( type )
 {
+	track_node* p;
 	m_track = getTrackId();
+	m_position = 0;
+	for ( p = g_timeline->getTracks(); p; p = p->next ) {
+		if ( type == TRACK_TYPE_VIDEO && p->track->type() == TRACK_TYPE_AUDIO ) {
+			break;
+		}
+		m_position++;
+	}
 }
 AddTrackCommand::~AddTrackCommand()
 {
@@ -49,7 +57,7 @@ void AddTrackCommand::doo()
 			break;
 	}
 	if ( track ) {
-		g_timeline->addTrack( track );
+		g_timeline->addTrack( track, m_position );
 		g_timelineView->redraw();
 	}
 }

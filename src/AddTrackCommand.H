@@ -35,6 +35,7 @@ class AddTrackCommand : public Command
 	private:
 		int m_track;
 		int m_type;
+		int m_position;
 };
 
 } /* namespace nle */
