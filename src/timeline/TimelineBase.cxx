@@ -163,12 +163,6 @@ static int remove_track_helper( void* p, void* data )
 		return 1;
 	}
 	return 0;
-/*	if ( *track > 0 ) {
-		(*track)--;
-		return 0;
-	} else {
-		return 1;
-	}*/
 }
 void TimelineBase::removeTrack( int track )
 {
