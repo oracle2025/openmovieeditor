@@ -54,6 +54,8 @@ class TimelineBase
 		int64_t length();
 		inline track_node* getTracks() { return m_allTracks; }
 		void clear();
+		void trackUp( Track* track );
+		void trackDown( Track* track );
 		Track* getTrack( int track );
 		Clip* getClip( int track, int clip );
 	protected:

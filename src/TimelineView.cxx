@@ -148,11 +148,18 @@ int TimelineView::handle( int event )
 						track_count++;
 						int yy = TRACK_SPACING + track_count * TRACK_OFFSET;
 						if ( _y > yy && _y < yy + TRACK_HEIGHT ) {
-							Fl_Menu_Item menuitem[] = { { "Remove Track", MENU_ITEM_INIT }, { 0L, MENU_ITEM_INIT } };
-							if ( menuitem->popup( TRACK_SPACING + x(), yy + TRACK_HEIGHT + y() + 1 ) ) {
+							Fl_Menu_Item menuitem[] = { { "Remove Track", MENU_ITEM_INIT }, { "Move Up", MENU_ITEM_INIT }, { "Move Down", MENU_ITEM_INIT }, { 0L, MENU_ITEM_INIT } };
+							Fl_Menu_Item* r = (Fl_Menu_Item*)menuitem->popup( TRACK_SPACING + x(), yy + TRACK_HEIGHT + y() + 1 );
+							if ( r == &menuitem[0] ) {
 								clear_selection();
 								Command* cmd = new RemoveTrackCommand( i->track );
 								submit( cmd );
+							} else if ( r == &menuitem[1] ) {
+								g_timeline->trackUp( i->track );
+								redraw();
+							} else if ( r == &menuitem[2] ) {
+								g_timeline->trackDown( i->track );
+								redraw();
 							}
 							return 1;
 						}

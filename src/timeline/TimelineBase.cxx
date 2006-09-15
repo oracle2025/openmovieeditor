@@ -110,6 +110,51 @@ void TimelineBase::addTrack( Track* track, int position )
 		p->next = node;
 	}
 }
+track_node* sl_swap( track_node* root )
+{
+	track_node* q = root;
+	track_node* r;
+	if ( !q || !q->next ) {
+		return q;
+	}
+	r = q->next;
+	q->next = r->next;
+	r->next = q;
+	return r;
+}
+void TimelineBase::trackUp( Track* track )
+{
+	if ( !m_allTracks || m_allTracks->track == track ) {
+		return;
+	}
+	track_node* p = m_allTracks;
+	if ( p && p->next && p->next->track == track ) {
+		m_allTracks = sl_swap( p );
+		return;
+	}
+	while (  p && p->next && p->next->next && p->next->next->track != track ) {
+		p = p->next;
+	}
+	if ( !p || !p->next || !p->next->next || p->next->next->track != track ) {
+		return;
+	}
+	p->next = sl_swap( p->next );
+}
+void TimelineBase::trackDown( Track* track )
+{
+	track_node* p = m_allTracks;
+	if ( p && p->track == track ) {
+		m_allTracks = sl_swap( p );
+		return;
+	}
+	while ( p && p->next && p->next->track != track ) {
+		p = p->next;
+	}
+	if ( !p || !p->next || p->next->track != track ) {
+		return;
+	}
+	p->next = sl_swap( p->next );
+}
 static int remove_track_helper( void* p, void* data )
 {
 	int* track = (int*)data;
