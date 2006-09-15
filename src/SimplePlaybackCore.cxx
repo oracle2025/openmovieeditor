@@ -272,6 +272,8 @@ SimplePlaybackCore::SimplePlaybackCore( IAudioReader* audioReader, IVideoReader*
 SimplePlaybackCore::~SimplePlaybackCore()
 {
 }
+void suspend_idle_handlers(); //defined in IdleHandlers.cxx
+void resume_idle_handlers();
 void SimplePlaybackCore::play()
 {
 	int scrublen = 3*1920;  // TODO: get from preferences :  scrub_freq = sample_rate/scrublen   
@@ -315,6 +317,7 @@ void SimplePlaybackCore::play()
 
 	if (jack_connected() || portaudio_start( 48000, FRAMES, this ) ) 
 	{
+		suspend_idle_handlers();
 		m_active = true;
 		Fl::add_timeout( 0.1, timer_callback, this );
 		Fl::add_timeout( 0.04, video_idle_callback, this );
@@ -326,6 +329,7 @@ void SimplePlaybackCore::stop()
 	if ( !m_active ) {
 		return;
 	}
+	resume_idle_handlers();
 	m_active = false;
 	if (jack_connected()) {
 		if (g_use_jack_transport) jack_stop();
