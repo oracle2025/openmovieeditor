@@ -33,7 +33,7 @@ class AudioTrack : public TrackBase
 {
 	public:
 		// constructors and destructors
-		AudioTrack( int num );
+		AudioTrack( int num, string name = "Audio" );
 		~AudioTrack();
 
 		// method declerations

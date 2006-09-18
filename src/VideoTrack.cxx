@@ -32,8 +32,8 @@
 namespace nle
 {
 
-VideoTrack::VideoTrack( int num )
-	: TrackBase( num )
+VideoTrack::VideoTrack( int num, string name )
+	: TrackBase( num, name )
 {
 	m_vidCurrent = 0;
 	m_fade_overs = 0;

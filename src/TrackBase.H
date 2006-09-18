@@ -30,7 +30,7 @@ class TrackBase : public Track
 	public:
 		virtual int fillBuffer( float* output, unsigned long frames, int64_t position );
 	protected:
-		TrackBase( int num );
+		TrackBase( int num, string name );
 		clip_node* m_current;
 	private:
 		int64_t prev_position;

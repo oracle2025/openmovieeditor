@@ -31,8 +31,9 @@ using namespace std;
 namespace nle
 {
 
-Track::Track( int num )
+Track::Track( int num, string name )
 {
+	m_name = name;
 	m_num = num;
 	m_clips = 0;
 }

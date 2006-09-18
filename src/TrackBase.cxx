@@ -24,8 +24,8 @@
 namespace nle
 {
 
-TrackBase::TrackBase( int num )
-	: Track( num )
+TrackBase::TrackBase( int num, string name )
+	: Track( num, name )
 {
 	prev_position = 0;
 }

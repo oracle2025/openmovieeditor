@@ -27,8 +27,8 @@
 namespace nle
 {
 
-AudioTrack::AudioTrack( int num )
-	: TrackBase( num )
+AudioTrack::AudioTrack( int num, string name )
+	: TrackBase( num, name )
 {
 }
 AudioTrack::~AudioTrack()

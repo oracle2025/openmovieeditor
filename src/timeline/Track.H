@@ -22,6 +22,8 @@
 
 #include <string>
 
+using namespace std;
+
 #include <stdint.h>
 #include <sl.h>
 
@@ -60,11 +62,14 @@ class Track
 		int64_t getSnapB( Clip* clip, int64_t a );
 		int64_t getSnapA( Clip* clip, int64_t a );
 		Clip* getClip( int id );
+		inline string name() { return m_name; }
+		inline void name( string n ) { m_name = n; }
 	protected:
-		Track( int num );
+		Track( int num, string name );
 		clip_node* m_clips;
 	private:
 		int m_num;
+		string m_name;
 };
 	
 } /* namespace nle */
