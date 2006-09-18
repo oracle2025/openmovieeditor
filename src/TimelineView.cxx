@@ -617,8 +617,25 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 		new_position = 0;
 	}
 	Command* cmd;
-	if ( m_selectedClips && new_tr == old_tr ) {
-		cmd = new MoveSelectionCommand( clip, new_position, m_selectedClips );
+	/* -- BEGIN CHECK NUMBER OF SELECTED TRACKS -- */
+	int track_count = 0;
+	int last_track = -1;
+	for ( clip_node* p = m_selectedClips; p; p = p->next ) {
+		if ( last_track != p->clip->track()->num() ) {
+		       track_count++;
+		}
+ 		last_track = p->clip->track()->num();
+		if ( track_count > 1 ) {
+			break;
+		}
+	}
+	/* -- END CHECK NUMBER OF SELECTED TRACKS -- */
+	if ( m_selectedClips && ( new_tr == old_tr || track_count == 1 ) ) {
+		if ( track_count == 1 ) {
+			cmd = new MoveSelectionCommand( clip, new_tr, new_position, m_selectedClips );
+		} else {
+			cmd = new MoveSelectionCommand( clip, 0, new_position, m_selectedClips );
+		}
 	} else {
 		clear_selection();
 		cmd = new MoveCommand( clip, new_tr, new_position );

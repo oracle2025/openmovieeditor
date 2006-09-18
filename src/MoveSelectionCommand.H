@@ -27,12 +27,13 @@ namespace nle
 {
 
 class Clip;
+class Track;
 typedef struct clip_node_ clip_node;
 
 class MoveSelectionCommand : public CompositeCommand
 {
 	public:
-		MoveSelectionCommand( Clip* clip, int64_t position, clip_node* m_selectedClips );
+		MoveSelectionCommand( Clip* clip, Track* track, int64_t position, clip_node* m_selectedClips );
 };
 
 } /* namespace nle */
