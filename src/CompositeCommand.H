@@ -1,4 +1,4 @@
-/*  MoveSelectionCommand.cxx
+/*  CompositeCommand.H
  *
  *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,29 +17,27 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "MoveSelectionCommand.H"
-#include "TimelineView.H"
-#include "timeline/Clip.H"
-#include "timeline/Track.H"
-#include "DocManager.H"
-#include "MoveCommand.H"
+#ifndef _COMPOSITE_COMMAND_H_
+#define _COMPOSITE_COMMAND_H_
 
+#include <stdint.h>
+#include "Command.H"
 
 namespace nle
 {
 
-MoveSelectionCommand::MoveSelectionCommand( Clip* clip, int64_t position, clip_node* m_selectedClips )
-{
-	m_subCmdList = 0;
-	int64_t diff = (int64_t)( ( position - clip->position() ) / clip->track()->stretchFactor() );
-	for ( clip_node* n = m_selectedClips; n; n = n->next ) {
-		command_node* c = new command_node;
-		c->next = 0;
-		Command* cmd = new MoveCommand( n->clip, n->clip->track(), (int64_t)( n->clip->position() + (diff * n->clip->track()->stretchFactor() ) ) );
-		c->command = cmd;
-		m_subCmdList = (command_node*)sl_push( m_subCmdList, c );
-	}
-}
+typedef struct _command_node command_node;
 
+class CompositeCommand : public Command
+{
+	public:
+		~CompositeCommand();
+		void doo();
+		void undo();
+	protected:
+		command_node* m_subCmdList;
+};
 
 } /* namespace nle */
+
+#endif /* _MOVE_SELECTION_COMMAND_H_ */

@@ -1,4 +1,4 @@
-/*  MoveSelectionCommand.cxx
+/*  CompositeCommand.cxx
  *
  *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,28 +17,38 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "MoveSelectionCommand.H"
+#include "CompositeCommand.H"
 #include "TimelineView.H"
-#include "timeline/Clip.H"
-#include "timeline/Track.H"
 #include "DocManager.H"
-#include "MoveCommand.H"
+#include "sl/sl.h"
 
 
 namespace nle
 {
 
-MoveSelectionCommand::MoveSelectionCommand( Clip* clip, int64_t position, clip_node* m_selectedClips )
+CompositeCommand::~CompositeCommand()
 {
-	m_subCmdList = 0;
-	int64_t diff = (int64_t)( ( position - clip->position() ) / clip->track()->stretchFactor() );
-	for ( clip_node* n = m_selectedClips; n; n = n->next ) {
-		command_node* c = new command_node;
-		c->next = 0;
-		Command* cmd = new MoveCommand( n->clip, n->clip->track(), (int64_t)( n->clip->position() + (diff * n->clip->track()->stretchFactor() ) ) );
-		c->command = cmd;
-		m_subCmdList = (command_node*)sl_push( m_subCmdList, c );
+	command_node* n;
+	while ( ( n = (command_node*)sl_pop( &m_subCmdList ) ) ) {
+		delete n->command;
+		delete n;
 	}
+}
+
+void CompositeCommand::doo()
+{
+	for( command_node* n = m_subCmdList; n; n = n->next ) {
+		n->command->doo();
+	}
+	g_timelineView->redraw();
+}
+
+void CompositeCommand::undo()
+{
+	for( command_node* n = m_subCmdList; n; n = n->next ) {
+		n->command->undo();
+	}
+	g_timelineView->redraw();
 }
 
 

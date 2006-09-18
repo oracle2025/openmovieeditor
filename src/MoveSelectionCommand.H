@@ -21,24 +21,18 @@
 #define _MOVE_SELECTION_COMMAND_H_
 
 #include <stdint.h>
-#include "Command.H"
+#include "CompositeCommand.H"
 
 namespace nle
 {
 
 class Clip;
 typedef struct clip_node_ clip_node;
-typedef struct _command_node command_node;
 
-class MoveSelectionCommand : public Command
+class MoveSelectionCommand : public CompositeCommand
 {
 	public:
 		MoveSelectionCommand( Clip* clip, int64_t position, clip_node* m_selectedClips );
-		~MoveSelectionCommand();
-		void doo();
-		void undo();
-	private:
-		command_node* m_subCmdList;
 };
 
 } /* namespace nle */

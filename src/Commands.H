@@ -28,6 +28,7 @@
 #include "AddTrackCommand.H"
 #include "RemoveTrackCommand.H"
 #include "MoveSelectionCommand.H"
+#include "RemoveSelectionCommand.H"
 
 #endif /* _COMMANDS_H_ */
 

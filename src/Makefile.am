@@ -169,5 +169,9 @@ openmovieeditor_SOURCES = nle.cxx\
 	VideoThumbnails.H\
 	VideoThumbnails.cxx\
 	Resampler.cxx\
-	Resampler.H
+	Resampler.H\
+	CompositeCommand.cxx\
+	CompositeCommand.H\
+	RemoveSelectionCommand.cxx\
+	RemoveSelectionCommand.H
 
