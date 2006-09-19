@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <cassert>
+#include <sstream>
 
 #include <FL/Fl.H>
 #include <FL/Fl_Choice.H>
@@ -36,13 +37,25 @@ using namespace std;
 namespace nle
 {
 
+string escape_slash( string s ) {
+	stringstream r;
+	int l = s.length();
+	for ( int i = 0; i < l; i++ ) {
+		if ( s[i] != '/' ) {
+			r << s[i];
+		} else {
+			r << "\\/";
+		}
+	}
+	return r.str();
+}
 
 void setAudioCodecMenu( Fl_Choice* menu )
 {
 	lqt_codec_info_t** info = g_audio_codec_info;
 	menu->clear();
 	for ( int i = 0; info[i]; i++ ) {
-		menu->add( info[i]->long_name, 0, 0, info[i] );
+		menu->add( escape_slash(info[i]->long_name).c_str(), 0, 0, info[i] );
 	}
 }
 void setVideoCodecMenu( Fl_Choice* menu )
@@ -50,7 +63,7 @@ void setVideoCodecMenu( Fl_Choice* menu )
 	lqt_codec_info_t** info = g_video_codec_info;
 	menu->clear();
 	for ( int i = 0; info[i]; i++ ) {
-		menu->add( info[i]->long_name, 0, 0, info[i] );
+		menu->add( escape_slash(info[i]->long_name).c_str(), 0, 0, info[i] );
 	}
 }
 
