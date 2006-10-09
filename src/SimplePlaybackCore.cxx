@@ -453,7 +453,7 @@ void SimplePlaybackCore::flipFrame()
 	} else if (jack_connected()) { // jack audio with local transport
 		// FIXME: for larger jack buffer sizes, this can become inaccurate due to rounding
 		// issues. -> do something similar as the portaudio drift sync...
-		m_lastFrame = (int64_t)(m_audioPosition*25/48000);
+		m_lastFrame = llrint(m_audioPosition*25/48000);
 	} else { // portaudio
 		m_lastFrame++;
 		pthread_mutex_lock( &condition_mutex );
