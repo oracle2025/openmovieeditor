@@ -163,11 +163,12 @@ frame_struct** Timeline::getFrameStack( int64_t position )
 
 int Timeline::fillBuffer( float* output, unsigned long frames )
 {
-	static float buffer1[4096*2] = {0};
-	static float buffer2[4096*2] = {0};
+	static float buffer1[23040*2] = {0};
+	static float buffer2[23040*2] = {0};
 	unsigned int rv;
 	unsigned int max_frames = 0;
 	track_node* p = m_allTracks;
+	assert( frames <= 23040);
 //	p = p->next->next->next;
 	if ( !p )
 		return 0;

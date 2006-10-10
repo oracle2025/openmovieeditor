@@ -137,7 +137,8 @@ void blend_RGB_RGB( unsigned char* dst, unsigned char* src1, unsigned char* src1
 	}
 }*/
 
-#define AUDIO_BUFFER_SIZE 480
+//#define AUDIO_BUFFER_SIZE 480
+#define AUDIO_BUFFER_SIZE 23040
 void Renderer::go( IProgressListener* l )
 {
 	if ( l ) {
@@ -152,7 +153,6 @@ void Renderer::go( IProgressListener* l )
 	float right_buffer[AUDIO_BUFFER_SIZE];
 	float *buffer_p[2] = { left_buffer, right_buffer };
 
-	int64_t fcnt = 0;
 	int64_t length = g_timeline->length();
 	int64_t current_frame = 0;
 
@@ -167,30 +167,36 @@ void Renderer::go( IProgressListener* l )
 	for (int i = 0; i < m_h; i++) {
                 enc_frame.rows[i] = enc_frame.RGB + m_w * 3 * i;
 	}
-	
+
+
+/*
+ * 12 * 1920 = 23040
+ * This is the chunk of audio that will be written between 12 Frames
+ */
+	bool run = true;
 	do {
-		if ( fcnt >= 1920 ) { // 1601 für NTSC, 1920 für PAL
-			g_timeline->getBlendedFrame( &enc_frame );
-			quicktime_encode_video( qt, enc_frame.rows, 0 );
-			fcnt -= 1920;
-			current_frame++;
-			if ( l ) {
-				if ( l->progress( (double)current_frame / length ) ) {
-					break;
-				}
-			}
-		}
-		
 		res = g_timeline->fillBuffer( buffer, AUDIO_BUFFER_SIZE );
-		g_timeline->sampleseek(0,AUDIO_BUFFER_SIZE); 
-		
+		g_timeline->sampleseek( 0, AUDIO_BUFFER_SIZE );
 		for ( int i = 0; i < res; i++ ) {
 			left_buffer[i] = buffer[i*2];
 			right_buffer[i] = buffer[i*2+1];
 		}
 		lqt_encode_audio_track( qt, 0, buffer_p, res, 0 );
-		fcnt += AUDIO_BUFFER_SIZE;
-	} while ( res == AUDIO_BUFFER_SIZE );
+
+		for ( int i = 0; i < 12; i++ ) {
+			g_timeline->getBlendedFrame( &enc_frame );
+			quicktime_encode_video( qt, enc_frame.rows, 0 );
+			current_frame++;
+			if ( l ) {
+				if ( l->progress( (double)current_frame / length ) ) {
+					run = false;
+					break;
+				}
+			}
+		}
+		
+	} while ( res == AUDIO_BUFFER_SIZE && run );
+	
 	cout << "res: " << res << endl;
 	cout << "current_frame: " << current_frame << endl;
 	delete [] enc_frame.RGB;
