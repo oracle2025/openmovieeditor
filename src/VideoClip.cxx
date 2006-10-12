@@ -39,7 +39,6 @@ VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A,
 	
 	m_filmStrip = g_filmStripFactory->get( vf ); //new FilmStrip( vf );
 	
-	m_lastFramePosition = -1;
 	m_audioFile = AudioFileFactory::get( m_videoFile->filename() );
 	CLEAR_ERRORS();
 	m_artist = new VideoClipArtist( this );
@@ -82,22 +81,14 @@ int64_t VideoClip::audioPosition()
 }
 void VideoClip::reset()
 {
-	m_lastFramePosition = -1;
 	AudioClipBase::reset();
-	m_videoFile->seek( m_trimA );//FIXME noch nötig??
-	/*evtl. damit nicht bei jedem Abspiel vorgang für jeden Clip geseekt werden muss*/
 }
 frame_struct* VideoClip::getFrame( int64_t position )
 {
 	if ( position < m_position || position > m_position + length() )
 		return NULL;
-	if ( m_lastFramePosition + 1 != position ) {
-		int64_t s_pos = position - m_position + m_trimA;
-		m_videoFile->seek( s_pos );
-	} 
-	m_lastFramePosition = position;
-	//TODO perform 2x2 pulldown
-	return m_videoFile->read();
+	int64_t s_pos = position - m_position + m_trimA;
+	return m_videoFile->getFrame( s_pos );
 }
 int64_t VideoClip::fileLength()
 {

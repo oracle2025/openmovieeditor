@@ -27,6 +27,7 @@ namespace nle
 {
 
 VideoFileFfmpeg::VideoFileFfmpeg( string filename )
+	: IVideoFile()
 {
 	cout << "VideoFileFfmpeg" << endl;
 	m_ok = false;

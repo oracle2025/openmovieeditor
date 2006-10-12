@@ -29,6 +29,7 @@ namespace nle
 {
 
 VideoFileQT::VideoFileQT( string filename )
+	: IVideoFile()
 {
 	m_ok = false;
 	m_qt = NULL;

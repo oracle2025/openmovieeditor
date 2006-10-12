@@ -23,11 +23,12 @@
 #include "frame_struct.h"
 #include "globals.H"
 #include "global_includes.H"
+#include "IVideoReader.H"
 
 namespace nle
 {
 
-class IVideoFile
+class IVideoFile : public IVideoReader
 {
 	public:
 		virtual ~IVideoFile() {}
@@ -36,14 +37,28 @@ class IVideoFile
 		inline int height() { return m_height; }
 		virtual double fps() = 0;
 		virtual frame_struct* read() = 0;
+		//======== From IVideoReader
+		frame_struct* getFrame( int64_t position ) {
+			if ( m_lastFramePosition + 1 == position ) {
+				m_lastFramePosition = position;
+				return read();
+			} else {
+				m_lastFramePosition = position;
+				seek( position );
+				return read();
+			}
+		}
+		//========
 		virtual void read( unsigned char** rows, int w, int h ) = 0; //For Timeline Picture Preview
 		virtual void seek( int64_t frame ) = 0;
 		string filename() { return m_filename; }
 		virtual bool ok() = 0;
 	protected:
+		IVideoFile() { m_lastFramePosition = -1; }
 		int m_width;
 		int m_height;
 		string m_filename;
+		int64_t m_lastFramePosition;
 };
 
 } /* namespace nle */

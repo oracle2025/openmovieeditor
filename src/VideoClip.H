@@ -56,7 +56,6 @@ class VideoClip : public AudioClipBase, public IVideoReader
 		IVideoFile* m_videoFile;
 		FilmStrip* m_filmStrip;
 		frame_struct m_previewFrame;
-		int64_t m_lastFramePosition;
 
 		int64_t m_audioPosition;
 		bool m_noAudio;
