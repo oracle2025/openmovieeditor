@@ -203,6 +203,9 @@ void AutomationDragHandler::OnDrop( int x, int y )
 			i++;
 		}
 	} else {
+		if ( !m_node ) {
+			return;
+		}
 		int64_t x_ = m_node->x;
 		float y_ = m_node->y;
 		
