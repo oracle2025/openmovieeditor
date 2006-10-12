@@ -187,7 +187,11 @@ void AutomationDragHandler::OnDrop( int x, int y )
 				auto_node* p = new auto_node;
 				p->next = r->next;
 				r->next = p;
-				screen_to_node( p->x, p->y, x, y, p, r, m_outline, m_audioClip );
+				screen_to_node( p->x, p->y, x - 5, y - 5, p, r, m_outline, m_audioClip );
+				/*
+				 * - 5 to place Point on the Center of the mouse
+				 * cursor
+				 */
 				g_timelineView->redraw();
 				
 				int64_t x_ = p->x;
