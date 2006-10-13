@@ -28,6 +28,7 @@
 #include "render_helper.H"
 #include "VideoFileFactory.H"
 #include "globals.H"
+#include "DummyClip.H"
 
 namespace nle
 {
@@ -68,6 +69,11 @@ void VideoTrack::addFile( int64_t position, string filename, int64_t trimA, int6
 		ImageClip* ic = new ImageClip( this, position, filename, length - trimA - trimB, id );
 		if ( !ic->ok() ) {
 			delete ic;
+			if ( length > 0 ) {
+				Clip* c = new DummyClip( this, filename, position, length+trimA+trimB, trimA, trimB );
+				addClip( c );
+				return;
+			}
 			SHOW_ERROR( string( "Video file failed to load:\n" ) + fl_filename_name( filename.c_str() ) );
 			return;
 		}
