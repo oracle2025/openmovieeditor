@@ -113,6 +113,7 @@ int Project::write( string filename, string name )
 			track->LinkEndChild( clip );
 			clip->SetAttribute( "filename", cn->clip->filename().c_str() );
 			clip->SetAttribute( "position", cn->clip->position() );
+			clip->SetAttribute( "length", cn->clip->length() );
 			clip->SetAttribute( "trimA", cn->clip->trimA() );
 			clip->SetAttribute( "trimB", cn->clip->trimB() );
 			if ( dynamic_cast<ImageClip*>(cn->clip) ) {
