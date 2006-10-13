@@ -173,5 +173,9 @@ openmovieeditor_SOURCES = nle.cxx\
 	CompositeCommand.cxx\
 	CompositeCommand.H\
 	RemoveSelectionCommand.cxx\
-	RemoveSelectionCommand.H
+	RemoveSelectionCommand.H\
+	DummyClip.H\
+	DummyClip.cxx\
+	DummyClipArtist.H\
+	DummyClipArtist.cxx
 

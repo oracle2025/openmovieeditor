@@ -11,4 +11,4 @@
 EXTRA_DIST = audio.xpm video.xpm arrows_small.xpm dialog-warning.xpm \
              logo.xpm trash_small.xpm openmovieeditor.png titles.xpm \
 						 trash.xpm tool_automations.xpm tool_positioning.xpm mute.xpm \
-						 razor.xpm snap.xpm
+						 razor.xpm snap.xpm emblem-unreadable.xpm

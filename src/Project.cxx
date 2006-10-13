@@ -40,6 +40,7 @@
 #include "AudioClip.H"
 #include "TimelineView.H"
 #include "ImageClip.H"
+#include "DummyClip.H"
 
 namespace nle
 {
@@ -116,9 +117,6 @@ int Project::write( string filename, string name )
 			clip->SetAttribute( "length", cn->clip->length() );
 			clip->SetAttribute( "trimA", cn->clip->trimA() );
 			clip->SetAttribute( "trimB", cn->clip->trimB() );
-			if ( dynamic_cast<ImageClip*>(cn->clip) ) {
-				clip->SetAttribute( "length", cn->clip->length() );
-			}
 			clip->SetAttribute( "trimB", cn->clip->trimB() );
 			if ( AudioClip* ac = dynamic_cast<AudioClip*>(cn->clip) ) {
 				auto_node* q = ac->getAutoPoints();
@@ -203,6 +201,7 @@ int Project::read( string filename )
 			int position;
 			int trimA;
 			int trimB;
+			int length;
 			char filename[1024];
 			if ( ! j->Attribute( "position", &position ) )
 				continue;
@@ -210,11 +209,17 @@ int Project::read( string filename )
 				continue;
 			if ( ! j->Attribute( "trimB", &trimB ) )
 				continue;
+			if ( ! j->Attribute( "length", &length ) ) {
+				length = -1;
+			}
 			strlcpy( filename, j->Attribute( "filename" ), sizeof(filename) );
 			if ( ! filename )
 				continue;
 			IAudioFile *af = AudioFileFactory::get( filename );
 			if ( !af ) {
+				Track *t = g_timeline->getTrack( trackId );
+				Clip* clip = new DummyClip( t, filename, position, length+trimA+trimB, trimA, trimB );
+				g_timeline->addClip( trackId, clip );
 				continue;
 			}
 			AudioClip* ac = new AudioClip( tr, position, af, trimA, trimB );

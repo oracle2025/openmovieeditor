@@ -373,8 +373,12 @@ void TimelineView::draw()
 		// END - Draw Trim Triangles
 			if ( track->type() == TRACK_TYPE_AUDIO ) {
 				//Draw Automations
-				fl_push_clip( scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h );
 				AudioClip* audioClip = dynamic_cast<AudioClip*>(clip);
+
+				if ( !audioClip ) {
+					continue;
+				}
+				fl_push_clip( scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h );
 				
 				auto_node* nodes = audioClip->getAutoPoints();
 
