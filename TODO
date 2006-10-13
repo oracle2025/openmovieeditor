@@ -5,6 +5,13 @@
  * Log based File Format
  * 16:9 encoding, clipping, black bars
 
+
+PLUGINS:
+
+Create a IVideoReader Decorator for rendering effects on top of video clips
+
+====
+
 Long Term:
 
 Use MiniCppUnit for unit testing:
