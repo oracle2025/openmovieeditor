@@ -44,7 +44,6 @@ class MediaBrowser : public Fl_Browser_
 		MediaBrowser( int x, int y, int w, int h, const char *l = 0 );
 		~MediaBrowser();
 		void load( string folder );
-		void click();
 		int handle( int event );
 
 		void item_draw( void* p, int x, int y, int w, int h ) const;

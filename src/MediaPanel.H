@@ -45,8 +45,6 @@ class MediaPanel : public Fl_Group
 	private:
 		inline void cb_browser_i(nle::FolderBrowser*, void*);
 		static void cb_browser(nle::FolderBrowser*, void*);
-		inline void cb_files_i(nle::MediaBrowser*, void*);
-		static void cb_files(nle::MediaBrowser*, void*);
 		inline void cb_8_i(Fl_Button*, void*);
 		static void cb_8(Fl_Button*, void*);
 		inline void cb_81_i(Fl_Button*, void*);

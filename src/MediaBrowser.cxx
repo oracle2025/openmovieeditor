@@ -73,10 +73,6 @@ void MediaBrowser::load( string folder )
 	redraw_lines();
 }
 
-void MediaBrowser::click()
-{
-	//cout << ( m_folder + "/" + text( value() ) ) << endl;
-}
 void MediaBrowser::append( file_item* f )
 {
 	f->next = 0;

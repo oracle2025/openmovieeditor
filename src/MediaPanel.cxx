@@ -26,25 +26,15 @@ namespace nle
 	inline void MediaPanel::cb_browser_i(nle::FolderBrowser*, void*) {
 	  browser->click();
 	  load2( browser->folder() );
-//	folderDisplay->value( browser->folder() );
-//	files->load( browser->folder() );
 	}
 	void MediaPanel::cb_browser(nle::FolderBrowser* o, void* v) {
 	  ((MediaPanel*)(o->parent()->parent()->user_data()))->cb_browser_i(o,v);
 	}
 
-	inline void MediaPanel::cb_files_i(nle::MediaBrowser* o, void*) {
-	  o->click();
-	}
-	void MediaPanel::cb_files(nle::MediaBrowser* o, void* v) {
-	  ((MediaPanel*)(o->parent()->parent()->user_data()))->cb_files_i(o,v);
-	}
 
 	inline void MediaPanel::cb_8_i(Fl_Button*, void*) {
 	  browser->up();
 	  load2( browser->folder() );
-	//folderDisplay->value( browser->folder() );
-	//files->load( browser->folder() );
 	}
 	void MediaPanel::cb_8(Fl_Button* o, void* v) {
 	  ((MediaPanel*)(o->parent()->parent()->user_data()))->cb_8_i(o,v);
@@ -99,8 +89,7 @@ namespace nle
 	MediaPanel::MediaPanel( int x, int y, int w, int h, const char *l )
 		: Fl_Group( 0, 0, 360, 245, l )
 	{
-	  //Fl_Double_Window* w;
-	  { //Fl_Double_Window* o = mainWindow = new Fl_Double_Window(360, 245);
+	  {
 	    Fl_Group* o = this;
 	    o->user_data((void*)(this));
 	    { Fl_Tile* o = bt = new Fl_Tile(0, 20, 360, 225);
@@ -124,7 +113,6 @@ namespace nle
 		o->labelfont(0);
 		o->labelsize(14);
 		o->labelcolor(FL_BLACK);
-		o->callback((Fl_Callback*)cb_files);
 		o->align(FL_ALIGN_BOTTOM);
 		o->when(FL_WHEN_RELEASE_ALWAYS);
 	      }
@@ -138,8 +126,6 @@ namespace nle
 	      { Fl_Output* o = folderDisplay = new Fl_Output(20, 0, 300, 20);
                 o->box(FL_FLAT_BOX);
 		o->color(FL_BACKGROUND_COLOR);
-		//Fl_File_Input* o = folderDisplay = new Fl_File_Input(25, 0, 285, 35);
-		//o->callback((Fl_Callback*)cb_folderDisplay);
 		Fl_Group::current()->resizable(o);
 	      }
 	      { Fl_Button* o = new Fl_Button(340, 0, 20, 20, "@-28||");
@@ -153,7 +139,6 @@ namespace nle
 	    o->end();
 	  }
 	  resize( x, y, w, h );
-	  //folderDisplay->value( browser->folder() );
 	  load( g_preferences->getMediaFolder().c_str() );
 	}
 	void MediaPanel::load2( const char* folder )

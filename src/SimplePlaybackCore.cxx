@@ -210,6 +210,10 @@ void open_jack(void *data)
 		return;
 	}
 	jack_bufsiz= jack_get_buffer_size(jack_client);
+	cout << "Jack Samplerate: " << jack_get_sample_rate(jack_client) << endl;
+	if ( jack_get_sample_rate(jack_client) != 48000 ) {
+		cout << "WARNING: Jack is running with a samplerate other than 48000" << endl;
+	}
 
 	if (jack_bufsiz > FRAMES) { 
 		cerr << "Soundoutput : please decrease jackd buffer size :)"  << endl;
