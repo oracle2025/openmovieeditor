@@ -191,6 +191,41 @@ void NleUI::cb_(nle::FileBrowser* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb__i(o,v);
 }
 
+void NleUI::cb_invert0r_i(Fl_Menu_*, void*) {
+  m_timelineView->addEffect("invert0r");
+}
+void NleUI::cb_invert0r(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_invert0r_i(o,v);
+}
+
+void NleUI::cb_bw0r_i(Fl_Menu_*, void*) {
+  m_timelineView->addEffect("bw0r");
+}
+void NleUI::cb_bw0r(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_bw0r_i(o,v);
+}
+
+void NleUI::cb_pixeliz0r_i(Fl_Menu_*, void*) {
+  m_timelineView->addEffect("pixeliz0r");
+}
+void NleUI::cb_pixeliz0r(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_pixeliz0r_i(o,v);
+}
+
+Fl_Menu_Item NleUI::menu_Add[] = {
+ {"invert0r", 0,  (Fl_Callback*)NleUI::cb_invert0r, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"bw0r", 0,  (Fl_Callback*)NleUI::cb_bw0r, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"pixeliz0r", 0,  (Fl_Callback*)NleUI::cb_pixeliz0r, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {0,0,0,0,0,0,0,0,0}
+};
+
+void NleUI::cb_Edit_i(Fl_Button*, void*) {
+  m_timelineView->editEffect();
+}
+void NleUI::cb_Edit(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_Edit_i(o,v);
+}
+
 void NleUI::cb_projectNameInput_i(NoDropInput* o, void*) {
   nle::g_loadSaveManager->name( o->value() );
 }
@@ -505,6 +540,7 @@ NleUI::NleUI() {
             o->box(FL_UP_BOX);
             o->labelcolor(FL_GRAY0);
             { Fl_Group* o = new Fl_Group(0, 75, 280, 160, "Files");
+              o->hide();
               { nle::FileBrowser* o = new nle::FileBrowser(5, 80, 270, 150);
                 o->box(FL_NO_BOX);
                 o->color(FL_BACKGROUND2_COLOR);
@@ -535,6 +571,19 @@ NleUI::NleUI() {
                 o->when(FL_WHEN_RELEASE);
                 o->end();
                 Fl_Group::current()->resizable(o);
+              }
+              o->end();
+            }
+            { Fl_Group* o = new Fl_Group(0, 75, 280, 160, "Effects");
+              { Fl_Menu_Button* o = new Fl_Menu_Button(5, 80, 270, 25, "Add Effect");
+                o->menu(menu_Add);
+              }
+              { Fl_Browser* o = new Fl_Browser(5, 110, 270, 90);
+                Fl_Group::current()->resizable(o);
+              }
+              new Fl_Button(5, 205, 135, 25, "Remove Effect");
+              { Fl_Button* o = new Fl_Button(145, 205, 130, 25, "Edit Effect");
+                o->callback((Fl_Callback*)cb_Edit);
               }
               o->end();
             }

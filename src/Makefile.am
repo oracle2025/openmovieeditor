@@ -177,5 +177,12 @@ openmovieeditor_SOURCES = nle.cxx\
 	DummyClip.H\
 	DummyClip.cxx\
 	DummyClipArtist.H\
-	DummyClipArtist.cxx
+	DummyClipArtist.cxx\
+	Frei0rFactoryPlugin.cxx\
+	Frei0rFactoryPlugin.H\
+	Frei0rEffect.cxx\
+	Frei0rEffect.H\
+	AbstractEffectFactory.H\
+	Frei0rDialog.H\
+	Frei0rDialog.cxx
 

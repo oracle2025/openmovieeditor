@@ -25,9 +25,11 @@
 #include "VideoClipArtist.H"
 #include "FilmStripFactory.H"
 #include "IAudioFile.H"
-
+#include "Frei0rFactoryPlugin.H"
+#include "Frei0rEffect.H"
 namespace nle
 {
+extern Frei0rFactoryPlugin* g_frei0rFactoryPlugin;
 	
 VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A, int64_t B, int id )
 	: AudioClipBase( track, position, 0, id )
@@ -36,6 +38,8 @@ VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A,
 	m_trimB = B;
 	m_audioFile = 0;
 	m_videoFile = vf;
+
+	m_effectReader = g_frei0rFactoryPlugin->get( vf, vf->width(), vf->height() );
 	
 	m_filmStrip = g_filmStripFactory->get( vf ); //new FilmStrip( vf );
 	
@@ -52,6 +56,9 @@ VideoClip::~VideoClip()
 	delete m_artist;
 	g_filmStripFactory->remove( m_filmStrip );//delete m_filmStrip;
 	delete m_videoFile;
+	if ( m_effectReader ) {
+		delete m_effectReader;
+	}
 }
 string VideoClip::filename()
 {
@@ -88,11 +95,19 @@ frame_struct* VideoClip::getFrame( int64_t position )
 	if ( position < m_position || position > m_position + length() )
 		return NULL;
 	int64_t s_pos = position - m_position + m_trimA;
-	return m_videoFile->getFrame( s_pos );
+	return m_effectReader->getFrame( s_pos );
+	//return m_videoFile->getFrame( s_pos );
 }
 int64_t VideoClip::fileLength()
 {
 	return m_videoFile->length();
+}
+void VideoClip::pushEffect( AbstractEffectFactory* factory )
+{
+	if ( m_effectReader ) {
+		delete m_effectReader;
+	}
+	m_effectReader = factory->get( m_videoFile, m_videoFile->width(), m_videoFile->height() );
 }
 	
 } /* namespace nle */

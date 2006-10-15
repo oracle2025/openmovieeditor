@@ -46,6 +46,8 @@
 #include "FilmStripFactory.H"
 #include "DocManager.H"
 
+#include "Frei0rFactoryPlugin.H"
+
 namespace nle 
 {
 	lqt_codec_info_t** g_audio_codec_info;
@@ -53,10 +55,16 @@ namespace nle
 	NleUI* g_ui;
 	bool g_SEEKING;
 	char* g_homefolder;
+	Frei0rFactoryPlugin* g_frei0rFactoryPlugin;
+	Frei0rFactoryPlugin* g_frei0rFactoryPluginBW;
+	Frei0rFactoryPlugin* g_frei0rFactoryPluginPX;
 } /* namespace nle */
 
 int main( int argc, char** argv )
 {
+	nle::g_frei0rFactoryPlugin = new nle::Frei0rFactoryPlugin( "/home/oracle/invert0r.so" );
+	nle::g_frei0rFactoryPluginBW = new nle::Frei0rFactoryPlugin( "/home/oracle/bw0r.so" );
+	nle::g_frei0rFactoryPluginPX = new nle::Frei0rFactoryPlugin( "/home/oracle/pixeliz0r.so" );
 	nle::g_homefolder = getenv( "HOME" );
 #ifdef AVCODEC
 	av_register_all();
@@ -95,5 +103,8 @@ int main( int argc, char** argv )
 	lsm.startup();
 	int r = Fl::run();
 	lsm.shutdown();
+	delete nle::g_frei0rFactoryPlugin;
+	delete nle::g_frei0rFactoryPluginBW;
+	delete nle::g_frei0rFactoryPluginPX;
 	return r;
 }

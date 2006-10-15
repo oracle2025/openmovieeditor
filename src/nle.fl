@@ -11,7 +11,7 @@ class NleUI {open
       callback {if (Fl::event()==FL_SHORTCUT && Fl::event_key()==FL_Escape) 
     return; // ignore Escape
 mainWindow->hide();} open
-      private xywh {491 296 515 465} type Double resizable visible
+      private xywh {216 133 515 465} type Double resizable visible
     } {
       Fl_Menu_Bar {} {open
         xywh {0 0 345 25}
@@ -212,8 +212,8 @@ while (dlg.shown())
               xywh {0 50 280 185} box UP_BOX labelcolor 32 resizable
             } {
               Fl_Group {} {
-                label Files open selected
-                xywh {0 75 280 160} resizable
+                label Files open
+                xywh {0 75 280 160} hide resizable
               } {
                 Fl_File_Browser {} {
                   callback {nle::FileBrowser* fb = (nle::FileBrowser*)o;
@@ -232,6 +232,43 @@ fb->load_rel();}
                   code0 {\#include "MediaPanel.H"}
                   class {nle::MediaPanel}
                 } {}
+              }
+              Fl_Group {} {
+                label Effects open
+                xywh {0 75 280 160}
+              } {
+                Fl_Menu_Button {} {
+                  label {Add Effect} open
+                  xywh {5 80 270 25}
+                } {
+                  MenuItem {} {
+                    label invert0r
+                    callback {m_timelineView->addEffect("invert0r");}
+                    xywh {0 0 100 20}
+                  }
+                  MenuItem {} {
+                    label bw0r
+                    callback {m_timelineView->addEffect("bw0r");}
+                    xywh {0 0 100 20}
+                  }
+                  MenuItem {} {
+                    label pixeliz0r
+                    callback {m_timelineView->addEffect("pixeliz0r");} selected
+                    xywh {0 0 100 20}
+                  }
+                }
+                Fl_Browser {} {
+                  xywh {5 110 270 90} resizable
+                }
+                Fl_Button {} {
+                  label {Remove Effect}
+                  xywh {5 205 135 25}
+                }
+                Fl_Button {} {
+                  label {Edit Effect}
+                  callback {m_timelineView->editEffect();}
+                  xywh {145 205 130 25}
+                }
               }
             }
             Fl_Input projectNameInput {
@@ -306,7 +343,7 @@ m_timelineView->zoom( zoom );}
             } {
               Fl_Button {} {
                 callback {g_snap = o->value();}
-                tooltip Snapping image {/home/oracle/Projekte/OpenME/code/src/icons/snap.xpm} xywh {40 275 25 25} type Toggle value 1
+                tooltip Snapping image {/home/oracle/src/openme-developers-hacking/icons/snap.xpm} xywh {40 275 25 25} type Toggle value 1
               }
               Fl_Box {} {
                 label Ruler
@@ -336,10 +373,10 @@ m_timelineView->zoom( zoom );}
             xywh {0 275 40 190} labelsize 12
           } {
             Fl_Button positioningButton {
-              tooltip {Positioning (S)} image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/tool_positioning.xpm} xywh {0 300 40 40} type Radio shortcut 0x73 value 1 align 16
+              tooltip {Positioning (S)} image {/home/oracle/src/openme-developers-hacking/icons/tool_positioning.xpm} xywh {0 300 40 40} type Radio shortcut 0x73 value 1 align 16
             }
             Fl_Button automationsButton {
-              tooltip {Automations (A)} image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/tool_automations.xpm} xywh {0 340 40 40} type Radio shortcut 0x61 align 18
+              tooltip {Automations (A)} image {/home/oracle/src/openme-developers-hacking/icons/tool_automations.xpm} xywh {0 340 40 40} type Radio shortcut 0x61 align 18
             }
             Fl_Box {} {
               xywh {0 420 40 5} box THIN_UP_BOX resizable
@@ -349,10 +386,10 @@ m_timelineView->zoom( zoom );}
               xywh {0 275 40 25} box UP_BOX labelsize 12
             }
             Fl_Box trashCan {
-              private tooltip Trash image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/trash_big.xpm} xywh {0 425 40 40} box UP_BOX
+              private tooltip Trash image {/home/oracle/src/openme-developers-hacking/icons/trash_big.xpm} xywh {0 425 40 40} box UP_BOX
             }
             Fl_Button razorButton {
-              tooltip {Split (R)} image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/razor.xpm} xywh {0 380 40 40} type Radio shortcut 0x72 align 18
+              tooltip {Split (R)} image {/home/oracle/src/openme-developers-hacking/icons/razor.xpm} xywh {0 380 40 40} type Radio shortcut 0x72 align 18
             }
           }
         }
@@ -410,7 +447,7 @@ class EncodeDialog {} {
   } {
     Fl_Window encodeDialog {
       label Render open
-      private xywh {372 571 485 340} type Double
+      private xywh {372 427 485 340} type Double
       code0 {\#include "IVideoReader.H"}
       code1 {\#include "IAudioReader.H"} modal visible
     } {
@@ -570,7 +607,7 @@ class ChangesDialog {} {
   } {
     Fl_Window {} {
       label {Unsaved changes!} open
-      xywh {887 161 410 80} type Double visible
+      xywh {613 161 410 80} type Double visible
     } {
       Fl_Box {} {
         label {Save changes?}
@@ -604,7 +641,7 @@ class CodecOptions {open
   } {
     Fl_Window codecOptions {
       label {Codec Options}
-      xywh {691 479 345 305} type Double resizable modal visible
+      xywh {678 462 345 305} type Double resizable modal visible
     } {
       Fl_Box codec_label {
         label Codec
@@ -691,10 +728,10 @@ class AboutDialog {open
   } {
     Fl_Window aboutDialog {
       label {About Dialog} open
-      xywh {1013 296 340 370} type Double modal visible
+      xywh {683 296 340 370} type Double modal visible
     } {
       Fl_Box {} {
-        image {/home/oracle/Projekte/OpenME/code/src/icons/logo.xpm} xywh {0 0 340 155}
+        image {/home/oracle/src/openme-developers-hacking/icons/logo.xpm} xywh {0 0 340 155}
       }
       Fl_Box {} {
         label {Open Movie Editor}

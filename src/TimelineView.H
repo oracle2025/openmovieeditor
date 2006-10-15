@@ -75,6 +75,8 @@ class TimelineView : public Fl_Widget
 		int64_t m_stylusPosition;
 		void end() {}
 		void adjustScrollbar();
+		void addEffect( string name );
+		void editEffect();
 	protected:
 		void draw();
 	private:

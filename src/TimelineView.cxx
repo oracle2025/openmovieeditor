@@ -47,6 +47,9 @@
 #include "SimplePlaybackCore.H"
 #include "DocManager.H"
 #include "Commands.H"
+#include "Frei0rFactoryPlugin.H"
+#include "Frei0rEffect.H"
+#include "Frei0rDialog.H"
 
 #include "audio.xpm"
 #include "video.xpm"
@@ -741,6 +744,51 @@ void TimelineView::toggle_selection( Clip* clip )
 	}
 	redraw();
 }
+extern Frei0rFactoryPlugin* g_frei0rFactoryPlugin;
+extern Frei0rFactoryPlugin* g_frei0rFactoryPluginBW;
+extern Frei0rFactoryPlugin* g_frei0rFactoryPluginPX;
+void TimelineView::addEffect( string name )
+{
+	if ( !m_selectedClips ) {
+		return;
+	}
+	if ( m_selectedClips->next ) {
+		return;
+	}
+	VideoClip* vc = dynamic_cast<VideoClip*>( m_selectedClips->clip );
+	if ( !vc ) {
+		return;
+	}
+	if ( name == "invert0r" ) {
+		vc->pushEffect( g_frei0rFactoryPlugin );
+	} else if ( name == "bw0r" ) {
+		vc->pushEffect( g_frei0rFactoryPluginBW );
+	} else if ( name == "pixeliz0r" ) {
+		vc->pushEffect( g_frei0rFactoryPluginPX );
+	}
+
+}
+void TimelineView::editEffect()
+{
+	if ( !m_selectedClips ) {
+		return;
+	}
+	if ( m_selectedClips->next ) {
+		return;
+	}
+	VideoClip* vc = dynamic_cast<VideoClip*>( m_selectedClips->clip );
+	if ( !vc ) {
+		return;
+	}
+	Frei0rEffect* fe = dynamic_cast<Frei0rEffect*>( vc->getEffect() );
+	Frei0rDialog dialog( fe );
+	dialog.show();
+	while ( dialog.shown() ) {
+		Fl::wait();
+	}
+
+}
+
 void TimelineView::trim_clip( Clip* clip, int _x, bool trimRight )
 {
 	Command* cmd = new TrimCommand( clip, get_real_position( _x, clip->track()->stretchFactor() ), trimRight );

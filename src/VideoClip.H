@@ -31,6 +31,8 @@ namespace nle
 class IVideoFile;
 class FilmStrip;
 class IClipArtist;
+class IVideoEffect;
+class AbstractEffectFactory;
 
 class VideoClip : public AudioClipBase, public IVideoReader
 {
@@ -47,6 +49,9 @@ class VideoClip : public AudioClipBase, public IVideoReader
 		inline IClipArtist* getArtist() { return m_artist; }
 		bool hasAudio();
 		int64_t fileLength();
+		void pushEffect( AbstractEffectFactory* factory );
+		void popEffect();
+		IVideoReader* getEffect() { return m_effectReader; }
 	protected:
 		int64_t audioTrimA();
 		int64_t audioTrimB();
@@ -60,6 +65,7 @@ class VideoClip : public AudioClipBase, public IVideoReader
 		int64_t m_audioPosition;
 		bool m_noAudio;
 		IClipArtist* m_artist;
+		IVideoReader* m_effectReader;
 };
 
 } /* namespace nle */
