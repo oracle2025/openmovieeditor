@@ -597,6 +597,16 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 {
 	Track *new_tr = get_track( _x, _y );
 	Track *old_tr = clip->track();
+	bool clear = true;
+	for ( clip_node* n = m_selectedClips; n; n = n->next ) {
+		if ( n->clip == clip ) {
+			clear = false;
+			break;
+		}
+	}
+	if ( clear ) {
+		clear_selection();
+	}
 	if ( inside_widget( g_trashCan, _x, y() + _y ) ) {
 		Command* cmd;
 		if ( m_selectedClips ) {
