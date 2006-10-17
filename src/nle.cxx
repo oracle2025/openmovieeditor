@@ -193,6 +193,7 @@ void NleUI::cb_(nle::FileBrowser* o, void* v) {
 
 void NleUI::cb_invert0r_i(Fl_Menu_*, void*) {
   m_timelineView->addEffect("invert0r");
+m_videoView->redraw();
 }
 void NleUI::cb_invert0r(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_invert0r_i(o,v);
@@ -200,6 +201,7 @@ void NleUI::cb_invert0r(Fl_Menu_* o, void* v) {
 
 void NleUI::cb_bw0r_i(Fl_Menu_*, void*) {
   m_timelineView->addEffect("bw0r");
+m_videoView->redraw();
 }
 void NleUI::cb_bw0r(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_bw0r_i(o,v);
@@ -207,6 +209,7 @@ void NleUI::cb_bw0r(Fl_Menu_* o, void* v) {
 
 void NleUI::cb_pixeliz0r_i(Fl_Menu_*, void*) {
   m_timelineView->addEffect("pixeliz0r");
+m_videoView->redraw();
 }
 void NleUI::cb_pixeliz0r(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_pixeliz0r_i(o,v);

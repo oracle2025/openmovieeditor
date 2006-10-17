@@ -96,7 +96,6 @@ void Frei0rEffect::getValue( f0r_param_t param, int param_index )
 
 void Frei0rEffect::setValue( f0r_param_t param, int param_index )
 {
-	cout << "Frei0rEffect::setValue - index: " << param_index << endl;
 	f0r_set_param_value( m_instance, param, param_index );
 }
 

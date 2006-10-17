@@ -243,17 +243,20 @@ fb->load_rel();}
                 } {
                   MenuItem {} {
                     label invert0r
-                    callback {m_timelineView->addEffect("invert0r");}
+                    callback {m_timelineView->addEffect("invert0r");
+m_videoView->redraw();}
                     xywh {0 0 100 20}
                   }
                   MenuItem {} {
                     label bw0r
-                    callback {m_timelineView->addEffect("bw0r");}
+                    callback {m_timelineView->addEffect("bw0r");
+m_videoView->redraw();} selected
                     xywh {0 0 100 20}
                   }
                   MenuItem {} {
                     label pixeliz0r
-                    callback {m_timelineView->addEffect("pixeliz0r");} selected
+                    callback {m_timelineView->addEffect("pixeliz0r");
+m_videoView->redraw();}
                     xywh {0 0 100 20}
                   }
                 }
