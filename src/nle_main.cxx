@@ -62,9 +62,9 @@ namespace nle
 
 int main( int argc, char** argv )
 {
-	nle::g_frei0rFactoryPlugin = new nle::Frei0rFactoryPlugin( "/home/oracle/invert0r.so" );
-	nle::g_frei0rFactoryPluginBW = new nle::Frei0rFactoryPlugin( "/home/oracle/bw0r.so" );
-	nle::g_frei0rFactoryPluginPX = new nle::Frei0rFactoryPlugin( "/home/oracle/pixeliz0r.so" );
+	nle::g_frei0rFactoryPlugin = new nle::Frei0rFactoryPlugin( "/usr/local/lib/frei0r-1/invert0r.so" );
+	nle::g_frei0rFactoryPluginBW = new nle::Frei0rFactoryPlugin( "/usr/local/lib/frei0r-1/bw0r.so" );
+	nle::g_frei0rFactoryPluginPX = new nle::Frei0rFactoryPlugin( "/usr/local/lib/frei0r-1/pixeliz0r.so" );
 	nle::g_homefolder = getenv( "HOME" );
 #ifdef AVCODEC
 	av_register_all();
