@@ -24,7 +24,7 @@ namespace nle
 {
 	
 DummyClip::DummyClip( Track* track, string filename, int64_t position, int64_t length, int64_t A, int64_t B, int id )
-	: Clip( track, position, id ), m_fileLength( length ), m_filename( filename )
+	: Clip( track, position, id ), m_filename( filename ), m_fileLength( length )
 {
 	m_trimA = A;
 	m_trimB = B;

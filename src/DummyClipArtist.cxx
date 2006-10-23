@@ -33,7 +33,7 @@ DummyClipArtist::DummyClipArtist( DummyClip* clip )
 {
 }
 
-void DummyClipArtist::render( Rect& rect, int64_t start, int64_t stop )
+void DummyClipArtist::render( Rect& rect, int64_t, int64_t )
 {
 	int x_ = g_timelineView->get_screen_position( m_clip->position(), m_clip->track()->stretchFactor() );
 	fl_push_clip( rect.x, rect.y, rect.w, rect.h );
