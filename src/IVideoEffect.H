@@ -27,6 +27,7 @@ class IVideoEffect : public IVideoReader
 {
 	public:
 		virtual ~IVideoEffect() {}
+		virtual IVideoReader* getReader() = 0;
 		/*
 		 * This Class is empty today, but will be populated soon
 		 */

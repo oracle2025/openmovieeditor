@@ -42,6 +42,7 @@ class Frei0rEffect : public IVideoEffect
 		void getParamInfo( f0r_param_info_t *info, int param_index );
 		void getValue( f0r_param_t param, int param_index );
 		void setValue( f0r_param_t param, int param_index );
+		IVideoReader* getReader() { return m_reader; }
 	private:
 		f0r_instance_t m_instance;
 		unsigned char *m_tmpFrame;

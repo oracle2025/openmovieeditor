@@ -109,5 +109,14 @@ void VideoClip::pushEffect( AbstractEffectFactory* factory )
 	}
 	m_effectReader = factory->get( m_videoFile, m_videoFile->width(), m_videoFile->height() );
 }
+void VideoClip::popEffect()
+{
+	if ( m_effectReader != m_videoFile ) {
+		IVideoEffect* e = dynamic_cast<IVideoEffect*>( m_effectReader );
+		assert( e );
+		m_effectReader = e->getReader();
+		delete e;
+	}
+}
 	
 } /* namespace nle */

@@ -88,7 +88,7 @@ Frei0rDialog::Frei0rDialog( Frei0rEffect* effect )
 		Fl_Box* o = new Fl_Box(5, 5, 44, 44);
 		o->box(FL_DOWN_BOX);
 		o->image(icon_frei0r);
-		o->tooltip( "Frei0r Effect" );
+		o->tooltip( finfo->explanation );
 	}
 	{
 		Fl_Box* o = new Fl_Box( 5, 50, 330, 30 * finfo->num_params + 15 );
@@ -97,6 +97,7 @@ Frei0rDialog::Frei0rDialog( Frei0rEffect* effect )
 	{
 		Fl_Return_Button* o = new Fl_Return_Button( 5, 60 + ( 30 * finfo->num_params ) + 10, 330, 25, "Close" );
 		o->callback( closeCallback );
+		m_dialog->hotspot( o );
 	}
 	for ( int i = 0; i < finfo->num_params; i++ ) {
 		m_effect->getParamInfo( &pinfo, i );
@@ -134,8 +135,8 @@ Frei0rDialog::Frei0rDialog( Frei0rEffect* effect )
 				{
 				Fl_Spinner* sx = new Fl_Spinner( x, y, 150, h, pinfo.name);
 				Fl_Spinner* sy = new Fl_Spinner( x + 150, y, 150, h );
-				sx->callback( boolCallback, &(m_infostack[i]) );
-				sy->callback( boolCallback, &(m_infostack[i]) );
+				sx->callback( xCallback, &(m_infostack[i]) );
+				sy->callback( yCallback, &(m_infostack[i]) );
 				break;
 				}
 			default:

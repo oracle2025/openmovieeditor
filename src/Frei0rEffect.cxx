@@ -75,7 +75,7 @@ frame_struct* Frei0rEffect::getFrame( int64_t position )
 			dst[0] = src[0];
 			dst[1] = src[1];
 			dst[2] = src[2];
-			dst[3] = 254;
+			dst[3] = 255;
 			dst += 4;
 			src += 3;
 		}

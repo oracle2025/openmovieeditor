@@ -226,7 +226,7 @@ void NleUI::cb_Edit_i(Fl_Button*, void*) {
   m_timelineView->editEffect();
 }
 void NleUI::cb_Edit(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_Edit_i(o,v);
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_Edit_i(o,v);
 }
 
 void NleUI::cb_projectNameInput_i(NoDropInput* o, void*) {
@@ -581,12 +581,28 @@ NleUI::NleUI() {
               { Fl_Menu_Button* o = new Fl_Menu_Button(5, 80, 270, 25, "Add Effect");
                 o->menu(menu_Add);
               }
-              { Fl_Browser* o = new Fl_Browser(5, 110, 270, 90);
+              { Fl_Browser* o = new Fl_Browser(5, 105, 270, 100);
                 Fl_Group::current()->resizable(o);
               }
-              new Fl_Button(5, 205, 135, 25, "Remove Effect");
-              { Fl_Button* o = new Fl_Button(145, 205, 130, 25, "Edit Effect");
+              { Fl_Group* o = new Fl_Group(5, 205, 270, 25);
+                { Fl_Group* o = new Fl_Group(5, 205, 50, 25);
+                { Fl_Button* o = new Fl_Button(5, 205, 25, 25, "@8->");
+                o->tooltip("Move Up");
+                }
+                { Fl_Button* o = new Fl_Button(30, 205, 25, 25, "@2->");
+                o->tooltip("Move Down");
+                }
+                o->end();
+                }
+                { Fl_Group* o = new Fl_Group(55, 205, 220, 25);
+                new Fl_Button(55, 205, 110, 25, "Remove Effect");
+                { Fl_Button* o = new Fl_Button(165, 205, 110, 25, "Edit Effect");
                 o->callback((Fl_Callback*)cb_Edit);
+                }
+                o->end();
+                Fl_Group::current()->resizable(o);
+                }
+                o->end();
               }
               o->end();
             }

@@ -11,7 +11,7 @@ class NleUI {open
       callback {if (Fl::event()==FL_SHORTCUT && Fl::event_key()==FL_Escape) 
     return; // ignore Escape
 mainWindow->hide();} open
-      private xywh {216 133 515 465} type Double resizable visible
+      private xywh {1128 309 515 465} type Double resizable visible
     } {
       Fl_Menu_Bar {} {open
         xywh {0 0 345 25}
@@ -250,7 +250,7 @@ m_videoView->redraw();}
                   MenuItem {} {
                     label bw0r
                     callback {m_timelineView->addEffect("bw0r");
-m_videoView->redraw();} selected
+m_videoView->redraw();}
                     xywh {0 0 100 20}
                   }
                   MenuItem {} {
@@ -260,17 +260,37 @@ m_videoView->redraw();}
                     xywh {0 0 100 20}
                   }
                 }
-                Fl_Browser {} {
-                  xywh {5 110 270 90} resizable
+                Fl_Browser {} {selected
+                  xywh {5 105 270 100} resizable
                 }
-                Fl_Button {} {
-                  label {Remove Effect}
-                  xywh {5 205 135 25}
-                }
-                Fl_Button {} {
-                  label {Edit Effect}
-                  callback {m_timelineView->editEffect();}
-                  xywh {145 205 130 25}
+                Fl_Group {} {open
+                  xywh {5 205 270 25}
+                } {
+                  Fl_Group {} {open
+                    xywh {5 205 50 25}
+                  } {
+                    Fl_Button {} {
+                      label {@8->}
+                      tooltip {Move Up} xywh {5 205 25 25}
+                    }
+                    Fl_Button {} {
+                      label {@2->}
+                      tooltip {Move Down} xywh {30 205 25 25}
+                    }
+                  }
+                  Fl_Group {} {open
+                    xywh {55 205 220 25} resizable
+                  } {
+                    Fl_Button {} {
+                      label {Remove Effect}
+                      xywh {55 205 110 25}
+                    }
+                    Fl_Button {} {
+                      label {Edit Effect}
+                      callback {m_timelineView->editEffect();}
+                      xywh {165 205 110 25}
+                    }
+                  }
                 }
               }
             }
