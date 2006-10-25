@@ -62,7 +62,7 @@ void FolderBrowser::load( string folder )
 	clear();
 	dirent	**folders;
 	int count;
-	count = fl_filename_list( folder.c_str(), &folders, fl_casealphasort );
+	count = scandir( folder.c_str(), &folders, 0, alphasort );
 	for ( int i = 0; i < count; i++ ) {
 		if ( folders[i]->d_name[0] != '.' && fl_filename_isdir( string(folder + "/" + folders[i]->d_name).c_str() ) ) {
 			int l = strlen( folders[i]->d_name );

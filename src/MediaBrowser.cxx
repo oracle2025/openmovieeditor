@@ -49,7 +49,7 @@ void MediaBrowser::load( string folder )
 	clear();
 	dirent **files;
 	int count;
-	count = fl_filename_list( folder.c_str(), &files, fl_casealphasort );
+	count = scandir( folder.c_str(), &files, 0, alphasort );
 	for ( int i = 0; i < count; i++ ) {
 		if ( files[i]->d_name[0] != '.' && !fl_filename_isdir( string(folder + "/" + files[i]->d_name).c_str() ) ) {
 			file_item* f = new file_item;

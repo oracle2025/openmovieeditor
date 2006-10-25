@@ -85,7 +85,7 @@ LoadSaveManager::LoadSaveManager( Fl_Choice* projectChoice, Fl_Input* projectInp
 	dirent** list;
 	m_video_projects = home + "/Video Projects";
 	if ( fl_filename_isdir( m_video_projects.c_str() ) ) {
-		count = fl_filename_list( m_video_projects.c_str(), &list );
+		count = scandir( m_video_projects.c_str(), &list, 0, alphasort );
 		m_projectChoice->clear();
 		for ( int i = 0; i < count; i++ ) {
 			if ( !fl_filename_isdir( string( m_video_projects + "/" + list[i]->d_name ).c_str() ) ) {
