@@ -31,8 +31,6 @@
 #include "Frei0rEffect.H"
 namespace nle
 {
-extern Frei0rFactoryPlugin* g_frei0rFactoryPlugin;
-	
 VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A, int64_t B, int id )
 	: AudioClipBase( track, position, 0, id )
 {
@@ -41,7 +39,7 @@ VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A,
 	m_audioFile = 0;
 	m_videoFile = vf;
 
-	m_effectReader = g_frei0rFactoryPlugin->get( vf, vf->width(), vf->height() );
+	m_effectReader = vf;
 	
 	m_filmStrip = g_filmStripFactory->get( vf ); //new FilmStrip( vf );
 	
@@ -57,10 +55,10 @@ VideoClip::~VideoClip()
 {
 	delete m_artist;
 	g_filmStripFactory->remove( m_filmStrip );//delete m_filmStrip;
-	delete m_videoFile;
-	if ( m_effectReader ) {
+	if ( m_effectReader && m_effectReader != m_videoFile ) {
 		delete m_effectReader;
 	}
+	delete m_videoFile;
 }
 string VideoClip::filename()
 {
@@ -106,7 +104,7 @@ int64_t VideoClip::fileLength()
 }
 void VideoClip::pushEffect( AbstractEffectFactory* factory )
 {
-	if ( m_effectReader ) {
+	if ( m_effectReader && m_effectReader != m_videoFile ) {
 		delete m_effectReader;
 	}
 	m_effectReader = factory->get( m_videoFile, m_videoFile->width(), m_videoFile->height() );

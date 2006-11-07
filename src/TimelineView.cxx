@@ -754,9 +754,6 @@ void TimelineView::toggle_selection( Clip* clip )
 	}
 	redraw();
 }
-extern Frei0rFactoryPlugin* g_frei0rFactoryPlugin;
-extern Frei0rFactoryPlugin* g_frei0rFactoryPluginBW;
-extern Frei0rFactoryPlugin* g_frei0rFactoryPluginPX;
 void TimelineView::addEffect( AbstractEffectFactory* effectFactory )
 {
 	if ( !m_selectedClips ) {
@@ -771,17 +768,6 @@ void TimelineView::addEffect( AbstractEffectFactory* effectFactory )
 	}
 	vc->pushEffect( effectFactory );
 	g_videoView->redraw();
-}
-void TimelineView::addEffect( string name )
-{
-	if ( name == "invert0r" ) {
-		addEffect( g_frei0rFactoryPlugin );
-	} else if ( name == "bw0r" ) {
-		addEffect( g_frei0rFactoryPluginBW );
-	} else if ( name == "pixeliz0r" ) {
-		addEffect( g_frei0rFactoryPluginPX );
-	}
-
 }
 void TimelineView::editEffect()
 {
