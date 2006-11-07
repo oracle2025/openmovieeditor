@@ -122,6 +122,7 @@ static jack_client_t *jack_client = NULL;
 static jack_port_t *output_port[2]; // stereo
 static char jackid[16];
 static jack_nframes_t jack_bufsiz = 64;
+static jack_nframes_t jack_latency_comp = 0;
 
 /*
  * The process callback for this JACK application is called in a
@@ -133,6 +134,11 @@ int jack_callback (jack_nframes_t nframes, void *data)
 	void *outL, *outR;
 	jack_position_t	jack_position;
 	jack_transport_state_t ts;
+	jack_nframes_t latencyL , latencyR;
+
+	latencyL = jack_port_get_total_latency(jack_client,output_port[0]);
+	latencyR = jack_port_get_total_latency(jack_client,output_port[1]);
+	jack_latency_comp = max(latencyL,latencyR);
 
 	outL = jack_port_get_buffer (output_port[0], nframes);
 	outR = jack_port_get_buffer (output_port[1], nframes);
@@ -361,18 +367,18 @@ void SimplePlaybackCore::checkPlayButton()
 void SimplePlaybackCore::jackreadAudio( void *outL, void *outR, jack_transport_state_t ts, jack_nframes_t position, jack_nframes_t nframes )
 {
 	if (g_use_jack_transport) {
-		if (position < jack_bufsiz || (!g_scrub_audio && ts != JackTransportRolling)) {
+		if (position < jack_latency_comp || (!g_scrub_audio && ts != JackTransportRolling)) {
 			// if transport is not rolling - remain silent.
 			memset(outR,0, sizeof (jack_default_audio_sample_t) * nframes);
 			memset(outL,0, sizeof (jack_default_audio_sample_t) * nframes);
 
 			if (ts == JackTransportStarting) {
-				m_audioReader->sampleseek(1, position<jack_bufsiz?0:position-jack_bufsiz); 
+				m_audioReader->sampleseek(1, position<jack_bufsiz?0:position-jack_latency_comp); 
 			}
 			return;
 		}
 
-		position-=jack_bufsiz; // ome has an internal latency of 1 audio frame 
+		position-=jack_latency_comp;
 
 		if (g_scrub_audio && ts == JackTransportStopped) {
 			position+=(m_scrubpos) * jack_bufsiz;
