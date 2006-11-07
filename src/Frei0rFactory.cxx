@@ -69,17 +69,19 @@ Frei0rFactory::Frei0rFactory( IEffectMenu* menu )
 		//cout 
 		p = (dir_node*)sl_pop( &folders );
 		if ( fl_filename_isdir( p->name.c_str() ) ) {
-		/*	n = scandir( p->name.c_str(), &list, 0, alphasort );
+			n = scandir( p->name.c_str(), &list, 0, alphasort );
 			while( n-- ) {
-				p = new dir_node;
-				p->next = 0;
-				p->name = string( FREI0R_DIR_2 ) + list[n]->d_name;
-				folders = (dir_node*)sl_push( folders, p );
+				if ( list[n]->d_name[0] != '.'  ) {
+					p = new dir_node;
+					p->next = 0;
+					p->name = string( FREI0R_DIR_2 ) + list[n]->d_name;
+					folders = (dir_node*)sl_push( folders, p );
+				}
 			}
 			for ( int i = n; i > 0; ) { // This is some bad ass hacking style from the fltk manual ;)
 				free( (void*)( list[--i] ) );
 			}
-			free( (void*)list );*/
+			free( (void*)list );
 		} else {
 			Frei0rFactoryPlugin* effect = new Frei0rFactoryPlugin( p->name.c_str() );
 			if ( effect->ok() ) {
