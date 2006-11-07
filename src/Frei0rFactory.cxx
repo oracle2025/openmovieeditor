@@ -17,23 +17,104 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "Frei0rFactory.H"
+#include <dirent.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
-Frei0rFactory::Frei0rFactory()
+#include <FL/filename.H>
+
+#include "sl/sl.h"
+#include "Frei0rFactory.H"
+#include "Frei0rFactoryPlugin.H"
+#include "IEffectMenu.H"
+
+#define FREI0R_DIR_1 "/usr/lib/frei0r-1/"
+#define FREI0R_DIR_2 "/usr/local/lib/frei0r-1/"
+#define FREI0R_DIR_3 "/.frei0r-1/lib/"
+
+namespace nle
+{
+
+
+typedef struct _dir_list_node {
+	struct _dir_list_node *next;
+	string name;
+} dir_node;
+
+Frei0rFactory::Frei0rFactory( IEffectMenu* menu )
 {
 	//Scan directorys and enumerate Plugins
+	int n;
+	dirent** list;
+	dir_node* folders = 0;
+	dir_node* p;
+	effect_node* e;
+	m_effects = 0;
+
+	n = scandir( FREI0R_DIR_2, &list, 0, alphasort );
+	while( n-- ) {
+		p = new dir_node;
+		p->next = 0;
+		p->name = string( FREI0R_DIR_2 ) + list[n]->d_name;
+		folders = (dir_node*)sl_push( folders, p );
+	}
+	for ( int i = n; i > 0; ) { // This is some bad ass hacking style from the fltk manual ;)
+		free( (void*)( list[--i] ) );
+	}
+	free( (void*)list );
+
+
+	while( folders ) {
+		//TODO: endless loop somewhere
+		//cout 
+		p = (dir_node*)sl_pop( &folders );
+		if ( fl_filename_isdir( p->name.c_str() ) ) {
+		/*	n = scandir( p->name.c_str(), &list, 0, alphasort );
+			while( n-- ) {
+				p = new dir_node;
+				p->next = 0;
+				p->name = string( FREI0R_DIR_2 ) + list[n]->d_name;
+				folders = (dir_node*)sl_push( folders, p );
+			}
+			for ( int i = n; i > 0; ) { // This is some bad ass hacking style from the fltk manual ;)
+				free( (void*)( list[--i] ) );
+			}
+			free( (void*)list );*/
+		} else {
+			Frei0rFactoryPlugin* effect = new Frei0rFactoryPlugin( p->name.c_str() );
+			if ( effect->ok() ) {
+				menu->addEffect( effect );
+				e = new effect_node;
+				e->next = 0;
+				e->effect = effect;
+				m_effects = (effect_node*)sl_push( m_effects, e );
+			} else {
+				delete effect;
+			}
+		}
+		
+	}
+
 }
 
 Frei0rFactory::~Frei0rFactory()
 {
+	effect_node* node;
+	while ( ( node = (effect_node*)sl_pop( &m_effects ) ) ) {
+		delete node->effect;
+		delete node;
+	}
+
 }
 
 void Frei0rFactory::list()
 {
 }
 
-IVideoEffect* Frei0rFactory::get( string name )
+IVideoEffect* Frei0rFactory::get( string )
 {
-	
+	return 0;
 }
 
+
+} /* namespace nle */

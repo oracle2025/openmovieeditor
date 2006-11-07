@@ -1,4 +1,4 @@
-/*  IEffectMenu.H
+/*  FltkEffectMenu.cxx
  *
  *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,23 +17,29 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-
-#ifndef _I_EFFECT_MENU_H_
-#define _I_EFFECT_MENU_H_
+#include "FltkEffectMenu.H"
+#include "global_includes.H"
+#include "TimelineView.H"
+#include "AbstractEffectFactory.H"
 
 namespace nle
 {
 
-class AbstractEffectFactory;
+void effect_callback( void*, void* v ) {
+	AbstractEffectFactory* effectFactory = (AbstractEffectFactory*)v;
+	g_timelineView->addEffect( effectFactory );
+}
 
-class IEffectMenu
+FltkEffectMenu::FltkEffectMenu(  int x, int y, int w, int h, const char *l )
+	: Fl_Menu_Button( x, y, w, h, l )
 {
-	public:
-		virtual ~IEffectMenu() {}
-		virtual void addEffect( AbstractEffectFactory* effectFactory ) = 0;
-};
+}	
+FltkEffectMenu::~FltkEffectMenu()
+{
+}
+void FltkEffectMenu::addEffect( AbstractEffectFactory* effectFactory )
+{
+	add( effectFactory->name(), 0, (Fl_Callback*)effect_callback, effectFactory, 0 );
+}
 
 } /* namespace nle */
-
-#endif /* _I_EFFECT_MENU_H_ */
-

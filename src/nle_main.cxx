@@ -47,6 +47,8 @@
 #include "DocManager.H"
 
 #include "Frei0rFactoryPlugin.H"
+#include "FltkEffectMenu.H"
+#include "Frei0rFactory.H"
 
 namespace nle 
 {
@@ -80,6 +82,7 @@ int main( int argc, char** argv )
 	nle::WavArtist wavArtist;
 	NleUI nui;
 	nle::g_ui = &nui;
+	nle::Frei0rFactory effectFactory( nui.m_effectMenu );
 	nle::SimplePlaybackCore playbackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
 	//nle::PlaybackCore playbackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
 	nle::LoadSaveManager lsm( nui.projectChoice, nui.projectNameInput );

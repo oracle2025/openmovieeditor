@@ -184,5 +184,10 @@ openmovieeditor_SOURCES = nle.cxx\
 	Frei0rEffect.H\
 	AbstractEffectFactory.H\
 	Frei0rDialog.H\
-	Frei0rDialog.cxx
+	Frei0rDialog.cxx\
+	IEffectMenu.H\
+	FltkEffectMenu.H\
+	FltkEffectMenu.cxx\
+	Frei0rFactory.cxx\
+	Frei0rFactory.H
 

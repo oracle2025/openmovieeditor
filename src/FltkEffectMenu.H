@@ -1,4 +1,4 @@
-/*  IEffectMenu.H
+/*  FltkEffectMenu.H
  *
  *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,23 +17,27 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#ifndef _FLTK_EFFECT_MENU_H_
+#define _FLTK_EFFECT_MENU_H_
 
-#ifndef _I_EFFECT_MENU_H_
-#define _I_EFFECT_MENU_H_
+#include <FL/Fl.H>
+#include <FL/Fl_Menu_Button.H>
+#include "IEffectMenu.H"
 
 namespace nle
 {
 
 class AbstractEffectFactory;
-
-class IEffectMenu
+	
+class FltkEffectMenu : public Fl_Menu_Button, public IEffectMenu
 {
 	public:
-		virtual ~IEffectMenu() {}
-		virtual void addEffect( AbstractEffectFactory* effectFactory ) = 0;
+		FltkEffectMenu(  int x, int y, int w, int h, const char *l = 0  );
+		~FltkEffectMenu();
+		void addEffect( AbstractEffectFactory* effectFactory );
 };
 
 } /* namespace nle */
 
-#endif /* _I_EFFECT_MENU_H_ */
+#endif /* _FLTK_EFFECT_MENU_H_ */
 

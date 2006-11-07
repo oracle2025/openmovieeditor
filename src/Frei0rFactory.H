@@ -24,16 +24,25 @@
 
 namespace nle
 {
-
-class IVideoEffect;
 	
+class IVideoEffect;
+class IEffectMenu;
+class Frei0rFactoryPlugin;
+
+typedef struct _effect_list_node {
+	struct _effect_list_node* next;
+	Frei0rFactoryPlugin* effect;
+} effect_node;
+
 class Frei0rFactory
 {
 	public:
-		Frei0rFactory();
+		Frei0rFactory( IEffectMenu* menu );
 		~Frei0rFactory();
 		void list();
 		IVideoEffect* get( string name );
+	private:
+		effect_node* m_effects;
 };
 
 } /* namespace nle */

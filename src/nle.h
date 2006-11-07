@@ -18,7 +18,7 @@
 #include <FL/Fl_Tabs.H>
 #include "FileBrowser.H"
 #include "MediaPanel.H"
-#include <FL/Fl_Menu_Button.H>
+#include "FltkEffectMenu.H"
 #include <FL/Fl_Browser.H>
 #include <FL/Fl_Button.H>
 #include "LoadSaveManager/LoadSaveManager.H"
@@ -76,13 +76,9 @@ public:
 private:
   void cb__i(nle::FileBrowser*, void*);
   static void cb_(nle::FileBrowser*, void*);
-  static Fl_Menu_Item menu_Add[];
-  void cb_invert0r_i(Fl_Menu_*, void*);
-  static void cb_invert0r(Fl_Menu_*, void*);
-  void cb_bw0r_i(Fl_Menu_*, void*);
-  static void cb_bw0r(Fl_Menu_*, void*);
-  void cb_pixeliz0r_i(Fl_Menu_*, void*);
-  static void cb_pixeliz0r(Fl_Menu_*, void*);
+public:
+  nle::FltkEffectMenu *m_effectMenu;
+private:
   void cb_Edit_i(Fl_Button*, void*);
   static void cb_Edit(Fl_Button*, void*);
 public:

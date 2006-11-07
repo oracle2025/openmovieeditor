@@ -26,27 +26,34 @@ namespace nle
 
 Frei0rFactoryPlugin::Frei0rFactoryPlugin( string filename )
 {
+	m_ok = false;
+	f0r_init = 0;
+	f0r_deinit = 0;
 	m_handle = dlopen( filename.c_str(), RTLD_NOW );
-	assert( m_handle );
+	if ( !m_handle ) { return; }
 	
 	f0r_init = (f0r_init_f)dlsym( m_handle, "f0r_init" );
-	assert( f0r_init ); //TODO: assert is not a good idea, ok() might be better
+	if ( !f0r_init ) { return; }
 	
 	f0r_deinit = (f0r_deinit_f)dlsym( m_handle, "f0r_deinit" );
-	assert( f0r_deinit );
+	if ( !f0r_deinit ) { return; }
 	
 	f0r_get_plugin_info = (f0r_get_plugin_info_f)dlsym( m_handle, "f0r_get_plugin_info");
 	
 	if ( f0r_init() == 0 ) {
-		assert( 0 );
+		return;
 	}
 	f0r_get_plugin_info( &m_info );
-	
+	if ( m_info.plugin_type == F0R_PLUGIN_TYPE_FILTER ) {
+		m_ok = true;
+	}
 }
 
 Frei0rFactoryPlugin::~Frei0rFactoryPlugin()
 {
-	f0r_deinit();
+	if ( f0r_deinit ) {
+		f0r_deinit();
+	}
 	if ( m_handle ) {
 		dlclose( m_handle );
 	}
@@ -56,6 +63,10 @@ IVideoEffect* Frei0rFactoryPlugin::get( IVideoReader* reader, int w, int h )
 {
 	Frei0rEffect* effect = new Frei0rEffect( &m_info, m_handle, reader, w, h );
 	return effect;
+}
+const char* Frei0rFactoryPlugin::name()
+{
+	return m_info.name;
 }
 
 } /* namespace nle */

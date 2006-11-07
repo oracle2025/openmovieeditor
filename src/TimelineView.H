@@ -42,6 +42,7 @@ class Track;
 class Clip;
 class Timeline;
 class DragHandler;
+class AbstractEffectFactory;
 	
 class TimelineView : public Fl_Widget
 {
@@ -76,6 +77,7 @@ class TimelineView : public Fl_Widget
 		void end() {}
 		void adjustScrollbar();
 		void addEffect( string name );
+		void addEffect( AbstractEffectFactory* effectFactory );
 		void editEffect();
 	protected:
 		void draw();

@@ -757,7 +757,7 @@ void TimelineView::toggle_selection( Clip* clip )
 extern Frei0rFactoryPlugin* g_frei0rFactoryPlugin;
 extern Frei0rFactoryPlugin* g_frei0rFactoryPluginBW;
 extern Frei0rFactoryPlugin* g_frei0rFactoryPluginPX;
-void TimelineView::addEffect( string name )
+void TimelineView::addEffect( AbstractEffectFactory* effectFactory )
 {
 	if ( !m_selectedClips ) {
 		return;
@@ -769,12 +769,17 @@ void TimelineView::addEffect( string name )
 	if ( !vc ) {
 		return;
 	}
+	vc->pushEffect( effectFactory );
+	g_videoView->redraw();
+}
+void TimelineView::addEffect( string name )
+{
 	if ( name == "invert0r" ) {
-		vc->pushEffect( g_frei0rFactoryPlugin );
+		addEffect( g_frei0rFactoryPlugin );
 	} else if ( name == "bw0r" ) {
-		vc->pushEffect( g_frei0rFactoryPluginBW );
+		addEffect( g_frei0rFactoryPluginBW );
 	} else if ( name == "pixeliz0r" ) {
-		vc->pushEffect( g_frei0rFactoryPluginPX );
+		addEffect( g_frei0rFactoryPluginPX );
 	}
 
 }
