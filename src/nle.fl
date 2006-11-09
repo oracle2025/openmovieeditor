@@ -238,13 +238,15 @@ fb->load_rel();}
                 xywh {0 75 280 160}
               } {
                 Fl_Menu_Button m_effectMenu {
-                  label {Add Effect} open selected
+                  label {Add Effect} open
                   xywh {5 80 270 25}
                   code0 {\#include "FltkEffectMenu.H"}
                   class {nle::FltkEffectMenu}
                 } {}
-                Fl_Browser {} {
+                Fl_Browser effect_browser {
+                  callback {cout << "H" << endl;} selected
                   xywh {5 105 270 100} resizable
+                  class Fl_Hold_Browser
                 }
                 Fl_Group {} {open
                   xywh {5 205 270 25}
@@ -252,11 +254,11 @@ fb->load_rel();}
                   Fl_Group {} {open
                     xywh {5 205 50 25}
                   } {
-                    Fl_Button {} {
+                    Fl_Button m_effect_up {
                       label {@8->}
                       tooltip {Move Up} xywh {5 205 25 25}
                     }
-                    Fl_Button {} {
+                    Fl_Button m_effect_down {
                       label {@2->}
                       tooltip {Move Down} xywh {30 205 25 25}
                     }
@@ -264,11 +266,11 @@ fb->load_rel();}
                   Fl_Group {} {open
                     xywh {55 205 220 25} resizable
                   } {
-                    Fl_Button {} {
+                    Fl_Button m_remove_effect {
                       label {Remove Effect}
                       xywh {55 205 110 25}
                     }
-                    Fl_Button {} {
+                    Fl_Button m_edit_effect {
                       label {Edit Effect}
                       callback {m_timelineView->editEffect();}
                       xywh {165 205 110 25}
@@ -734,7 +736,7 @@ class AboutDialog {open
   } {
     Fl_Window aboutDialog {
       label {About Dialog} open
-      xywh {683 296 340 370} type Double modal visible
+      xywh {1243 364 340 370} type Double modal visible
     } {
       Fl_Box {} {
         image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/logo.xpm} xywh {0 0 340 155}

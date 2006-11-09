@@ -81,6 +81,7 @@ class TimelineView : public Fl_Widget
 	protected:
 		void draw();
 	private:
+		void updateEffectDisplay();
 		DragHandler *m_dragHandler;
 		int64_t m_scrollPosition;
 		int m_vscroll;

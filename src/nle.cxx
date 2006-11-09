@@ -191,11 +191,18 @@ void NleUI::cb_(nle::FileBrowser* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb__i(o,v);
 }
 
-void NleUI::cb_Edit_i(Fl_Button*, void*) {
+void NleUI::cb_effect_browser_i(Fl_Hold_Browser*, void*) {
+  cout << "H" << endl;
+}
+void NleUI::cb_effect_browser(Fl_Hold_Browser* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_effect_browser_i(o,v);
+}
+
+void NleUI::cb_m_edit_effect_i(Fl_Button*, void*) {
   m_timelineView->editEffect();
 }
-void NleUI::cb_Edit(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_Edit_i(o,v);
+void NleUI::cb_m_edit_effect(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_m_edit_effect_i(o,v);
 }
 
 void NleUI::cb_projectNameInput_i(NoDropInput* o, void*) {
@@ -558,23 +565,33 @@ NleUI::NleUI() {
                 o->align(FL_ALIGN_CENTER);
                 o->when(FL_WHEN_RELEASE_ALWAYS);
               }
-              { Fl_Browser* o = new Fl_Browser(5, 105, 270, 100);
+              { Fl_Hold_Browser* o = effect_browser = new Fl_Hold_Browser(5, 105, 270, 100);
+                o->box(FL_NO_BOX);
+                o->color(FL_BACKGROUND2_COLOR);
+                o->selection_color(FL_SELECTION_COLOR);
+                o->labeltype(FL_NORMAL_LABEL);
+                o->labelfont(0);
+                o->labelsize(14);
+                o->labelcolor(FL_FOREGROUND_COLOR);
+                o->callback((Fl_Callback*)cb_effect_browser);
+                o->align(FL_ALIGN_BOTTOM);
+                o->when(FL_WHEN_RELEASE_ALWAYS);
                 Fl_Group::current()->resizable(o);
               }
               { Fl_Group* o = new Fl_Group(5, 205, 270, 25);
                 { Fl_Group* o = new Fl_Group(5, 205, 50, 25);
-                { Fl_Button* o = new Fl_Button(5, 205, 25, 25, "@8->");
+                { Fl_Button* o = m_effect_up = new Fl_Button(5, 205, 25, 25, "@8->");
                 o->tooltip("Move Up");
                 }
-                { Fl_Button* o = new Fl_Button(30, 205, 25, 25, "@2->");
+                { Fl_Button* o = m_effect_down = new Fl_Button(30, 205, 25, 25, "@2->");
                 o->tooltip("Move Down");
                 }
                 o->end();
                 }
                 { Fl_Group* o = new Fl_Group(55, 205, 220, 25);
-                new Fl_Button(55, 205, 110, 25, "Remove Effect");
-                { Fl_Button* o = new Fl_Button(165, 205, 110, 25, "Edit Effect");
-                o->callback((Fl_Callback*)cb_Edit);
+                m_remove_effect = new Fl_Button(55, 205, 110, 25, "Remove Effect");
+                { Fl_Button* o = m_edit_effect = new Fl_Button(165, 205, 110, 25, "Edit Effect");
+                o->callback((Fl_Callback*)cb_m_edit_effect);
                 }
                 o->end();
                 Fl_Group::current()->resizable(o);

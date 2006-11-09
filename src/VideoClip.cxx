@@ -104,16 +104,19 @@ int64_t VideoClip::fileLength()
 }
 void VideoClip::pushEffect( AbstractEffectFactory* factory )
 {
-	if ( m_effectReader && m_effectReader != m_videoFile ) {
+/*	if ( m_effectReader && m_effectReader != m_videoFile ) {
 		delete m_effectReader;
 	}
-	m_effectReader = factory->get( m_videoFile, m_videoFile->width(), m_videoFile->height() );
+	m_effectReader = factory->get( m_videoFile, m_videoFile->width(), m_videoFile->height() );*/
+	m_effectReader = factory->get( m_effectReader, m_videoFile->width(), m_videoFile->height() );
 }
 void VideoClip::popEffect()
 {
 	if ( m_effectReader != m_videoFile ) {
 		IVideoEffect* e = dynamic_cast<IVideoEffect*>( m_effectReader );
-		assert( e );
+		if ( !e ) {
+			return;
+		}
 		m_effectReader = e->getReader();
 		delete e;
 	}

@@ -51,6 +51,9 @@ class VideoClip : public AudioClipBase, public IVideoReader
 		int64_t fileLength();
 		void pushEffect( AbstractEffectFactory* factory );
 		void popEffect();
+		void moveEffectUp( int num );
+		void moveEffectDown( int num );
+		void removeEffect( int num );
 		IVideoReader* getEffect() { return m_effectReader; }
 	protected:
 		int64_t audioTrimA();

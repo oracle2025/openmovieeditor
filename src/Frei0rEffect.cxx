@@ -98,5 +98,9 @@ void Frei0rEffect::setValue( f0r_param_t param, int param_index )
 {
 	f0r_set_param_value( m_instance, param, param_index );
 }
+const char* Frei0rEffect::name()
+{
+	return m_info->name;
+}
 
 } /* namespace nle */

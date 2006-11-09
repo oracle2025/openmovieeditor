@@ -682,6 +682,7 @@ void TimelineView::clear_selection()
 		node->clip->selected( false );
 		delete node;
 	}
+	updateEffectDisplay();
 }
 void TimelineView::select_clips( int _x1, int _y1, int _x2, int _y2 )
 {
@@ -709,6 +710,7 @@ void TimelineView::select_clips( int _x1, int _y1, int _x2, int _y2 )
 			m_selectedClips = (clip_node*)sl_push( m_selectedClips, n );
 		}
 	}
+	updateEffectDisplay();
 }
 void TimelineView::select_all_after_cursor()
 {
@@ -724,6 +726,7 @@ void TimelineView::select_all_after_cursor()
 			}
 		}
 	}
+	updateEffectDisplay();
 	redraw();
 }
 static int remove_clip_helper( void* p, void* data )
@@ -734,6 +737,28 @@ static int remove_clip_helper( void* p, void* data )
 		return 1;
 	} else {
 		return 0;
+	}
+}
+void TimelineView::updateEffectDisplay()
+{
+	// TODO: Wenn nur ein Clip markiert ist, dann Liste bei den Effekten
+	// anzeigen
+	g_ui->effect_browser->clear();
+	if ( !m_selectedClips ) {
+		return;
+	}
+	if ( m_selectedClips->next ) {
+		return;
+	}
+	VideoClip* vc = dynamic_cast<VideoClip*>( m_selectedClips->clip );
+	if ( !vc ) {
+		return;
+	}
+	// Liste füllen
+	IVideoEffect* e = dynamic_cast<IVideoEffect*>( vc->getEffect() );
+	while ( e ) {
+		g_ui->effect_browser->add( e->name(), e );
+		e = dynamic_cast<IVideoEffect*>( e->getReader() );
 	}
 }
 void TimelineView::toggle_selection( Clip* clip )
@@ -752,6 +777,7 @@ void TimelineView::toggle_selection( Clip* clip )
 		clip->selected( true );
 		m_selectedClips = (clip_node*)sl_push( m_selectedClips, n );
 	}
+	updateEffectDisplay();
 	redraw();
 }
 void TimelineView::addEffect( AbstractEffectFactory* effectFactory )
@@ -767,6 +793,7 @@ void TimelineView::addEffect( AbstractEffectFactory* effectFactory )
 		return;
 	}
 	vc->pushEffect( effectFactory );
+	updateEffectDisplay();
 	g_videoView->redraw();
 }
 void TimelineView::editEffect()
@@ -781,7 +808,17 @@ void TimelineView::editEffect()
 	if ( !vc ) {
 		return;
 	}
+	int c = g_ui->effect_browser->value();
+	if ( c == 0 ) {
+		return;
+	}
 	Frei0rEffect* fe = dynamic_cast<Frei0rEffect*>( vc->getEffect() );
+	for ( int i = 1; i < c && fe ; i++ ) {
+		fe = dynamic_cast<Frei0rEffect*>( fe->getReader() );
+	}
+	if ( !fe ) {
+		return;
+	}
 	Frei0rDialog dialog( fe );
 	dialog.show();
 	while ( dialog.shown() ) {

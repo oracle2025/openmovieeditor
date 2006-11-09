@@ -19,7 +19,6 @@
 #include "FileBrowser.H"
 #include "MediaPanel.H"
 #include "FltkEffectMenu.H"
-#include <FL/Fl_Browser.H>
 #include <FL/Fl_Button.H>
 #include "LoadSaveManager/LoadSaveManager.H"
 #include "NoDropInput.H"
@@ -78,9 +77,18 @@ private:
   static void cb_(nle::FileBrowser*, void*);
 public:
   nle::FltkEffectMenu *m_effectMenu;
+  Fl_Hold_Browser *effect_browser;
 private:
-  void cb_Edit_i(Fl_Button*, void*);
-  static void cb_Edit(Fl_Button*, void*);
+  void cb_effect_browser_i(Fl_Hold_Browser*, void*);
+  static void cb_effect_browser(Fl_Hold_Browser*, void*);
+public:
+  Fl_Button *m_effect_up;
+  Fl_Button *m_effect_down;
+  Fl_Button *m_remove_effect;
+  Fl_Button *m_edit_effect;
+private:
+  void cb_m_edit_effect_i(Fl_Button*, void*);
+  static void cb_m_edit_effect(Fl_Button*, void*);
 public:
   NoDropInput *projectNameInput;
 private:
