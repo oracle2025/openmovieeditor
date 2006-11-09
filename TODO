@@ -5,6 +5,8 @@
  * Log based File Format
  * 16:9 encoding, clipping, black bars
 
+Undo-Redo:
+Store at most 50 Steps of Undo-Redo in XML
 
 PLUGINS:
 
