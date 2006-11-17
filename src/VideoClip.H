@@ -34,6 +34,11 @@ class IClipArtist;
 class IVideoEffect;
 class AbstractEffectFactory;
 
+typedef struct _effect_stack {
+	struct _effect_stack* next;
+	IVideoEffect* effect;
+} effect_stack;
+
 class VideoClip : public AudioClipBase, public IVideoReader
 {
 	public:
@@ -51,10 +56,11 @@ class VideoClip : public AudioClipBase, public IVideoReader
 		int64_t fileLength();
 		void pushEffect( AbstractEffectFactory* factory );
 		void popEffect();
-		void moveEffectUp( int num );
+		void moveEffectUp( int num );/* Counting starts with 1 */
 		void moveEffectDown( int num );
 		void removeEffect( int num );
-		IVideoReader* getEffect() { return m_effectReader; }
+		effect_stack* getEffects() { return m_effects; }
+//		IVideoReader* getEffect() { return m_effectReader; }
 	protected:
 		int64_t audioTrimA();
 		int64_t audioTrimB();
@@ -69,6 +75,7 @@ class VideoClip : public AudioClipBase, public IVideoReader
 		bool m_noAudio;
 		IClipArtist* m_artist;
 		IVideoReader* m_effectReader;
+		effect_stack* m_effects;
 };
 
 } /* namespace nle */

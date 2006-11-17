@@ -19,15 +19,16 @@
 #ifndef _I_VIDEO_EFFECT_H_
 #define _I_VIDEO_EFFECT_H_
 
-#include "IVideoReader.H"
+
+#include "frame_struct.h"
 namespace nle
 {
 
-class IVideoEffect : public IVideoReader
+class IVideoEffect
 {
 	public:
 		virtual ~IVideoEffect() {}
-		virtual IVideoReader* getReader() = 0;
+		virtual frame_struct* getFrame( frame_struct* frame, int64_t position = -1 ) = 0;
 		virtual const char* name() = 0;
 		/*
 		 * This Class is empty today, but will be populated soon

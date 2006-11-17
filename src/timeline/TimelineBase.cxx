@@ -110,7 +110,7 @@ void TimelineBase::addTrack( Track* track, int position )
 		p->next = node;
 	}
 }
-track_node* sl_swap( track_node* root )
+static track_node* sl_swap( track_node* root )
 {
 	track_node* q = root;
 	track_node* r;

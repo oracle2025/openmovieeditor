@@ -191,11 +191,25 @@ void NleUI::cb_(nle::FileBrowser* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb__i(o,v);
 }
 
-void NleUI::cb_effect_browser_i(Fl_Hold_Browser*, void*) {
-  cout << "H" << endl;
+void NleUI::cb_m_effect_up_i(Fl_Button*, void*) {
+  m_timelineView->moveEffectUp();
 }
-void NleUI::cb_effect_browser(Fl_Hold_Browser* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_effect_browser_i(o,v);
+void NleUI::cb_m_effect_up(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_m_effect_up_i(o,v);
+}
+
+void NleUI::cb_m_effect_down_i(Fl_Button*, void*) {
+  m_timelineView->moveEffectDown();
+}
+void NleUI::cb_m_effect_down(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_m_effect_down_i(o,v);
+}
+
+void NleUI::cb_m_remove_effect_i(Fl_Button*, void*) {
+  m_timelineView->removeEffect();
+}
+void NleUI::cb_m_remove_effect(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_m_remove_effect_i(o,v);
 }
 
 void NleUI::cb_m_edit_effect_i(Fl_Button*, void*) {
@@ -573,7 +587,6 @@ NleUI::NleUI() {
                 o->labelfont(0);
                 o->labelsize(14);
                 o->labelcolor(FL_FOREGROUND_COLOR);
-                o->callback((Fl_Callback*)cb_effect_browser);
                 o->align(FL_ALIGN_BOTTOM);
                 o->when(FL_WHEN_RELEASE_ALWAYS);
                 Fl_Group::current()->resizable(o);
@@ -582,14 +595,18 @@ NleUI::NleUI() {
                 { Fl_Group* o = new Fl_Group(5, 205, 50, 25);
                 { Fl_Button* o = m_effect_up = new Fl_Button(5, 205, 25, 25, "@8->");
                 o->tooltip("Move Up");
+                o->callback((Fl_Callback*)cb_m_effect_up);
                 }
                 { Fl_Button* o = m_effect_down = new Fl_Button(30, 205, 25, 25, "@2->");
                 o->tooltip("Move Down");
+                o->callback((Fl_Callback*)cb_m_effect_down);
                 }
                 o->end();
                 }
                 { Fl_Group* o = new Fl_Group(55, 205, 220, 25);
-                m_remove_effect = new Fl_Button(55, 205, 110, 25, "Remove Effect");
+                { Fl_Button* o = m_remove_effect = new Fl_Button(55, 205, 110, 25, "Remove Effect");
+                o->callback((Fl_Callback*)cb_m_remove_effect);
+                }
                 { Fl_Button* o = m_edit_effect = new Fl_Button(165, 205, 110, 25, "Edit Effect");
                 o->callback((Fl_Callback*)cb_m_edit_effect);
                 }

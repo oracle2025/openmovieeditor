@@ -741,8 +741,6 @@ static int remove_clip_helper( void* p, void* data )
 }
 void TimelineView::updateEffectDisplay()
 {
-	// TODO: Wenn nur ein Clip markiert ist, dann Liste bei den Effekten
-	// anzeigen
 	g_ui->effect_browser->clear();
 	if ( !m_selectedClips ) {
 		return;
@@ -755,10 +753,12 @@ void TimelineView::updateEffectDisplay()
 		return;
 	}
 	// Liste füllen
-	IVideoEffect* e = dynamic_cast<IVideoEffect*>( vc->getEffect() );
-	while ( e ) {
-		g_ui->effect_browser->add( e->name(), e );
-		e = dynamic_cast<IVideoEffect*>( e->getReader() );
+	effect_stack* es = vc->getEffects();
+//	IVideoEffect* e = dynamic_cast<IVideoEffect*>( vc->getEffect() );
+	while ( es ) {
+		g_ui->effect_browser->add( es->effect->name(), es->effect );
+//		e = dynamic_cast<IVideoEffect*>( e->getReader() );
+		es = es->next;
 	}
 }
 void TimelineView::toggle_selection( Clip* clip )
@@ -780,6 +780,51 @@ void TimelineView::toggle_selection( Clip* clip )
 	updateEffectDisplay();
 	redraw();
 }
+
+void TimelineView::moveEffectDown()
+{
+	//TODO copy and paste from editEffect
+	if ( !m_selectedClips ) {
+		return;
+	}
+	if ( m_selectedClips->next ) {
+		return;
+	}
+	VideoClip* vc = dynamic_cast<VideoClip*>( m_selectedClips->clip );
+	if ( !vc ) {
+		return;
+	}
+	int c = g_ui->effect_browser->value();
+	if ( c == 0 ) {
+		return;
+	}
+	vc->moveEffectDown( c );
+	updateEffectDisplay();
+	g_ui->effect_browser->value( c + 1 );
+	g_videoView->redraw();
+}
+void TimelineView::moveEffectUp()
+{
+	//TODO copy and paste from editEffect
+	if ( !m_selectedClips ) {
+		return;
+	}
+	if ( m_selectedClips->next ) {
+		return;
+	}
+	VideoClip* vc = dynamic_cast<VideoClip*>( m_selectedClips->clip );
+	if ( !vc ) {
+		return;
+	}
+	int c = g_ui->effect_browser->value();
+	if ( c == 0 ) {
+		return;
+	}
+	vc->moveEffectUp( c );
+	updateEffectDisplay();
+	g_ui->effect_browser->value( c - 1 );
+	g_videoView->redraw();
+}
 void TimelineView::addEffect( AbstractEffectFactory* effectFactory )
 {
 	if ( !m_selectedClips ) {
@@ -793,6 +838,26 @@ void TimelineView::addEffect( AbstractEffectFactory* effectFactory )
 		return;
 	}
 	vc->pushEffect( effectFactory );
+	updateEffectDisplay();
+	g_videoView->redraw();
+}
+void TimelineView::removeEffect()
+{
+	if ( !m_selectedClips ) {
+		return;
+	}
+	if ( m_selectedClips->next ) {
+		return;
+	}
+	VideoClip* vc = dynamic_cast<VideoClip*>( m_selectedClips->clip );
+	if ( !vc ) {
+		return;
+	}
+	int c = g_ui->effect_browser->value();
+	if ( c == 0 ) {
+		return;
+	}
+	vc->removeEffect( c );
 	updateEffectDisplay();
 	g_videoView->redraw();
 }
@@ -812,13 +877,18 @@ void TimelineView::editEffect()
 	if ( c == 0 ) {
 		return;
 	}
-	Frei0rEffect* fe = dynamic_cast<Frei0rEffect*>( vc->getEffect() );
+	effect_stack* es = vc->getEffects();
+	for ( int i = 1; i < c && es ; i++ ) {
+		es = es->next;
+	}
+/*	Frei0rEffect* fe = dynamic_cast<Frei0rEffect*>( vc->getEffect() );
 	for ( int i = 1; i < c && fe ; i++ ) {
 		fe = dynamic_cast<Frei0rEffect*>( fe->getReader() );
-	}
-	if ( !fe ) {
+	}*/
+	if ( !es ) {
 		return;
 	}
+	Frei0rEffect* fe = dynamic_cast<Frei0rEffect*>( es->effect );
 	Frei0rDialog dialog( fe );
 	dialog.show();
 	while ( dialog.shown() ) {

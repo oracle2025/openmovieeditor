@@ -244,7 +244,6 @@ fb->load_rel();}
                   class {nle::FltkEffectMenu}
                 } {}
                 Fl_Browser effect_browser {
-                  callback {cout << "H" << endl;} selected
                   xywh {5 105 270 100} resizable
                   class Fl_Hold_Browser
                 }
@@ -256,10 +255,12 @@ fb->load_rel();}
                   } {
                     Fl_Button m_effect_up {
                       label {@8->}
+                      callback {m_timelineView->moveEffectUp();}
                       tooltip {Move Up} xywh {5 205 25 25}
                     }
                     Fl_Button m_effect_down {
                       label {@2->}
+                      callback {m_timelineView->moveEffectDown();}
                       tooltip {Move Down} xywh {30 205 25 25}
                     }
                   }
@@ -268,6 +269,7 @@ fb->load_rel();}
                   } {
                     Fl_Button m_remove_effect {
                       label {Remove Effect}
+                      callback {m_timelineView->removeEffect();} selected
                       xywh {55 205 110 25}
                     }
                     Fl_Button m_edit_effect {

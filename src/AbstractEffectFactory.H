@@ -30,7 +30,7 @@ class AbstractEffectFactory
 {
 	public:
 		virtual ~AbstractEffectFactory() {}
-		virtual IVideoEffect* get( IVideoReader* reader, int w, int h ) = 0;
+		virtual IVideoEffect* get( int w, int h ) = 0;
 		virtual const char* name() = 0;
 };
 

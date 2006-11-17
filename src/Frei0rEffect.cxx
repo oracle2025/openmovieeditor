@@ -26,8 +26,8 @@
 namespace nle
 {
 
-Frei0rEffect::Frei0rEffect( f0r_plugin_info_t* info, void* handle, IVideoReader* reader, int w, int h )
-	: m_reader( reader ), m_info( info )
+Frei0rEffect::Frei0rEffect( f0r_plugin_info_t* info, void* handle, int w, int h )
+	: m_info( info )
 {
 	f0r_construct = (f0r_construct_f)dlsym( handle, "f0r_construct" );
 	f0r_destruct = (f0r_destruct_f)dlsym( handle, "f0r_destruct" );
@@ -59,10 +59,8 @@ Frei0rEffect::~Frei0rEffect()
 {
 	f0r_destruct( m_instance );
 }
-frame_struct* Frei0rEffect::getFrame( int64_t position )
+frame_struct* Frei0rEffect::getFrame( frame_struct* frame, int64_t )
 {
-	frame_struct* frame;
-	frame = m_reader->getFrame( position );
 	if ( frame->has_alpha_channel ) {
 		f0r_update( m_instance, 0.0, (uint32_t*)frame->RGB, (uint32_t*)m_frame );
 	} else {

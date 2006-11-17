@@ -19,6 +19,8 @@
 
 #include <cassert>
 
+#include "sl/sl.h"
+
 #include "VideoClip.H"
 #include "IVideoFile.H"
 #include "FilmStrip.H"
@@ -39,7 +41,8 @@ VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A,
 	m_audioFile = 0;
 	m_videoFile = vf;
 
-	m_effectReader = vf;
+//	m_effectReader = vf;
+	m_effects = 0;
 	
 	m_filmStrip = g_filmStripFactory->get( vf ); //new FilmStrip( vf );
 	
@@ -55,9 +58,12 @@ VideoClip::~VideoClip()
 {
 	delete m_artist;
 	g_filmStripFactory->remove( m_filmStrip );//delete m_filmStrip;
-	if ( m_effectReader && m_effectReader != m_videoFile ) {
-		delete m_effectReader;
+	effect_stack* node;
+	while ( ( node = (effect_stack*)sl_pop( &m_effects ) ) ) {
+		delete node->effect;
+		delete node;
 	}
+
 	delete m_videoFile;
 }
 string VideoClip::filename()
@@ -95,8 +101,14 @@ frame_struct* VideoClip::getFrame( int64_t position )
 	if ( position < m_position || position > m_position + length() )
 		return NULL;
 	int64_t s_pos = position - m_position + m_trimA;
-	return m_effectReader->getFrame( s_pos );
-	//return m_videoFile->getFrame( s_pos );
+	
+	frame_struct *f = m_videoFile->getFrame( s_pos );
+	effect_stack *node = m_effects;
+	while ( node ) {
+		f = node->effect->getFrame( f, s_pos );
+		node = node->next;
+	}
+	return f;
 }
 int64_t VideoClip::fileLength()
 {
@@ -108,18 +120,100 @@ void VideoClip::pushEffect( AbstractEffectFactory* factory )
 		delete m_effectReader;
 	}
 	m_effectReader = factory->get( m_videoFile, m_videoFile->width(), m_videoFile->height() );*/
-	m_effectReader = factory->get( m_effectReader, m_videoFile->width(), m_videoFile->height() );
+	IVideoEffect* e = factory->get( m_videoFile->width(), m_videoFile->height() );
+	effect_stack* n = new effect_stack;
+	n->next = 0;
+	n->effect = e;
+	m_effects = (effect_stack*)sl_push( m_effects, n );
 }
 void VideoClip::popEffect()
 {
-	if ( m_effectReader != m_videoFile ) {
+/*	if ( m_effectReader != m_videoFile ) {
 		IVideoEffect* e = dynamic_cast<IVideoEffect*>( m_effectReader );
 		if ( !e ) {
 			return;
 		}
 		m_effectReader = e->getReader();
 		delete e;
+	}*/
+}
+/*
+IVideoEffect* swapEffects( IVideoEffect* videoEffect )
+{
+	IVideoEffect* A;
+	IVideoEffect* B;
+	IVideoReader* C;
+
+	A = videoEffect;
+	B = dynamic_cast<IVideoEffect*>( videoEffect->getReader() );
+	C = B->getReader();
+
+	A->setReader( C );
+	B->setReader( A );
+	return B;
+}
+*/
+static effect_stack* sl_swap( effect_stack* root )
+{
+	effect_stack* q = root;
+	effect_stack* r;
+	if ( !q || !q->next ) {
+		return q;
+	}
+	r = q->next;
+	q->next = r->next;
+	r->next = q;
+	return r;
+}
+
+void VideoClip::moveEffectUp( int num )
+{
+	if ( !m_effects || num <= 1 ) {
+		return;
+	}
+	if ( num == 2 ) {
+		m_effects = sl_swap( m_effects );
+		return;
+	}
+	effect_stack* p = m_effects;
+	for ( int i = 3; i < num; i++ ) {
+		p = p->next;
+	}
+	p->next = sl_swap( p->next );
+}
+void VideoClip::moveEffectDown( int num )
+{
+	if ( !m_effects ) {
+		return;
+	}
+	if ( num == 1 ) {
+		m_effects = sl_swap( m_effects );
+		return;
+	}
+	effect_stack* p = m_effects;
+	for ( int i = 2; i < num; i++ ) {
+		p = p->next;
+	}
+	p->next = sl_swap( p->next );
+}
+static int remove_effect_helper( void*, void* data )
+{
+	int* num = (int*)data;
+	if ( *num ) {
+		(*num)--;
+		return 0;
+	}
+	return 1;
+}
+void VideoClip::removeEffect( int num )
+{
+	int count = num - 1;
+	effect_stack* node = (effect_stack*)sl_remove( &m_effects, remove_effect_helper, &count );
+	if ( node ) {
+		delete node->effect;
+		delete node;
 	}
 }
+
 	
 } /* namespace nle */

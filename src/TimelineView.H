@@ -78,6 +78,9 @@ class TimelineView : public Fl_Widget
 		void adjustScrollbar();
 		void addEffect( AbstractEffectFactory* effectFactory );
 		void editEffect();
+		void moveEffectUp();
+		void moveEffectDown();
+		void removeEffect();
 	protected:
 		void draw();
 	private:

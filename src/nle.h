@@ -78,13 +78,21 @@ private:
 public:
   nle::FltkEffectMenu *m_effectMenu;
   Fl_Hold_Browser *effect_browser;
-private:
-  void cb_effect_browser_i(Fl_Hold_Browser*, void*);
-  static void cb_effect_browser(Fl_Hold_Browser*, void*);
-public:
   Fl_Button *m_effect_up;
+private:
+  void cb_m_effect_up_i(Fl_Button*, void*);
+  static void cb_m_effect_up(Fl_Button*, void*);
+public:
   Fl_Button *m_effect_down;
+private:
+  void cb_m_effect_down_i(Fl_Button*, void*);
+  static void cb_m_effect_down(Fl_Button*, void*);
+public:
   Fl_Button *m_remove_effect;
+private:
+  void cb_m_remove_effect_i(Fl_Button*, void*);
+  static void cb_m_remove_effect(Fl_Button*, void*);
+public:
   Fl_Button *m_edit_effect;
 private:
   void cb_m_edit_effect_i(Fl_Button*, void*);

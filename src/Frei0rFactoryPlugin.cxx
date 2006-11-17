@@ -59,9 +59,9 @@ Frei0rFactoryPlugin::~Frei0rFactoryPlugin()
 	}
 }
 
-IVideoEffect* Frei0rFactoryPlugin::get( IVideoReader* reader, int w, int h )
+IVideoEffect* Frei0rFactoryPlugin::get( int w, int h )
 {
-	Frei0rEffect* effect = new Frei0rEffect( &m_info, m_handle, reader, w, h );
+	Frei0rEffect* effect = new Frei0rEffect( &m_info, m_handle, w, h );
 	return effect;
 }
 const char* Frei0rFactoryPlugin::name()

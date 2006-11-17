@@ -39,7 +39,7 @@ class Frei0rFactoryPlugin : public AbstractEffectFactory
 	public:
 		Frei0rFactoryPlugin( string filename );
 		~Frei0rFactoryPlugin();
-		IVideoEffect* get( IVideoReader* reader, int w, int h );
+		IVideoEffect* get( int w, int h );
 		bool ok() { return m_ok; }
 		const char* name();
 	private:

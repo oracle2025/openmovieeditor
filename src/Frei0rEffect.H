@@ -35,14 +35,13 @@ namespace nle
 class Frei0rEffect : public IVideoEffect
 {
 	public:
-		Frei0rEffect( f0r_plugin_info_t* info, void* handle, IVideoReader* reader, int w, int h);
+		Frei0rEffect( f0r_plugin_info_t* info, void* handle, int w, int h);
 		~Frei0rEffect();
-		frame_struct* getFrame( int64_t position );
+		frame_struct* getFrame( frame_struct* frame, int64_t position );
 		f0r_plugin_info_t *getPluginInfo() { return m_info; }
 		void getParamInfo( f0r_param_info_t *info, int param_index );
 		void getValue( f0r_param_t param, int param_index );
 		void setValue( f0r_param_t param, int param_index );
-		IVideoReader* getReader() { return m_reader; }
 		const char* name();
 	private:
 		f0r_instance_t m_instance;
@@ -54,7 +53,6 @@ class Frei0rEffect : public IVideoEffect
 		f0r_construct_f f0r_construct;
 		f0r_destruct_f f0r_destruct;
 		f0r_update_f f0r_update;
-		IVideoReader* m_reader;
 		f0r_get_param_info_f  f0r_get_param_info;
 		f0r_set_param_value_f f0r_set_param_value;
 		f0r_get_param_value_f f0r_get_param_value;
