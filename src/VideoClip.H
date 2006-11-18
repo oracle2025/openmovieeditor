@@ -24,29 +24,20 @@
 
 #include "AudioClipBase.H"
 #include "frame_struct.h"
-#include "IVideoReader.H"
-
+#include "VideoEffectClip.H"
 namespace nle
 {
 class IVideoFile;
 class FilmStrip;
 class IClipArtist;
-class IVideoEffect;
-class AbstractEffectFactory;
-
-typedef struct _effect_stack {
-	struct _effect_stack* next;
-	IVideoEffect* effect;
-} effect_stack;
-
-class VideoClip : public AudioClipBase, public IVideoReader
+class VideoClip : public AudioClipBase, public VideoEffectClip
 {
 	public:
 		VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A = 0, int64_t B = 0, int id = -1 );
 		~VideoClip();
 		int64_t length();
 		void reset();
-		frame_struct* getFrame( int64_t position );
+		frame_struct* getRawFrame( int64_t position, int64_t &position_in_file );
 		inline FilmStrip* getFilmStrip() { return m_filmStrip; }
 		string filename();
 		inline IVideoFile* file() { return m_videoFile; }
@@ -54,14 +45,8 @@ class VideoClip : public AudioClipBase, public IVideoReader
 		inline IClipArtist* getArtist() { return m_artist; }
 		bool hasAudio();
 		int64_t fileLength();
-		IVideoEffect* appendEffect( AbstractEffectFactory* factory );
-		void pushEffect( AbstractEffectFactory* factory );
-		void popEffect();
-		void moveEffectUp( int num );/* Counting starts with 1 */
-		void moveEffectDown( int num );
-		void removeEffect( int num );
-		effect_stack* getEffects() { return m_effects; }
-//		IVideoReader* getEffect() { return m_effectReader; }
+		int w();
+		int h();
 	protected:
 		int64_t audioTrimA();
 		int64_t audioTrimB();
@@ -75,8 +60,6 @@ class VideoClip : public AudioClipBase, public IVideoReader
 		int64_t m_audioPosition;
 		bool m_noAudio;
 		IClipArtist* m_artist;
-		IVideoReader* m_effectReader;
-		effect_stack* m_effects;
 };
 
 } /* namespace nle */
