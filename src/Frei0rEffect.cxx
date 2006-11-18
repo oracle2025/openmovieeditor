@@ -100,5 +100,9 @@ const char* Frei0rEffect::name()
 {
 	return m_info->name;
 }
+int Frei0rEffect::numParams()
+{
+	return m_info->num_params;
+}
 
 } /* namespace nle */

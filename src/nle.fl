@@ -4,8 +4,7 @@ header_name {.h}
 code_name {.cxx}
 class NleUI {open
 } {
-  Function {NleUI()} {open
-  } {
+  Function {NleUI()} {} {
     Fl_Window mainWindow {
       label {Open Movie Editor}
       callback {if (Fl::event()==FL_SHORTCUT && Fl::event_key()==FL_Escape) 
@@ -244,7 +243,9 @@ fb->load_rel();}
                   class {nle::FltkEffectMenu}
                 } {}
                 Fl_Browser effect_browser {
+                  callback {setEffectButtons();}
                   xywh {5 105 270 100} resizable
+                  code0 {\#include "IVideoEffect.H"}
                   class Fl_Hold_Browser
                 }
                 Fl_Group {} {open
@@ -256,12 +257,12 @@ fb->load_rel();}
                     Fl_Button m_effect_up {
                       label {@8->}
                       callback {m_timelineView->moveEffectUp();}
-                      tooltip {Move Up} xywh {5 205 25 25}
+                      tooltip {Move Up} xywh {5 205 25 25} deactivate
                     }
                     Fl_Button m_effect_down {
                       label {@2->}
                       callback {m_timelineView->moveEffectDown();}
-                      tooltip {Move Down} xywh {30 205 25 25}
+                      tooltip {Move Down} xywh {30 205 25 25} deactivate
                     }
                   }
                   Fl_Group {} {open
@@ -269,13 +270,13 @@ fb->load_rel();}
                   } {
                     Fl_Button m_remove_effect {
                       label {Remove Effect}
-                      callback {m_timelineView->removeEffect();} selected
-                      xywh {55 205 110 25}
+                      callback {m_timelineView->removeEffect();}
+                      xywh {55 205 110 25} deactivate
                     }
                     Fl_Button m_edit_effect {
                       label {Edit Effect}
-                      callback {m_timelineView->editEffect();}
-                      xywh {165 205 110 25}
+                      callback {m_timelineView->editEffect();} selected
+                      xywh {165 205 110 25} deactivate
                     }
                   }
                 }
@@ -412,8 +413,7 @@ nle::g_loadSaveManager->load( name );} open
       } {}
     }
   }
-  Function {show( int argc, char **argv )} {open
-  } {
+  Function {show( int argc, char **argv )} {} {
     code {g_fps = 25.0;
 g_backseek = false;
 g_scrollBar = scaleBar;
@@ -433,11 +433,10 @@ g_seek_audio = true;
 scroll_area->type(0);
 g_v_scrollbar = vScrollBar;} {}
   }
-  Function {~NleUI()} {open
-  } {
+  Function {~NleUI()} {} {
     code {delete mainWindow;} {}
   }
-  Function {automationsMode()} {open return_type int
+  Function {automationsMode()} {return_type int
   } {
     code {if ( positioningButton->value() ) {
 	return 0;
@@ -445,6 +444,31 @@ g_v_scrollbar = vScrollBar;} {}
 	return 1;
 } else {
 	return 2;
+}} {}
+  }
+  Function {setEffectButtons()} {open
+  } {
+    code {nle::IVideoEffect* e = (nle::IVideoEffect*)effect_browser->data( effect_browser->value() );
+if ( e && e->numParams() ) {
+	m_edit_effect->activate();
+} else {
+	m_edit_effect->deactivate();
+}
+
+if ( effect_browser->value() <= 1 ) {
+	m_effect_up->deactivate();
+} else {
+	m_effect_up->activate();
+}
+if ( effect_browser->value() == effect_browser->size() || effect_browser->value() == 0 ) {
+	m_effect_down->deactivate();
+} else {
+	m_effect_down->activate();
+}
+if ( effect_browser->value() == 0 ) {
+	m_remove_effect->deactivate();
+} else {
+	m_remove_effect->activate();
 }} {}
   }
 } 

@@ -778,6 +778,7 @@ void TimelineView::toggle_selection( Clip* clip )
 		m_selectedClips = (clip_node*)sl_push( m_selectedClips, n );
 	}
 	updateEffectDisplay();
+	g_ui->setEffectButtons();
 	redraw();
 }
 
@@ -801,6 +802,7 @@ void TimelineView::moveEffectDown()
 	vc->moveEffectDown( c );
 	updateEffectDisplay();
 	g_ui->effect_browser->value( c + 1 );
+	g_ui->setEffectButtons();
 	g_videoView->redraw();
 }
 void TimelineView::moveEffectUp()
@@ -823,6 +825,7 @@ void TimelineView::moveEffectUp()
 	vc->moveEffectUp( c );
 	updateEffectDisplay();
 	g_ui->effect_browser->value( c - 1 );
+	g_ui->setEffectButtons();
 	g_videoView->redraw();
 }
 void TimelineView::addEffect( AbstractEffectFactory* effectFactory )
@@ -839,6 +842,7 @@ void TimelineView::addEffect( AbstractEffectFactory* effectFactory )
 	}
 	vc->pushEffect( effectFactory );
 	updateEffectDisplay();
+	g_ui->setEffectButtons();
 	g_videoView->redraw();
 }
 void TimelineView::removeEffect()
@@ -859,6 +863,7 @@ void TimelineView::removeEffect()
 	}
 	vc->removeEffect( c );
 	updateEffectDisplay();
+	g_ui->setEffectButtons();
 	g_videoView->redraw();
 }
 void TimelineView::editEffect()

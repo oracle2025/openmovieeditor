@@ -191,6 +191,13 @@ void NleUI::cb_(nle::FileBrowser* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb__i(o,v);
 }
 
+void NleUI::cb_effect_browser_i(Fl_Hold_Browser*, void*) {
+  setEffectButtons();
+}
+void NleUI::cb_effect_browser(Fl_Hold_Browser* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_effect_browser_i(o,v);
+}
+
 void NleUI::cb_m_effect_up_i(Fl_Button*, void*) {
   m_timelineView->moveEffectUp();
 }
@@ -587,6 +594,7 @@ NleUI::NleUI() {
                 o->labelfont(0);
                 o->labelsize(14);
                 o->labelcolor(FL_FOREGROUND_COLOR);
+                o->callback((Fl_Callback*)cb_effect_browser);
                 o->align(FL_ALIGN_BOTTOM);
                 o->when(FL_WHEN_RELEASE_ALWAYS);
                 Fl_Group::current()->resizable(o);
@@ -596,19 +604,23 @@ NleUI::NleUI() {
                 { Fl_Button* o = m_effect_up = new Fl_Button(5, 205, 25, 25, "@8->");
                 o->tooltip("Move Up");
                 o->callback((Fl_Callback*)cb_m_effect_up);
+                o->deactivate();
                 }
                 { Fl_Button* o = m_effect_down = new Fl_Button(30, 205, 25, 25, "@2->");
                 o->tooltip("Move Down");
                 o->callback((Fl_Callback*)cb_m_effect_down);
+                o->deactivate();
                 }
                 o->end();
                 }
                 { Fl_Group* o = new Fl_Group(55, 205, 220, 25);
                 { Fl_Button* o = m_remove_effect = new Fl_Button(55, 205, 110, 25, "Remove Effect");
                 o->callback((Fl_Callback*)cb_m_remove_effect);
+                o->deactivate();
                 }
                 { Fl_Button* o = m_edit_effect = new Fl_Button(165, 205, 110, 25, "Edit Effect");
                 o->callback((Fl_Callback*)cb_m_edit_effect);
+                o->deactivate();
                 }
                 o->end();
                 Fl_Group::current()->resizable(o);
@@ -815,6 +827,31 @@ int NleUI::automationsMode() {
 	return 1;
 } else {
 	return 2;
+}
+}
+
+void NleUI::setEffectButtons() {
+  nle::IVideoEffect* e = (nle::IVideoEffect*)effect_browser->data( effect_browser->value() );
+if ( e && e->numParams() ) {
+	m_edit_effect->activate();
+} else {
+	m_edit_effect->deactivate();
+}
+
+if ( effect_browser->value() <= 1 ) {
+	m_effect_up->deactivate();
+} else {
+	m_effect_up->activate();
+}
+if ( effect_browser->value() == effect_browser->size() || effect_browser->value() == 0 ) {
+	m_effect_down->deactivate();
+} else {
+	m_effect_down->activate();
+}
+if ( effect_browser->value() == 0 ) {
+	m_remove_effect->deactivate();
+} else {
+	m_remove_effect->activate();
 }
 }
 Flmm_Scalebar* g_scrollBar;

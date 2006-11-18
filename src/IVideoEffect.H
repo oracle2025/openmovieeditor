@@ -30,6 +30,7 @@ class IVideoEffect
 		virtual ~IVideoEffect() {}
 		virtual frame_struct* getFrame( frame_struct* frame, int64_t position = -1 ) = 0;
 		virtual const char* name() = 0;
+		virtual int numParams() = 0;
 		/*
 		 * This Class is empty today, but will be populated soon
 		 */

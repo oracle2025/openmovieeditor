@@ -43,6 +43,7 @@ class Frei0rEffect : public IVideoEffect
 		void getValue( f0r_param_t param, int param_index );
 		void setValue( f0r_param_t param, int param_index );
 		const char* name();
+		int numParams();
 	private:
 		f0r_instance_t m_instance;
 		unsigned char *m_tmpFrame;

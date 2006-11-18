@@ -19,6 +19,7 @@
 #include "FileBrowser.H"
 #include "MediaPanel.H"
 #include "FltkEffectMenu.H"
+#include "IVideoEffect.H"
 #include <FL/Fl_Button.H>
 #include "LoadSaveManager/LoadSaveManager.H"
 #include "NoDropInput.H"
@@ -78,6 +79,10 @@ private:
 public:
   nle::FltkEffectMenu *m_effectMenu;
   Fl_Hold_Browser *effect_browser;
+private:
+  void cb_effect_browser_i(Fl_Hold_Browser*, void*);
+  static void cb_effect_browser(Fl_Hold_Browser*, void*);
+public:
   Fl_Button *m_effect_up;
 private:
   void cb_m_effect_up_i(Fl_Button*, void*);
@@ -158,6 +163,7 @@ public:
   void show( int argc, char **argv );
   ~NleUI();
   int automationsMode();
+  void setEffectButtons();
 };
 extern Flmm_Scalebar* g_scrollBar;
 #include "IVideoReader.H"
