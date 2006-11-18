@@ -252,7 +252,7 @@ int Project::read( string filename )
 					if ( ef ) {
 						Frei0rEffect* effectObj = dynamic_cast<Frei0rEffect*>( c->appendEffect( ef ) );
 						TiXmlElement* parameterXml = TiXmlHandle( effectXml ).FirstChildElement( "parameter" ).Element();
-						if ( parameterXml ) {
+						for ( ; parameterXml; parameterXml = parameterXml->NextSiblingElement( "parameter" ) ) {
 							string paramName = parameterXml->Attribute( "name" );
 							f0r_plugin_info_t* finfo = effectObj->getPluginInfo();
 							f0r_param_info_t pinfo;
