@@ -748,7 +748,7 @@ void TimelineView::updateEffectDisplay()
 	if ( m_selectedClips->next ) {
 		return;
 	}
-	VideoClip* vc = dynamic_cast<VideoClip*>( m_selectedClips->clip );
+	VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>( m_selectedClips->clip );
 	if ( !vc ) {
 		return;
 	}
@@ -791,7 +791,7 @@ void TimelineView::moveEffectDown()
 	if ( m_selectedClips->next ) {
 		return;
 	}
-	VideoClip* vc = dynamic_cast<VideoClip*>( m_selectedClips->clip );
+	VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>( m_selectedClips->clip );
 	if ( !vc ) {
 		return;
 	}
@@ -814,7 +814,7 @@ void TimelineView::moveEffectUp()
 	if ( m_selectedClips->next ) {
 		return;
 	}
-	VideoClip* vc = dynamic_cast<VideoClip*>( m_selectedClips->clip );
+	VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>( m_selectedClips->clip );
 	if ( !vc ) {
 		return;
 	}
@@ -836,7 +836,7 @@ void TimelineView::addEffect( AbstractEffectFactory* effectFactory )
 	if ( m_selectedClips->next ) {
 		return;
 	}
-	VideoClip* vc = dynamic_cast<VideoClip*>( m_selectedClips->clip );
+	VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>( m_selectedClips->clip );
 	if ( !vc ) {
 		return;
 	}
@@ -853,7 +853,7 @@ void TimelineView::removeEffect()
 	if ( m_selectedClips->next ) {
 		return;
 	}
-	VideoClip* vc = dynamic_cast<VideoClip*>( m_selectedClips->clip );
+	VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>( m_selectedClips->clip );
 	if ( !vc ) {
 		return;
 	}
@@ -874,7 +874,7 @@ void TimelineView::editEffect()
 	if ( m_selectedClips->next ) {
 		return;
 	}
-	VideoClip* vc = dynamic_cast<VideoClip*>( m_selectedClips->clip );
+	VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>( m_selectedClips->clip );
 	if ( !vc ) {
 		return;
 	}

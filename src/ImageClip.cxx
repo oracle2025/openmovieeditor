@@ -86,16 +86,24 @@ int64_t ImageClip::length()
 	return m_length;
 }
 
-frame_struct* ImageClip::getFrame( int64_t position )
+frame_struct* ImageClip::getRawFrame( int64_t position, int64_t &position_in_file )
 {
 	m_frame.alpha = 1.0;
+	position_in_file = position - m_position;
 	if ( position >= m_position && position <= m_position + m_length ) {
 		return &m_frame;
 	} else {
 		return 0;
 	}
 }
-
+int ImageClip::w()
+{
+	return m_image->w();
+}
+int ImageClip::h()
+{
+	return m_image->h();
+}
 void ImageClip::trimA( int64_t trim )
 {
 	if ( m_length - trim < 0 ) {

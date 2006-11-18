@@ -23,19 +23,19 @@
 #include "timeline/Clip.H"
 #include "IVideoReader.H"
 #include "global_includes.H"
-
+#include "VideoEffectClip.H"
 class Fl_Shared_Image;
 
 namespace nle
 {
 
-class ImageClip : public Clip, public IVideoReader
+class ImageClip : public Clip, public VideoEffectClip
 {
 	public:
 		ImageClip( Track* track, int64_t position, string filename, int64_t length = -1, int id = -1 );
 		~ImageClip();
 		int64_t length();
-		frame_struct* getFrame( int64_t position );
+		frame_struct* getRawFrame( int64_t position, int64_t &position_in_file );
 		bool ok() { return m_ok; }
 		string filename() { return m_filename; }
 		void reset() {}
@@ -46,6 +46,8 @@ class ImageClip : public Clip, public IVideoReader
 		void trimA( int64_t trim );
 		void trimB( int64_t trim );
 		int64_t fileLength();
+		int w();
+		int h();
 	private:
 		Fl_Shared_Image* m_image;
 		int64_t m_length;

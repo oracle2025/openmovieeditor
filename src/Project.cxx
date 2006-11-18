@@ -130,8 +130,10 @@ int Project::write( string filename, string name )
 					automation->SetAttribute( "x", q->x );
 					automation->SetDoubleAttribute( "y", q->y );
 				}
-			} else if ( VideoClip* vc = dynamic_cast<VideoClip*>(cn->clip) ) {
-				clip->SetAttribute( "mute", (int)vc->m_mute );
+			} else if ( VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>(cn->clip) ) {
+				if ( VideoClip* vc = dynamic_cast<VideoClip*>(cn->clip) ) {
+					clip->SetAttribute( "mute", (int)vc->m_mute );
+				}
 
 				for ( effect_stack* p = vc->getEffects(); p; p = p->next ) {
 					//TODO: Store Effects Settings
@@ -291,6 +293,45 @@ int Project::read( string filename )
 						g_timeline->addClip( trackId, c );
 					}
 				} else {
+
+					//TODO: This is copy and paste
+					TiXmlElement* effectXml = TiXmlHandle( j ).FirstChildElement( "effect" ).Element();
+					for( ; effectXml; effectXml = effectXml->NextSiblingElement( "effect" ) ) {
+						//addClip would propably be a better Idea
+						AbstractEffectFactory* ef = g_frei0rFactory->get( effectXml->Attribute( "name" ) );
+						if ( ef ) {
+							Frei0rEffect* effectObj = dynamic_cast<Frei0rEffect*>( ic->appendEffect( ef ) );
+							TiXmlElement* parameterXml = TiXmlHandle( effectXml ).FirstChildElement( "parameter" ).Element();
+							for ( ; parameterXml; parameterXml = parameterXml->NextSiblingElement( "parameter" ) ) {
+								string paramName = parameterXml->Attribute( "name" );
+								f0r_plugin_info_t* finfo = effectObj->getPluginInfo();
+								f0r_param_info_t pinfo;
+								for ( int i = 0; i < finfo->num_params; i++ ) {
+									effectObj->getParamInfo( &pinfo, i );
+									if ( paramName == pinfo.name ) {
+										switch ( pinfo.type ) {
+											case F0R_PARAM_DOUBLE:
+												{
+													double dval;
+													f0r_param_double dvalue;
+													parameterXml->Attribute( "value", &dval );
+													dvalue = dval;
+													effectObj->setValue( &dvalue, i );
+													break;
+												}
+											case F0R_PARAM_BOOL:
+												{
+													//int bval;
+													break;
+												}
+										}
+										break;
+									}
+								}
+							}
+						}
+					}
+					
 					g_timeline->addClip( trackId, ic );
 				}
 			}
