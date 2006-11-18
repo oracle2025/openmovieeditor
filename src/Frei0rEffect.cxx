@@ -59,10 +59,10 @@ Frei0rEffect::~Frei0rEffect()
 {
 	f0r_destruct( m_instance );
 }
-frame_struct* Frei0rEffect::getFrame( frame_struct* frame, int64_t )
+frame_struct* Frei0rEffect::getFrame( frame_struct* frame, int64_t position )
 {
 	if ( frame->has_alpha_channel ) {
-		f0r_update( m_instance, 0.0, (uint32_t*)frame->RGB, (uint32_t*)m_frame );
+		f0r_update( m_instance, position * 0.04, (uint32_t*)frame->RGB, (uint32_t*)m_frame );
 	} else {
 		int len = frame->w * frame->h * 3;
 		unsigned char *src, *dst, *end;
@@ -77,7 +77,7 @@ frame_struct* Frei0rEffect::getFrame( frame_struct* frame, int64_t )
 			dst += 4;
 			src += 3;
 		}
-		f0r_update( m_instance, 0.0, (uint32_t*)m_tmpFrame, (uint32_t*)m_frame );
+		f0r_update( m_instance, position * 0.04, (uint32_t*)m_tmpFrame, (uint32_t*)m_frame );
 	}
 	return &m_framestruct;
 }

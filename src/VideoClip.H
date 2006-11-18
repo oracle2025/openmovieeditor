@@ -54,6 +54,7 @@ class VideoClip : public AudioClipBase, public IVideoReader
 		inline IClipArtist* getArtist() { return m_artist; }
 		bool hasAudio();
 		int64_t fileLength();
+		IVideoEffect* appendEffect( AbstractEffectFactory* factory );
 		void pushEffect( AbstractEffectFactory* factory );
 		void popEffect();
 		void moveEffectUp( int num );/* Counting starts with 1 */

@@ -114,12 +114,17 @@ int64_t VideoClip::fileLength()
 {
 	return m_videoFile->length();
 }
+IVideoEffect* VideoClip::appendEffect( AbstractEffectFactory* factory )
+{
+	IVideoEffect* e = factory->get( m_videoFile->width(), m_videoFile->height() );
+	effect_stack* n = new effect_stack;
+	n->next = 0;
+	n->effect = e;
+	m_effects = (effect_stack*)sl_unshift( m_effects, n );
+	return e;
+}
 void VideoClip::pushEffect( AbstractEffectFactory* factory )
 {
-/*	if ( m_effectReader && m_effectReader != m_videoFile ) {
-		delete m_effectReader;
-	}
-	m_effectReader = factory->get( m_videoFile, m_videoFile->width(), m_videoFile->height() );*/
 	IVideoEffect* e = factory->get( m_videoFile->width(), m_videoFile->height() );
 	effect_stack* n = new effect_stack;
 	n->next = 0;

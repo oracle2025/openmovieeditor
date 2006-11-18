@@ -41,6 +41,10 @@
 #include "TimelineView.H"
 #include "ImageClip.H"
 #include "DummyClip.H"
+#include "IVideoEffect.H"
+#include "Frei0rEffect.H"
+#include "Frei0rFactory.H"
+#include "VideoFileFactory.H"
 
 namespace nle
 {
@@ -128,6 +132,54 @@ int Project::write( string filename, string name )
 				}
 			} else if ( VideoClip* vc = dynamic_cast<VideoClip*>(cn->clip) ) {
 				clip->SetAttribute( "mute", (int)vc->m_mute );
+
+				for ( effect_stack* p = vc->getEffects(); p; p = p->next ) {
+					//TODO: Store Effects Settings
+					TiXmlElement* effect = new TiXmlElement( "effect" );
+					TiXmlElement* parameter;
+					clip->LinkEndChild( effect );
+					effect->SetAttribute( "name", p->effect->name() );
+					Frei0rEffect* fe = dynamic_cast<Frei0rEffect*>( p->effect );
+					f0r_plugin_info_t* finfo;
+					f0r_param_info_t pinfo;
+					finfo = fe->getPluginInfo();
+					for ( int i = 0; i < finfo->num_params; i++ ) {
+						fe->getParamInfo( &pinfo, i );
+						parameter = new TiXmlElement( "parameter" );
+						effect->LinkEndChild( parameter );
+						parameter->SetAttribute( "name", pinfo.name );
+						switch ( pinfo.type ) {
+							case F0R_PARAM_DOUBLE: //Seems to be always between 0.0 and 1.0
+								{
+									f0r_param_double dvalue;
+									fe->getValue( &dvalue, i );
+									cout << "DVAL " << dvalue << endl;
+									parameter->SetDoubleAttribute( "value", (double)dvalue );
+									break;
+								}
+							case F0R_PARAM_BOOL:
+								{
+									f0r_param_bool bvalue;
+									fe->getValue( &bvalue, i );
+									parameter->SetAttribute( "value", (int)bvalue );
+									break;
+								}
+							case F0R_PARAM_COLOR:
+								break;
+							case F0R_PARAM_POSITION:
+								{
+									f0r_param_position_t pos;
+									fe->getValue( &pos, i );
+									parameter->SetDoubleAttribute( "x", pos.x );
+									parameter->SetDoubleAttribute( "y", pos.y );
+									break;
+								}
+							default:
+								break;
+							
+						}
+					}
+				}
 			}
 			cn = cn->next;
 		}
@@ -140,6 +192,7 @@ int Project::write( string filename, string name )
 	cout << "Write: " << filename << " | " << name << endl;
 	return 1;
 }
+extern Frei0rFactory* g_frei0rFactory;
 int Project::read( string filename )
 {
 /*	strcpy( project_filename, "" );
@@ -186,7 +239,62 @@ int Project::read( string filename )
 			if ( ! filename )
 				continue;
 			j->Attribute( "mute", &mute );
-			g_timeline->addFile( trackId, position, filename, trimA, trimB, mute, -1, length );
+//			g_timeline->addFile( trackId, position, filename, trimA, trimB, mute, -1, length );
+			//TODO: insert Effects
+			IVideoFile* vf = VideoFileFactory::get( filename );
+			if ( vf ) {
+				VideoClip* c = new VideoClip( tr, position, vf, trimA, trimB, -1 );
+				c->m_mute = mute;
+				TiXmlElement* effectXml = TiXmlHandle( j ).FirstChildElement( "effect" ).Element();
+				for( ; effectXml; effectXml = effectXml->NextSiblingElement( "effect" ) ) {
+					//addClip would propably be a better Idea
+					AbstractEffectFactory* ef = g_frei0rFactory->get( effectXml->Attribute( "name" ) );
+					if ( ef ) {
+						Frei0rEffect* effectObj = dynamic_cast<Frei0rEffect*>( c->appendEffect( ef ) );
+						TiXmlElement* parameterXml = TiXmlHandle( effectXml ).FirstChildElement( "parameter" ).Element();
+						if ( parameterXml ) {
+							string paramName = parameterXml->Attribute( "name" );
+							f0r_plugin_info_t* finfo = effectObj->getPluginInfo();
+							f0r_param_info_t pinfo;
+							for ( int i = 0; i < finfo->num_params; i++ ) {
+								effectObj->getParamInfo( &pinfo, i );
+								if ( paramName == pinfo.name ) {
+									switch ( pinfo.type ) {
+										case F0R_PARAM_DOUBLE:
+											{
+												double dval;
+												f0r_param_double dvalue;
+												parameterXml->Attribute( "value", &dval );
+												dvalue = dval;
+												effectObj->setValue( &dvalue, i );
+												break;
+											}
+										case F0R_PARAM_BOOL:
+											{
+												//int bval;
+												break;
+											}
+									}
+									break;
+								}
+							}
+						}
+					}
+				}
+				g_timeline->addClip( trackId, c );
+			} else {
+				ImageClip* ic = new ImageClip( tr, position, filename, length - trimA - trimB, -1 );
+				if ( !ic->ok() ) {
+					delete ic;
+					if ( length > 0 ) {
+						Clip* c = new DummyClip( tr, filename, position, length+trimA+trimB, trimA, trimB );
+						g_timeline->addClip( trackId, c );
+					}
+				} else {
+					g_timeline->addClip( trackId, ic );
+				}
+			}
+
 		}
 		tr->reconsiderFadeOver();
 	}

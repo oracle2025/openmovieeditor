@@ -28,6 +28,7 @@ namespace nle
 class IVideoEffect;
 class IEffectMenu;
 class Frei0rFactoryPlugin;
+class AbstractEffectFactory;
 
 typedef struct _effect_list_node {
 	struct _effect_list_node* next;
@@ -40,7 +41,7 @@ class Frei0rFactory
 		Frei0rFactory( IEffectMenu* menu );
 		~Frei0rFactory();
 		void list();
-		IVideoEffect* get( string name );
+		AbstractEffectFactory* get( string name );
 	private:
 		effect_node* m_effects;
 };

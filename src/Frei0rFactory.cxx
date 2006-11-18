@@ -41,6 +41,8 @@ typedef struct _dir_list_node {
 	string name;
 } dir_node;
 
+Frei0rFactory* g_frei0rFactory;
+
 Frei0rFactory::Frei0rFactory( IEffectMenu* menu )
 {
 	//Scan directorys and enumerate Plugins
@@ -50,7 +52,7 @@ Frei0rFactory::Frei0rFactory( IEffectMenu* menu )
 	dir_node* p;
 	effect_node* e;
 	m_effects = 0;
-
+	g_frei0rFactory = this;
 	n = scandir( FREI0R_DIR_2, &list, 0, alphasort );
 	while( n-- ) {
 		p = new dir_node;
@@ -113,8 +115,14 @@ void Frei0rFactory::list()
 {
 }
 
-IVideoEffect* Frei0rFactory::get( string )
+AbstractEffectFactory* Frei0rFactory::get( string name )
 {
+	effect_node* p;
+	for ( p = m_effects; p; p = p->next ) {
+		if ( name == p->effect->name() ) {
+			return p->effect;
+		}
+	}
 	return 0;
 }
 

@@ -118,8 +118,6 @@ Frei0rDialog::Frei0rDialog( Frei0rEffect* effect )
 				o->tooltip( pinfo.explanation );
 				f0r_param_double dvalue;
 				m_effect->getValue( &dvalue, i );
-				cout << "dvalue " << dvalue << endl;
-				cout << "i " << i << endl;
 				o->value( dvalue );
 				break;
 				}
