@@ -133,31 +133,8 @@ void VideoClip::pushEffect( AbstractEffectFactory* factory )
 }
 void VideoClip::popEffect()
 {
-/*	if ( m_effectReader != m_videoFile ) {
-		IVideoEffect* e = dynamic_cast<IVideoEffect*>( m_effectReader );
-		if ( !e ) {
-			return;
-		}
-		m_effectReader = e->getReader();
-		delete e;
-	}*/
 }
-/*
-IVideoEffect* swapEffects( IVideoEffect* videoEffect )
-{
-	IVideoEffect* A;
-	IVideoEffect* B;
-	IVideoReader* C;
 
-	A = videoEffect;
-	B = dynamic_cast<IVideoEffect*>( videoEffect->getReader() );
-	C = B->getReader();
-
-	A->setReader( C );
-	B->setReader( A );
-	return B;
-}
-*/
 static effect_stack* sl_swap( effect_stack* root )
 {
 	effect_stack* q = root;
