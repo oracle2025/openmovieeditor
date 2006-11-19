@@ -191,5 +191,7 @@ openmovieeditor_SOURCES = nle.cxx\
 	Frei0rFactory.cxx\
 	Frei0rFactory.H\
 	VideoEffectClip.cxx\
-	VideoEffectClip.H
+	VideoEffectClip.H\
+	IVideoEffect.H\
+	frei0r.h
 

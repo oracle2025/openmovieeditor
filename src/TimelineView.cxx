@@ -743,15 +743,19 @@ void TimelineView::updateEffectDisplay()
 {
 	g_ui->effect_browser->clear();
 	if ( !m_selectedClips ) {
+		g_ui->m_effectMenu->deactivate();
 		return;
 	}
 	if ( m_selectedClips->next ) {
+		g_ui->m_effectMenu->deactivate();
 		return;
 	}
 	VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>( m_selectedClips->clip );
 	if ( !vc ) {
+		g_ui->m_effectMenu->deactivate();
 		return;
 	}
+	g_ui->m_effectMenu->activate();
 	// Liste füllen
 	effect_stack* es = vc->getEffects();
 //	IVideoEffect* e = dynamic_cast<IVideoEffect*>( vc->getEffect() );

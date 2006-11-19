@@ -585,6 +585,7 @@ NleUI::NleUI() {
                 o->labelcolor(FL_FOREGROUND_COLOR);
                 o->align(FL_ALIGN_CENTER);
                 o->when(FL_WHEN_RELEASE_ALWAYS);
+                o->deactivate();
               }
               { Fl_Hold_Browser* o = effect_browser = new Fl_Hold_Browser(5, 105, 270, 100);
                 o->box(FL_NO_BOX);

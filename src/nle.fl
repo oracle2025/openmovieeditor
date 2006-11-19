@@ -237,8 +237,8 @@ fb->load_rel();}
                 xywh {0 75 280 160}
               } {
                 Fl_Menu_Button m_effectMenu {
-                  label {Add Effect} open
-                  xywh {5 80 270 25}
+                  label {Add Effect} open selected
+                  xywh {5 80 270 25} deactivate
                   code0 {\#include "FltkEffectMenu.H"}
                   class {nle::FltkEffectMenu}
                 } {}
@@ -275,7 +275,7 @@ fb->load_rel();}
                     }
                     Fl_Button m_edit_effect {
                       label {Edit Effect}
-                      callback {m_timelineView->editEffect();} selected
+                      callback {m_timelineView->editEffect();}
                       xywh {165 205 110 25} deactivate
                     }
                   }
