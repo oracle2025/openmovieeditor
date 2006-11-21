@@ -43,6 +43,7 @@ class Frei0rFactory
 		void list();
 		AbstractEffectFactory* get( string name );
 	private:
+		void enumerate( string folder, IEffectMenu* menu );
 		effect_node* m_effects;
 };
 

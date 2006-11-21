@@ -42,8 +42,26 @@ typedef struct _dir_list_node {
 } dir_node;
 
 Frei0rFactory* g_frei0rFactory;
+static string home( getenv( "HOME" ) );
 
 Frei0rFactory::Frei0rFactory( IEffectMenu* menu )
+{
+	m_effects = 0;
+	enumerate( home + FREI0R_DIR_3, menu );
+	enumerate( FREI0R_DIR_2, menu );
+	enumerate( FREI0R_DIR_1, menu );
+}
+
+Frei0rFactory::~Frei0rFactory()
+{
+	effect_node* node;
+	while ( ( node = (effect_node*)sl_pop( &m_effects ) ) ) {
+		delete node->effect;
+		delete node;
+	}
+
+}
+void Frei0rFactory::enumerate( string folder, IEffectMenu* menu )
 {
 	//Scan directorys and enumerate Plugins
 	int n;
@@ -51,24 +69,26 @@ Frei0rFactory::Frei0rFactory( IEffectMenu* menu )
 	dir_node* folders = 0;
 	dir_node* p;
 	effect_node* e;
-	m_effects = 0;
 	g_frei0rFactory = this;
-	n = scandir( FREI0R_DIR_2, &list, 0, alphasort );
-	while( n-- ) {
+	n = scandir( folder.c_str(), &list, 0, alphasort );
+	if ( n <= 0 ) {
+		return;
+	}
+	while( 0 < n-- ) {
 		p = new dir_node;
 		p->next = 0;
-		p->name = string( FREI0R_DIR_2 ) + list[n]->d_name;
+		p->name = string( folder ) + list[n]->d_name;
 		folders = (dir_node*)sl_push( folders, p );
 	}
 	for ( int i = n; i > 0; ) { // This is some bad ass hacking style from the fltk manual ;)
 		free( (void*)( list[--i] ) );
 	}
-	free( (void*)list );
+	if ( n > 0 ) {
+		free( (void*)list );
+	}
 
 
 	while( folders ) {
-		//TODO: endless loop somewhere
-		//cout 
 		p = (dir_node*)sl_pop( &folders );
 		if ( fl_filename_isdir( p->name.c_str() ) ) {
 			n = scandir( p->name.c_str(), &list, 0, alphasort );
@@ -76,14 +96,16 @@ Frei0rFactory::Frei0rFactory( IEffectMenu* menu )
 				if ( list[n]->d_name[0] != '.'  ) {
 					p = new dir_node;
 					p->next = 0;
-					p->name = string( FREI0R_DIR_2 ) + list[n]->d_name;
+					p->name = string( folder ) + list[n]->d_name;
 					folders = (dir_node*)sl_push( folders, p );
 				}
 			}
 			for ( int i = n; i > 0; ) { // This is some bad ass hacking style from the fltk manual ;)
 				free( (void*)( list[--i] ) );
 			}
-			free( (void*)list );
+			if ( n > 0 ) {
+				free( (void*)list );
+			}
 		} else {
 			Frei0rFactoryPlugin* effect = new Frei0rFactoryPlugin( p->name.c_str() );
 			if ( effect->ok() ) {
@@ -98,17 +120,6 @@ Frei0rFactory::Frei0rFactory( IEffectMenu* menu )
 		}
 		
 	}
-
-}
-
-Frei0rFactory::~Frei0rFactory()
-{
-	effect_node* node;
-	while ( ( node = (effect_node*)sl_pop( &m_effects ) ) ) {
-		delete node->effect;
-		delete node;
-	}
-
 }
 
 void Frei0rFactory::list()
