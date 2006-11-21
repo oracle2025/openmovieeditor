@@ -1,3 +1,7 @@
+2006-11-21
+This Release adds support for frei0r effect plugins, as available from http://www.piksel.org/Frei0r
+And there are a number of bug fixes for various issues
+
 2005-02-19
 Second Release
 gavl needs to be updated to 0.2.3
