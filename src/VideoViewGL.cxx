@@ -214,7 +214,6 @@ void VideoViewGL::draw()
 				glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGBA, GL_UNSIGNED_BYTE, fs[i]->RGB );
 			} else {
 /*				if ( fs[i]->w > 512 || fs[i]->h > 512  ) {
-					cout << "HELLO" << endl;
 					halve_image( pulldown_frame, fs[i]->RGB, fs[i]->w, fs[i]->h );
 					//glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGB, GL_UNSIGNED_BYTE, pulldown_frame );
 					glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w >> 1, fs[i]->h >> 1, GL_RGB, GL_UNSIGNED_BYTE, pulldown_frame );

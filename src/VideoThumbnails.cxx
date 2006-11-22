@@ -32,7 +32,6 @@ bool VideoThumbnails::get( const char* filename, unsigned char* rgb, int &w, int
 {
 	DiskCache cache( filename, "thumb" );
 	if ( cache.isEmpty() ) {
-		cout << "CACHE MISS" << endl;
 		unsigned char **rows;
 		IVideoFile* vf = VideoFileFactory::get( filename );
 		if ( !vf ) {
@@ -42,7 +41,6 @@ bool VideoThumbnails::get( const char* filename, unsigned char* rgb, int &w, int
 				cache.clean();
 				return false;
 			}
-			cout << "DEPTH: " << image->d() << endl;
 			w = image->w();
 			h = image->h();
 			Fl_Image* image2 = image->copy( VIDEO_THUMBNAIL_WIDTH, VIDEO_THUMBNAIL_HEIGHT );

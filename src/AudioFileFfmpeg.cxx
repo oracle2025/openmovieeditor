@@ -28,7 +28,6 @@ namespace nle
 
 AudioFileFfmpeg::AudioFileFfmpeg( string filename )
 {
-	cout << "AudioFileFfmpeg: " << filename.c_str() << endl;
 	m_ok = false;
 	m_filename = filename;
 	m_formatContext = NULL;

@@ -32,10 +32,8 @@ IVideoFile* VideoFileFactory::get( string filename )
 	}
 	delete vf;
 #ifdef AVCODEC
-	cout << "Trying FFMPEG" << endl;
 	vf = new VideoFileFfmpeg( filename );
 	if ( vf->ok() ) {
-		cout << "FFMPEG in USE" << endl;
 		return vf;
 	}
 	delete vf;

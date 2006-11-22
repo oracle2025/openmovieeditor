@@ -193,9 +193,6 @@ void AudioClip::reset()
 }
 float AudioClip::getEnvelope( int64_t position )
 {
-	/*if ( position < audioPosition() || position > audioPosition() + audioLength() ) {
-		cout << "shouldn't happen" << endl;
-	}*/
 	int64_t pPos = position - audioPosition();
 	if ( m_autoCache && m_autoCache->x <= pPos &&  m_autoCache->next && m_autoCache->next->x > pPos ) {
 		int64_t diff = m_autoCache->next->x - m_autoCache->x;

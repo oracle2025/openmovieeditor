@@ -280,9 +280,7 @@ void LoadSaveManager::load( string v )
 {
 	g_project->write( m_video_projects + "/" + m_currentFilename, m_currentName );
 	m_currentFilename = v;
-	cout << "LOAD: " << m_currentFilename << endl;
 	m_currentName = m_projectChoice->mvalue()->text;
-	//m_currentName = name_from_projectfile( m_video_projects + "/" + m_currentFilename );
 	g_project->read( m_video_projects + "/" + m_currentFilename );
 	const Fl_Menu_Item* item;
 	m_projectInput->value( m_currentName.c_str() );

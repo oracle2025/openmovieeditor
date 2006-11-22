@@ -46,9 +46,6 @@ FilmStrip::FilmStrip( IVideoFile* vfile )
 		m_countAll = m_cache->size() / ( 3 * PIC_WIDTH * PIC_HEIGHT );
 	}
 	
-/*	m_vfile = VideoFileFactory::get( vfile->filename() );
-	m_rows  = new unsigned char*[PIC_HEIGHT];
-	m_countAll = m_vfile->length() / 100;*/
 	try {
 		m_pics = new pic_struct[m_countAll];
 	} catch(std::exception &e) {

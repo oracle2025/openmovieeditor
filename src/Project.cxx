@@ -156,7 +156,6 @@ int Project::write( string filename, string name )
 								{
 									f0r_param_double dvalue;
 									fe->getValue( &dvalue, i );
-									cout << "DVAL " << dvalue << endl;
 									parameter->SetDoubleAttribute( "value", (double)dvalue );
 									break;
 								}
@@ -192,7 +191,6 @@ int Project::write( string filename, string name )
 	
 	doc.SaveFile();
 	
-	cout << "Write: " << filename << " | " << name << endl;
 	return 1;
 }
 extern Frei0rFactory* g_frei0rFactory;
@@ -412,7 +410,6 @@ int Project::read( string filename )
 	}
 	g_timelineView->redraw();
 	g_timelineView->adjustScrollbar();
-	cout << "Read: " << filename << endl;
 	return 1;
 }
 void Project::write_project()

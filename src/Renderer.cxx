@@ -48,7 +48,6 @@ Renderer::Renderer( string filename, int w, int h, int framerate, int samplerate
 	char buffer[1024];
 	m_w = w;
 	m_h = h;
-	cout << "RENDER width: " << w << " height: " << h << endl;
 	m_framerate = framerate;
 	m_samplerate = samplerate;
 	m_filename = filename;
@@ -62,24 +61,10 @@ Renderer::Renderer( string filename, int w, int h, int framerate, int samplerate
 
 	
 	lqt_codec_info_t **codecs = lqt_query_registry( 1, 0, 1, 0 );
-#if 0
-	for ( int i = 0; codecs[i]; i++ ) {
-		cout << "[" << i << "]" << codecs[i]->name << endl;
-		cout << codecs[i]->long_name << endl;
-		cout << "---------------------" << endl;
-	}
-#endif
 	lqt_codec_info_t *codec = codecs[7];
 	lqt_add_audio_track( qt, 2, 48000, 16, codec );
 	lqt_destroy_codec_info( codecs );
 	codecs = lqt_query_registry( 0, 1, 1, 0 );
-#if 0
-	for ( int i = 0; codecs[i]; i++ ) {
-		cout << "[" << i << "]" << codecs[i]->name << endl;
-		cout << codecs[i]->long_name << endl;
-		cout << "---------------------" << endl;
-	}
-#endif
 	codec = codecs[22];
 	lqt_add_video_track( qt, m_w, m_h, 1200, 30000, codec ); // Was bedeuted 1001 zum Teufel? => 30000 / 1001 == 29.97
 	                                                         // 30000 / 1200 == 25
@@ -91,51 +76,6 @@ Renderer::~Renderer()
 	if (qt)
 		quicktime_close( qt );
 }
-
-//shamelessly adapted from rastermans blending code
-/*
-# define MUL(a, b, t) (((a) * (b)) >> 8)
-#define BLEND(p, q, a, t) ((p) + (q) - (MUL(a, p, t)))
-#define R_VAL(p) ((unsigned char *)(p))[3]
-#define G_VAL(p) ((unsigned char *)(p))[2]
-#define B_VAL(p) ((unsigned char *)(p))[1]
-#define A_VAL(p) ((unsigned char *)(p))[0]
-void blend_RGBA_RGBA( unsigned int* dst, unsigned int* src1, unsigned int* src1, float alpha, int len )
-{
-	unsigned int *src1_ptr, *src2_ptr, *dst_ptr, *dst_end_ptr;
-	src1_ptr = src1;
-	src2_ptr = src2;
-	dst_ptr = dst;
-	dst_end_ptr = dst + len;
-	while ( dst_ptr < dst_end_ptr ) {
-		unsigned char tmp, a;
-		a = A_VAL(src2_ptr);
-		a++; //WHY?
-		R_VAL(dst_ptr) = BLEND(R_VAL(src1_ptr), R_VAL(src2_ptr), a, tmp);
-		G_VAL(dst_ptr) = BLEND(G_VAL(src1_ptr), G_VAL(src2_ptr), a, tmp);
-		B_VAL(dst_ptr) = BLEND(B_VAL(src1_ptr), B_VAL(src2_ptr), a, tmp);
-		src1_ptr++;
-		src2_ptr++;
-		dst_ptr++;
-	}
-}
-void blend_RGB_RGB( unsigned char* dst, unsigned char* src1, unsigned char* src1, float alpha, int len )
-{
-	unsigned char *src1_ptr, *src2_ptr, *dst_ptr, *dst_end_ptr;
-	src1_ptr = src1;
-	src2_ptr = src2;
-	dst_ptr = dst;
-	dst_end_ptr = dst + ( len * 3 );
-	while ( dst_ptr < dst_end_ptr ) {
-		unsigned char tmp, a;
-		R_VAL(dst_ptr) = BLEND(R_VAL(src1_ptr), R_VAL(src2_ptr), alpha * 255, tmp);
-		G_VAL(dst_ptr) = BLEND(G_VAL(src1_ptr), G_VAL(src2_ptr), alpha * 255, tmp);
-		B_VAL(dst_ptr) = BLEND(B_VAL(src1_ptr), B_VAL(src2_ptr), alpha * 255, tmp);
-		src1_ptr += 3;
-		src2_ptr += 3;
-		dst_ptr += 3;
-	}
-}*/
 
 //#define AUDIO_BUFFER_SIZE 480
 #define AUDIO_BUFFER_SIZE 23040
@@ -197,8 +137,6 @@ void Renderer::go( IProgressListener* l )
 		
 	} while ( res == AUDIO_BUFFER_SIZE && run );
 	
-	cout << "res: " << res << endl;
-	cout << "current_frame: " << current_frame << endl;
 	delete [] enc_frame.RGB;
 	delete [] enc_frame.rows;
 	if ( l ) {

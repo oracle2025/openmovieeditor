@@ -29,7 +29,6 @@ namespace nle
 VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 	: IVideoFile()
 {
-	cout << "VideoFileFfmpeg" << endl;
 	m_ok = false;
 	m_frame = NULL;
 	m_rows = NULL;
@@ -95,18 +94,14 @@ VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 	m_framestruct.cacheable = false;
 	m_filename = filename;
 
-	//m_formatContext->streams[m_videoStream]->r_frame_rate;
-	//time_base
 	m_framerate = av_q2d( m_formatContext->streams[m_videoStream]->r_frame_rate );
 	if ( m_framerate < 24.9 || m_framerate > 25.1 ) {
 		CLEAR_ERRORS();
-		cout << "Wrong Framerate: " << m_framerate << endl;
 		ERROR_DETAIL( "Video framerates other than 25 are not supported" );
 		return;
 	}
 
 	
-	//m_framerate = (double)(m_codecContext->frame_rate) / (double)(m_codecContext->frame_rate_base);
 	int64_t len = m_formatContext->duration - m_formatContext->start_time;
 	m_length = (int64_t)( len * m_framerate / AV_TIME_BASE ) - 1;
 	

@@ -155,14 +155,12 @@ ParameterValue::ParameterValue( const char* v )
 	m_type = PV_STRING;
 	m_value_string = strdup( v );
 	m_value_int = 0;
-	cout << "\"" << v << "\"" << endl;
 }
 ParameterValue::ParameterValue( int v )
 {
 	m_type = PV_INT;
 	m_value_int = v;
 	m_value_string = 0;
-	cout << m_value_int << endl;
 }
 ParameterValue::~ParameterValue()
 {
@@ -196,7 +194,6 @@ CodecParameters::CodecParameters( lqt_codec_info_t** audio, lqt_codec_info_t** v
 		q->codecInfo = p;
 		q->parameters = 0;
 		m_audioCodecs = (codec_node*)sl_push( m_audioCodecs, q );
-		cout << "Adding Audio Codec: " << p->long_name << " \"" << p->name << "\"" << endl;
 
 		for ( int i = 0; i < p->num_encoding_parameters; i++ ) {
 			if ( q->codecInfo->encoding_parameters[i].type != LQT_PARAMETER_INT
@@ -207,7 +204,6 @@ CodecParameters::CodecParameters( lqt_codec_info_t** audio, lqt_codec_info_t** v
 			r->next = 0;
 			r->value = q->codecInfo->encoding_parameters[i].val_default;
 			r->info = &( q->codecInfo->encoding_parameters[i] );
-	//		cout << "\tParameter Name: " << r->info->real_name << endl;
 			if ( r->info->type == LQT_PARAMETER_STRING ) {
 				r->value.val_string = strdup( r->value.val_string );
 			}
@@ -222,7 +218,6 @@ CodecParameters::CodecParameters( lqt_codec_info_t** audio, lqt_codec_info_t** v
 		q->codecInfo = p;
 		q->parameters = 0;
 		m_videoCodecs = (codec_node*)sl_push( m_videoCodecs, q );
-		cout << "Adding Video Codec: " << p->long_name << endl;
 
 		for ( int i = 0; i < p->num_encoding_parameters; i++ ) {
 			if ( q->codecInfo->encoding_parameters[i].type != LQT_PARAMETER_INT
@@ -233,7 +228,6 @@ CodecParameters::CodecParameters( lqt_codec_info_t** audio, lqt_codec_info_t** v
 			r->next = 0;
 			r->value = q->codecInfo->encoding_parameters[i].val_default;
 			r->info = &( q->codecInfo->encoding_parameters[i] );
-			cout << "\tParameter Name: " << r->info->real_name << " - " << r->info->name << endl;
 			if ( r->info->type == LQT_PARAMETER_STRING ) {
 				r->value.val_string = strdup( r->value.val_string );
 			}
@@ -300,7 +294,6 @@ void CodecParameters::setVideoParameter( const char* key, ParameterValue& value 
 	param_node* p = (param_node*)sl_map( m_currentVideoCodec->parameters, find_a_parameter, (void*)key );
 	if ( p ) {
 		value.get( p->value );
-		cout << "Setting: " << p->info->name << endl;
 	}
 }
 void CodecParameters::setAudioParameter( const char* key, ParameterValue& value )
@@ -308,7 +301,6 @@ void CodecParameters::setAudioParameter( const char* key, ParameterValue& value 
 	param_node* p = (param_node*)sl_map( m_currentAudioCodec->parameters, find_a_parameter, (void*)key );
 	if ( p ) {
 		value.get( p->value );
-		cout << "Setting: " << p->info->name << endl;
 	}
 }
 lqt_parameter_value_t CodecParameters::getVideoParameter( const char* key )
@@ -330,7 +322,6 @@ void CodecParameters::set( quicktime_t* qt, int w, int h )
 
 	param_node* p;
 	for ( p = m_currentAudioCodec->parameters; p; p = p->next ) {
-		cout << "Applying Audio: " << p->info->name << endl;
 		if ( p->info->type == LQT_PARAMETER_INT ) {
 			lqt_set_audio_parameter( qt, 0, p->info->name, &(p->value.val_int) );
 		} else {
@@ -339,7 +330,6 @@ void CodecParameters::set( quicktime_t* qt, int w, int h )
 	}
 	
 	for ( p = m_currentVideoCodec->parameters; p; p = p->next ) {
-		cout << "Applying Video: " << p->info->name << endl;
 		if ( p->info->type == LQT_PARAMETER_INT ) {
 			lqt_set_video_parameter( qt, 0, p->info->name, &(p->value.val_int) );
 		} else {

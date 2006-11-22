@@ -44,8 +44,6 @@ ImageClip::ImageClip( Track* track, int64_t position, string filename, int64_t l
 	}
 
 	
-//	m_image = new Fl_PNG_Image( filename.c_str() );
-	cout << "DEPTH: " << m_image->d() << endl;
 	if ( length > 0 ) {
 		m_length = length;
 	} else {

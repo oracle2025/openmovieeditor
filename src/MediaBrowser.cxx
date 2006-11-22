@@ -121,7 +121,6 @@ int MediaBrowser::handle( int event )
 		case FL_DRAG:
 			if ( m_item_selected ) {
 				string s = m_folder + "/" + m_item_selected->value;
-				cout << s << endl;
 				const char* c = s.c_str();
 				Fl::copy( c, strlen(c) + 1, 0 );
 				Fl::dnd();
