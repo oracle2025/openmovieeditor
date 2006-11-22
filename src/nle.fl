@@ -4,13 +4,14 @@ header_name {.h}
 code_name {.cxx}
 class NleUI {open
 } {
-  Function {NleUI()} {} {
+  Function {NleUI()} {open
+  } {
     Fl_Window mainWindow {
       label {Open Movie Editor}
       callback {if (Fl::event()==FL_SHORTCUT && Fl::event_key()==FL_Escape) 
     return; // ignore Escape
 mainWindow->hide();} open
-      private xywh {664 271 515 465} type Double resizable visible
+      private xywh {664 271 515 465} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {open
         xywh {0 0 345 25}
@@ -194,7 +195,7 @@ while (dlg.shown())
         Fl_Tile {} {open
           xywh {0 25 515 250}
         } {
-          Fl_Group {} {open
+          Fl_Group {} {
             xywh {280 25 235 250}
           } {
             Fl_Box m_videoView {
@@ -204,7 +205,7 @@ while (dlg.shown())
               class {nle::VideoViewGL}
             }
           }
-          Fl_Group {} {open
+          Fl_Group {} {
             xywh {0 25 280 250}
           } {
             Fl_Tabs {} {open
@@ -330,7 +331,7 @@ fb->load_rel();}
             }
           }
         }
-        Fl_Group {} {open
+        Fl_Group {} {
           xywh {0 275 515 190}
         } {
           Fl_Group {} {open
@@ -407,7 +408,7 @@ m_timelineView->zoom( zoom );}
       }
       Fl_Choice projectChoice {
         callback {char* name = (char*)o->mvalue()->user_data();
-nle::g_loadSaveManager->load( name );} open
+nle::g_loadSaveManager->load( name );}
         xywh {345 0 170 25} down_box BORDER_BOX
         code0 {\#include "LoadSaveManager/LoadSaveManager.H"}
       } {}
@@ -446,8 +447,7 @@ g_v_scrollbar = vScrollBar;} {}
 	return 2;
 }} {}
   }
-  Function {setEffectButtons()} {open
-  } {
+  Function {setEffectButtons()} {} {
     code {nle::IVideoEffect* e = (nle::IVideoEffect*)effect_browser->data( effect_browser->value() );
 if ( e && e->numParams() ) {
 	m_edit_effect->activate();
@@ -481,7 +481,7 @@ class EncodeDialog {} {
   } {
     Fl_Window encodeDialog {
       label Render open
-      private xywh {372 427 485 340} type Double
+      private xywh {821 566 485 340} type Double
       code0 {\#include "IVideoReader.H"}
       code1 {\#include "IAudioReader.H"} modal visible
     } {

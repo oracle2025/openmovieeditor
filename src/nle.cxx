@@ -792,6 +792,7 @@ NleUI::NleUI() {
       o->down_box(FL_BORDER_BOX);
       o->callback((Fl_Callback*)cb_projectChoice);
     }
+    o->size_range(450, 380);
     o->end();
   }
 }
