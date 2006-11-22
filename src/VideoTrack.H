@@ -45,7 +45,7 @@ class VideoClip;
 class VideoTrack : public TrackBase
 {
 	public:
-		VideoTrack( int num, string name = "Audio" );
+		VideoTrack( int num, string name = "Video" );
 		virtual ~VideoTrack();
 
 		void addFile( int64_t position, string filename, int64_t trimA = 0, int64_t trimB = 0, int mute = 0, int id = -1, int64_t length = -1 );

@@ -107,6 +107,7 @@ int Project::write( string filename, string name )
 	TiXmlElement* automation;
 	while ( node ) {
 		track = new TiXmlElement( "track" );
+		track->SetAttribute( "name", node->track->name().c_str() );
 		if ( node->track->type() == TRACK_TYPE_VIDEO ) {
 			video_tracks->LinkEndChild( track );
 		} else if ( node->track->type() == TRACK_TYPE_AUDIO ) {
@@ -219,6 +220,10 @@ int Project::read( string filename )
 		trackId = getTrackId();
 		VideoTrack *tr = new VideoTrack( trackId );
 		g_timeline->addTrack( tr );
+		const char* name = track->Attribute( "name" );
+		if ( name ) {
+			tr->name( name );
+		}
 		
 		TiXmlElement* j = TiXmlHandle( track ).FirstChildElement( "clip" ).Element();
 		for ( ; j; j = j->NextSiblingElement( "clip" ) ) {
@@ -344,6 +349,10 @@ int Project::read( string filename )
 		trackId = getTrackId();
 		Track *tr = new AudioTrack( trackId );
 		g_timeline->addTrack( tr );
+		const char* name = track->Attribute( "name" );
+		if ( name ) {
+			tr->name( name );
+		}
 		
 		TiXmlElement* j = TiXmlHandle( track ).FirstChildElement( "clip" ).Element();
 		for ( ; j; j = j->NextSiblingElement( "clip" ) ) {

@@ -151,7 +151,7 @@ int TimelineView::handle( int event )
 						track_count++;
 						int yy = TRACK_SPACING + track_count * TRACK_OFFSET;
 						if ( _y > yy && _y < yy + TRACK_HEIGHT ) {
-							Fl_Menu_Item menuitem[] = { { "Remove Track", MENU_ITEM_INIT }, { "Move Up", MENU_ITEM_INIT }, { "Move Down", MENU_ITEM_INIT }, { 0L, MENU_ITEM_INIT } };
+							Fl_Menu_Item menuitem[] = { { "Remove Track", MENU_ITEM_INIT }, { "Move Up", MENU_ITEM_INIT }, { "Move Down", MENU_ITEM_INIT }, { "Rename", MENU_ITEM_INIT }, { 0L, MENU_ITEM_INIT } };
 							Fl_Menu_Item* r = (Fl_Menu_Item*)menuitem->popup( TRACK_SPACING + x(), yy + TRACK_HEIGHT + y() + 1 );
 							if ( r == &menuitem[0] ) {
 								clear_selection();
@@ -163,6 +163,12 @@ int TimelineView::handle( int event )
 							} else if ( r == &menuitem[2] ) {
 								g_timeline->trackDown( i->track );
 								redraw();
+							} else if ( r == &menuitem[3] ) {
+								const char* name = fl_input( "Please enter the track name.", i->track->name().c_str() );
+								if ( name ) {
+									i->track->name( name );
+									redraw();
+								}
 							}
 							return 1;
 						}
@@ -311,10 +317,10 @@ void TimelineView::draw()
 			fl_draw( "Titles", x() + TRACK_SPACING + 23, y_coord + 18);
 			fl_draw_pixmap( titles_xpm, x() + TRACK_SPACING + 3, y_coord + 5 );
 		} else*/ if ( USING_AUDIO ) {
-			fl_draw( "Audio", x() + TRACK_SPACING + 23, y_coord + 18);
+			fl_draw( track->name().c_str(), x() + TRACK_SPACING + 23, y_coord + 18);
 			fl_draw_pixmap( audio_xpm, x() + TRACK_SPACING + 3, y_coord + 5 );
 		} else {
-			fl_draw( "Video", x() + TRACK_SPACING + 23, y_coord + 18);
+			fl_draw( track->name().c_str(), x() + TRACK_SPACING + 23, y_coord + 18);
 			fl_draw_pixmap( video_xpm, x() + TRACK_SPACING + 6, y_coord + 8 );
 		}
 	// END - Draw Button
