@@ -16,7 +16,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-
+#include <FL/filename.H>
 #include "MediaPanel.H"
 #include "Prefs.H"
 
@@ -25,7 +25,10 @@ namespace nle
 
 	inline void MediaPanel::cb_browser_i(nle::FolderBrowser*, void*) {
 	  browser->click();
-	  load2( browser->folder() );
+	  if ( !fl_filename_isdir( browser->folder() ) ) {
+		  browser->load( "/" );
+	  } 
+	  load( browser->folder() );
 	}
 	void MediaPanel::cb_browser(nle::FolderBrowser* o, void* v) {
 	  ((MediaPanel*)(o->parent()->parent()->user_data()))->cb_browser_i(o,v);
@@ -34,7 +37,10 @@ namespace nle
 
 	inline void MediaPanel::cb_8_i(Fl_Button*, void*) {
 	  browser->up();
-	  load2( browser->folder() );
+	  if ( !fl_filename_isdir( browser->folder() ) ) {
+		  browser->load( "/" );
+	  } 
+	  load( browser->folder() );
 	}
 	void MediaPanel::cb_8(Fl_Button* o, void* v) {
 	  ((MediaPanel*)(o->parent()->parent()->user_data()))->cb_8_i(o,v);
@@ -139,21 +145,15 @@ namespace nle
 	    o->end();
 	  }
 	  resize( x, y, w, h );
-	  load( g_preferences->getMediaFolder().c_str() );
-	}
-	void MediaPanel::load2( const char* folder )
-	{
-		folderDisplay->value( folder );
-		files->load( folder );
-		g_preferences->setMediaFolder( folder );
+	  const char* folder = g_preferences->getMediaFolder().c_str();
+	  browser->load( folder );
+	  load( folder );
 	}
 	void MediaPanel::load( const char* folder )
 	{
-		browser->load( folder );
 		folderDisplay->value( folder );
 		files->load( folder );
 		g_preferences->setMediaFolder( folder );
 	}
-
 
 } /* namespace nle */

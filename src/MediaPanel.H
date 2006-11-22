@@ -37,7 +37,6 @@ class MediaPanel : public Fl_Group
 		MediaPanel( int x, int y, int w, int h, const char *l = 0 );
 		~MediaPanel();
 		void load( const char* folder );
-		void load2( const char* folder );
 		MediaBrowser *files;
 		Fl_Output *folderDisplay;
 		Fl_Tile *bt;
@@ -51,7 +50,6 @@ class MediaPanel : public Fl_Group
 		static void cb_81(Fl_Button*, void*);
 		inline void cb__i(Fl_Button*, void*);
 		static void cb_(Fl_Button*, void*);
-
 };
 
 } /* namespace nle */
