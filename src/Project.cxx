@@ -107,6 +107,7 @@ int Project::write( string filename, string name )
 	TiXmlElement* automation;
 	while ( node ) {
 		track = new TiXmlElement( "track" );
+		track->SetAttribute( "height", node->track->h() );
 		track->SetAttribute( "name", node->track->name().c_str() );
 		if ( node->track->type() == TRACK_TYPE_VIDEO ) {
 			video_tracks->LinkEndChild( track );
@@ -350,6 +351,10 @@ int Project::read( string filename )
 		const char* name = track->Attribute( "name" );
 		if ( name ) {
 			tr->name( name );
+		}
+		int height = 30;
+		if ( track->Attribute( "height", &height ) ) {
+			tr->h( height );
 		}
 		
 		TiXmlElement* j = TiXmlHandle( track ).FirstChildElement( "clip" ).Element();
