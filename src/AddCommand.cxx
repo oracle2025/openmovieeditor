@@ -41,6 +41,7 @@ void AddCommand::doo()
 	Track* t = g_timeline->getTrack( m_track );
 	VideoTrack* vt = dynamic_cast<VideoTrack*>( t );
 	if ( vt ) { vt->reconsiderFadeOver(); }
+	cout << serialize() << endl;
 }
 
 void AddCommand::undo()
@@ -49,6 +50,13 @@ void AddCommand::undo()
 	Clip* c = t->getClip( m_clipNr );
 	t->removeClip( c );
 	delete c;
+	cout << "undo " << serialize() << endl;
+}
+const char* AddCommand::serialize()
+{
+	static char buffer[1024];
+	snprintf( buffer, 1024, "addclip filename=\"%s\" track=%d position=%lld id=%d;", m_filename.c_str(), m_track, m_position, m_clipNr );
+	return buffer;
 }
 
 } /* namespace nle */

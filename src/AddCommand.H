@@ -38,6 +38,7 @@ class AddCommand : public Command
 		~AddCommand() {}
 		void doo();
 		void undo();
+		const char* serialize();
 	private:
 		int m_track;
 		int m_clipNr;
