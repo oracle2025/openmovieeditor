@@ -30,6 +30,7 @@ class Command
 		virtual void doo() = 0;
 		virtual void undo() = 0;
 		virtual bool error() { return false; }
+		virtual const char* serialize() { return 0; }
 	protected:
 		Command() {}
 	private:

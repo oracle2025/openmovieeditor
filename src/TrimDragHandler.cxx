@@ -46,6 +46,7 @@ TrimDragHandler::TrimDragHandler( TimelineView *tlv, Clip *clip,
 	m_right( right ), m_trimRight( trimRight )
 {
 }
+int get_track_top( Track* track );
 void TrimDragHandler::OnDrag( int x, int )
 {
 	m_x = x;
@@ -60,8 +61,8 @@ void TrimDragHandler::OnDrag( int x, int )
 	
 	m_tlv->window()->make_current();
 	fl_overlay_rect( x,
-			m_tlv->y() + TRACK_SPACING + (TRACK_SPACING + TRACK_HEIGHT)*m_track,
-			1, TRACK_HEIGHT );
+			m_tlv->y() + get_track_top( m_clip->track() ),
+			1, m_clip->track()->h() );
 	if ( m_clip->track()->type() == TRACK_TYPE_VIDEO ) {
 		Fl::add_check( preview_callback, this );
 	}

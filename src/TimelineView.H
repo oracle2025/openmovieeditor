@@ -30,10 +30,8 @@
 
 namespace nle
 {
-#define TRACK_HEIGHT 30
 #define TRACK_SPACING 5
 #define LEFT_TRACK_SPACING 74
-#define TRACK_OFFSET ( TRACK_HEIGHT + TRACK_SPACING )
 
 struct clip_node_;
 typedef struct clip_node_ clip_node;
@@ -81,6 +79,7 @@ class TimelineView : public Fl_Widget
 		void moveEffectUp();
 		void moveEffectDown();
 		void removeEffect();
+		int m_trackHeight;
 	protected:
 		void draw();
 	private:

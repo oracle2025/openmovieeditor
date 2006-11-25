@@ -64,12 +64,15 @@ class Track
 		Clip* getClip( int id );
 		inline string name() { return m_name; }
 		inline void name( string n ) { m_name = n; }
+		int h() { return m_height; }
+		void h( int h ) { m_height = h; }
 	protected:
 		Track( int num, string name );
 		clip_node* m_clips;
 	private:
 		int m_num;
 		string m_name;
+		int m_height;
 };
 	
 } /* namespace nle */

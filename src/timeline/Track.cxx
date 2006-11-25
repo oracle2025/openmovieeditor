@@ -36,6 +36,7 @@ Track::Track( int num, string name )
 	m_name = name;
 	m_num = num;
 	m_clips = 0;
+	m_height = 30;
 }
 Track::~Track()
 {

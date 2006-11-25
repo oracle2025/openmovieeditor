@@ -57,7 +57,7 @@
 
 namespace nle
 {
-
+int get_track_top( Track* track );
 bool USING_AUDIO = 0;
 	
 TimelineView* g_timelineView = 0;
@@ -149,10 +149,15 @@ int TimelineView::handle( int event )
 					int track_count = -1;
 					for ( track_node* i = g_timeline->getTracks(); i; i = i->next ) {
 						track_count++;
-						int yy = TRACK_SPACING + track_count * TRACK_OFFSET;
-						if ( _y > yy && _y < yy + TRACK_HEIGHT ) {
-							Fl_Menu_Item menuitem[] = { { "Remove Track", MENU_ITEM_INIT }, { "Move Up", MENU_ITEM_INIT }, { "Move Down", MENU_ITEM_INIT }, { "Rename", MENU_ITEM_INIT }, { 0L, MENU_ITEM_INIT } };
-							Fl_Menu_Item* r = (Fl_Menu_Item*)menuitem->popup( TRACK_SPACING + x(), yy + TRACK_HEIGHT + y() + 1 );
+						int yy = get_track_top( i->track );
+						if ( _y > yy && _y < yy + i->track->h() ) {
+							Fl_Menu_Item menuitem[] = { { "Remove Track", MENU_ITEM_INIT }, { "Move Up", MENU_ITEM_INIT }, { "Move Down", MENU_ITEM_INIT }, { "Rename", 0,0,0,FL_MENU_DIVIDER,0,0,0,0 }, { "1x", MENU_ITEM_INIT }, { "2x", MENU_ITEM_INIT }, { "3x", MENU_ITEM_INIT }, { 0L, MENU_ITEM_INIT } };
+							if ( i->track->type() != TRACK_TYPE_AUDIO ) {
+								menuitem[3].flags = 0;
+								menuitem[4] = menuitem[7];
+							}
+							
+							Fl_Menu_Item* r = (Fl_Menu_Item*)menuitem->popup( TRACK_SPACING + x(), yy + i->track->h() + y() + 1 );
 							if ( r == &menuitem[0] ) {
 								clear_selection();
 								Command* cmd = new RemoveTrackCommand( i->track );
@@ -169,6 +174,15 @@ int TimelineView::handle( int event )
 									i->track->name( name );
 									redraw();
 								}
+							} else if ( i->track->type() == TRACK_TYPE_AUDIO && r == &menuitem[4] ) {
+								i->track->h( 30 );
+								redraw();
+							} else if ( i->track->type() == TRACK_TYPE_AUDIO && r == &menuitem[5] ) {
+								i->track->h( 60 );
+								redraw();
+							} else if ( i->track->type() == TRACK_TYPE_AUDIO && r == &menuitem[6] ) {
+								i->track->h( 90 );
+								redraw();
 							}
 							return 1;
 						}
@@ -275,11 +289,10 @@ int TimelineView::handle( int event )
 }
 void TimelineView::resize(int x, int y, int w, int h)
 {
-	int track_count = 0;
+	int h_t = 2 * TRACK_SPACING;
 	for ( track_node* i = g_timeline->getTracks(); i; i = i->next ) {
-		track_count++;
+		h_t += i->track->h() + TRACK_SPACING;
 	}
-	int h_t = ( 2 * TRACK_SPACING ) + ( TRACK_OFFSET * track_count );
 	int h_r = h_t > h ? h_t : h;
 	Fl_Widget::resize( x, y, w, h_r );
 	int a = g_v_scrollbar->value();
@@ -300,17 +313,17 @@ void TimelineView::draw()
 // END - Draw Background
 
 	int track_count = -1;
+	int y_coord = y() + TRACK_SPACING;
 	for ( track_node* i = g_timeline->getTracks(); i; i = i->next ) {
 		Track* track = i->track;
 		track_count++;
-		int y_coord = y() + TRACK_SPACING + track_count * TRACK_OFFSET;
 		int x_coord = x() + LEFT_TRACK_SPACING;
 		int w_size = w() - TRACK_SPACING - LEFT_TRACK_SPACING;
 		
 		USING_AUDIO = track->type() == TRACK_TYPE_AUDIO;
 		
 	//     - Draw Button
-		fl_draw_box( FL_UP_BOX, x() + TRACK_SPACING, y_coord, 64, TRACK_HEIGHT + 1, FL_BACKGROUND_COLOR );
+		fl_draw_box( FL_UP_BOX, x() + TRACK_SPACING, y_coord, 64, track->h() + 1, FL_BACKGROUND_COLOR );
 		fl_color( FL_BLACK );
 		fl_font( FL_HELVETICA, 11 );
 /*		if ( track_count == 0 ) {
@@ -326,17 +339,17 @@ void TimelineView::draw()
 	// END - Draw Button
 
 	//     - Draw Track Background
-		fl_draw_box( FL_BORDER_BOX, x_coord, y_coord, w_size, TRACK_HEIGHT, FL_DARK2 );
+		fl_draw_box( FL_BORDER_BOX, x_coord, y_coord, w_size, track->h(), FL_DARK2 );
 	// END - Draw Track Background
 
-		fl_push_clip( x_coord, y_coord, w_size, TRACK_HEIGHT );
+		fl_push_clip( x_coord, y_coord, w_size, track->h() );
 		
 		for ( clip_node* j = track->getClips(); j; j = j->next ) {
 			Clip* clip = j->clip;
 			int64_t scr_clip_x = get_screen_position( clip->position(), track->stretchFactor() );
 			int64_t scr_clip_y = y_coord;
 			int64_t scr_clip_w = (int)( (clip->length() + 1) * SwitchBoard::i()->zoom() / track->stretchFactor() );
-			int64_t scr_clip_h = TRACK_HEIGHT;
+			int64_t scr_clip_h = track->h();
 
 			if ( scr_clip_x + scr_clip_w < 0 )
 				continue;
@@ -367,19 +380,6 @@ void TimelineView::draw()
 			} else {
 				fl_draw_box( FL_BORDER_FRAME, scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h, FL_DARK3 );
 			}
-		//     - Draw Trim Triangles
-		    /* 	fl_color( FL_BLACK );
-			fl_begin_polygon();
-			fl_vertex( scr_clip_x, scr_clip_y + TRACK_HEIGHT / 2 );
-			fl_vertex( scr_clip_x + 8, scr_clip_y + TRACK_HEIGHT / 2 - 5 );
-			fl_vertex( scr_clip_x + 8, scr_clip_y + TRACK_HEIGHT / 2 + 5 );
-			fl_end_polygon();
-			fl_begin_polygon();
-			fl_vertex( scr_clip_x + scr_clip_w, scr_clip_y + TRACK_HEIGHT / 2 );
-			fl_vertex( scr_clip_x + scr_clip_w - 8, scr_clip_y + TRACK_HEIGHT / 2 - 5 );
-			fl_vertex( scr_clip_x + scr_clip_w - 8, scr_clip_y + TRACK_HEIGHT / 2 + 5 );
-			fl_end_polygon();*/
-		// END - Draw Trim Triangles
 			if ( track->type() == TRACK_TYPE_AUDIO ) {
 				//Draw Automations
 				AudioClip* audioClip = dynamic_cast<AudioClip*>(clip);
@@ -393,8 +393,8 @@ void TimelineView::draw()
 
 				fl_color( FL_RED );
 				for ( ; nodes && nodes->next; nodes = nodes->next ) {
-					int y = (int)( scr_clip_y + ( ( TRACK_HEIGHT - 10 ) * ( 1.0 - nodes->y ) ) + 5 );
-					int y_next = (int)( scr_clip_y + ( ( TRACK_HEIGHT - 10 ) * ( 1.0 - nodes->next->y ) ) + 5 );
+					int y = (int)( scr_clip_y + ( ( track->h() - 10 ) * ( 1.0 - nodes->y ) ) + 5 );
+					int y_next = (int)( scr_clip_y + ( ( track->h() - 10 ) * ( 1.0 - nodes->next->y ) ) + 5 );
 					fl_line( get_screen_position( audioClip->position() + nodes->x, track->stretchFactor() ),
 							y,
 							get_screen_position( audioClip->position() + nodes->next->x, track->stretchFactor() ),
@@ -404,7 +404,7 @@ void TimelineView::draw()
 				for ( ; nodes; nodes = nodes->next ) {
 					//consider Trimming
 					int x;
-					int y = (int)( scr_clip_y + ( ( TRACK_HEIGHT - 10 ) * ( 1.0 - nodes->y ) ) );
+					int y = (int)( scr_clip_y + ( ( track->h() - 10 ) * ( 1.0 - nodes->y ) ) );
 					if ( !nodes->next ) {
 						x = get_screen_position( audioClip->position() + nodes->x, track->stretchFactor() ) - 10;
 					} else if ( nodes == audioClip->getAutoPoints() ) {
@@ -426,19 +426,19 @@ void TimelineView::draw()
 					if ( clip->A() < cclip->A() && clip->B() > cclip->A() ) {
 						int x = get_screen_position( cclip->A(), track->stretchFactor() );
 						int w = get_screen_position( clip->B()+1, track->stretchFactor() ) - x;
-						fl_draw_box( FL_FLAT_BOX, x, y_coord, w, TRACK_HEIGHT, FL_DARK_BLUE );
-						fl_draw_box( FL_BORDER_FRAME, x, y_coord, w, TRACK_HEIGHT, FL_RED );
+						fl_draw_box( FL_FLAT_BOX, x, y_coord, w, track->h(), FL_DARK_BLUE );
+						fl_draw_box( FL_BORDER_FRAME, x, y_coord, w, track->h(), FL_RED );
 						fl_color( FL_RED );
-						fl_line( x, y_coord, x + w, y_coord + TRACK_HEIGHT );
-						fl_line( x + w, y_coord, x, y_coord + TRACK_HEIGHT );
+						fl_line( x, y_coord, x + w, y_coord + track->h());
+						fl_line( x + w, y_coord, x, y_coord + track->h());
 					} else if ( cclip->A() < clip->A() && cclip->B() > clip->A() ) {
 						int x = get_screen_position( clip->A(), track->stretchFactor() );
 						int w = get_screen_position( cclip->B()+1, track->stretchFactor() ) - x;
-						fl_draw_box( FL_FLAT_BOX, x, y_coord, w, TRACK_HEIGHT, FL_DARK_BLUE );
-						fl_draw_box( FL_BORDER_FRAME, x, y_coord, w, TRACK_HEIGHT, FL_RED );
+						fl_draw_box( FL_FLAT_BOX, x, y_coord, w, track->h(), FL_DARK_BLUE );
+						fl_draw_box( FL_BORDER_FRAME, x, y_coord, w, track->h(), FL_RED );
 						fl_color( FL_RED );
-						fl_line( x, y_coord, x + w, y_coord + TRACK_HEIGHT );
-						fl_line( x + w, y_coord, x, y_coord + TRACK_HEIGHT );
+						fl_line( x, y_coord, x + w, y_coord + track->h());
+						fl_line( x + w, y_coord, x, y_coord + track->h());
 					}
 
 				}
@@ -449,7 +449,6 @@ void TimelineView::draw()
 			int scr_clip_x = get_screen_position( clip->position(), track->stretchFactor() );
 			int scr_clip_y = y_coord;
 			int scr_clip_w = (int)( (clip->length()+1) * SwitchBoard::i()->zoom() / track->stretchFactor() );
-			//int scr_clip_h = TRACK_HEIGHT;
 			for ( int k = 0; k < 2; k++ ) {
 				if ( !k ) {
 					fl_color( FL_BLACK );
@@ -458,9 +457,9 @@ void TimelineView::draw()
 					fl_color( FL_DARK2 );
 					fl_begin_loop();
 				}
-				fl_vertex( scr_clip_x, scr_clip_y + TRACK_HEIGHT / 2 );
-				fl_vertex( scr_clip_x + 8, scr_clip_y + TRACK_HEIGHT / 2 - 5 );
-				fl_vertex( scr_clip_x + 8, scr_clip_y + TRACK_HEIGHT / 2 + 5 );
+				fl_vertex( scr_clip_x, scr_clip_y + track->h()/ 2 );
+				fl_vertex( scr_clip_x + 8, scr_clip_y + track->h()/ 2 - 5 );
+				fl_vertex( scr_clip_x + 8, scr_clip_y + track->h()/ 2 + 5 );
 				if ( !k ) {
 					fl_end_polygon();
 					fl_begin_polygon();
@@ -468,9 +467,9 @@ void TimelineView::draw()
 					fl_end_loop();
 					fl_begin_loop();
 				}
-				fl_vertex( scr_clip_x + scr_clip_w, scr_clip_y + TRACK_HEIGHT / 2 );
-				fl_vertex( scr_clip_x + scr_clip_w - 8, scr_clip_y + TRACK_HEIGHT / 2 - 5 );
-				fl_vertex( scr_clip_x + scr_clip_w - 8, scr_clip_y + TRACK_HEIGHT / 2 + 5 );
+				fl_vertex( scr_clip_x + scr_clip_w, scr_clip_y + track->h()/ 2 );
+				fl_vertex( scr_clip_x + scr_clip_w - 8, scr_clip_y + track->h()/ 2 - 5 );
+				fl_vertex( scr_clip_x + scr_clip_w - 8, scr_clip_y + track->h()/ 2 + 5 );
 				if ( !k ) {
 					fl_end_polygon();
 				} else {
@@ -480,6 +479,7 @@ void TimelineView::draw()
 		}
 
 		fl_pop_clip();
+		y_coord += TRACK_SPACING + i->track->h();
 	}
 	fl_pop_clip();
 	fl_overlay_rect( get_screen_position( m_stylusPosition ), parent()->y(), 1, parent()->h() );
@@ -515,10 +515,8 @@ void TimelineView::zoom( float zoom )
 }
 Track* TimelineView::get_track( int _x, int _y )
 {
-	int i = -1;
 	for ( track_node* o = g_timeline->getTracks(); o; o = o->next ) {
-		i++;
-		if ( !get_track_rect( i ).inside( _x, _y ) ) {
+		if ( !get_track_rect( o->track ).inside( _x, _y ) ) {
 			continue;
 		}
 		return o->track;
@@ -539,33 +537,37 @@ Clip* TimelineView::get_clip( int _x, int _y )
 	}
 	return NULL;
 }
-int get_track_order( Track* track ) {
-	int t = -1;
+int get_track_top( Track* track )
+{
+	int top = TRACK_SPACING;
 	for ( track_node* o = g_timeline->getTracks(); o; o = o->next ) {
-		t++;
-		if ( track == o->track ) {
-			return t;
+		if ( o->track == track ) {
+			return top;
 		}
+		top += o->track->h() + TRACK_SPACING;
 	}
-	return 0;
+	return top;	
+}
+int get_track_top( int track )
+{
+	int top = TRACK_SPACING;
+	int t = 0;
+	for ( track_node* o = g_timeline->getTracks(); o; o = o->next ) {
+		if ( t == track ) {
+			return top;
+		}
+		top += o->track->h() + TRACK_SPACING;
+		t++;
+	}
+	return top;	
 }
 Rect TimelineView::get_track_rect( Track* track )
 {
 	Rect tmp(
 			x() + LEFT_TRACK_SPACING,
-			TRACK_SPACING + (TRACK_SPACING + TRACK_HEIGHT) * get_track_order( track ),
+			get_track_top( track ),
 			w() - ( TRACK_SPACING + LEFT_TRACK_SPACING ),
-			TRACK_HEIGHT
-		);
-	return tmp;
-}
-Rect TimelineView::get_track_rect( int track )
-{
-	Rect tmp(
-			x() + LEFT_TRACK_SPACING,
-			TRACK_SPACING + (TRACK_SPACING + TRACK_HEIGHT) * track,
-			w() - ( TRACK_SPACING + LEFT_TRACK_SPACING ),
-			TRACK_HEIGHT
+			track->h()
 		);
 	return tmp;
 }
@@ -574,9 +576,9 @@ Rect TimelineView::get_clip_rect( Clip* clip, bool clipping )
 	
 	Rect tmp(
 			get_screen_position( clip->position(), clip->track()->stretchFactor() ),
-			int( TRACK_SPACING + (TRACK_SPACING + TRACK_HEIGHT) * get_track_order( clip->track() ) ),
+			get_track_top( clip->track() ),
 			int( (clip->length()+1) * SwitchBoard::i()->zoom() / clip->track()->stretchFactor() ),
-			TRACK_HEIGHT
+			clip->track()->h()
 		);
 	if ( clipping ) {
 		if ( tmp.x < LEFT_TRACK_SPACING + x() ) {
@@ -695,11 +697,9 @@ void TimelineView::select_clips( int _x1, int _y1, int _x2, int _y2 )
 	clear_selection();
 	if ( _x1 > _x2 ) { int k; k = _x1; _x1 = _x2; _x2 = k; }
 	if ( _y1 > _y2 ) { int k; k = _y1; _y1 = _y2; _y2 = k; }
-	int i = -1;
 	Rect r;
 	for ( track_node* o = g_timeline->getTracks(); o; o = o->next ) {
-		i++;
-		r = get_track_rect( i );
+		r = get_track_rect( o->track );
 		if ( !( _y1 <= y() + r.y && _y2 >= y() + r.y + r.h ) ) {
 			continue;
 		}

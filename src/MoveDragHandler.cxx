@@ -61,7 +61,7 @@ void MoveDragHandler::OnDrag( int x, int y )
 		}
 	}
 	m_tlv->window()->make_current();
-	fl_overlay_rect( tmp.x, tmp.y, tmp.w, tmp.h );
+	fl_overlay_rect( tmp.x, tmp.y, tmp.w, tr->h() );
 }
 void MoveDragHandler::OnDrop( int x, int y )
 {

@@ -46,7 +46,7 @@ bool inside_node( auto_node* n, Rect& r, AudioClip* clip, int _x, int _y, bool f
 		_x = _x + 5;
 	}
 	int x = g_timelineView->get_screen_position( clip->position() + n->x, clip->track()->stretchFactor() ) - 5;
-	int y = (int)( r.y + ( ( TRACK_HEIGHT - 10 ) * ( 1.0 - n->y ) ) );
+	int y = (int)( r.y + ( ( clip->track()->h() - 10 ) * ( 1.0 - n->y ) ) );
 	int w = 10;
 	int h = 10;
 	g_x_off = x - _x;
