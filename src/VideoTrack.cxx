@@ -228,7 +228,7 @@ void get_alpha_values( fade_over* o, float& a, float& b, int64_t position )
 {
 	int64_t p = position - fade_over_start( o );
 	a = 1.0 - ( o->inc * p );
-	b = 1.0 - a;
+	b = 1.0;// - a; //Fadeover mismatch
 }
 int VideoTrack::fillBuffer( float* output, unsigned long frames, int64_t position )
 {
