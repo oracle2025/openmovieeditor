@@ -151,7 +151,7 @@ int TimelineView::handle( int event )
 						track_count++;
 						int yy = get_track_top( i->track );
 						if ( _y > yy && _y < yy + i->track->h() ) {
-							Fl_Menu_Item menuitem[] = { { "Remove Track", MENU_ITEM_INIT }, { "Move Up", MENU_ITEM_INIT }, { "Move Down", MENU_ITEM_INIT }, { "Rename", 0,0,0,FL_MENU_DIVIDER,0,0,0,0 }, { "1x", MENU_ITEM_INIT }, { "2x", MENU_ITEM_INIT }, { "3x", MENU_ITEM_INIT }, { 0L, MENU_ITEM_INIT } };
+							Fl_Menu_Item menuitem[] = { { "Remove Track", MENU_ITEM_INIT }, { "Move Up", MENU_ITEM_INIT }, { "Move Down", MENU_ITEM_INIT }, { "Rename", 0,0,0,FL_MENU_DIVIDER,0,0,0,0 }, { "1x", MENU_ITEM_INIT }, { "2x", MENU_ITEM_INIT }, { "4x", MENU_ITEM_INIT }, { 0L, MENU_ITEM_INIT } };
 							if ( i->track->type() != TRACK_TYPE_AUDIO ) {
 								menuitem[3].flags = 0;
 								menuitem[4] = menuitem[7];
@@ -181,7 +181,7 @@ int TimelineView::handle( int event )
 								i->track->h( 60 );
 								redraw();
 							} else if ( i->track->type() == TRACK_TYPE_AUDIO && r == &menuitem[6] ) {
-								i->track->h( 90 );
+								i->track->h( 120 );
 								redraw();
 							}
 							return 1;
