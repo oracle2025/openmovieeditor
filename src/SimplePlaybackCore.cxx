@@ -38,7 +38,8 @@
 #include "IVideoReader.H"
 #include "IVideoWriter.H"
 #include "Timeline.H"
- 
+#include "ErrorDialog/IErrorHandler.H"
+
 #define VIDEO_DRIFT_LIMIT 2 //Calculate this based on frame size
 #define FRAMES 4096
 
@@ -218,11 +219,17 @@ void open_jack(void *data)
 	jack_bufsiz= jack_get_buffer_size(jack_client);
 	cout << "Jack Samplerate: " << jack_get_sample_rate(jack_client) << endl;
 	if ( jack_get_sample_rate(jack_client) != 48000 ) {
-		cout << "WARNING: Jack is running with a samplerate other than 48000" << endl;
+		CLEAR_ERRORS();
+		ERROR_DETAIL( "Jack is running with a samplerate other than 48000" );
+		SHOW_ERROR( "Jack Soundoutput failed" );
+		close_jack();
+		return;
 	}
 
 	if (jack_bufsiz > FRAMES) { 
-		cerr << "Soundoutput : please decrease jackd buffer size :)"  << endl;
+		CLEAR_ERRORS();
+		ERROR_DETAIL( "please decrease jackd buffer size" );
+		SHOW_ERROR( "Jack Soundoutput failed" );
 		close_jack();
 		return;
 	}
