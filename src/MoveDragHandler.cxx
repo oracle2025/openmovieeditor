@@ -59,9 +59,10 @@ void MoveDragHandler::OnDrag( int x, int y )
 		} else {
 			tmp.x = m_tlv->get_screen_position( m_tlv->get_real_position( tmp.x, tr->stretchFactor() ), tr->stretchFactor() );
 		}
+		tmp.h = tr->h();
 	}
 	m_tlv->window()->make_current();
-	fl_overlay_rect( tmp.x, tmp.y, tmp.w, tr->h() );
+	fl_overlay_rect( tmp.x, tmp.y, tmp.w, tmp.h );
 }
 void MoveDragHandler::OnDrop( int x, int y )
 {
