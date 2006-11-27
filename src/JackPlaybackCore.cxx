@@ -247,7 +247,7 @@ JackPlaybackCore::JackPlaybackCore( IAudioReader* audioReader, IVideoReader* vid
 	open_jack(this); 
 }
 
-bool JackPlaybackCore::ok() { jack_connected(); }
+bool JackPlaybackCore::ok() { return jack_connected(); }
 
 /* hardstop() use only for error abort - else use stop */
 void JackPlaybackCore::hardstop() { m_active=false; } 
