@@ -139,11 +139,13 @@ public:
 private:
   void cb_projectNameInput_i(Fl_Button*, void*);
   static void cb_projectNameInput(Fl_Button*, void*);
+  void cb_1_i(Fl_Button*, void*);
+  static void cb_1(Fl_Button*, void*);
   Flmm_Scalebar *scaleBar;
   void cb_scaleBar_i(Flmm_Scalebar*, void*);
   static void cb_scaleBar(Flmm_Scalebar*, void*);
-  void cb_1_i(Fl_Button*, void*);
-  static void cb_1(Fl_Button*, void*);
+  void cb_2_i(Fl_Button*, void*);
+  static void cb_2(Fl_Button*, void*);
 public:
   Fl_Scrollbar *vScrollBar;
 private:

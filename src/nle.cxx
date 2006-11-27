@@ -264,7 +264,7 @@ void NleUI::cb_m_edit_effect(Fl_Button* o, void* v) {
 
 void NleUI::cb_playButton_i(Fl_Button* o, void*) {
   if ( strcmp( o->label(), "@>" ) == 0 ) {
-	o->label( "@||" );
+	o->label( "@square" );
 	lastButton->deactivate();
 	firstButton->deactivate();
 	forwardButton->deactivate();
@@ -322,6 +322,13 @@ void NleUI::cb_projectNameInput(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_projectNameInput_i(o,v);
 }
 
+void NleUI::cb_1_i(Fl_Button*, void*) {
+  m_videoView->pause();
+}
+void NleUI::cb_1(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_1_i(o,v);
+}
+
 void NleUI::cb_scaleBar_i(Flmm_Scalebar* o, void*) {
   Flmm_Scalebar *sb = (Flmm_Scalebar *)o;
 float width = sb->w();
@@ -334,11 +341,11 @@ void NleUI::cb_scaleBar(Flmm_Scalebar* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_scaleBar_i(o,v);
 }
 
-void NleUI::cb_1_i(Fl_Button* o, void*) {
+void NleUI::cb_2_i(Fl_Button* o, void*) {
   g_snap = o->value();
 }
-void NleUI::cb_1(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_1_i(o,v);
+void NleUI::cb_2(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_2_i(o,v);
 }
 
 #include <FL/Fl_Pixmap.H>
@@ -673,24 +680,24 @@ NleUI::NleUI() {
             o->end();
             Fl_Group::current()->resizable(o);
           }
-          { Fl_Button* o = playButton = new Fl_Button(100, 235, 80, 40, "@>");
+          { Fl_Button* o = playButton = new Fl_Button(80, 235, 80, 40, "@>");
             o->tooltip("Play (F7)");
             o->shortcut(0xffc4);
             o->callback((Fl_Callback*)cb_playButton);
           }
-          { Fl_Button* o = lastButton = new Fl_Button(230, 235, 50, 40, "@>|");
+          { Fl_Button* o = lastButton = new Fl_Button(240, 235, 40, 40, "@>|");
             o->tooltip("Goto End");
             o->callback((Fl_Callback*)cb_lastButton);
           }
-          { Fl_Button* o = firstButton = new Fl_Button(0, 235, 50, 40, "@|<");
+          { Fl_Button* o = firstButton = new Fl_Button(0, 235, 40, 40, "@|<");
             o->tooltip("Goto Start");
             o->callback((Fl_Callback*)cb_firstButton);
           }
-          { Fl_Button* o = backButton = new Fl_Button(50, 235, 50, 40, "@<|");
+          { Fl_Button* o = backButton = new Fl_Button(40, 235, 40, 40, "@<|");
             o->tooltip("Skip Frame backwards");
             o->callback((Fl_Callback*)cb_backButton);
           }
-          { Fl_Button* o = forwardButton = new Fl_Button(180, 235, 50, 40, "@|>");
+          { Fl_Button* o = forwardButton = new Fl_Button(200, 235, 40, 40, "@|>");
             o->tooltip("Skip Frame forward");
             o->callback((Fl_Callback*)cb_forwardButton);
           }
@@ -698,6 +705,9 @@ NleUI::NleUI() {
             o->labelfont(1);
             o->callback((Fl_Callback*)cb_projectNameInput);
             o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
+          }
+          { Fl_Button* o = new Fl_Button(160, 235, 40, 40, "@||");
+            o->callback((Fl_Callback*)cb_1);
           }
           o->end();
         }
@@ -726,7 +736,7 @@ NleUI::NleUI() {
               o->type(1);
               o->value(1);
               o->image(image_snap);
-              o->callback((Fl_Callback*)cb_1);
+              o->callback((Fl_Callback*)cb_2);
             }
             { nle::Ruler* o = new nle::Ruler(65, 275, 450, 25, "Ruler");
               o->box(FL_UP_BOX);

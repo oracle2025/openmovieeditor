@@ -78,7 +78,11 @@ int main( int argc, char** argv )
 	NleUI nui;
 	nle::g_ui = &nui;
 	nle::Frei0rFactory effectFactory( nui.m_effectMenu );
-	nle::JackPlaybackCore playbackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
+	nle::IPlaybackCore* playbackCore = new nle::JackPlaybackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
+	if ( !playbackCore->ok() ) {
+		delete playbackCore;
+		playbackCore = new nle::PortAudioPlaybackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
+	}
 	//nle::PortAudioPlaybackCore playbackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
 	//nle::PlaybackCore playbackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
 	nle::LoadSaveManager lsm( nui.projectChoice, nui.projectNameInput );
@@ -102,5 +106,6 @@ int main( int argc, char** argv )
 	lsm.startup();
 	int r = Fl::run();
 	lsm.shutdown();
+	delete playbackCore;
 	return r;
 }

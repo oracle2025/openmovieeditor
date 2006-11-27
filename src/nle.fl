@@ -140,7 +140,7 @@ m_timelineView->redraw();}
           }
         }
         Submenu {} {
-          label Format open selected
+          label Format open
           xywh {0 0 100 20} hide
         } {
           MenuItem {} {
@@ -313,7 +313,7 @@ fb->load_rel();}
             Fl_Button playButton {
               label {@>}
               callback {if ( strcmp( o->label(), "@>" ) == 0 ) {
-	o->label( "@||" );
+	o->label( "@square" );
 	lastButton->deactivate();
 	firstButton->deactivate();
 	forwardButton->deactivate();
@@ -326,28 +326,28 @@ fb->load_rel();}
 	firstButton->activate();
 	forwardButton->activate();
 	backButton->activate();
-}}
-              tooltip {Play (F7)} xywh {100 235 80 40} shortcut 0xffc4
+}} selected
+              tooltip {Play (F7)} xywh {80 235 80 40} shortcut 0xffc4
             }
             Fl_Button lastButton {
               label {@>|}
               callback {nle::g_ruler->skipLast()}
-              tooltip {Goto End} xywh {230 235 50 40}
+              tooltip {Goto End} xywh {240 235 40 40}
             }
             Fl_Button firstButton {
               label {@|<}
               callback {nle::g_ruler->skipFirst();}
-              tooltip {Goto Start} xywh {0 235 50 40}
+              tooltip {Goto Start} xywh {0 235 40 40}
             }
             Fl_Button backButton {
               label {@<|}
               callback {nle::g_ruler->skipBackward();}
-              tooltip {Skip Frame backwards} xywh {50 235 50 40}
+              tooltip {Skip Frame backwards} xywh {40 235 40 40}
             }
             Fl_Button forwardButton {
               label {@|>}
               callback {nle::g_ruler->skipForward();}
-              tooltip {Skip Frame forward} xywh {180 235 50 40}
+              tooltip {Skip Frame forward} xywh {200 235 40 40}
             }
             Fl_Button projectNameInput {
               label {Project Name}
@@ -358,6 +358,11 @@ if ( name ) {
 }}
               xywh {0 25 280 25} labelfont 1 align 20
               code0 {\#include "LoadSaveManager/LoadSaveManager.H"}
+            }
+            Fl_Button {} {
+              label {@||}
+              callback {m_videoView->pause();}
+              xywh {160 235 40 40}
             }
           }
         }
@@ -513,7 +518,7 @@ class EncodeDialog {} {
   } {
     Fl_Window encodeDialog {
       label Render open
-      private xywh {821 566 485 340} type Double
+      private xywh {791 776 485 340} type Double
       code0 {\#include "IVideoReader.H"}
       code1 {\#include "IAudioReader.H"} modal visible
     } {
