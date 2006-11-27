@@ -46,7 +46,10 @@ openmovieeditor_SOURCES = nle.cxx\
 	AudioClipBase.cxx\
 	AudioFileSnd.cxx\
 	AudioFileQT.cxx\
-	SimplePlaybackCore.cxx\
+	PortAudioPlaybackCore.cxx\
+	PortAudioPlaybackCore.H\
+	JackPlaybackCore.cxx\
+	JackPlaybackCore.H\
 	Renderer.cxx\
 	Flmm_Scalebar.cxx\
 	SaveAsDialog.cxx\
@@ -81,7 +84,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	WavArtist.H\
 	Codecs.H\
 	helper.H\
-	SimplePlaybackCore.H\
 	Timeline.H\
 	DragHandler.H\
 	IAudioFile.H\
@@ -193,5 +195,7 @@ openmovieeditor_SOURCES = nle.cxx\
 	VideoEffectClip.cxx\
 	VideoEffectClip.H\
 	IVideoEffect.H\
-	frei0r.h
+	frei0r.h\
+	IPlaybackCore.cxx\
+	IPlaybackCore.H
 

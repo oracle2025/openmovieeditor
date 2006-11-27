@@ -23,7 +23,7 @@
 #include "VideoViewGL.H"
 #include "globals.H"
 #include "SwitchBoard.H"
-#include "SimplePlaybackCore.H"
+#include "IPlaybackCore.H"
 #include "Timeline.H"
 #include "events.H"
 #include "render_helper.H"
@@ -194,7 +194,7 @@ void VideoViewGL::draw()
 		}
 		once = false;
 	}
-	if ( g_simplePlaybackCore->active() ) { return; }
+	if ( g_playbackCore->active() ) { return; }
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	glBindTexture( GL_TEXTURE_2D, video_canvas[0] );
 	if ( m_seekPosition >= 0 ) {
@@ -303,18 +303,18 @@ void VideoViewGL::seek( int64_t position )
 
 void VideoViewGL::play()
 {
-	if ( g_simplePlaybackCore->active() ) {
+	if ( g_playbackCore->active() ) {
 		return;
 	}
 	reset_cache();
 	m_seekPosition = -1;
 	g_timeline->sort();
-	g_simplePlaybackCore->play();
+	g_playbackCore->play();
 }
 
 void VideoViewGL::stop()
 {
-	g_simplePlaybackCore->stop();
+	g_playbackCore->stop();
 }
 
 } /* namespace nle */

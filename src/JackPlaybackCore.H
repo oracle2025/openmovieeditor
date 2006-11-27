@@ -1,4 +1,4 @@
-/* SimplePlaybackCore.H
+/* JackPlaybackCore.H
  *
  *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,8 +17,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _SIMPLE_PLAYBACK_CORE_H_
-#define _SIMPLE_PLAYBACK_CORE_H_
+#ifndef _JACK_PLAYBACK_CORE_H_
+#define _JACK_PLAYBACK_CORE_H_
 
 #include <stdint.h>
 #include <jack/jack.h>
@@ -32,15 +32,14 @@ class IVideoReader;
 class IVideoWriter;
 
 
-class SimplePlaybackCore : public IPlaybackCore
+class JackPlaybackCore : public IPlaybackCore
 {
 	public:
-		SimplePlaybackCore( IAudioReader* audioReader, IVideoReader* videoReader, IVideoWriter* videoWriter );
-		~SimplePlaybackCore();
+		JackPlaybackCore( IAudioReader* audioReader, IVideoReader* videoReader, IVideoWriter* videoWriter );
+		~JackPlaybackCore();
 		void play();
 		void stop();
 		bool ok() { return true; }
-		int readAudio( float* output, unsigned long frames );
 		void jackreadAudio( void *outL, void *outR, jack_transport_state_t ts, jack_nframes_t position, jack_nframes_t nframes );
 		void flipFrame();
 		void hardstop() { m_active=false; } /* hardstop() use only for error abort - else use stop */
@@ -59,5 +58,5 @@ class SimplePlaybackCore : public IPlaybackCore
 
 } /* namespace nle */
 
-#endif /* _SIMPLE_PLAYBACK_CORE_H_ */
+#endif /* _JACK_PLAYBACK_CORE_H_ */
 

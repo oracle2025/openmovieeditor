@@ -1,6 +1,6 @@
-/* SimplePlaybackCore.H
+/* PortAudioPlaybackCore.H
  *
- *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2005, 2006 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,11 +17,10 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _SIMPLE_PLAYBACK_CORE_H_
-#define _SIMPLE_PLAYBACK_CORE_H_
+#ifndef _PORT_AUDIO_PLAYBACK_CORE_H_
+#define _PORT_AUDIO_PLAYBACK_CORE_H_
 
 #include <stdint.h>
-#include <jack/jack.h>
 
 #include "IPlaybackCore.H"
 
@@ -32,18 +31,16 @@ class IVideoReader;
 class IVideoWriter;
 
 
-class SimplePlaybackCore : public IPlaybackCore
+class PortAudioPlaybackCore : public IPlaybackCore
 {
 	public:
-		SimplePlaybackCore( IAudioReader* audioReader, IVideoReader* videoReader, IVideoWriter* videoWriter );
-		~SimplePlaybackCore();
+		PortAudioPlaybackCore( IAudioReader* audioReader, IVideoReader* videoReader, IVideoWriter* videoWriter );
+		~PortAudioPlaybackCore();
 		void play();
 		void stop();
 		bool ok() { return true; }
 		int readAudio( float* output, unsigned long frames );
-		void jackreadAudio( void *outL, void *outR, jack_transport_state_t ts, jack_nframes_t position, jack_nframes_t nframes );
 		void flipFrame();
-		void hardstop() { m_active=false; } /* hardstop() use only for error abort - else use stop */
 		void checkPlayButton();
 	private:
 		IAudioReader* m_audioReader;
@@ -52,12 +49,9 @@ class SimplePlaybackCore : public IPlaybackCore
 		int64_t m_audioPosition;
 		int64_t m_currentFrame;
 		int64_t m_lastFrame;
-		int64_t m_nexttolastFrame;
-		int64_t m_prevSeek;
-		int m_scrubpos,m_scrubmax;
 };
 
 } /* namespace nle */
 
-#endif /* _SIMPLE_PLAYBACK_CORE_H_ */
+#endif /* _PORT_AUDIO_PLAYBACK_CORE_H_ */
 

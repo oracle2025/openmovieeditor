@@ -36,7 +36,8 @@
 #include "Prefs.H"
 #include "WavArtist.H"
 #include "Project.H"
-#include "SimplePlaybackCore.H"
+#include "PortAudioPlaybackCore.H"
+#include "JackPlaybackCore.H"
 #include "globals.H"
 #include "Timeline.H"
 #include "VideoViewGL.H"
@@ -77,7 +78,7 @@ int main( int argc, char** argv )
 	NleUI nui;
 	nle::g_ui = &nui;
 	nle::Frei0rFactory effectFactory( nui.m_effectMenu );
-	nle::SimplePlaybackCore playbackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
+	nle::PortAudioPlaybackCore playbackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
 	//nle::PlaybackCore playbackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
 	nle::LoadSaveManager lsm( nui.projectChoice, nui.projectNameInput );
 	nle::FilmStripFactory filmStripFactory;

@@ -1,4 +1,4 @@
-/* SimplePlaybackCore.cxx
+/* JackPlaybackCore.cxx
  *
  *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
  * 
@@ -32,8 +32,7 @@
 
 #include "global_includes.H"
 #include "globals.H"
-#include "portaudio/portaudio.h"
-#include "SimplePlaybackCore.H"
+#include "JackPlaybackCore.H"
 #include "IAudioReader.H"
 #include "IVideoReader.H"
 #include "IVideoWriter.H"
@@ -50,68 +49,16 @@ extern bool g_seek_audio;
 namespace nle
 {
 
-/*
- * portaudio
- */
-
-pthread_mutex_t condition_mutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_cond_t  condition_cond  = PTHREAD_COND_INITIALIZER;
-
-//static int portaudio_callback( void *input, void *output, unsigned long frames, PaTimestamp time, void* data )
-static int portaudio_callback( void *, void *output, unsigned long frames, PaTimestamp, void* data )
-{
-	SimplePlaybackCore* pc = (SimplePlaybackCore*)data;
-	return pc->readAudio( (float*)output, frames );
-}
 
 static void video_idle_callback( void* data )
 {
-	SimplePlaybackCore* pc = (SimplePlaybackCore*)data;
+	JackPlaybackCore* pc = (JackPlaybackCore*)data;
 	pc->flipFrame();
 }
 static void timer_callback( void* data )
 {
-	SimplePlaybackCore* pc = (SimplePlaybackCore*)data;
+	JackPlaybackCore* pc = (JackPlaybackCore*)data;
 	pc->checkPlayButton();
-}
-
-static PortAudioStream* g_stream;
-static bool portaudio_start( int rate, int frames, void* data )
-{
-	PortAudioCallback *cb = (PortAudioCallback*)portaudio_callback;
-	PaError err;
-	
-	err = Pa_Initialize();
-	if ( err != paNoError ) goto error;
-
-	err = Pa_OpenDefaultStream( &g_stream, 0, 2, paFloat32, rate, frames, 0, cb, data );
-	if ( err != paNoError ) goto error;
-
-	err = Pa_StartStream( g_stream );
-	if ( err != paNoError ) goto error;
-	
-	return 1;
-error:
-	cerr << "Soundoutput failed: " << Pa_GetErrorText( err ) << endl;
-	return 0;
-}
-static bool portaudio_stop()
-{
-	PaError err;
-
-	err = Pa_StopStream( g_stream );
-	if( err != paNoError ) goto error;
-	
-	err = Pa_CloseStream( g_stream );
-	if( err != paNoError ) goto error;
-	
-	Pa_Terminate();
-
-	return 1;
-	
-error:
-	cerr << "Portaudio Error: " << Pa_GetErrorText( err ) << endl;
-	return 0;
 }
 
 
@@ -131,7 +78,7 @@ static jack_nframes_t jack_latency_comp = 0;
  */
 int jack_callback (jack_nframes_t nframes, void *data)
 {
-	SimplePlaybackCore* pc = (SimplePlaybackCore*)data;
+	JackPlaybackCore* pc = (JackPlaybackCore*)data;
 	void *outL, *outR;
 	jack_position_t	jack_position;
 	jack_transport_state_t ts;
@@ -156,7 +103,7 @@ void jack_shutdown(void *data)
 {
 	jack_client=NULL;
 	cerr << "jack server shutdown." << endl;
-	SimplePlaybackCore* pc = (SimplePlaybackCore*)data;
+	JackPlaybackCore* pc = (JackPlaybackCore*)data;
 	pc->hardstop(); 
 }
 
@@ -279,19 +226,19 @@ jack_transport_state_t jack_poll_ts(void) {
  * simple playback core
  */
 
-//SimplePlaybackCore* g_simplePlaybackCore;
-SimplePlaybackCore::SimplePlaybackCore( IAudioReader* audioReader, IVideoReader* videoReader, IVideoWriter* videoWriter )
+//JackPlaybackCore* g_simplePlaybackCore;
+JackPlaybackCore::JackPlaybackCore( IAudioReader* audioReader, IVideoReader* videoReader, IVideoWriter* videoWriter )
 	: m_audioReader(audioReader), m_videoReader(videoReader), m_videoWriter(videoWriter)
 {
 	g_playbackCore = this;
 	m_active = false;
 }
-SimplePlaybackCore::~SimplePlaybackCore()
+JackPlaybackCore::~JackPlaybackCore()
 {
 }
 void suspend_idle_handlers(); //defined in IdleHandlers.cxx
 void resume_idle_handlers();
-void SimplePlaybackCore::play()
+void JackPlaybackCore::play()
 {
 	int scrublen = 3*1920;  // TODO: get from preferences :  scrub_freq = sample_rate/scrublen   
 				// good values for scrub_freq are 1..50 Hz
@@ -323,16 +270,10 @@ void SimplePlaybackCore::play()
 			int spin = 1000000;
 			while (abs(jack_poll_frame()-m_currentFrame) > 2 && spin-- > 0 );
 		}
-	} else { // portaudio
-		m_currentFrame = g_timeline->m_seekPosition;
-		m_lastFrame = g_timeline->m_seekPosition;
-		m_audioPosition = m_currentFrame * ( 48000 / 25 );
-		m_audioReader->sampleseek(1, m_audioPosition); // set absolute audio sample start position
 	}
-
 	if (g_use_jack_transport) jack_play();
 
-	if (jack_connected() || portaudio_start( 48000, FRAMES, this ) ) 
+	if (jack_connected() ) 
 	{
 		suspend_idle_handlers();
 		m_active = true;
@@ -341,7 +282,7 @@ void SimplePlaybackCore::play()
 	}
 }
 
-void SimplePlaybackCore::stop()
+void JackPlaybackCore::stop()
 {
 	if ( !m_active ) {
 		return;
@@ -351,27 +292,18 @@ void SimplePlaybackCore::stop()
 	if (jack_connected()) {
 		if (g_use_jack_transport) jack_stop();
 		close_jack(); 
-	} else portaudio_stop();
+	}
 }
 
-void SimplePlaybackCore::checkPlayButton()
+void JackPlaybackCore::checkPlayButton()
 {
 	if ( !m_active ) {
 		return;
 	}
-	if ( !Pa_StreamActive( g_stream ) ) {
-		stop();
-		g_playButton->label( "@>" );
-		g_firstButton->activate();
-		g_lastButton->activate();
-		g_forwardButton->activate();
-		g_backButton->activate();
-	} else {
-		Fl::repeat_timeout( 0.1, timer_callback, this );
-	}
+	Fl::repeat_timeout( 0.1, timer_callback, this );
 }
 
-void SimplePlaybackCore::jackreadAudio( void *outL, void *outR, jack_transport_state_t ts, jack_nframes_t position, jack_nframes_t nframes )
+void JackPlaybackCore::jackreadAudio( void *outL, void *outR, jack_transport_state_t ts, jack_nframes_t position, jack_nframes_t nframes )
 {
 	if (g_use_jack_transport) {
 		if (position < jack_latency_comp || (!g_scrub_audio && ts != JackTransportRolling)) {
@@ -423,24 +355,7 @@ void SimplePlaybackCore::jackreadAudio( void *outL, void *outR, jack_transport_s
 	}
 }
 
-int SimplePlaybackCore::readAudio( float* output, unsigned long frames )
-{
-	unsigned long r = m_audioReader->fillBuffer( output, frames );
-	m_audioReader->sampleseek(0,r); // set relative sample position;
-	m_audioPosition += r;
-	pthread_mutex_lock( &condition_mutex );
-	m_currentFrame = m_audioPosition / ( 48000 / 25 ); //FIXME: highly dependent from 'frames' :(
-	pthread_cond_signal( &condition_cond );
-	/*if ( m_audioPosition / ( 48000 / 25 ) > m_currentFrame ) {
-		//cout << "m_audioPosition: " << m_audioPosition << " m_currentFrame: " << m_currentFrame << " frames: " << frames << endl;
-		m_currentFrame++;
-		pthread_cond_signal( &condition_cond );
-	}*/
-	pthread_mutex_unlock( &condition_mutex );
-	return r != frames;
-}
-
-void SimplePlaybackCore::flipFrame()
+void JackPlaybackCore::flipFrame()
 {
 	if ( !m_active ) {
 		return;
@@ -471,22 +386,7 @@ void SimplePlaybackCore::flipFrame()
 		// FIXME: for larger jack buffer sizes, this can become inaccurate due to rounding
 		// issues. -> do something similar as the portaudio drift sync...
 		m_lastFrame = llrint(m_audioPosition*25/48000);
-	} else { // portaudio
-		m_lastFrame++;
-		pthread_mutex_lock( &condition_mutex );
-		int64_t diff = m_lastFrame - m_currentFrame;
-		if ( abs( diff ) > VIDEO_DRIFT_LIMIT ) {
-			if ( diff > 0 ) {
-				while( ( m_lastFrame - m_currentFrame ) > VIDEO_DRIFT_LIMIT ) {
-					pthread_cond_wait( &condition_cond, &condition_mutex );
-				}
-			} else {
-				m_lastFrame -= diff;
-			}
-		}
-		pthread_mutex_unlock( &condition_mutex );
-	}
-
+	} 
 	static frame_struct** fs = 0;
 	if ( fs ) {
 		m_videoWriter->pushFrameStack( fs );

@@ -44,7 +44,7 @@
 #include "AutomationDragHandler.H"
 #include "ShiftAutomationDragHandler.H"
 #include "IClipArtist.H"
-#include "SimplePlaybackCore.H"
+#include "IPlaybackCore.H"
 #include "DocManager.H"
 #include "Commands.H"
 #include "Frei0rFactoryPlugin.H"
@@ -84,7 +84,7 @@ TimelineView::~TimelineView()
 int TimelineView::handle( int event )
 {
   Clip* cl;
-	if ( g_simplePlaybackCore->active() ) {
+	if ( g_playbackCore->active() ) {
 		return Fl_Widget::handle( event );
 	}
 	int _x = Fl::event_x();
