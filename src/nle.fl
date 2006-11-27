@@ -140,8 +140,8 @@ m_timelineView->redraw();}
           }
         }
         Submenu {} {
-          label Format open
-          xywh {0 0 100 20}
+          label Format open selected
+          xywh {0 0 100 20} hide
         } {
           MenuItem {} {
             label {4:3}
@@ -355,7 +355,7 @@ fb->load_rel();}
 if ( name ) {
 	projectNameInput->label( name );
 	nle::g_loadSaveManager->name( name );
-}} selected
+}}
               xywh {0 25 280 25} labelfont 1 align 20
               code0 {\#include "LoadSaveManager/LoadSaveManager.H"}
             }
