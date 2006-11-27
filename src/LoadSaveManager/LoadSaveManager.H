@@ -23,7 +23,7 @@
 #include "global_includes.H"
 
 class Fl_Choice;
-class Fl_Input;
+class Fl_Button;
 
 namespace nle
 {
@@ -31,7 +31,7 @@ namespace nle
 class LoadSaveManager
 {
 	public:
-		LoadSaveManager( Fl_Choice* projectChoice, Fl_Input* projectInput );
+		LoadSaveManager( Fl_Choice* projectChoice, Fl_Button* projectInput );
 		~LoadSaveManager();
 		void startup();
 		void shutdown();
@@ -43,7 +43,7 @@ class LoadSaveManager
 	private:
 		string nodups( string name );
 		Fl_Choice* m_projectChoice;
-		Fl_Input* m_projectInput;
+		Fl_Button* m_projectInput;
 		string m_currentName;
 		string m_currentFilename;
 		string m_video_projects;

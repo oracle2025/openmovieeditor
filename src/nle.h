@@ -22,7 +22,6 @@
 #include "IVideoEffect.H"
 #include <FL/Fl_Button.H>
 #include "LoadSaveManager/LoadSaveManager.H"
-#include "NoDropInput.H"
 #include "Flmm_Scalebar.H"
 #include "globals.H"
 using namespace std;
@@ -59,10 +58,18 @@ public:
 private:
   void cb_redo_item_i(Fl_Menu_*, void*);
   static void cb_redo_item(Fl_Menu_*, void*);
+  void cb_Copy_i(Fl_Menu_*, void*);
+  static void cb_Copy(Fl_Menu_*, void*);
+  void cb_Paste_i(Fl_Menu_*, void*);
+  static void cb_Paste(Fl_Menu_*, void*);
   void cb_Add_i(Fl_Menu_*, void*);
   static void cb_Add(Fl_Menu_*, void*);
   void cb_Add1_i(Fl_Menu_*, void*);
   static void cb_Add1(Fl_Menu_*, void*);
+  void cb_4_i(Fl_Menu_*, void*);
+  static void cb_4(Fl_Menu_*, void*);
+  void cb_16_i(Fl_Menu_*, void*);
+  static void cb_16(Fl_Menu_*, void*);
   void cb_Transport_i(Fl_Menu_*, void*);
   static void cb_Transport(Fl_Menu_*, void*);
   void cb_Scrub_i(Fl_Menu_*, void*);
@@ -103,11 +110,6 @@ private:
   void cb_m_edit_effect_i(Fl_Button*, void*);
   static void cb_m_edit_effect(Fl_Button*, void*);
 public:
-  NoDropInput *projectNameInput;
-private:
-  void cb_projectNameInput_i(NoDropInput*, void*);
-  static void cb_projectNameInput(NoDropInput*, void*);
-public:
   Fl_Button *playButton;
 private:
   void cb_playButton_i(Fl_Button*, void*);
@@ -132,6 +134,11 @@ public:
 private:
   void cb_forwardButton_i(Fl_Button*, void*);
   static void cb_forwardButton(Fl_Button*, void*);
+public:
+  Fl_Button *projectNameInput;
+private:
+  void cb_projectNameInput_i(Fl_Button*, void*);
+  static void cb_projectNameInput(Fl_Button*, void*);
   Flmm_Scalebar *scaleBar;
   void cb_scaleBar_i(Flmm_Scalebar*, void*);
   static void cb_scaleBar(Flmm_Scalebar*, void*);
@@ -294,4 +301,5 @@ extern bool g_use_jack_transport;
 extern bool g_scrub_audio;
 extern bool g_seek_audio;
 extern Fl_Scrollbar* g_v_scrollbar;
+extern bool g_16_9;
 #endif

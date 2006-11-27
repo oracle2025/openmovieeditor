@@ -1,4 +1,4 @@
-/*  RemoveCommand.H
+/*  PasteCommand.H
  *
  *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,22 +17,37 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _REMOVE_COMMAND_H_
-#define _REMOVE_COMMAND_H_
+#ifndef _PASTE_COMMAND_H_
+#define _PASTE_COMMAND_H_
 
-#include "global_includes.H"
 #include "Command.H"
+#include "global_includes.H"
 
 namespace nle
 {
+/*
+union effect_value
+{
+	double dval;
+	bool bval;
+};
 
+typedef struct _effect_node {
+	struct _effect_node* next;
+	string name;
+	union effect_value* params;
+} effect_node;
+*/
 typedef struct _auto_node auto_node;
 
-class RemoveCommand : public Command
+class PasteCommand : public Command
 {
 	public:
-		RemoveCommand( Clip* clip );
-		~RemoveCommand();
+		PasteCommand( Clip* clip );
+		PasteCommand( PasteCommand* command );
+		~PasteCommand();
+		void position( int64_t position ) { m_position = position; }
+		int64_t position() { return m_position; }
 		void doo();
 		void undo();
 	private:
@@ -47,9 +62,9 @@ class RemoveCommand : public Command
 		int64_t m_length;
 		bool m_audioClip;
 		bool m_mute;
-};		
-
+//		effect_node* m_effects;
+};
 
 } /* namespace nle */
 
-#endif /* _REMOVE_COMMAND_H_ */
+#endif /* _PASTE_COMMAND_H_ */

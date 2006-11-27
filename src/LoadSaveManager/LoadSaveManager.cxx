@@ -77,7 +77,7 @@ string LoadSaveManager::nodups( string name )
 	return name;
 }
 
-LoadSaveManager::LoadSaveManager( Fl_Choice* projectChoice, Fl_Input* projectInput )
+LoadSaveManager::LoadSaveManager( Fl_Choice* projectChoice, Fl_Button* projectInput )
 	: m_projectChoice( projectChoice ), m_projectInput( projectInput )
 {
 	g_loadSaveManager = this;
@@ -181,7 +181,7 @@ void LoadSaveManager::startup()
 		m_currentName = name_from_projectfile( m_video_projects + "/" + m_currentFilename );
 	}*/
 	/* vv  Put this in a function */
-	m_projectInput->value( m_currentName.c_str() );
+	m_projectInput->label( m_currentName.c_str() );
 	const Fl_Menu_Item* item;
 	item = m_projectChoice->find_item( m_currentName.c_str() );
 	if ( item ) {
@@ -233,7 +233,7 @@ void LoadSaveManager::newProject()
 	
 	char* cname = strdup( m_currentFilename.c_str() );
 	m_projectChoice->add( m_currentName.c_str(), 0, 0, cname );
-	m_projectInput->value( m_currentName.c_str() );
+	m_projectInput->label( m_currentName.c_str() );
 	const Fl_Menu_Item* item;
 	item = m_projectChoice->find_item( m_currentName.c_str() );
 	if ( item ) {
@@ -255,7 +255,7 @@ void LoadSaveManager::saveAs()
 		g_project->write( m_video_projects + "/" + m_currentFilename, m_currentName );
 		char* cname = strdup( m_currentFilename.c_str() );
 		m_projectChoice->add( m_currentName.c_str(), 0, 0, cname );
-		m_projectInput->value( m_currentName.c_str() );
+		m_projectInput->label( m_currentName.c_str() );
 		const Fl_Menu_Item* item;
 		item = m_projectChoice->find_item( m_currentName.c_str() );
 		if ( item ) {
@@ -283,7 +283,7 @@ void LoadSaveManager::load( string v )
 	m_currentName = m_projectChoice->mvalue()->text;
 	g_project->read( m_video_projects + "/" + m_currentFilename );
 	const Fl_Menu_Item* item;
-	m_projectInput->value( m_currentName.c_str() );
+	m_projectInput->label( m_currentName.c_str() );
 	item = m_projectChoice->find_item( m_currentName.c_str() );
 	if ( item ) {
 		m_projectChoice->value( item );

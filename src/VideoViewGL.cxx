@@ -28,6 +28,7 @@
 #include "events.H"
 #include "render_helper.H"
 
+extern bool g_16_9;
 namespace nle
 {
 
@@ -68,6 +69,79 @@ static GLuint video_canvas[10];
 #define TEXTURE_WIDTH 1024.0 
 #define TEXTURE_HEIGHT 1024.0
 //static unsigned char pulldown_frame[3 * 1024 * 1024];
+
+void VideoViewGL::drawVideoBorder()
+{
+	int w_ = 1024;
+	int h_ = 576;
+	float gl_x, gl_y, gl_w, gl_h;
+	{
+		float f_v = ( (float)w_ / (float)h_ );
+		float f_w = ( (float)w() / (float)h() );
+		float f_g = f_v / f_w;
+		if ( f_g > 1.0 ) {
+			gl_h = 10.0 / f_g;
+			gl_w = 10.0;
+		} else {
+			gl_h = 10.0;
+			gl_w = f_g * 10.0;
+		}
+		gl_x = ( 10.0 - gl_w ) / 2;
+		gl_y = ( 10.0 - gl_h ) / 2;
+
+	}
+
+	glDisable (GL_TEXTURE_2D);
+	glLineWidth(3);
+	glBegin (GL_LINE_LOOP);
+	glColor4f( 0.0f, 0.0f, 0.0f, 1.0f );
+	
+	glVertex3f   (  gl_x,      gl_y, 0.0 );
+	glVertex3f   ( gl_x + gl_w,      gl_y, 0.0 );
+	glVertex3f   ( gl_x + gl_w,     gl_y + gl_h, 0.0 );
+	glVertex3f   (  gl_x,     gl_y + gl_h, 0.0 );
+
+	glEnd();
+	glLineWidth(1);
+	glBegin (GL_LINE_LOOP);
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
+	glVertex3f   (  gl_x,      gl_y, 0.0 );
+	glVertex3f   ( gl_x + gl_w,      gl_y, 0.0 );
+	glVertex3f   ( gl_x + gl_w,     gl_y + gl_h, 0.0 );
+	glVertex3f   (  gl_x,     gl_y + gl_h, 0.0 );
+
+	glEnd();
+	glEnable (GL_TEXTURE_2D);
+
+	float _x, _y, _w, _h;
+	_x = gl_x + (gl_w / 8.0);
+	_y = gl_y;
+	_w = gl_w / 1.33333333333333333;
+	_h = gl_h;
+	glDisable (GL_TEXTURE_2D);
+	glLineWidth(3);
+	glBegin (GL_LINE_LOOP);
+	glColor4f( 0.0f, 0.0f, 0.0f, 1.0f );
+	
+	glVertex3f   (  _x,      _y, 0.0 );
+	glVertex3f   ( _x + _w,      _y, 0.0 );
+	glVertex3f   ( _x + _w,     _y + _h, 0.0 );
+	glVertex3f   (  _x,     _y + _h, 0.0 );
+
+	glEnd();
+	glLineWidth(1);
+	glBegin (GL_LINE_LOOP);
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
+	glVertex3f   (  _x,      _y, 0.0 );
+	glVertex3f   ( _x + _w,      _y, 0.0 );
+	glVertex3f   ( _x + _w,     _y + _h, 0.0 );
+	glVertex3f   (  _x,     _y + _h, 0.0 );
+
+	glEnd();
+	glEnable (GL_TEXTURE_2D);
+}
 
 void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 {
@@ -226,6 +300,11 @@ void VideoViewGL::draw()
 			float gl_x, gl_y, gl_w, gl_h;
 			{
 				float f_v = ( (float)fs[i]->w / (float)fs[i]->h );
+				if ( g_16_9 ) {
+					f_v = ( 16.0 / 9.0 );
+				} else {
+					f_v = ( 4.0 / 3.0 );
+				}
 				float f_w = ( (float)w() / (float)h() );
 				float f_g = f_v / f_w;
 				if ( f_g > 1.0 ) {
@@ -256,6 +335,10 @@ void VideoViewGL::draw()
 			glEnd ();
 		}
 	}
+/*	drawVideoBorder( 720, 576  ); //Pixel sind nicht quadratisch?
+	drawVideoBorder( 768, 576  );
+	drawVideoBorder( 1024, 576  );*/
+	drawVideoBorder();
 #if 0 
 	float gl_x, gl_y, gl_w, gl_h;
 	{

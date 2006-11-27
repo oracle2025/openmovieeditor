@@ -1,4 +1,4 @@
-/*  RemoveCommand.H
+/*  PasteSelectionCommand.H
  *
  *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,39 +17,25 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _REMOVE_COMMAND_H_
-#define _REMOVE_COMMAND_H_
+#ifndef _PASTE_SELECTION_COMMAND_H_
+#define _PASTE_SELECTION_COMMAND_H_
 
-#include "global_includes.H"
-#include "Command.H"
+#include <stdint.h>
+#include "CompositeCommand.H"
 
 namespace nle
 {
 
-typedef struct _auto_node auto_node;
+typedef struct clip_node_ clip_node;
 
-class RemoveCommand : public Command
+class PasteSelectionCommand : public CompositeCommand
 {
 	public:
-		RemoveCommand( Clip* clip );
-		~RemoveCommand();
-		void doo();
-		void undo();
-	private:
-		int m_track;
-		int m_clip;
-		string m_filename;
-		auto_node* m_automationPoints;
-		int m_automationsCount;
-		int64_t m_trimA;
-		int64_t m_trimB;
-		int64_t m_position;
-		int64_t m_length;
-		bool m_audioClip;
-		bool m_mute;
-};		
-
+		PasteSelectionCommand( clip_node* selectedClips );
+		PasteSelectionCommand( PasteSelectionCommand* command );
+		void position( int64_t position );
+};
 
 } /* namespace nle */
 
-#endif /* _REMOVE_COMMAND_H_ */
+#endif /* _PASTE_SELECTION_COMMAND_H_ */

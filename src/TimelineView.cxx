@@ -50,6 +50,7 @@
 #include "Frei0rFactoryPlugin.H"
 #include "Frei0rEffect.H"
 #include "Frei0rDialog.H"
+#include "PasteSelectionCommand.H"
 
 #include "audio.xpm"
 #include "video.xpm"
@@ -68,7 +69,7 @@ TimelineView::TimelineView( int x, int y, int w, int, const char *label )
 {
 	g_timelineView = this;
 	m_dragHandler = NULL;
-	
+	m_pasteCommand = 0;
 
 	m_scrollPosition = 0;
 	m_stylusPosition = 0;
@@ -952,6 +953,29 @@ void TimelineView::move_cursor( int64_t position )
 void TimelineView::stylus( long stylus_pos )
 {
 	move_cursor( get_real_position( stylus_pos ) );
+}
+void TimelineView::copy()
+{
+	if ( !m_selectedClips ) {
+		return;
+	}
+	if ( m_pasteCommand ) {
+		delete m_pasteCommand;
+		m_pasteCommand = 0;
+	}
+	m_pasteCommand = new PasteSelectionCommand( m_selectedClips );
+	cout << "COPY" << endl;
+}
+void TimelineView::paste()
+{
+	if ( !m_pasteCommand ) {
+		return;
+	}
+	PasteSelectionCommand* cmd = m_pasteCommand;
+	m_pasteCommand = new PasteSelectionCommand( cmd );
+	cmd->position( m_stylusPosition );
+	submit( cmd );
+	cout << "PASTE" << endl;
 }
 
 } /* namespace nle */

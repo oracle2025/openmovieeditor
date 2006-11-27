@@ -85,6 +85,20 @@ void NleUI::cb_redo_item(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_redo_item_i(o,v);
 }
 
+void NleUI::cb_Copy_i(Fl_Menu_*, void*) {
+  m_timelineView->copy();
+}
+void NleUI::cb_Copy(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_Copy_i(o,v);
+}
+
+void NleUI::cb_Paste_i(Fl_Menu_*, void*) {
+  m_timelineView->paste();
+}
+void NleUI::cb_Paste(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_Paste_i(o,v);
+}
+
 void NleUI::cb_Add_i(Fl_Menu_*, void*) {
   m_timelineView->add_track( nle::TRACK_TYPE_VIDEO );
 }
@@ -97,6 +111,22 @@ void NleUI::cb_Add1_i(Fl_Menu_*, void*) {
 }
 void NleUI::cb_Add1(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Add1_i(o,v);
+}
+
+void NleUI::cb_4_i(Fl_Menu_* o, void*) {
+  g_16_9 = !(o->mvalue())->value();
+m_videoView->redraw();
+}
+void NleUI::cb_4(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_4_i(o,v);
+}
+
+void NleUI::cb_16_i(Fl_Menu_* o, void*) {
+  g_16_9 = (o->mvalue())->value();
+m_videoView->redraw();
+}
+void NleUI::cb_16(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_16_i(o,v);
 }
 
 void NleUI::cb_Transport_i(Fl_Menu_* o, void*) {
@@ -156,11 +186,22 @@ Fl_Menu_Item NleUI::menu_[] = {
  {0,0,0,0,0,0,0,0,0},
  {"&Edit", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"Undo", 0x4007a,  (Fl_Callback*)NleUI::cb_undo_item, 0, 1, FL_NORMAL_LABEL, 0, 14, 0},
- {"Redo", 0x40079,  (Fl_Callback*)NleUI::cb_redo_item, 0, 1, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Redo", 0x40079,  (Fl_Callback*)NleUI::cb_redo_item, 0, 129, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Copy", 0x40063,  (Fl_Callback*)NleUI::cb_Copy, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Paste", 0x40076,  (Fl_Callback*)NleUI::cb_Paste, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"&Tracks", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"Add Video Track", 0,  (Fl_Callback*)NleUI::cb_Add, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Add Audio Track", 0,  (Fl_Callback*)NleUI::cb_Add1, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {0,0,0,0,0,0,0,0,0},
+ {"P&references", 0,  0, 0, 80, FL_NORMAL_LABEL, 0, 14, 0},
+ {"No SW Scaling", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"2x2 Scaling good", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"2x2 Scaling bad", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {0,0,0,0,0,0,0,0,0},
+ {"Format", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
+ {"4:3", 0,  (Fl_Callback*)NleUI::cb_4, 0, 12, FL_NORMAL_LABEL, 0, 14, 0},
+ {"16:9", 0,  (Fl_Callback*)NleUI::cb_16, 0, 8, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"&JACK", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"Transport connect", 0,  (Fl_Callback*)NleUI::cb_Transport, 0, 6, FL_NORMAL_LABEL, 0, 14, 0},
@@ -169,11 +210,6 @@ Fl_Menu_Item NleUI::menu_[] = {
  {"&View", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"Fullscreen", 0xffc8,  (Fl_Callback*)NleUI::cb_Fullscreen, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Track Overview", 0,  0, 0, 18, FL_NORMAL_LABEL, 0, 14, 0},
- {0,0,0,0,0,0,0,0,0},
- {"P&references", 0,  0, 0, 80, FL_NORMAL_LABEL, 0, 14, 0},
- {"No SW Scaling", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"2x2 Scaling good", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"2x2 Scaling bad", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"&Help", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"About...", 0,  (Fl_Callback*)NleUI::cb_About, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
@@ -226,13 +262,6 @@ void NleUI::cb_m_edit_effect(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_m_edit_effect_i(o,v);
 }
 
-void NleUI::cb_projectNameInput_i(NoDropInput* o, void*) {
-  nle::g_loadSaveManager->name( o->value() );
-}
-void NleUI::cb_projectNameInput(NoDropInput* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_projectNameInput_i(o,v);
-}
-
 void NleUI::cb_playButton_i(Fl_Button* o, void*) {
   if ( strcmp( o->label(), "@>" ) == 0 ) {
 	o->label( "@||" );
@@ -280,6 +309,17 @@ void NleUI::cb_forwardButton_i(Fl_Button*, void*) {
 }
 void NleUI::cb_forwardButton(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_forwardButton_i(o,v);
+}
+
+void NleUI::cb_projectNameInput_i(Fl_Button*, void*) {
+  const char* name = fl_input( "Please enter the project name.", projectNameInput->label() );
+if ( name ) {
+	projectNameInput->label( name );
+	nle::g_loadSaveManager->name( name );
+};
+}
+void NleUI::cb_projectNameInput(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_projectNameInput_i(o,v);
 }
 
 void NleUI::cb_scaleBar_i(Flmm_Scalebar* o, void*) {
@@ -633,19 +673,6 @@ NleUI::NleUI() {
             o->end();
             Fl_Group::current()->resizable(o);
           }
-          { NoDropInput* o = projectNameInput = new NoDropInput(0, 25, 280, 25);
-            o->box(FL_FLAT_BOX);
-            o->color(FL_BACKGROUND_COLOR);
-            o->selection_color(FL_SELECTION_COLOR);
-            o->labeltype(FL_NORMAL_LABEL);
-            o->labelfont(0);
-            o->labelsize(14);
-            o->labelcolor(FL_FOREGROUND_COLOR);
-            o->textfont(1);
-            o->callback((Fl_Callback*)cb_projectNameInput);
-            o->align(FL_ALIGN_LEFT);
-            o->when(FL_WHEN_RELEASE);
-          }
           { Fl_Button* o = playButton = new Fl_Button(100, 235, 80, 40, "@>");
             o->tooltip("Play (F7)");
             o->shortcut(0xffc4);
@@ -666,6 +693,11 @@ NleUI::NleUI() {
           { Fl_Button* o = forwardButton = new Fl_Button(180, 235, 50, 40, "@|>");
             o->tooltip("Skip Frame forward");
             o->callback((Fl_Callback*)cb_forwardButton);
+          }
+          { Fl_Button* o = projectNameInput = new Fl_Button(0, 25, 280, 25, "Project Name");
+            o->labelfont(1);
+            o->callback((Fl_Callback*)cb_projectNameInput);
+            o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
           }
           o->end();
         }
@@ -809,13 +841,14 @@ g_forwardButton = forwardButton;
 g_backButton = backButton;
 scaleBar->slider_size_i(300);
 mainWindow->show(argc, argv);
-projectNameInput->value("Project 1");
+projectNameInput->label("Project 1");
 g_snap = true;
 g_use_jack_transport = true;
 g_scrub_audio = true;
 g_seek_audio = true;
 scroll_area->type(0);
 g_v_scrollbar = vScrollBar;
+g_16_9 = false;
 }
 
 NleUI::~NleUI() {
@@ -6023,3 +6056,4 @@ bool g_use_jack_transport;
 bool g_scrub_audio;
 bool g_seek_audio;
 Fl_Scrollbar* g_v_scrollbar;
+bool g_16_9;

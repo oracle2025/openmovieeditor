@@ -41,6 +41,7 @@ class Clip;
 class Timeline;
 class DragHandler;
 class AbstractEffectFactory;
+class PasteSelectionCommand;
 	
 class TimelineView : public Fl_Widget
 {
@@ -80,6 +81,8 @@ class TimelineView : public Fl_Widget
 		void moveEffectDown();
 		void removeEffect();
 		int m_trackHeight;
+		void copy();
+		void paste();
 	protected:
 		void draw();
 	private:
@@ -88,6 +91,7 @@ class TimelineView : public Fl_Widget
 		int64_t m_scrollPosition;
 		int m_vscroll;
 		clip_node* m_selectedClips;
+		PasteSelectionCommand* m_pasteCommand;
 };
 
 extern TimelineView* g_timelineView;

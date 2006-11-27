@@ -89,8 +89,18 @@ m_timelineView->redraw();}
             callback {m_timelineView->clear_selection();
 nle::g_docManager->redo();
 m_timelineView->redraw();}
-            xywh {0 0 100 20} shortcut 0x40079 deactivate
+            xywh {0 0 100 20} shortcut 0x40079 deactivate divider
             code0 {\#include "DocManager.H"}
+          }
+          MenuItem {} {
+            label Copy
+            callback {m_timelineView->copy();}
+            xywh {0 0 100 20} shortcut 0x40063
+          }
+          MenuItem {} {
+            label Paste
+            callback {m_timelineView->paste();}
+            xywh {0 0 100 20} shortcut 0x40076
           }
         }
         Submenu {} {
@@ -113,25 +123,59 @@ m_timelineView->redraw();}
           }
         }
         Submenu {} {
-          label {&JACK} open
+          label {P&references}
+          xywh {0 0 100 20} hide
+        } {
+          MenuItem {} {
+            label {No SW Scaling}
+            xywh {0 0 100 20}
+          }
+          MenuItem {} {
+            label {2x2 Scaling good}
+            xywh {0 0 100 20}
+          }
+          MenuItem {} {
+            label {2x2 Scaling bad}
+            xywh {0 0 100 20}
+          }
+        }
+        Submenu {} {
+          label Format open
           xywh {0 0 100 20}
+        } {
+          MenuItem {} {
+            label {4:3}
+            callback {g_16_9 = !(o->mvalue())->value();
+m_videoView->redraw();}
+            xywh {0 0 100 20} type Radio value 1
+          }
+          MenuItem {} {
+            label {16:9}
+            callback {g_16_9 = (o->mvalue())->value();
+m_videoView->redraw();}
+            xywh {0 0 100 20} type Radio
+          }
+        }
+        Submenu {} {
+          label {&JACK} open
+          xywh {5 5 100 20}
         } {
           MenuItem {} {
             label {Transport connect}
             callback {// FIXME: allow change only if not currently playing ?!
 // -> assign this value in SimplePlaybackCore "on play"
 g_use_jack_transport = (o->mvalue())->value();}
-            xywh {0 0 100 20} type Toggle value 1
+            xywh {5 5 100 20} type Toggle value 1
           }
           MenuItem {} {
             label {Scrub audio}
             callback {g_scrub_audio = (o->mvalue())->value();}
-            xywh {0 0 100 20} type Toggle value 1
+            xywh {5 5 100 20} type Toggle value 1
           }
         }
         Submenu {} {
           label {&View} open
-          xywh {0 0 100 20}
+          xywh {5 5 100 20}
         } {
           MenuItem {} {
             label Fullscreen
@@ -151,33 +195,16 @@ if ( fullscreen_on ) {
 	mainWindow->fullscreen();
 	fullscreen_on = true;
 }}
-            xywh {0 0 100 20} shortcut 0xffc8
+            xywh {5 5 100 20} shortcut 0xffc8
           }
           MenuItem {} {
             label {Track Overview}
-            xywh {0 0 100 20} type Toggle hide
-          }
-        }
-        Submenu {} {
-          label {P&references}
-          xywh {0 0 100 20} hide
-        } {
-          MenuItem {} {
-            label {No SW Scaling}
-            xywh {0 0 100 20}
-          }
-          MenuItem {} {
-            label {2x2 Scaling good}
-            xywh {0 0 100 20}
-          }
-          MenuItem {} {
-            label {2x2 Scaling bad}
-            xywh {0 0 100 20}
+            xywh {5 5 100 20} type Toggle hide
           }
         }
         Submenu {} {
           label {&Help}
-          xywh {10 10 100 20}
+          xywh {20 20 100 20}
         } {
           MenuItem {} {
             label {About...}
@@ -185,7 +212,7 @@ if ( fullscreen_on ) {
 dlg.show();
 while (dlg.shown())
   Fl::wait();}
-            xywh {10 10 100 20}
+            xywh {20 20 100 20}
           }
         }
       }
@@ -238,7 +265,7 @@ fb->load_rel();}
                 xywh {0 75 280 160}
               } {
                 Fl_Menu_Button m_effectMenu {
-                  label {Add Effect} open selected
+                  label {Add Effect} open
                   xywh {5 80 270 25} deactivate
                   code0 {\#include "FltkEffectMenu.H"}
                   class {nle::FltkEffectMenu}
@@ -283,13 +310,6 @@ fb->load_rel();}
                 }
               }
             }
-            Fl_Input projectNameInput {
-              callback {nle::g_loadSaveManager->name( o->value() );}
-              xywh {0 25 280 25} box FLAT_BOX color 49 textfont 1
-              code0 {\#include "LoadSaveManager/LoadSaveManager.H"}
-              code1 {\#include "NoDropInput.H"}
-              class NoDropInput
-            }
             Fl_Button playButton {
               label {@>}
               callback {if ( strcmp( o->label(), "@>" ) == 0 ) {
@@ -328,6 +348,16 @@ fb->load_rel();}
               label {@|>}
               callback {nle::g_ruler->skipForward();}
               tooltip {Skip Frame forward} xywh {180 235 50 40}
+            }
+            Fl_Button projectNameInput {
+              label {Project Name}
+              callback {const char* name = fl_input( "Please enter the project name.", projectNameInput->label() );
+if ( name ) {
+	projectNameInput->label( name );
+	nle::g_loadSaveManager->name( name );
+}} selected
+              xywh {0 25 280 25} labelfont 1 align 20
+              code0 {\#include "LoadSaveManager/LoadSaveManager.H"}
             }
           }
         }
@@ -414,7 +444,8 @@ nle::g_loadSaveManager->load( name );}
       } {}
     }
   }
-  Function {show( int argc, char **argv )} {} {
+  Function {show( int argc, char **argv )} {open
+  } {
     code {g_fps = 25.0;
 g_backseek = false;
 g_scrollBar = scaleBar;
@@ -426,13 +457,14 @@ g_forwardButton = forwardButton;
 g_backButton = backButton;
 scaleBar->slider_size_i(300);
 mainWindow->show(argc, argv);
-projectNameInput->value("Project 1");
+projectNameInput->label("Project 1");
 g_snap = true;
 g_use_jack_transport = true;
 g_scrub_audio = true;
 g_seek_audio = true;
 scroll_area->type(0);
-g_v_scrollbar = vScrollBar;} {}
+g_v_scrollbar = vScrollBar;
+g_16_9 = false;} {}
   }
   Function {~NleUI()} {} {
     code {delete mainWindow;} {}
@@ -669,13 +701,12 @@ decl {Fl_Box *g_trashCan} {public
 decl {float g_fps} {public
 } 
 
-class CodecOptions {open
-} {
+class CodecOptions {} {
   Function {CodecOptions()} {open
   } {
     Fl_Window codecOptions {
       label {Codec Options}
-      xywh {678 462 345 305} type Double resizable modal visible
+      xywh {1170 646 345 305} type Double resizable modal visible
     } {
       Fl_Box codec_label {
         label Codec
@@ -756,8 +787,7 @@ if ( m_audio ) {
   }
 } 
 
-class AboutDialog {open
-} {
+class AboutDialog {} {
   Function {AboutDialog()} {open
   } {
     Fl_Window aboutDialog {
@@ -839,4 +869,7 @@ decl {bool g_seek_audio;} {public
 } 
 
 decl {Fl_Scrollbar* g_v_scrollbar;} {public
+} 
+
+decl {bool g_16_9;} {public
 } 

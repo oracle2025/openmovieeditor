@@ -197,5 +197,9 @@ openmovieeditor_SOURCES = nle.cxx\
 	IVideoEffect.H\
 	frei0r.h\
 	IPlaybackCore.cxx\
-	IPlaybackCore.H
+	IPlaybackCore.H\
+	PasteSelectionCommand.cxx\
+	PasteSelectionCommand.H\
+	PasteCommand.cxx\
+	PasteCommand.H
 

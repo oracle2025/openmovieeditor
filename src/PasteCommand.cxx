@@ -1,4 +1,4 @@
-/*  RemoveCommand.cxx
+/*  PasteCommand.cxx
  *
  *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -23,7 +23,7 @@
 #include "timeline/Track.H"
 #include "Timeline.H"
 #include "VideoTrack.H"
-#include "RemoveCommand.H"
+#include "PasteCommand.H"
 #include "AudioClip.H"
 #include "VideoClip.H"
 #include "AudioFileFactory.H"
@@ -32,12 +32,12 @@
 namespace nle
 {
 
-RemoveCommand::RemoveCommand( Clip* clip )
+PasteCommand::PasteCommand( Clip* clip )
 {
 	m_automationsCount = 0;
 	m_automationPoints = 0;
 	m_track = clip->track()->num();
-	m_clip = clip->id();
+	m_clip = getClipId();
 	m_filename = clip->filename();
 	m_trimA = clip->trimA();
 	m_trimB = clip->trimB();
@@ -68,7 +68,28 @@ RemoveCommand::RemoveCommand( Clip* clip )
 		if ( vc ) { m_mute = vc->m_mute; }
 	}
 }
-RemoveCommand::~RemoveCommand()
+PasteCommand::PasteCommand( PasteCommand* command )
+{
+	m_automationPoints = 0;
+	m_track = command->m_track;
+	m_clip = getClipId();
+	m_filename = command->m_filename;
+	m_trimA = command->m_trimA;
+	m_trimB = command->m_trimB;
+	m_position = command->m_position;
+	m_length = command->m_length;
+	m_audioClip = command->m_audioClip;
+	if ( m_audioClip ) {
+		m_automationsCount = command->m_automationsCount;
+		m_automationPoints = new auto_node[m_automationsCount];
+		for ( int i = 0; i < m_automationsCount; i++ ) {
+			m_automationPoints[i] = command->m_automationPoints[i];
+		}
+	} else {
+		m_mute = command->m_mute;
+	}
+}
+PasteCommand::~PasteCommand()
 {
 	if ( m_automationPoints ) {
 		delete [] m_automationPoints;
@@ -76,7 +97,7 @@ RemoveCommand::~RemoveCommand()
 	}
 	m_automationsCount = 0;
 }
-void RemoveCommand::doo()
+void PasteCommand::undo()
 {
 	Track* t = g_timeline->getTrack( m_track );
 	Clip* c = t->getClip( m_clip );
@@ -84,7 +105,7 @@ void RemoveCommand::doo()
 	delete c;
 }
 
-void RemoveCommand::undo()
+void PasteCommand::doo()
 {
 	Track* t = g_timeline->getTrack( m_track );
 	Clip* c;
