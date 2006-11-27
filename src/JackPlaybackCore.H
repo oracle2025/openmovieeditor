@@ -37,13 +37,15 @@ class JackPlaybackCore : public IPlaybackCore
 	public:
 		JackPlaybackCore( IAudioReader* audioReader, IVideoReader* videoReader, IVideoWriter* videoWriter );
 		~JackPlaybackCore();
+		bool ok();
+
 		void play();
+		void pause();
 		void stop();
-		bool ok() { return true; }
 		void jackreadAudio( void *outL, void *outR, jack_transport_state_t ts, jack_nframes_t position, jack_nframes_t nframes );
 		void flipFrame();
-		void hardstop() { m_active=false; } /* hardstop() use only for error abort - else use stop */
 		void checkPlayButton();
+		void hardstop();
 	private:
 		IAudioReader* m_audioReader;
 		IVideoReader* m_videoReader;

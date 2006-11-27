@@ -34,6 +34,7 @@ class IPlaybackCore
 		virtual bool ok() = 0;
 		virtual void play() = 0;
 		virtual void stop() = 0;
+		virtual void pause() { ; }
 		inline bool active() { return m_active; }
 	protected:
 		bool m_active;

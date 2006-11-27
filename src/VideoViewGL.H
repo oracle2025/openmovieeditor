@@ -42,6 +42,7 @@ class VideoViewGL : public Fl_Gl_Window, public IVideoWriter
 		void nextFrame( int64_t frame );
 		void seek( int64_t position );
 		void play();
+		void pause();
 		void stop();
 	private:
 		int64_t m_seekPosition;

@@ -49,6 +49,9 @@ extern bool g_seek_audio;
 namespace nle
 {
 
+/*
+ * static functions
+ */
 
 static void video_idle_callback( void* data )
 {
@@ -63,7 +66,7 @@ static void timer_callback( void* data )
 
 
 /*
- * jackit 
+ * private jack 
  */
 
 static jack_client_t *jack_client = NULL;
@@ -114,12 +117,14 @@ void close_jack(void)
 	jack_client=NULL;
 }
 
-int jack_connected() {
+int jack_connected()
+{
 	if (jack_client) return(1);
 	return(0);
 }
 
-void connect_jackports()  {
+void connect_jackports()
+{
 	if (!jack_client) return;
 	// TODO: skip auto-connect if user wishes so.
 	char * port_name = NULL; // TODO: get from preferences 
@@ -137,13 +142,14 @@ void connect_jackports()  {
 void open_jack(void *data) 
 {
 	if (jack_client) {
-//		cerr << "already connected to jack." << endl;
+		cerr << "already connected to jack." << endl;
 		return;
 	}
 
 	int i = 0;
 	do {
 		snprintf(jackid,16,"ome-%i",i);
+		// TODO : jack_client_open(..)
 		jack_client = jack_client_new (jackid);
 	} while (jack_client == 0 && i++<16);
 
@@ -181,12 +187,12 @@ void open_jack(void *data)
 		return;
 	}
 
-	jack_activate(jack_client);
-
-	connect_jackports();
+	 jack_activate(jack_client); 
+	 connect_jackports();
 }
 
-long jack_poll_frame (void) {
+long jack_poll_frame (void)
+{
 	jack_position_t	jack_position;
 	double		jack_time;
 	long 		frame;
@@ -222,6 +228,12 @@ jack_transport_state_t jack_poll_ts(void) {
 	return (jack_transport_query(jack_client, NULL));
 }
 
+
+
+
+
+
+
 /*
  * simple playback core
  */
@@ -232,79 +244,94 @@ JackPlaybackCore::JackPlaybackCore( IAudioReader* audioReader, IVideoReader* vid
 {
 	g_playbackCore = this;
 	m_active = false;
+	open_jack(this); 
 }
+
+bool JackPlaybackCore::ok() { jack_connected(); }
+
+/* hardstop() use only for error abort - else use stop */
+void JackPlaybackCore::hardstop() { m_active=false; } 
+
 JackPlaybackCore::~JackPlaybackCore()
 {
+	if (jack_connected()) close_jack(); 
 }
+
 void suspend_idle_handlers(); //defined in IdleHandlers.cxx
+
 void resume_idle_handlers();
+
+
 void JackPlaybackCore::play()
 {
 	int scrublen = 3*1920;  // TODO: get from preferences :  scrub_freq = sample_rate/scrublen   
 				// good values for scrub_freq are 1..50 Hz
 				// scrub length is rounded up to next multiple of jack buffer size.
-	if ( m_active ) {
-		return;
-	}
-	open_jack(this);  // try to connect to jack
+	if (m_active) return; 
 
-	if (jack_connected()) {
-		m_currentFrame = g_timeline->m_seekPosition;
-		m_lastFrame = g_timeline->m_seekPosition;
-		m_scrubpos = 0;
-		m_scrubmax = (jack_bufsiz!=0)?(int)ceil((double)(scrublen/jack_bufsiz)):1;
+	if (!jack_connected()) open_jack(this); 
+	if (!jack_connected()) return;
 
-		if (!g_use_jack_transport) {
-			m_audioPosition = m_currentFrame * ( 48000 / 25 ); 
-		} else {
-			jack_reposition(m_currentFrame);
+	m_currentFrame = g_timeline->m_seekPosition;
+	m_lastFrame = g_timeline->m_seekPosition;
+	m_scrubpos = 0;
+	m_scrubmax = (jack_bufsiz!=0)?(int)ceil((double)(scrublen/jack_bufsiz)):1;
 
-			/* woraround: possible backwards seek.
-			 *
-			 * if we do not wait for the reposition (seek)
-			 * to complete,  ome already sends few samples
-			 * at the latest jack transport time, 
-			 * before the seek reposition is done
-			 * possibly resulting in a backwards seek.
-			 */
-			int spin = 1000000;
-			while (abs(jack_poll_frame()-m_currentFrame) > 2 && spin-- > 0 );
-		}
+	if (!g_use_jack_transport) {
+		m_audioPosition = m_currentFrame * ( 48000 / 25 ); 
+	} else {
+		jack_reposition(m_currentFrame);
+
+		/* workaround: possible backwards seek.
+		 *
+		 * if we do not wait for the reposition (seek)
+		 * to complete,  ome already sends few samples
+		 * at the latest jack transport time, 
+		 * before the seek reposition is done
+		 * possibly resulting in a backwards seek.
+		 */
+		int spin = 1000000;
+		while (abs(jack_poll_frame()-m_currentFrame) > 2 && spin-- > 0 );
 	}
 	if (g_use_jack_transport) jack_play();
 
-	if (jack_connected() ) 
-	{
-		suspend_idle_handlers();
-		m_active = true;
-		Fl::add_timeout( 0.1, timer_callback, this );
-		Fl::add_timeout( 0.04, video_idle_callback, this );
-	}
+	suspend_idle_handlers();
+	m_active = true;
+	Fl::add_timeout( 0.1, timer_callback, this );
+	Fl::add_timeout( 0.04, video_idle_callback, this ); // looks like hardcoded 25fps 
+}
+
+void JackPlaybackCore::pause()
+{
+	if (!m_active) return;
+	if (!g_use_jack_transport) return; 
+	jack_transport_state_t ts = jack_poll_ts();
+	if (ts == JackTransportRolling) jack_stop();
+	else /* if (ts == JackTransportStopped) */ jack_play();
 }
 
 void JackPlaybackCore::stop()
 {
-	if ( !m_active ) {
-		return;
-	}
+	if (!m_active) return;
 	resume_idle_handlers();
 	m_active = false;
-	if (jack_connected()) {
-		if (g_use_jack_transport) jack_stop();
-		close_jack(); 
-	}
+	if (jack_connected() && g_use_jack_transport) jack_stop();
 }
 
 void JackPlaybackCore::checkPlayButton()
 {
-	if ( !m_active ) {
-		return;
-	}
+	if (!m_active) return;
 	Fl::repeat_timeout( 0.1, timer_callback, this );
 }
 
 void JackPlaybackCore::jackreadAudio( void *outL, void *outR, jack_transport_state_t ts, jack_nframes_t position, jack_nframes_t nframes )
 {
+	if (!m_active)  {
+		memset(outR,0, sizeof (jack_default_audio_sample_t) * nframes);
+		memset(outL,0, sizeof (jack_default_audio_sample_t) * nframes);
+		return;
+	}
+
 	if (g_use_jack_transport) {
 		if (position < jack_latency_comp || (!g_scrub_audio && ts != JackTransportRolling)) {
 			// if transport is not rolling - remain silent.
@@ -393,7 +420,7 @@ void JackPlaybackCore::flipFrame()
 	}
 	fs = m_videoReader->getFrameStack( m_lastFrame );
 noflip:	
-	Fl::repeat_timeout( 0.04, video_idle_callback, this );
+	Fl::repeat_timeout( 0.04, video_idle_callback, this ); // more hardcoded framerates.
 }
 
 

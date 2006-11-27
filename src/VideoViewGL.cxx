@@ -317,4 +317,9 @@ void VideoViewGL::stop()
 	g_playbackCore->stop();
 }
 
+void VideoViewGL::pause()
+{
+	g_playbackCore->pause();
+}
+
 } /* namespace nle */
