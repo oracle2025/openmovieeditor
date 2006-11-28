@@ -61,7 +61,7 @@ void halve_image ( unsigned char *optr,
   }
 }
 
-static void scale_it_raw( frame_struct* src, frame_struct* dst, gavl_pixelformat_t colorspace, int bits )
+static void scale_it_raw( frame_struct* src, frame_struct* dst, gavl_pixelformat_t colorspace, gavl_pixelformat_t colorspace_dst, int bits )
 {
 	gavl_rectangle_i_t src_rect;
 	gavl_rectangle_i_t dst_rect;
@@ -91,7 +91,7 @@ static void scale_it_raw( frame_struct* src, frame_struct* dst, gavl_pixelformat
 	format_dst.image_height = dst->h;;
 	format_dst.pixel_width = 1;
 	format_dst.pixel_height = 1;
-	format_dst.pixelformat = colorspace;
+	format_dst.pixelformat = colorspace_dst;
 	
 	format_src.frame_width  = src->w;
 	format_src.frame_height = src->h;
@@ -193,13 +193,17 @@ static void scale_it_raw( frame_struct* src, frame_struct* dst, gavl_colorspace_
 
 }
 #endif
+void scale_it_alpha_opaque( frame_struct* src, frame_struct* dst )
+{
+	scale_it_raw( src, dst, GAVL_RGBA_32, GAVL_RGB_24, 4 );
+}
 void scale_it_alpha( frame_struct* src, frame_struct* dst )
 {
-	scale_it_raw( src, dst, GAVL_RGBA_32, 4 );
+	scale_it_raw( src, dst, GAVL_RGBA_32, GAVL_RGBA_32, 4 );
 }
 void scale_it( frame_struct* src, frame_struct* dst )
 {
-	scale_it_raw( src, dst, GAVL_RGB_24, 3 );
+	scale_it_raw( src, dst, GAVL_RGB_24, GAVL_RGB_24, 3 );
 }
 // inspired by rasterman, but poorly done ;)
 void blend( unsigned char* dst, unsigned char* src1, unsigned char* src2, float alpha, int len )
