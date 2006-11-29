@@ -237,7 +237,18 @@ void Timeline::getBlendedFrame( int64_t position, frame_struct* dst )
 		start--;
 		if ( start >= 0 ) {
 			if ( fs[start]->w != dst->w || fs[start]->h != dst->h ) {
-				scale_it_alpha_opaque( fs[start], dst );
+				unsigned char *src, *dest, *end;
+				src = fs[start]->RGB;
+				dest = fs[start]->RGB;
+				end = fs[start]->RGB + ( fs[start]->w * fs[start]->h * 4 );
+				while ( src < end ) {
+					dest[0] = src[0];
+					dest[1] = src[1];
+					dest[2] = src[2];
+					dest += 3;
+					src += 4;
+				}
+				scale_it( fs[start], dst );
 			} else {
 				int len = fs[start]->w * fs[start]->h * 4;
 				unsigned char *src, *dest, *end;
