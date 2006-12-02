@@ -664,6 +664,7 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 	} else {
 		clear_selection();
 		cmd = new MoveCommand( clip, new_tr, new_position );
+		toggle_selection( clip );
 	}
 	submit( cmd );
 	adjustScrollbar();
