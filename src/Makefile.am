@@ -201,5 +201,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	PasteSelectionCommand.cxx\
 	PasteSelectionCommand.H\
 	PasteCommand.cxx\
-	PasteCommand.H
+	PasteCommand.H\
+	IDeleteMe.H
 

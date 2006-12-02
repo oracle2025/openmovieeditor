@@ -20,6 +20,8 @@
 #ifndef _FREI0R_DIALOG_H_
 #define _FREI0R_DIALOG_H_
 
+#include "IDeleteMe.H"
+
 class Fl_Double_Window;
 
 namespace nle
@@ -36,7 +38,7 @@ typedef struct _callback_info {
 
 class Frei0rEffect;
 
-class Frei0rDialog
+class Frei0rDialog : public IDeleteMe
 {
 	public:
 		Frei0rDialog( Frei0rEffect* effect );

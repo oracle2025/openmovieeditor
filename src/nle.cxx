@@ -6,6 +6,10 @@ void NleUI::cb_mainWindow_i(Fl_Double_Window*, void*) {
   if (Fl::event()==FL_SHORTCUT && Fl::event_key()==FL_Escape) 
     return; // ignore Escape
 mainWindow->hide();
+if ( Fl::event()==FL_CLOSE ) {
+	m_videoView->stop();
+	nle::g_loadSaveManager->shutdown();
+};
 }
 void NleUI::cb_mainWindow(Fl_Double_Window* o, void* v) {
   ((NleUI*)(o->user_data()))->cb_mainWindow_i(o,v);
@@ -64,6 +68,7 @@ void NleUI::cb_Render(Fl_Menu_* o, void* v) {
 void NleUI::cb_Quit_i(Fl_Menu_* o, void*) {
   m_videoView->stop();
 o->window()->hide();
+nle::g_loadSaveManager->shutdown();
 }
 void NleUI::cb_Quit(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Quit_i(o,v);

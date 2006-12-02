@@ -10,7 +10,11 @@ class NleUI {open
       label {Open Movie Editor}
       callback {if (Fl::event()==FL_SHORTCUT && Fl::event_key()==FL_Escape) 
     return; // ignore Escape
-mainWindow->hide();} open
+mainWindow->hide();
+if ( Fl::event()==FL_CLOSE ) {
+	m_videoView->stop();
+	nle::g_loadSaveManager->shutdown();
+}} open selected
       private xywh {664 271 515 465} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {open
@@ -70,8 +74,10 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
           MenuItem {} {
             label Quit
             callback {m_videoView->stop();
-o->window()->hide();}
+o->window()->hide();
+nle::g_loadSaveManager->shutdown();}
             xywh {5 5 100 20} shortcut 0x40071
+            code0 {\#include "LoadSaveManager/LoadSaveManager.H"}
           }
         }
         Submenu {} {
@@ -559,7 +565,7 @@ if ( audio_codec_menu->value() < 0 || video_codec_menu->value() < 0 ) {
 
 //nle::renderMovie();
 go = true;
-o->window()->hide();} selected
+o->window()->hide();}
         xywh {250 300 200 25} hotspot
       }
       Fl_Button {} {

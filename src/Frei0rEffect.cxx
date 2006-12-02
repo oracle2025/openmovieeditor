@@ -22,6 +22,7 @@
 #include "frei0r.h"
 #include "Frei0rEffect.H"
 #include "global_includes.H"
+#include "IDeleteMe.H"
 
 namespace nle
 {
@@ -29,6 +30,7 @@ namespace nle
 Frei0rEffect::Frei0rEffect( f0r_plugin_info_t* info, void* handle, int w, int h )
 	: m_info( info )
 {
+	m_dialog = 0;
 	f0r_construct = (f0r_construct_f)dlsym( handle, "f0r_construct" );
 	f0r_destruct = (f0r_destruct_f)dlsym( handle, "f0r_destruct" );
 	f0r_update = (f0r_update_f)dlsym( handle, "f0r_update" );
@@ -58,6 +60,9 @@ Frei0rEffect::Frei0rEffect( f0r_plugin_info_t* info, void* handle, int w, int h 
 Frei0rEffect::~Frei0rEffect()
 {
 	f0r_destruct( m_instance );
+	if ( m_dialog ) {
+		delete m_dialog;
+	}
 }
 frame_struct* Frei0rEffect::getFrame( frame_struct* frame, int64_t position )
 {

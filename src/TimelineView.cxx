@@ -915,11 +915,17 @@ void TimelineView::editEffect()
 		return;
 	}
 	Frei0rEffect* fe = dynamic_cast<Frei0rEffect*>( es->effect );
-	Frei0rDialog dialog( fe );
+	Frei0rDialog* dialog = dynamic_cast<Frei0rDialog*>(fe->m_dialog);
+	if ( !dialog ) {
+		dialog = new Frei0rDialog( fe );
+		fe->m_dialog = dialog;
+	}
+	dialog->show();
+/*	Frei0rDialog dialog( fe );
 	dialog.show();
 	while ( dialog.shown() ) {
 		Fl::wait();
-	}
+	}*/
 
 }
 

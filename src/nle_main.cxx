@@ -105,7 +105,7 @@ int main( int argc, char** argv )
 	nui.show( argc, argv );
 	lsm.startup();
 	int r = Fl::run();
-	lsm.shutdown();
+	//lsm.shutdown();
 	delete playbackCore;
 	return r;
 }

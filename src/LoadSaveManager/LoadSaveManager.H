@@ -27,6 +27,8 @@ class Fl_Button;
 
 namespace nle
 {
+class LoadSaveManager;
+extern LoadSaveManager* g_loadSaveManager;
 	
 class LoadSaveManager
 {

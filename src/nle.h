@@ -8,6 +8,7 @@
 #include "ProgressDialog/ProgressDialog.h"
 #include "Renderer.H"
 #include "Codecs.H"
+#include "LoadSaveManager/LoadSaveManager.H"
 #include "DocManager.H"
 #include "Timeline.H"
 #include "VideoTrack.H"
@@ -21,7 +22,6 @@
 #include "FltkEffectMenu.H"
 #include "IVideoEffect.H"
 #include <FL/Fl_Button.H>
-#include "LoadSaveManager/LoadSaveManager.H"
 #include "Flmm_Scalebar.H"
 #include "globals.H"
 using namespace std;

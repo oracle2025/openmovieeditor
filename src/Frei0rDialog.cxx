@@ -62,8 +62,10 @@ static void yCallback( Fl_Widget* i, void* v )
 	callback_info* info = (callback_info*)v;
 	info->dialog->setPositionY( info->number, vi->value() );
 }
-static void closeCallback( Fl_Widget* i, void* ) {
-	i->window()->hide();
+static void closeCallback( Fl_Widget*, void* data ) {
+//	i->window()->hide();
+	Frei0rDialog* dlg = (Frei0rDialog*)data;
+	delete dlg;
 }
 
 Frei0rDialog::Frei0rDialog( Frei0rEffect* effect )
@@ -96,7 +98,7 @@ Frei0rDialog::Frei0rDialog( Frei0rEffect* effect )
 	}
 	{
 		Fl_Return_Button* o = new Fl_Return_Button( 5, 60 + ( 30 * finfo->num_params ) + 10, 330, 25, "Close" );
-		o->callback( closeCallback );
+		o->callback( closeCallback, this );
 		m_dialog->hotspot( o );
 	}
 	for ( int i = 0; i < finfo->num_params; i++ ) {
@@ -141,12 +143,14 @@ Frei0rDialog::Frei0rDialog( Frei0rEffect* effect )
 				break;
 		};
 	}
-	m_dialog->set_modal();
+	m_dialog->set_non_modal();
 	m_dialog->end();
 }
 
 Frei0rDialog::~Frei0rDialog()
 {
+	m_effect->m_dialog = 0;
+	m_dialog->hide();
 	delete [] m_infostack;
 	delete m_dialog;
 }
