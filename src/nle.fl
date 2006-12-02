@@ -14,10 +14,10 @@ mainWindow->hide();
 if ( Fl::event()==FL_CLOSE ) {
 	m_videoView->stop();
 	nle::g_loadSaveManager->shutdown();
-}} open selected
-      private xywh {664 271 515 465} type Double resizable size_range {450 380 0 0} visible
+}} open
+      xywh {664 271 515 465} type Double resizable size_range {450 380 0 0} visible
     } {
-      Fl_Menu_Bar {} {open
+      Fl_Menu_Bar {} {
         xywh {0 0 345 25}
       } {
         Submenu {} {
@@ -159,7 +159,7 @@ m_timelineView->redraw();}
         }
         Submenu {} {
           label Format open
-          xywh {0 0 100 20} hide
+          xywh {0 0 100 20}
         } {
           MenuItem {} {
             label {4:3}
@@ -240,7 +240,7 @@ while (dlg.shown())
         Fl_Tile {} {open
           xywh {0 25 515 250}
         } {
-          Fl_Group {} {
+          Fl_Group {} {open
             xywh {280 25 235 250}
           } {
             Fl_Box m_videoView {
@@ -250,14 +250,14 @@ while (dlg.shown())
               class {nle::VideoViewGL}
             }
           }
-          Fl_Group {} {
+          Fl_Group {} {open
             xywh {0 25 280 250}
           } {
             Fl_Tabs {} {open
               xywh {0 50 280 185} box UP_BOX labelcolor 32 resizable
             } {
               Fl_Group {} {
-                label Files open
+                label Files
                 xywh {0 75 280 160} hide resizable
               } {
                 Fl_File_Browser {} {
@@ -269,7 +269,7 @@ fb->load_rel();}
                 }
               }
               Fl_Group {} {
-                label {Media Browser} open
+                label {Media Browser}
                 xywh {0 75 280 160} hide
               } {
                 Fl_Group {} {open
@@ -279,8 +279,8 @@ fb->load_rel();}
                 } {}
               }
               Fl_Group {} {
-                label Effects open
-                xywh {0 75 280 160}
+                label Effects
+                xywh {0 75 280 160} hide
               } {
                 Fl_Menu_Button m_effectMenu {
                   label {Add Effect} open
@@ -325,6 +325,55 @@ fb->load_rel();}
                       xywh {165 205 110 25} deactivate
                     }
                   }
+                }
+              }
+              Fl_Group {} {
+                label {Special Clips} open
+                xywh {0 75 280 160} hide
+              } {
+                Fl_Browser special_clips {
+                  xywh {5 80 270 150} resizable
+                  code0 {\#include "SpecialClipsBrowser.H"}
+                  class {nle::SpecialClipsBrowser}
+                }
+              }
+              Fl_Group titles_tab {
+                label Titles open
+                private xywh {0 75 280 160} deactivate
+              } {
+                Fl_Choice titles_fonts {
+                  label Font
+                  callback {m_timelineView->titles_font( o->value() );} open
+                  xywh {45 80 155 25} down_box BORDER_BOX
+                } {
+                  MenuItem {} {
+                    label Helvetica
+                    xywh {0 0 100 20}
+                  }
+                  MenuItem {} {
+                    label {Helvetica Bold}
+                    xywh {0 0 100 20}
+                  }
+                }
+                Fl_Value_Input titles_size {
+                  label Size
+                  callback {m_timelineView->titles_size( llrint(o->value()) );} selected
+                  xywh {240 80 35 25} minimum 10 maximum 200 step 2 value 20
+                  code0 {\#include <math.h>}
+                }
+                Fl_Slider titles_y {
+                  label Y
+                  callback {m_timelineView->titles_y( o->value() );}
+                  xywh {140 110 135 25} type {Horz Knob} value 0.5
+                }
+                Fl_Slider titles_x {
+                  label X
+                  callback {m_timelineView->titles_x( o->value() );}
+                  xywh {5 110 135 25} type {Horz Knob} value 0.5
+                }
+                Fl_Input titles_text {
+                  callback {m_timelineView->titles_text( o->value() );}
+                  xywh {5 155 270 75} type Multiline resizable
                 }
               }
             }
@@ -487,7 +536,8 @@ g_scrub_audio = true;
 g_seek_audio = true;
 scroll_area->type(0);
 g_v_scrollbar = vScrollBar;
-g_16_9 = false;} {}
+g_16_9 = false;
+special_clips->add("Titles");} {}
   }
   Function {~NleUI()} {} {
     code {delete mainWindow;} {}
@@ -525,6 +575,18 @@ if ( effect_browser->value() == 0 ) {
 } else {
 	m_remove_effect->activate();
 }} {}
+  }
+  Function {deactivate_titles()} {} {
+    code {titles_tab->deactivate();} {}
+  }
+  Function {activate_titles(int font, int size, const char* text, float x, float y)} {open
+  } {
+    code {titles_fonts->value( font );
+titles_size->value( size );
+titles_x->value( x );
+titles_y->value( y );
+titles_text->value( text );
+titles_tab->activate();} {}
   }
 } 
 
@@ -750,7 +812,7 @@ class CodecOptions {} {
   } {
     Fl_Window codecOptions {
       label {Codec Options}
-      xywh {797 619 345 305} type Double resizable modal visible
+      xywh {326 645 345 305} type Double resizable modal visible
     } {
       Fl_Box codec_label {
         label Codec
@@ -846,7 +908,7 @@ class AboutDialog {} {
         xywh {0 155 340 30} labelfont 1 labelsize 16
       }
       Fl_Box {} {
-        label {(C)opyright 2005 Richard Spindler}
+        label {(C)opyright 2005, 2006 Richard Spindler}
         xywh {0 210 340 40} labelsize 12
       }
       Fl_Box version_box {

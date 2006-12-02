@@ -25,8 +25,7 @@
 namespace nle 
 {
 
-ImageClipArtist::ImageClipArtist( ImageClip* clip, Fl_Image* image )
-	: m_clip( clip )
+ImageClipArtist::ImageClipArtist( Fl_Image* image )
 {
 	m_image = image->copy( 40, 30 );
 }
@@ -45,5 +44,13 @@ void ImageClipArtist::render( Rect& rect, int64_t, int64_t )
 	fl_draw_box( FL_BORDER_FRAME, rect.x + rect.w - 40, rect.y, 40, 30, FL_WHITE );
 	fl_pop_clip();
 }
+void ImageClipArtist::image( Fl_Image* image )
+{
+	if ( m_image ) {
+		delete m_image;
+	}
+	m_image = image->copy( 40, 30 );
+}
+
 
 } /* namespace nle */

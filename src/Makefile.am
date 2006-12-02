@@ -202,5 +202,9 @@ openmovieeditor_SOURCES = nle.cxx\
 	PasteSelectionCommand.H\
 	PasteCommand.cxx\
 	PasteCommand.H\
-	IDeleteMe.H
+	IDeleteMe.H\
+	SpecialClipsBrowser.H\
+	SpecialClipsBrowser.cxx\
+	TitleClip.cxx\
+	TitleClip.H
 

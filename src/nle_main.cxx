@@ -53,6 +53,7 @@
 
 namespace nle 
 {
+	bool g_PREVENT_OFFSCREEN_CRASH;
 	lqt_codec_info_t** g_audio_codec_info;
 	lqt_codec_info_t** g_video_codec_info;
 	NleUI* g_ui;
@@ -62,6 +63,7 @@ namespace nle
 
 int main( int argc, char** argv )
 {
+	nle::g_PREVENT_OFFSCREEN_CRASH = true;
 	nle::g_homefolder = getenv( "HOME" );
 #ifdef AVCODEC
 	av_register_all();

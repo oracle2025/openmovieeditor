@@ -222,7 +222,7 @@ Fl_Menu_Item NleUI::menu_[] = {
  {"2x2 Scaling good", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"2x2 Scaling bad", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
- {"Format", 0,  0, 0, 80, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Format", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"4:3", 0,  (Fl_Callback*)NleUI::cb_4, 0, 12, FL_NORMAL_LABEL, 0, 14, 0},
  {"16:9", 0,  (Fl_Callback*)NleUI::cb_16, 0, 8, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
@@ -287,6 +287,47 @@ void NleUI::cb_m_edit_effect_i(Fl_Button*, void*) {
 }
 void NleUI::cb_m_edit_effect(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_m_edit_effect_i(o,v);
+}
+
+void NleUI::cb_titles_fonts_i(Fl_Choice* o, void*) {
+  m_timelineView->titles_font( o->value() );
+}
+void NleUI::cb_titles_fonts(Fl_Choice* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_titles_fonts_i(o,v);
+}
+
+Fl_Menu_Item NleUI::menu_titles_fonts[] = {
+ {"Helvetica", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Helvetica Bold", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {0,0,0,0,0,0,0,0,0}
+};
+
+void NleUI::cb_titles_size_i(Fl_Value_Input* o, void*) {
+  m_timelineView->titles_size( llrint(o->value()) );
+}
+void NleUI::cb_titles_size(Fl_Value_Input* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_titles_size_i(o,v);
+}
+
+void NleUI::cb_titles_y_i(Fl_Slider* o, void*) {
+  m_timelineView->titles_y( o->value() );
+}
+void NleUI::cb_titles_y(Fl_Slider* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_titles_y_i(o,v);
+}
+
+void NleUI::cb_titles_x_i(Fl_Slider* o, void*) {
+  m_timelineView->titles_x( o->value() );
+}
+void NleUI::cb_titles_x(Fl_Slider* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_titles_x_i(o,v);
+}
+
+void NleUI::cb_titles_text_i(Fl_Input* o, void*) {
+  m_timelineView->titles_text( o->value() );
+}
+void NleUI::cb_titles_text(Fl_Input* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_titles_text_i(o,v);
 }
 
 void NleUI::cb_playButton_i(Fl_Button* o, void*) {
@@ -649,6 +690,7 @@ NleUI::NleUI() {
               o->end();
             }
             { Fl_Group* o = new Fl_Group(0, 75, 280, 160, "Effects");
+              o->hide();
               { nle::FltkEffectMenu* o = m_effectMenu = new nle::FltkEffectMenu(5, 80, 270, 25, "Add Effect");
                 o->box(FL_UP_BOX);
                 o->color(FL_BACKGROUND_COLOR);
@@ -701,6 +743,53 @@ NleUI::NleUI() {
                 Fl_Group::current()->resizable(o);
                 }
                 o->end();
+              }
+              o->end();
+            }
+            { Fl_Group* o = new Fl_Group(0, 75, 280, 160, "Special Clips");
+              o->hide();
+              { nle::SpecialClipsBrowser* o = special_clips = new nle::SpecialClipsBrowser(5, 80, 270, 150);
+                o->box(FL_NO_BOX);
+                o->color(FL_BACKGROUND2_COLOR);
+                o->selection_color(FL_SELECTION_COLOR);
+                o->labeltype(FL_NORMAL_LABEL);
+                o->labelfont(0);
+                o->labelsize(14);
+                o->labelcolor(FL_FOREGROUND_COLOR);
+                o->align(FL_ALIGN_BOTTOM);
+                o->when(FL_WHEN_RELEASE_ALWAYS);
+                Fl_Group::current()->resizable(o);
+              }
+              o->end();
+            }
+            { Fl_Group* o = titles_tab = new Fl_Group(0, 75, 280, 160, "Titles");
+              o->deactivate();
+              { Fl_Choice* o = titles_fonts = new Fl_Choice(45, 80, 155, 25, "Font");
+                o->down_box(FL_BORDER_BOX);
+                o->callback((Fl_Callback*)cb_titles_fonts);
+                o->menu(menu_titles_fonts);
+              }
+              { Fl_Value_Input* o = titles_size = new Fl_Value_Input(240, 80, 35, 25, "Size");
+                o->minimum(10);
+                o->maximum(200);
+                o->step(2);
+                o->value(20);
+                o->callback((Fl_Callback*)cb_titles_size);
+              }
+              { Fl_Slider* o = titles_y = new Fl_Slider(140, 110, 135, 25, "Y");
+                o->type(5);
+                o->value(0.5);
+                o->callback((Fl_Callback*)cb_titles_y);
+              }
+              { Fl_Slider* o = titles_x = new Fl_Slider(5, 110, 135, 25, "X");
+                o->type(5);
+                o->value(0.5);
+                o->callback((Fl_Callback*)cb_titles_x);
+              }
+              { Fl_Input* o = titles_text = new Fl_Input(5, 155, 270, 75);
+                o->type(4);
+                o->callback((Fl_Callback*)cb_titles_text);
+                Fl_Group::current()->resizable(o);
               }
               o->end();
             }
@@ -886,6 +975,7 @@ g_seek_audio = true;
 scroll_area->type(0);
 g_v_scrollbar = vScrollBar;
 g_16_9 = false;
+special_clips->add("Titles");
 }
 
 NleUI::~NleUI() {
@@ -925,6 +1015,19 @@ if ( effect_browser->value() == 0 ) {
 } else {
 	m_remove_effect->activate();
 }
+}
+
+void NleUI::deactivate_titles() {
+  titles_tab->deactivate();
+}
+
+void NleUI::activate_titles(int font, int size, const char* text, float x, float y) {
+  titles_fonts->value( font );
+titles_size->value( size );
+titles_x->value( x );
+titles_y->value( y );
+titles_text->value( text );
+titles_tab->activate();
 }
 Flmm_Scalebar* g_scrollBar;
 
@@ -6073,7 +6176,7 @@ AboutDialog::AboutDialog() {
       o->labelfont(1);
       o->labelsize(16);
     }
-    { Fl_Box* o = new Fl_Box(0, 210, 340, 40, "(C)opyright 2005 Richard Spindler");
+    { Fl_Box* o = new Fl_Box(0, 210, 340, 40, "(C)opyright 2005, 2006 Richard Spindler");
       o->labelsize(12);
     }
     { Fl_Box* o = version_box = new Fl_Box(0, 185, 340, 25, "0.0.0");

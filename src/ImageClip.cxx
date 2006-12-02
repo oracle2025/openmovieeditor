@@ -64,7 +64,7 @@ ImageClip::ImageClip( Track* track, int64_t position, string filename, int64_t l
 	//m_frame.RGB = new (unsigned char)[m_frame.w * m_frame.h * 4];
 	char** d = (char**)m_image->data();
 	m_frame.RGB = (unsigned char *)d[0];
-	m_artist = new ImageClipArtist( this, m_image );
+	m_artist = new ImageClipArtist( m_image );
 	m_ok = true;
 }
 

@@ -36,6 +36,12 @@ typedef struct _effect_stack {
 	IVideoEffect* effect;
 } effect_stack;
 
+typedef enum {
+	RENDER_FIT = 0,
+	RENDER_CROP,
+	RENDER_STRETCH
+} render_strategy_t;
+
 class VideoEffectClip : public IVideoReader
 {
 	public:
@@ -50,6 +56,8 @@ class VideoEffectClip : public IVideoReader
 		effect_stack* getEffects() { return m_effects; }
 		virtual int w() = 0;
 		virtual int h() = 0;
+		void prepareFormat( int w, int h ); // might add fps here
+		frame_struct* getFormattedFrame( int64_t position );
 	protected:
 		VideoEffectClip() { m_effects = 0; }
 	private:

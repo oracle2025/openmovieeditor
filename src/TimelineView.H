@@ -42,6 +42,7 @@ class Timeline;
 class DragHandler;
 class AbstractEffectFactory;
 class PasteSelectionCommand;
+class TitleClip;
 	
 class TimelineView : public Fl_Widget
 {
@@ -80,6 +81,11 @@ class TimelineView : public Fl_Widget
 		void moveEffectUp();
 		void moveEffectDown();
 		void removeEffect();
+		void titles_text( const char* t );
+		void titles_x( float x );
+		void titles_y( float y );
+		void titles_size( int size );
+		void titles_font( int font );
 		int m_trackHeight;
 		void cut();
 		void copy();
@@ -89,6 +95,8 @@ class TimelineView : public Fl_Widget
 	protected:
 		void draw();
 	private:
+		TitleClip* getTitleClip();
+		void updateTitlesDisplay();
 		void updateEffectDisplay();
 		DragHandler *m_dragHandler;
 		int64_t m_scrollPosition;

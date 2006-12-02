@@ -276,6 +276,7 @@ void VideoViewGL::draw()
 		frame_struct** fs = g_timeline->getFrameStack( m_seekPosition );
 		g_SEEKING = false;
 		if ( !fs[0] ) {
+			g_PREVENT_OFFSCREEN_CRASH = false;
 			return;
 		}
 		int count = 0;	
@@ -299,12 +300,12 @@ void VideoViewGL::draw()
 			}
 			float gl_x, gl_y, gl_w, gl_h;
 			{
-				float f_v = ( (float)fs[i]->w / (float)fs[i]->h );
-/*				if ( g_16_9 ) {
+				float f_v;// = ( (float)fs[i]->w / (float)fs[i]->h );
+				if ( g_16_9 ) {
 					f_v = ( 16.0 / 9.0 );
 				} else {
 					f_v = ( 4.0 / 3.0 );
-				}*/
+				}
 				float f_w = ( (float)w() / (float)h() );
 				float f_g = f_v / f_w;
 				if ( f_g > 1.0 ) {
@@ -335,6 +336,7 @@ void VideoViewGL::draw()
 			glEnd ();
 		}
 	}
+	g_PREVENT_OFFSCREEN_CRASH = false;
 /*	drawVideoBorder( 720, 576  ); //Pixel sind nicht quadratisch?
 	drawVideoBorder( 768, 576  );
 	drawVideoBorder( 1024, 576  );*/

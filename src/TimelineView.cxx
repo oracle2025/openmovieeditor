@@ -51,6 +51,7 @@
 #include "Frei0rEffect.H"
 #include "Frei0rDialog.H"
 #include "PasteSelectionCommand.H"
+#include "TitleClip.H"
 
 #include "audio.xpm"
 #include "video.xpm"
@@ -739,14 +740,85 @@ static int remove_clip_helper( void* p, void* data )
 		return 0;
 	}
 }
-void TimelineView::updateEffectDisplay()
+void TimelineView::updateTitlesDisplay()
 {
-	g_ui->effect_browser->clear();
-	if ( !m_selectedClips ) {
-		g_ui->m_effectMenu->deactivate();
+	if ( !m_selectedClips || m_selectedClips->next ) {
+		g_ui->deactivate_titles();
 		return;
 	}
+	TitleClip* tc = dynamic_cast<TitleClip*>( m_selectedClips->clip );
+	if ( !tc ) {
+		g_ui->deactivate_titles();
+		return;
+	}
+	g_ui->activate_titles( tc->font(), tc->size(), tc->text(), tc->x(), tc->y() );
+}
+void TimelineView::titles_text( const char* t )
+{
+	TitleClip* tc = getTitleClip();
+	if ( !tc ) {
+		return;
+	}
+	tc->text( t );
+	tc->touch();
+	g_videoView->redraw();
+}
+void TimelineView::titles_x( float x )
+{
+	TitleClip* tc = getTitleClip();
+	if ( !tc ) {
+		return;
+	}
+	tc->x( x );
+	tc->touch();
+	g_videoView->redraw();
+}
+void TimelineView::titles_y( float y )
+{
+	TitleClip* tc = getTitleClip();
+	if ( !tc ) {
+		return;
+	}
+	tc->y( y );
+	tc->touch();
+	g_videoView->redraw();
+}
+void TimelineView::titles_size( int size )
+{
+	TitleClip* tc = getTitleClip();
+	if ( !tc ) {
+		return;
+	}
+	tc->size( size );
+	tc->touch();
+	g_videoView->redraw();
+}
+void TimelineView::titles_font( int font )
+{
+	TitleClip* tc = getTitleClip();
+	if ( !tc ) {
+		return;
+	}
+	tc->font( font );
+	tc->touch();
+	g_videoView->redraw();
+}
+TitleClip* TimelineView::getTitleClip()
+{
+	if ( !m_selectedClips ) {
+		return 0;
+	}
 	if ( m_selectedClips->next ) {
+		return 0;
+	}
+	return dynamic_cast<TitleClip*>( m_selectedClips->clip );
+}
+
+void TimelineView::updateEffectDisplay()
+{
+	updateTitlesDisplay();
+	g_ui->effect_browser->clear();
+	if ( !m_selectedClips || m_selectedClips->next ) {
 		g_ui->m_effectMenu->deactivate();
 		return;
 	}

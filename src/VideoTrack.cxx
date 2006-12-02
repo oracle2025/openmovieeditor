@@ -29,6 +29,7 @@
 #include "VideoFileFactory.H"
 #include "globals.H"
 #include "DummyClip.H"
+#include "TitleClip.H"
 
 namespace nle
 {
@@ -57,7 +58,12 @@ void VideoTrack::sort()
 }
 void VideoTrack::addFile( int64_t position, string filename, int64_t trimA, int64_t trimB, int mute, int id, int64_t length )
 {
-//	VideoFileQT *vf = new VideoFileQT( filename );
+	cout << "Filename: " << filename << endl;
+	if ( filename == "TitleClip" ) {
+		TitleClip* c = new TitleClip( this, position, length - trimA - trimB, id );
+		addClip( c );
+		return;
+	}
 	IVideoFile* vf = VideoFileFactory::get( filename );
 	
 	if ( vf ) {
@@ -77,8 +83,6 @@ void VideoTrack::addFile( int64_t position, string filename, int64_t trimA, int6
 			SHOW_ERROR( string( "Video file failed to load:\n" ) + fl_filename_name( filename.c_str() ) );
 			return;
 		}
-		//ic->trimA( trimA );
-		//ic->trimB( trimB );
 		addClip( ic );
 	}
 }
@@ -167,6 +171,9 @@ frame_struct** VideoTrack::getFrameStack( int64_t position )
 				current = dynamic_cast<VideoClip*>(p->clip);
 			} else if ( p->clip->type() == CLIP_TYPE_IMAGE ) {
 				current = dynamic_cast<ImageClip*>(p->clip);
+				if ( !current ) {
+					current = dynamic_cast<TitleClip*>(p->clip);
+				}
 			} else {
 				continue;
 			}

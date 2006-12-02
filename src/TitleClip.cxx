@@ -1,0 +1,196 @@
+/*  TitleClip.cxx
+ *
+ *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
+//#include <FL/Fl_Shared_Image.H>
+#include <FL/Fl_Image.H>
+#include <FL/fl_draw.H>
+#include <FL/x.H>
+
+#include "TitleClip.H"
+#include "ErrorDialog/IErrorHandler.H"
+#include "ImageClipArtist.H"
+#include "globals.H"
+#include "nle.h"
+
+namespace nle
+{
+
+
+TitleClip::TitleClip( Track* track, int64_t position, int64_t length, int id )
+	: Clip( track, position, id )
+{
+	m_ok = false;
+	m_artist = 0;
+	m_image = 0;
+	m_font = FL_HELVETICA_BOLD;
+	m_size = 50;
+	m_x = 0.5;
+	m_y = 0.5;
+	m_dirty = false;
+
+	m_text = "A Movie by";
+	
+	if ( length > 0 ) {
+		m_length = length;
+	} else {
+		m_length = 25 * 10;
+	}
+	m_frame.x = m_frame.y = 0;
+	m_frame.w = 768;
+	m_frame.h = 576;
+	m_frame.alpha = 1.0;
+	m_frame.cacheable = true;
+	m_frame.has_alpha_channel = true;
+	m_pixels = new unsigned char[ 768*576*4 ];
+	m_alpha = new unsigned char[ 768*576*3 ];
+	m_ok = true;
+}
+void TitleClip::init()
+{
+	if ( ( m_image && !m_dirty ) || g_PREVENT_OFFSCREEN_CRASH ) {
+		return;
+	}
+	
+//	uchar* pixels;
+//	uchar* alpha;
+	Fl_Offscreen offscreen = fl_create_offscreen(768, 576);
+	fl_begin_offscreen(offscreen);
+	fl_draw_box(FL_FLAT_BOX, 0, 0, 768, 576, FL_BLUE);
+	fl_font(m_font, m_size);
+	int w = 0;
+	int h = 0;
+	fl_measure( m_text.c_str(), w, h );
+
+	int x_range = ( 768 - w );
+	int y_range = ( 576 - h );
+	int x = lrint(x_range * m_x);
+	int y = h + lrint(y_range * m_y) - fl_descent();
+	fl_color(FL_DARK3);
+	
+	fl_draw( m_text.c_str(), x, y );
+	
+	fl_color(FL_WHITE);
+	
+	fl_draw( m_text.c_str(), x - 2, y - 2 );
+	
+	fl_read_image(m_pixels, 0, 0, 768, 576, 255);
+	fl_draw_box(FL_FLAT_BOX, 0, 0, 768, 576, FL_BLUE);
+	fl_color(FL_WHITE);
+	
+	fl_draw( m_text.c_str(), x, y );
+	
+	fl_draw( m_text.c_str(), x - 2, y - 2 );
+	//fl_draw_box(FL_BORDER_FRAME, x, y - h + fl_descent(), w, h, FL_WHITE);
+	
+	fl_read_image(m_alpha, 0, 0, 768, 576);
+	uchar* src = m_alpha;
+	uchar* dst = m_pixels-1;
+	for ( int i = 576*768; i > 0; i-- ) {
+		dst += 4;
+		*dst = *src;
+		src += 3;
+		
+	}
+	//free(alpha);
+	fl_end_offscreen();
+	fl_delete_offscreen(offscreen);
+	if ( !m_image ) {
+		m_image = new Fl_RGB_Image( m_pixels, 768, 576, 4 );
+	} else {
+		m_image->uncache();
+	}
+	//free(pixels);
+	char** d = (char**)m_image->data();
+	m_frame.RGB = (unsigned char *)d[0];
+	if ( m_artist ) {
+		ImageClipArtist* ica = dynamic_cast<ImageClipArtist*>(m_artist);
+		assert( ica );
+		ica->image( m_image );
+	} else {
+		m_artist = new ImageClipArtist( m_image );
+	}
+		
+}
+
+TitleClip::~TitleClip()
+{
+	if ( m_image ) {
+		delete m_image;
+	}
+	if ( m_artist ) {
+		delete m_artist;
+	}
+	if ( m_alpha ) {
+		free( m_alpha );
+	}
+}
+int64_t TitleClip::length()
+{
+	return m_length;
+}
+
+frame_struct* TitleClip::getRawFrame( int64_t position, int64_t &position_in_file )
+{
+	if ( !m_image || m_dirty ) {
+		init();
+	}
+	if ( !m_image ) {
+		return 0;
+	}
+	m_frame.alpha = 1.0;
+	position_in_file = position - m_position;
+	if ( position >= m_position && position <= m_position + m_length ) {
+		return &m_frame;
+	} else {
+		return 0;
+	}
+}
+int TitleClip::w()
+{
+	return 768;//m_image->w();
+}
+int TitleClip::h()
+{
+	return 576;//m_image->h();
+}
+void TitleClip::trimA( int64_t trim )
+{
+	if ( m_length - trim < 0 ) {
+		return;
+	}
+	if ( m_position + trim < 0 ) {
+		trim = (-1) * m_position;
+	}
+	m_length -= trim;
+	m_position += trim;
+
+}
+void TitleClip::trimB( int64_t trim )
+{
+	if ( m_length - trim < 0 ) {
+		return;
+	}
+	m_length -= trim;
+}
+int64_t TitleClip::fileLength()
+{
+	return -1;
+}
+
+} /* namespace nle */

@@ -22,6 +22,12 @@
 #include "FltkEffectMenu.H"
 #include "IVideoEffect.H"
 #include <FL/Fl_Button.H>
+#include "SpecialClipsBrowser.H"
+#include <FL/Fl_Choice.H>
+#include <FL/Fl_Value_Input.H>
+#include <math.h>
+#include <FL/Fl_Slider.H>
+#include <FL/Fl_Input.H>
 #include "Flmm_Scalebar.H"
 #include "globals.H"
 using namespace std;
@@ -30,13 +36,12 @@ using namespace std;
 #include "TimelineScroll.H"
 #include "TimelineView.H"
 #include <FL/Fl_Box.H>
-#include <FL/Fl_Choice.H>
 
 class NleUI {
 public:
   NleUI();
-private:
   Fl_Double_Window *mainWindow;
+private:
   void cb_mainWindow_i(Fl_Double_Window*, void*);
   static void cb_mainWindow(Fl_Double_Window*, void*);
   static Fl_Menu_Item menu_[];
@@ -126,6 +131,36 @@ private:
   void cb_m_edit_effect_i(Fl_Button*, void*);
   static void cb_m_edit_effect(Fl_Button*, void*);
 public:
+  nle::SpecialClipsBrowser *special_clips;
+private:
+  Fl_Group *titles_tab;
+public:
+  Fl_Choice *titles_fonts;
+private:
+  void cb_titles_fonts_i(Fl_Choice*, void*);
+  static void cb_titles_fonts(Fl_Choice*, void*);
+  static Fl_Menu_Item menu_titles_fonts[];
+public:
+  Fl_Value_Input *titles_size;
+private:
+  void cb_titles_size_i(Fl_Value_Input*, void*);
+  static void cb_titles_size(Fl_Value_Input*, void*);
+public:
+  Fl_Slider *titles_y;
+private:
+  void cb_titles_y_i(Fl_Slider*, void*);
+  static void cb_titles_y(Fl_Slider*, void*);
+public:
+  Fl_Slider *titles_x;
+private:
+  void cb_titles_x_i(Fl_Slider*, void*);
+  static void cb_titles_x(Fl_Slider*, void*);
+public:
+  Fl_Input *titles_text;
+private:
+  void cb_titles_text_i(Fl_Input*, void*);
+  static void cb_titles_text(Fl_Input*, void*);
+public:
   Fl_Button *playButton;
 private:
   void cb_playButton_i(Fl_Button*, void*);
@@ -189,6 +224,8 @@ public:
   ~NleUI();
   int automationsMode();
   void setEffectButtons();
+  void deactivate_titles();
+  void activate_titles(int font, int size, const char* text, float x, float y);
 };
 extern Flmm_Scalebar* g_scrollBar;
 #include "IVideoReader.H"
@@ -257,8 +294,6 @@ public:
 extern Fl_Box *g_trashCan;
 extern float g_fps;
 #include <FL/Fl_Hold_Browser.H>
-#include <FL/Fl_Value_Input.H>
-#include <FL/Fl_Input.H>
 
 class CodecOptions {
 public:

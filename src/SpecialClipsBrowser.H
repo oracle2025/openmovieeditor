@@ -1,6 +1,6 @@
-/*  ImageClipArtist.H
+/*  SpecialClipsBrowser.H
  *
- *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,30 +17,22 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _IMAGE_CLIP_ARTIST_H_
-#define _IMAGE_CLIP_ARTIST_H_
+#ifndef _SPECIAL_CLIPS_BROWSER_H_
+#define _SPECIAL_CLIPS_BROWSER_H_
 
-#include "IClipArtist.H"
-
-class Fl_Image;
+#include "global_includes.H"
+#include <FL/Fl_Browser.H>
 
 namespace nle
 {
 
-class ImageClip;
-
-class ImageClipArtist : public IClipArtist
+class SpecialClipsBrowser : public Fl_Browser
 {
 	public:
-		ImageClipArtist( Fl_Image* image );
-		~ImageClipArtist();
-		void render( Rect& rect, int64_t start, int64_t stop ); 
-		void image( Fl_Image* image );
-	private:
-		Fl_Image* m_image;
-
+		SpecialClipsBrowser( int x, int y, int w, int h, const char *l = 0 );
+		virtual ~SpecialClipsBrowser() {}
+		int handle( int event );
 };
 
 } /* namespace nle */
-
-#endif /* _IMAGE_CLIP_ARTIST_H_ */
+#endif /* _SPECIAL_CLIPS_BROWSER_H_ */
