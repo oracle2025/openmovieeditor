@@ -902,7 +902,27 @@ if ( effect_browser->value() == 0 ) {
 Flmm_Scalebar* g_scrollBar;
 
 void EncodeDialog::cb_Encode_i(Fl_Return_Button* o, void*) {
-  //nle::renderMovie();
+  if ( strcmp( "", export_filename->value() ) == 0 ) {
+	if ( audio_codec_menu->value() < 0 && video_codec_menu->value() < 0 ) {
+		fl_alert( "Please select a filename as well as an Audio and Video Codec." );
+		return;
+	} else if ( audio_codec_menu->value() < 0 ) {
+		fl_alert( "Please select a filename as well as an Audio Codec." );
+		return;
+	} else if ( video_codec_menu->value() < 0 ) {
+		fl_alert( "Please select a filename as well as a Video Codec." );
+		return;
+	}
+	fl_alert( "Please select a filename." );
+	return;
+}
+
+if ( audio_codec_menu->value() < 0 || video_codec_menu->value() < 0 ) {
+	fl_alert( "Please select an Audio and Video Codec" );
+	return;
+}
+
+//nle::renderMovie();
 go = true;
 o->window()->hide();
 }

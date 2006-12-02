@@ -326,7 +326,7 @@ fb->load_rel();}
 	firstButton->activate();
 	forwardButton->activate();
 	backButton->activate();
-}} selected
+}}
               tooltip {Play (F7)} xywh {80 235 80 40} shortcut 0xffc4
             }
             Fl_Button lastButton {
@@ -513,20 +513,41 @@ if ( effect_browser->value() == 0 ) {
 decl {Flmm_Scalebar* g_scrollBar;} {public
 } 
 
-class EncodeDialog {} {
+class EncodeDialog {open
+} {
   Function {EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecParameters* codecParams )} {open
   } {
     Fl_Window encodeDialog {
       label Render open
-      private xywh {791 776 485 340} type Double
+      private xywh {525 482 485 340} type Double
       code0 {\#include "IVideoReader.H"}
       code1 {\#include "IAudioReader.H"} modal visible
     } {
       Fl_Return_Button {} {
         label Encode
-        callback {//nle::renderMovie();
+        callback {if ( strcmp( "", export_filename->value() ) == 0 ) {
+	if ( audio_codec_menu->value() < 0 && video_codec_menu->value() < 0 ) {
+		fl_alert( "Please select a filename as well as an Audio and Video Codec." );
+		return;
+	} else if ( audio_codec_menu->value() < 0 ) {
+		fl_alert( "Please select a filename as well as an Audio Codec." );
+		return;
+	} else if ( video_codec_menu->value() < 0 ) {
+		fl_alert( "Please select a filename as well as a Video Codec." );
+		return;
+	}
+	fl_alert( "Please select a filename." );
+	return;
+}
+
+if ( audio_codec_menu->value() < 0 || video_codec_menu->value() < 0 ) {
+	fl_alert( "Please select an Audio and Video Codec" );
+	return;
+}
+
+//nle::renderMovie();
 go = true;
-o->window()->hide();}
+o->window()->hide();} selected
         xywh {250 300 200 25} hotspot
       }
       Fl_Button {} {
@@ -711,7 +732,7 @@ class CodecOptions {} {
   } {
     Fl_Window codecOptions {
       label {Codec Options}
-      xywh {1170 646 345 305} type Double resizable modal visible
+      xywh {797 619 345 305} type Double resizable modal visible
     } {
       Fl_Box codec_label {
         label Codec
