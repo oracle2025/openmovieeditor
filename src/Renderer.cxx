@@ -53,6 +53,10 @@ Renderer::Renderer( string filename, int w, int h, int framerate, int samplerate
 	m_filename = filename;
 	strlcpy( buffer, m_filename.c_str(), sizeof(buffer) );
 	qt = quicktime_open( buffer, false, true );
+	if ( !qt ) {
+		fl_alert( "Could not open file.\n%s", filename.c_str() );
+		return;
+	}
 
 	params->set( qt, m_w, m_h );
 
@@ -71,6 +75,9 @@ Renderer::Renderer( string filename, int w, int h, int framerate, int samplerate
 	lqt_destroy_codec_info( codecs );
 	lqt_set_cmodel( qt, 0, BC_RGB888 );
 }
+bool Renderer::ok() {
+	return qt;
+}
 Renderer::~Renderer()
 {
 	if (qt)
@@ -81,6 +88,9 @@ Renderer::~Renderer()
 #define AUDIO_BUFFER_SIZE 23040
 void Renderer::go( IProgressListener* l )
 {
+	if ( !qt ) {
+		return;
+	}
 	if ( l ) {
 		l->start();
 	}

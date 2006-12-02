@@ -46,7 +46,9 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 	forwardButton->activate();
 	backButton->activate();
 
-	ren.go( &pDlg );
+	if ( ren.ok() ) {
+		ren.go( &pDlg );
+	}
 	
 
 //	pDlg.progressDialog->show();

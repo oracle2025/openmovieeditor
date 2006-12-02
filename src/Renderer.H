@@ -47,6 +47,7 @@ class Renderer
 		Renderer( string filename, int w, int h, int framerate, int samplerate, CodecParameters* params = 0 );
 		~Renderer();
 		void go( IProgressListener* l = 0 );
+		bool ok();
 	private:
 		string m_filename;
 		int m_w;
