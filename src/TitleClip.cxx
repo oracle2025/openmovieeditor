@@ -66,6 +66,7 @@ void TitleClip::init()
 	if ( ( m_image && !m_dirty ) || g_PREVENT_OFFSCREEN_CRASH ) {
 		return;
 	}
+	m_dirty = false;
 	
 //	uchar* pixels;
 //	uchar* alpha;
