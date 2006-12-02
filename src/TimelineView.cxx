@@ -54,7 +54,6 @@
 
 #include "audio.xpm"
 #include "video.xpm"
-//#include "titles.xpm"
 
 namespace nle
 {
@@ -102,8 +101,6 @@ int TimelineView::handle( int event )
 				if (t && !fl_filename_isdir(fn)) {
 					int64_t rp = get_real_position( _x, t->stretchFactor() );
 					
-					//t->addFile( rp, fn );
-
 					Command* cmd = new AddCommand( fn, t, rp );
 					g_docManager->submit( cmd );
 					
@@ -327,10 +324,7 @@ void TimelineView::draw()
 		fl_draw_box( FL_UP_BOX, x() + TRACK_SPACING, y_coord, 64, track->h() + 1, FL_BACKGROUND_COLOR );
 		fl_color( FL_BLACK );
 		fl_font( FL_HELVETICA, 11 );
-/*		if ( track_count == 0 ) {
-			fl_draw( "Titles", x() + TRACK_SPACING + 23, y_coord + 18);
-			fl_draw_pixmap( titles_xpm, x() + TRACK_SPACING + 3, y_coord + 5 );
-		} else*/ if ( USING_AUDIO ) {
+		if ( USING_AUDIO ) {
 			fl_draw( track->name().c_str(), x() + TRACK_SPACING + 23, y_coord + 18);
 			fl_draw_pixmap( audio_xpm, x() + TRACK_SPACING + 3, y_coord + 5 );
 		} else {
@@ -485,10 +479,6 @@ void TimelineView::draw()
 	fl_pop_clip();
 	fl_overlay_rect( get_screen_position( m_stylusPosition ), parent()->y(), 1, parent()->h() );
 }
-/*void TimelineView::add_video( int track, int y, string filename )
-{
-	//m_timeline->add_video( track, get_real_position( y ), filename );
-}*/
 int64_t TimelineView::get_real_position( int p, float stretchFactor )
 {
 	return llrint( ( ( float(p - LEFT_TRACK_SPACING - x() ) / SwitchBoard::i()->zoom() ) + m_scrollPosition ) * stretchFactor );
@@ -501,7 +491,6 @@ int64_t TimelineView::get_screen_position( int64_t p, float stretchFactor )
 void TimelineView::scroll( int64_t position )
 {
 	m_scrollPosition = position;
-	//redraw();
 }
 void TimelineView::zoom( float zoom )
 {
@@ -768,10 +757,8 @@ void TimelineView::updateEffectDisplay()
 	g_ui->m_effectMenu->activate();
 	// Liste füllen
 	effect_stack* es = vc->getEffects();
-//	IVideoEffect* e = dynamic_cast<IVideoEffect*>( vc->getEffect() );
 	while ( es ) {
 		g_ui->effect_browser->add( es->effect->name(), es->effect );
-//		e = dynamic_cast<IVideoEffect*>( e->getReader() );
 		es = es->next;
 	}
 }
