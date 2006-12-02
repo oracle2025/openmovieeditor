@@ -349,7 +349,7 @@ void TimelineView::draw()
 			Clip* clip = j->clip;
 			int64_t scr_clip_x = get_screen_position( clip->position(), track->stretchFactor() );
 			int64_t scr_clip_y = y_coord;
-			int64_t scr_clip_w = (int)( (clip->length() + 1) * SwitchBoard::i()->zoom() / track->stretchFactor() );
+			int64_t scr_clip_w = llrint( (clip->length() + 1) * SwitchBoard::i()->zoom() / track->stretchFactor() );
 			int64_t scr_clip_h = track->h();
 
 			if ( scr_clip_x + scr_clip_w < 0 )
