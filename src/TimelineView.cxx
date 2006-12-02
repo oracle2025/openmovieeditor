@@ -682,6 +682,7 @@ void TimelineView::clear_selection()
 	}
 	updateEffectDisplay();
 	setSelectionButtons();
+	g_ui->setEffectButtons();
 }
 void TimelineView::select_clips( int _x1, int _y1, int _x2, int _y2 )
 {
