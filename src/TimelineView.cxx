@@ -574,7 +574,6 @@ Rect TimelineView::get_track_rect( Track* track )
 }
 Rect TimelineView::get_clip_rect( Clip* clip, bool clipping )
 {
-	
 	Rect tmp(
 			get_screen_position( clip->position(), clip->track()->stretchFactor() ),
 			get_track_top( clip->track() ),
@@ -692,6 +691,7 @@ void TimelineView::clear_selection()
 		delete node;
 	}
 	updateEffectDisplay();
+	setSelectionButtons();
 }
 void TimelineView::select_clips( int _x1, int _y1, int _x2, int _y2 )
 {
@@ -718,6 +718,7 @@ void TimelineView::select_clips( int _x1, int _y1, int _x2, int _y2 )
 		}
 	}
 	updateEffectDisplay();
+	setSelectionButtons();
 }
 void TimelineView::select_all_after_cursor()
 {
@@ -734,6 +735,7 @@ void TimelineView::select_all_after_cursor()
 		}
 	}
 	updateEffectDisplay();
+	setSelectionButtons();
 	redraw();
 }
 static int remove_clip_helper( void* p, void* data )
@@ -790,7 +792,26 @@ void TimelineView::toggle_selection( Clip* clip )
 	}
 	updateEffectDisplay();
 	g_ui->setEffectButtons();
+	setSelectionButtons();
 	redraw();
+}
+void TimelineView::setSelectionButtons()
+{
+	if ( m_selectedClips ) {
+		g_ui->cut_item->activate();
+		g_ui->copy_item->activate();
+		g_ui->delete_item->activate();
+	} else {
+		g_ui->cut_item->deactivate();
+		g_ui->copy_item->deactivate();
+		g_ui->delete_item->deactivate();
+	}
+	if ( m_pasteCommand ) {
+		g_ui->paste_item->activate();
+	} else {
+		g_ui->paste_item->deactivate();
+	}
+
 }
 
 void TimelineView::moveEffectDown()
@@ -954,6 +975,22 @@ void TimelineView::stylus( long stylus_pos )
 {
 	move_cursor( get_real_position( stylus_pos ) );
 }
+void TimelineView::cut()
+{
+	if ( !m_selectedClips ) {
+		return;
+	}
+	if ( m_pasteCommand ) {
+		delete m_pasteCommand;
+		m_pasteCommand = 0;
+	}
+	m_pasteCommand = new PasteSelectionCommand( m_selectedClips );
+	Command* cmd = new RemoveSelectionCommand( m_selectedClips );
+	submit( cmd );
+	adjustScrollbar();
+	clear_selection();
+	setSelectionButtons();
+}
 void TimelineView::copy()
 {
 	if ( !m_selectedClips ) {
@@ -964,7 +1001,7 @@ void TimelineView::copy()
 		m_pasteCommand = 0;
 	}
 	m_pasteCommand = new PasteSelectionCommand( m_selectedClips );
-	cout << "COPY" << endl;
+	setSelectionButtons();
 }
 void TimelineView::paste()
 {
@@ -975,7 +1012,17 @@ void TimelineView::paste()
 	m_pasteCommand = new PasteSelectionCommand( cmd );
 	cmd->position( m_stylusPosition );
 	submit( cmd );
-	cout << "PASTE" << endl;
+}
+void TimelineView::remove()
+{
+	if ( !m_selectedClips ) {
+		return;
+	}
+	Command* cmd = new RemoveSelectionCommand( m_selectedClips );
+	submit( cmd );
+	adjustScrollbar();
+	clear_selection();
+	setSelectionButtons();
 }
 
 } /* namespace nle */

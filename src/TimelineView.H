@@ -81,8 +81,11 @@ class TimelineView : public Fl_Widget
 		void moveEffectDown();
 		void removeEffect();
 		int m_trackHeight;
+		void cut();
 		void copy();
 		void paste();
+		void remove();
+		void setSelectionButtons();
 	protected:
 		void draw();
 	private:

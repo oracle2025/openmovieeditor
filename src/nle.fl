@@ -13,7 +13,7 @@ class NleUI {open
 mainWindow->hide();} open
       private xywh {664 271 515 465} type Double resizable size_range {450 380 0 0} visible
     } {
-      Fl_Menu_Bar {} {open
+      Fl_Menu_Bar {} {open selected
         xywh {0 0 345 25}
       } {
         Submenu {} {
@@ -92,15 +92,25 @@ m_timelineView->redraw();}
             xywh {0 0 100 20} shortcut 0x40079 deactivate divider
             code0 {\#include "DocManager.H"}
           }
-          MenuItem {} {
+          MenuItem cut_item {
+            label Cut
+            callback {m_timelineView->cut();}
+            xywh {0 0 100 20} shortcut 0x40078 deactivate
+          }
+          MenuItem copy_item {
             label Copy
             callback {m_timelineView->copy();}
-            xywh {0 0 100 20} shortcut 0x40063
+            xywh {0 0 100 20} shortcut 0x40063 deactivate
           }
-          MenuItem {} {
+          MenuItem paste_item {
             label Paste
             callback {m_timelineView->paste();}
-            xywh {0 0 100 20} shortcut 0x40076
+            xywh {0 0 100 20} shortcut 0x40076 deactivate
+          }
+          MenuItem delete_item {
+            label Delete
+            callback {m_timelineView->remove();}
+            xywh {0 0 100 20} shortcut 0xffff deactivate
           }
         }
         Submenu {} {
@@ -519,7 +529,7 @@ class EncodeDialog {open
   } {
     Fl_Window encodeDialog {
       label Render open
-      private xywh {525 482 485 340} type Double
+      private xywh {695 778 485 340} type Double
       code0 {\#include "IVideoReader.H"}
       code1 {\#include "IAudioReader.H"} modal visible
     } {
@@ -547,7 +557,7 @@ if ( audio_codec_menu->value() < 0 || video_codec_menu->value() < 0 ) {
 
 //nle::renderMovie();
 go = true;
-o->window()->hide();} selected
+o->window()->hide();}
         xywh {250 300 200 25} hotspot
       }
       Fl_Button {} {

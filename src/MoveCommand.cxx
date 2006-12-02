@@ -37,7 +37,6 @@ MoveCommand::MoveCommand( Clip* clip, Track* target, int64_t position )
 	m_clipNr = clip->id();
 	m_srcPosition = clip->position();
 	m_dstPosition = position;
-
 }
 
 static void performCommand( int tn1, int tn2, int64_t pos, int clip )

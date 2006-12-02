@@ -58,10 +58,26 @@ public:
 private:
   void cb_redo_item_i(Fl_Menu_*, void*);
   static void cb_redo_item(Fl_Menu_*, void*);
-  void cb_Copy_i(Fl_Menu_*, void*);
-  static void cb_Copy(Fl_Menu_*, void*);
-  void cb_Paste_i(Fl_Menu_*, void*);
-  static void cb_Paste(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *cut_item;
+private:
+  void cb_cut_item_i(Fl_Menu_*, void*);
+  static void cb_cut_item(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *copy_item;
+private:
+  void cb_copy_item_i(Fl_Menu_*, void*);
+  static void cb_copy_item(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *paste_item;
+private:
+  void cb_paste_item_i(Fl_Menu_*, void*);
+  static void cb_paste_item(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *delete_item;
+private:
+  void cb_delete_item_i(Fl_Menu_*, void*);
+  static void cb_delete_item(Fl_Menu_*, void*);
   void cb_Add_i(Fl_Menu_*, void*);
   static void cb_Add(Fl_Menu_*, void*);
   void cb_Add1_i(Fl_Menu_*, void*);

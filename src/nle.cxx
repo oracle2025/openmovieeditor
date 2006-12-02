@@ -85,18 +85,32 @@ void NleUI::cb_redo_item(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_redo_item_i(o,v);
 }
 
-void NleUI::cb_Copy_i(Fl_Menu_*, void*) {
-  m_timelineView->copy();
+void NleUI::cb_cut_item_i(Fl_Menu_*, void*) {
+  m_timelineView->cut();
 }
-void NleUI::cb_Copy(Fl_Menu_* o, void* v) {
-  ((NleUI*)(o->parent()->user_data()))->cb_Copy_i(o,v);
+void NleUI::cb_cut_item(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_cut_item_i(o,v);
 }
 
-void NleUI::cb_Paste_i(Fl_Menu_*, void*) {
+void NleUI::cb_copy_item_i(Fl_Menu_*, void*) {
+  m_timelineView->copy();
+}
+void NleUI::cb_copy_item(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_copy_item_i(o,v);
+}
+
+void NleUI::cb_paste_item_i(Fl_Menu_*, void*) {
   m_timelineView->paste();
 }
-void NleUI::cb_Paste(Fl_Menu_* o, void* v) {
-  ((NleUI*)(o->parent()->user_data()))->cb_Paste_i(o,v);
+void NleUI::cb_paste_item(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_paste_item_i(o,v);
+}
+
+void NleUI::cb_delete_item_i(Fl_Menu_*, void*) {
+  m_timelineView->remove();
+}
+void NleUI::cb_delete_item(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_delete_item_i(o,v);
 }
 
 void NleUI::cb_Add_i(Fl_Menu_*, void*) {
@@ -187,8 +201,10 @@ Fl_Menu_Item NleUI::menu_[] = {
  {"&Edit", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"Undo", 0x4007a,  (Fl_Callback*)NleUI::cb_undo_item, 0, 1, FL_NORMAL_LABEL, 0, 14, 0},
  {"Redo", 0x40079,  (Fl_Callback*)NleUI::cb_redo_item, 0, 129, FL_NORMAL_LABEL, 0, 14, 0},
- {"Copy", 0x40063,  (Fl_Callback*)NleUI::cb_Copy, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"Paste", 0x40076,  (Fl_Callback*)NleUI::cb_Paste, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Cut", 0x40078,  (Fl_Callback*)NleUI::cb_cut_item, 0, 1, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Copy", 0x40063,  (Fl_Callback*)NleUI::cb_copy_item, 0, 1, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Paste", 0x40076,  (Fl_Callback*)NleUI::cb_paste_item, 0, 1, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Delete", 0xffff,  (Fl_Callback*)NleUI::cb_delete_item, 0, 1, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"&Tracks", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"Add Video Track", 0,  (Fl_Callback*)NleUI::cb_Add, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
@@ -218,6 +234,10 @@ Fl_Menu_Item NleUI::menu_[] = {
 };
 Fl_Menu_Item* NleUI::undo_item = NleUI::menu_ + 7;
 Fl_Menu_Item* NleUI::redo_item = NleUI::menu_ + 8;
+Fl_Menu_Item* NleUI::cut_item = NleUI::menu_ + 9;
+Fl_Menu_Item* NleUI::copy_item = NleUI::menu_ + 10;
+Fl_Menu_Item* NleUI::paste_item = NleUI::menu_ + 11;
+Fl_Menu_Item* NleUI::delete_item = NleUI::menu_ + 12;
 
 void NleUI::cb__i(nle::FileBrowser* o, void*) {
   nle::FileBrowser* fb = (nle::FileBrowser*)o;
