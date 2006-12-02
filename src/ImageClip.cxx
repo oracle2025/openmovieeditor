@@ -17,7 +17,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-//#include <FL/Fl_PNG_Image.H>
 #include <FL/Fl_Shared_Image.H>
 
 #include "ImageClip.H"
@@ -43,7 +42,7 @@ ImageClip::ImageClip( Track* track, int64_t position, string filename, int64_t l
 		return;
 	}
 
-	
+
 	if ( length > 0 ) {
 		m_length = length;
 	} else {
