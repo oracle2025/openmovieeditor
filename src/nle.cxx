@@ -926,13 +926,13 @@ Flmm_Scalebar* g_scrollBar;
 void EncodeDialog::cb_Encode_i(Fl_Return_Button* o, void*) {
   if ( strcmp( "", export_filename->value() ) == 0 ) {
 	if ( audio_codec_menu->value() < 0 && video_codec_menu->value() < 0 ) {
-		fl_alert( "Please select a filename as well as an Audio and Video Codec." );
+		fl_alert( "Please select a filename,\nas well as an Audio and Video Codec." );
 		return;
 	} else if ( audio_codec_menu->value() < 0 ) {
-		fl_alert( "Please select a filename as well as an Audio Codec." );
+		fl_alert( "Please select a filename,\n as well as an Audio Codec." );
 		return;
 	} else if ( video_codec_menu->value() < 0 ) {
-		fl_alert( "Please select a filename as well as a Video Codec." );
+		fl_alert( "Please select a filename,\n as well as a Video Codec." );
 		return;
 	}
 	fl_alert( "Please select a filename." );
