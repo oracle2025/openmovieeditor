@@ -343,32 +343,75 @@ fb->load_rel();}
               } {
                 Fl_Choice titles_fonts {
                   label Font
-                  callback {m_timelineView->titles_font( o->value() );} open
-                  xywh {45 80 155 25} down_box BORDER_BOX
+                  callback {m_timelineView->titles_font( o->value() );
+m_timelineView->titles_text( titles_text->value() );} open
+                  xywh {45 80 190 25} down_box BORDER_BOX
                 } {
                   MenuItem {} {
                     label Helvetica
                     xywh {0 0 100 20}
                   }
                   MenuItem {} {
-                    label {Helvetica Bold}
+                    label {Helvetica bold}
+                    xywh {0 0 100 20}
+                  }
+                  MenuItem {} {
+                    label {Helvetica italic}
+                    xywh {0 0 100 20}
+                  }
+                  MenuItem {} {
+                    label {Helvetica bold italic}
+                    xywh {0 0 100 20}
+                  }
+                  MenuItem {} {
+                    label Courier
+                    xywh {0 0 100 20}
+                  }
+                  MenuItem {} {
+                    label {Courier bold}
+                    xywh {0 0 100 20}
+                  }
+                  MenuItem {} {
+                    label {Courier italic}
+                    xywh {0 0 100 20}
+                  }
+                  MenuItem {} {
+                    label {Courier bold italic}
+                    xywh {0 0 100 20}
+                  }
+                  MenuItem {} {
+                    label Times
+                    xywh {0 0 100 20}
+                  }
+                  MenuItem {} {
+                    label {Times bold}
+                    xywh {0 0 100 20}
+                  }
+                  MenuItem {} {
+                    label {Times italic}
+                    xywh {0 0 100 20}
+                  }
+                  MenuItem {} {
+                    label {Times bold ital}
                     xywh {0 0 100 20}
                   }
                 }
                 Fl_Value_Input titles_size {
-                  label Size
-                  callback {m_timelineView->titles_size( llrint(o->value()) );} selected
-                  xywh {240 80 35 25} minimum 10 maximum 200 step 2 value 20
+                  callback {m_timelineView->titles_size( llrint(o->value()) );
+m_timelineView->titles_text( titles_text->value() );}
+                  xywh {235 80 40 25} minimum 10 maximum 200 step 2 value 20
                   code0 {\#include <math.h>}
                 }
                 Fl_Slider titles_y {
                   label Y
-                  callback {m_timelineView->titles_y( o->value() );}
+                  callback {m_timelineView->titles_y( o->value() );
+m_timelineView->titles_text( titles_text->value() );} selected
                   xywh {140 110 135 25} type {Horz Knob} value 0.5
                 }
                 Fl_Slider titles_x {
                   label X
-                  callback {m_timelineView->titles_x( o->value() );}
+                  callback {m_timelineView->titles_x( o->value() );
+m_timelineView->titles_text( titles_text->value() );}
                   xywh {5 110 135 25} type {Horz Knob} value 0.5
                 }
                 Fl_Input titles_text {

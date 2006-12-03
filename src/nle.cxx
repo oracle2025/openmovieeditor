@@ -291,6 +291,7 @@ void NleUI::cb_m_edit_effect(Fl_Button* o, void* v) {
 
 void NleUI::cb_titles_fonts_i(Fl_Choice* o, void*) {
   m_timelineView->titles_font( o->value() );
+m_timelineView->titles_text( titles_text->value() );
 }
 void NleUI::cb_titles_fonts(Fl_Choice* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_titles_fonts_i(o,v);
@@ -298,12 +299,23 @@ void NleUI::cb_titles_fonts(Fl_Choice* o, void* v) {
 
 Fl_Menu_Item NleUI::menu_titles_fonts[] = {
  {"Helvetica", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"Helvetica Bold", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Helvetica bold", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Helvetica italic", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Helvetica bold italic", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Courier", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Courier bold", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Courier italic", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Courier bold italic", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Times", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Times bold", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Times italic", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Times bold ital", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0}
 };
 
 void NleUI::cb_titles_size_i(Fl_Value_Input* o, void*) {
   m_timelineView->titles_size( llrint(o->value()) );
+m_timelineView->titles_text( titles_text->value() );
 }
 void NleUI::cb_titles_size(Fl_Value_Input* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_titles_size_i(o,v);
@@ -311,6 +323,7 @@ void NleUI::cb_titles_size(Fl_Value_Input* o, void* v) {
 
 void NleUI::cb_titles_y_i(Fl_Slider* o, void*) {
   m_timelineView->titles_y( o->value() );
+m_timelineView->titles_text( titles_text->value() );
 }
 void NleUI::cb_titles_y(Fl_Slider* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_titles_y_i(o,v);
@@ -318,6 +331,7 @@ void NleUI::cb_titles_y(Fl_Slider* o, void* v) {
 
 void NleUI::cb_titles_x_i(Fl_Slider* o, void*) {
   m_timelineView->titles_x( o->value() );
+m_timelineView->titles_text( titles_text->value() );
 }
 void NleUI::cb_titles_x(Fl_Slider* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_titles_x_i(o,v);
@@ -764,12 +778,12 @@ NleUI::NleUI() {
             }
             { Fl_Group* o = titles_tab = new Fl_Group(0, 75, 280, 160, "Titles");
               o->deactivate();
-              { Fl_Choice* o = titles_fonts = new Fl_Choice(45, 80, 155, 25, "Font");
+              { Fl_Choice* o = titles_fonts = new Fl_Choice(45, 80, 190, 25, "Font");
                 o->down_box(FL_BORDER_BOX);
                 o->callback((Fl_Callback*)cb_titles_fonts);
                 o->menu(menu_titles_fonts);
               }
-              { Fl_Value_Input* o = titles_size = new Fl_Value_Input(240, 80, 35, 25, "Size");
+              { Fl_Value_Input* o = titles_size = new Fl_Value_Input(235, 80, 40, 25);
                 o->minimum(10);
                 o->maximum(200);
                 o->step(2);

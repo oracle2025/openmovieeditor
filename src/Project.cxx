@@ -137,6 +137,13 @@ int Project::write( string filename, string name )
 				if ( VideoClip* vc = dynamic_cast<VideoClip*>(cn->clip) ) {
 					clip->SetAttribute( "mute", (int)vc->m_mute );
 				}
+				if ( TitleClip* tc = dynamic_cast<TitleClip*>(cn->clip) ) {
+					clip->SetAttribute( "text", tc->text() );
+					clip->SetDoubleAttribute( "x", tc->x() );
+					clip->SetDoubleAttribute( "y", tc->y() );
+					clip->SetAttribute( "size", tc->size() );
+					clip->SetAttribute( "font", tc->font() );
+				}
 
 				for ( effect_stack* p = vc->getEffects(); p; p = p->next ) {
 					//TODO: Store Effects Settings
@@ -243,12 +250,34 @@ int Project::read( string filename )
 				length = -1;
 			}
 			strlcpy( filename, j->Attribute( "filename" ), sizeof(filename) );
-			if ( ! filename )
+			if ( ! filename ) //TODO is this correct?
 				continue;
 			j->Attribute( "mute", &mute );
 //			g_timeline->addFile( trackId, position, filename, trimA, trimB, mute, -1, length );
 			if ( strcmp(filename,"TitleClip") == 0 ) {
 				TitleClip* c = new TitleClip( tr, position, length - trimA - trimB, -1 );
+				const char* textp;
+				double x;
+				double y;
+				int size;
+				int font;
+				if ( ( textp = j->Attribute( "text" ) ) ) {
+					c->text( textp );
+				}
+				if ( j->Attribute( "x", &x ) ) {
+					c->x( x );
+				}
+				if ( j->Attribute( "y", &y ) ) {
+					c->y( y );
+				}
+				if ( j->Attribute( "size", &size ) ) {
+					c->size( size );
+				}
+				if ( j->Attribute( "font", &font ) ) {
+					c->font( font );
+				}
+
+				
 				g_timeline->addClip( trackId, c );
 			} else {
 				IVideoFile* vf = VideoFileFactory::get( filename );
