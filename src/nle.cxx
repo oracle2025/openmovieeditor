@@ -641,16 +641,16 @@ void NleUI::cb_projectChoice(Fl_Choice* o, void* v) {
 
 NleUI::NleUI() {
   Fl_Double_Window* w;
-  { Fl_Double_Window* o = mainWindow = new Fl_Double_Window(515, 465, "Open Movie Editor");
+  { Fl_Double_Window* o = mainWindow = new Fl_Double_Window(700, 600, "Open Movie Editor");
     w = o;
     o->callback((Fl_Callback*)cb_mainWindow, (void*)(this));
-    { Fl_Menu_Bar* o = new Fl_Menu_Bar(0, 0, 345, 25);
+    { Fl_Menu_Bar* o = new Fl_Menu_Bar(0, 0, 530, 25);
       o->menu(menu_);
     }
-    { Fl_Tile* o = new Fl_Tile(0, 25, 515, 440);
-      { Fl_Tile* o = new Fl_Tile(0, 25, 515, 250);
-        { Fl_Group* o = new Fl_Group(280, 25, 235, 250);
-          { nle::VideoViewGL* o = m_videoView = new nle::VideoViewGL(280, 25, 235, 250, "VideoView");
+    { Fl_Tile* o = new Fl_Tile(0, 25, 700, 575);
+      { Fl_Tile* o = new Fl_Tile(0, 25, 700, 320);
+        { Fl_Group* o = new Fl_Group(365, 25, 335, 320);
+          { nle::VideoViewGL* o = m_videoView = new nle::VideoViewGL(365, 25, 335, 320, "VideoView");
             o->box(FL_DOWN_BOX);
             o->color(FL_BACKGROUND_COLOR);
             o->selection_color(FL_BACKGROUND_COLOR);
@@ -664,13 +664,13 @@ NleUI::NleUI() {
           }
           o->end();
         }
-        { Fl_Group* o = new Fl_Group(0, 25, 280, 250);
-          { Fl_Tabs* o = new Fl_Tabs(0, 50, 280, 185);
+        { Fl_Group* o = new Fl_Group(0, 25, 365, 320);
+          { Fl_Tabs* o = new Fl_Tabs(0, 50, 365, 255);
             o->box(FL_UP_BOX);
             o->labelcolor(FL_GRAY0);
-            { Fl_Group* o = new Fl_Group(0, 75, 280, 160, "Files");
+            { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Files");
               o->hide();
-              { nle::FileBrowser* o = new nle::FileBrowser(5, 80, 270, 150);
+              { nle::FileBrowser* o = new nle::FileBrowser(5, 80, 355, 220);
                 o->box(FL_NO_BOX);
                 o->color(FL_BACKGROUND2_COLOR);
                 o->selection_color(FL_SELECTION_COLOR);
@@ -686,9 +686,9 @@ NleUI::NleUI() {
               o->end();
               Fl_Group::current()->resizable(o);
             }
-            { Fl_Group* o = new Fl_Group(0, 75, 280, 160, "Media Browser");
+            { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Media Browser");
               o->hide();
-              { nle::MediaPanel* o = new nle::MediaPanel(5, 80, 270, 150);
+              { nle::MediaPanel* o = new nle::MediaPanel(5, 80, 355, 220);
                 o->box(FL_NO_BOX);
                 o->color(FL_BACKGROUND_COLOR);
                 o->selection_color(FL_BACKGROUND_COLOR);
@@ -703,9 +703,9 @@ NleUI::NleUI() {
               }
               o->end();
             }
-            { Fl_Group* o = new Fl_Group(0, 75, 280, 160, "Effects");
+            { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Effects");
               o->hide();
-              { nle::FltkEffectMenu* o = m_effectMenu = new nle::FltkEffectMenu(5, 80, 270, 25, "Add Effect");
+              { nle::FltkEffectMenu* o = m_effectMenu = new nle::FltkEffectMenu(5, 80, 355, 25, "Add Effect");
                 o->box(FL_UP_BOX);
                 o->color(FL_BACKGROUND_COLOR);
                 o->selection_color(FL_SELECTION_COLOR);
@@ -717,7 +717,7 @@ NleUI::NleUI() {
                 o->when(FL_WHEN_RELEASE_ALWAYS);
                 o->deactivate();
               }
-              { Fl_Hold_Browser* o = effect_browser = new Fl_Hold_Browser(5, 105, 270, 100);
+              { Fl_Hold_Browser* o = effect_browser = new Fl_Hold_Browser(5, 105, 355, 170);
                 o->box(FL_NO_BOX);
                 o->color(FL_BACKGROUND2_COLOR);
                 o->selection_color(FL_SELECTION_COLOR);
@@ -730,26 +730,26 @@ NleUI::NleUI() {
                 o->when(FL_WHEN_RELEASE_ALWAYS);
                 Fl_Group::current()->resizable(o);
               }
-              { Fl_Group* o = new Fl_Group(5, 205, 270, 25);
-                { Fl_Group* o = new Fl_Group(5, 205, 50, 25);
-                { Fl_Button* o = m_effect_up = new Fl_Button(5, 205, 25, 25, "@8->");
+              { Fl_Group* o = new Fl_Group(5, 275, 355, 25);
+                { Fl_Group* o = new Fl_Group(5, 275, 50, 25);
+                { Fl_Button* o = m_effect_up = new Fl_Button(5, 275, 25, 25, "@8->");
                 o->tooltip("Move Up");
                 o->callback((Fl_Callback*)cb_m_effect_up);
                 o->deactivate();
                 }
-                { Fl_Button* o = m_effect_down = new Fl_Button(30, 205, 25, 25, "@2->");
+                { Fl_Button* o = m_effect_down = new Fl_Button(30, 275, 25, 25, "@2->");
                 o->tooltip("Move Down");
                 o->callback((Fl_Callback*)cb_m_effect_down);
                 o->deactivate();
                 }
                 o->end();
                 }
-                { Fl_Group* o = new Fl_Group(55, 205, 220, 25);
-                { Fl_Button* o = m_remove_effect = new Fl_Button(55, 205, 110, 25, "Remove Effect");
+                { Fl_Group* o = new Fl_Group(55, 275, 305, 25);
+                { Fl_Button* o = m_remove_effect = new Fl_Button(55, 275, 155, 25, "Remove Effect");
                 o->callback((Fl_Callback*)cb_m_remove_effect);
                 o->deactivate();
                 }
-                { Fl_Button* o = m_edit_effect = new Fl_Button(165, 205, 110, 25, "Edit Effect");
+                { Fl_Button* o = m_edit_effect = new Fl_Button(210, 275, 150, 25, "Edit Effect");
                 o->callback((Fl_Callback*)cb_m_edit_effect);
                 o->deactivate();
                 }
@@ -760,9 +760,9 @@ NleUI::NleUI() {
               }
               o->end();
             }
-            { Fl_Group* o = new Fl_Group(0, 75, 280, 160, "Special Clips");
+            { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Special Clips");
               o->hide();
-              { nle::SpecialClipsBrowser* o = special_clips = new nle::SpecialClipsBrowser(5, 80, 270, 150);
+              { nle::SpecialClipsBrowser* o = special_clips = new nle::SpecialClipsBrowser(5, 80, 355, 220);
                 o->box(FL_NO_BOX);
                 o->color(FL_BACKGROUND2_COLOR);
                 o->selection_color(FL_SELECTION_COLOR);
@@ -776,31 +776,31 @@ NleUI::NleUI() {
               }
               o->end();
             }
-            { Fl_Group* o = titles_tab = new Fl_Group(0, 75, 280, 160, "Titles");
+            { Fl_Group* o = titles_tab = new Fl_Group(0, 75, 365, 230, "Titles");
               o->deactivate();
-              { Fl_Choice* o = titles_fonts = new Fl_Choice(45, 80, 190, 25, "Font");
+              { Fl_Choice* o = titles_fonts = new Fl_Choice(85, 80, 235, 25, "Font");
                 o->down_box(FL_BORDER_BOX);
                 o->callback((Fl_Callback*)cb_titles_fonts);
                 o->menu(menu_titles_fonts);
               }
-              { Fl_Value_Input* o = titles_size = new Fl_Value_Input(235, 80, 40, 25);
+              { Fl_Value_Input* o = titles_size = new Fl_Value_Input(320, 80, 40, 25);
                 o->minimum(10);
                 o->maximum(200);
                 o->step(2);
                 o->value(20);
                 o->callback((Fl_Callback*)cb_titles_size);
               }
-              { Fl_Slider* o = titles_y = new Fl_Slider(140, 110, 135, 25, "Y");
-                o->type(5);
+              { Fl_Slider* o = titles_y = new Fl_Slider(335, 135, 25, 165);
+                o->type(4);
                 o->value(0.5);
                 o->callback((Fl_Callback*)cb_titles_y);
               }
-              { Fl_Slider* o = titles_x = new Fl_Slider(5, 110, 135, 25, "X");
+              { Fl_Slider* o = titles_x = new Fl_Slider(5, 110, 330, 25);
                 o->type(5);
                 o->value(0.5);
                 o->callback((Fl_Callback*)cb_titles_x);
               }
-              { Fl_Input* o = titles_text = new Fl_Input(5, 155, 270, 75);
+              { Fl_Input* o = titles_text = new Fl_Input(5, 135, 330, 165);
                 o->type(4);
                 o->callback((Fl_Callback*)cb_titles_text);
                 Fl_Group::current()->resizable(o);
@@ -810,42 +810,42 @@ NleUI::NleUI() {
             o->end();
             Fl_Group::current()->resizable(o);
           }
-          { Fl_Button* o = playButton = new Fl_Button(80, 235, 80, 40, "@>");
+          { Fl_Button* o = playButton = new Fl_Button(110, 305, 90, 40, "@>");
             o->tooltip("Play (F7)");
             o->shortcut(0xffc4);
             o->callback((Fl_Callback*)cb_playButton);
           }
-          { Fl_Button* o = lastButton = new Fl_Button(240, 235, 40, 40, "@>|");
+          { Fl_Button* o = lastButton = new Fl_Button(310, 305, 55, 40, "@>|");
             o->tooltip("Goto End");
             o->callback((Fl_Callback*)cb_lastButton);
           }
-          { Fl_Button* o = firstButton = new Fl_Button(0, 235, 40, 40, "@|<");
+          { Fl_Button* o = firstButton = new Fl_Button(0, 305, 55, 40, "@|<");
             o->tooltip("Goto Start");
             o->callback((Fl_Callback*)cb_firstButton);
           }
-          { Fl_Button* o = backButton = new Fl_Button(40, 235, 40, 40, "@<|");
+          { Fl_Button* o = backButton = new Fl_Button(55, 305, 55, 40, "@<|");
             o->tooltip("Skip Frame backwards");
             o->callback((Fl_Callback*)cb_backButton);
           }
-          { Fl_Button* o = forwardButton = new Fl_Button(200, 235, 40, 40, "@|>");
+          { Fl_Button* o = forwardButton = new Fl_Button(255, 305, 55, 40, "@|>");
             o->tooltip("Skip Frame forward");
             o->callback((Fl_Callback*)cb_forwardButton);
           }
-          { Fl_Button* o = projectNameInput = new Fl_Button(0, 25, 280, 25, "Project Name");
+          { Fl_Button* o = projectNameInput = new Fl_Button(0, 25, 365, 25, "Project Name");
             o->labelfont(1);
             o->callback((Fl_Callback*)cb_projectNameInput);
             o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
           }
-          { Fl_Button* o = new Fl_Button(160, 235, 40, 40, "@||");
+          { Fl_Button* o = new Fl_Button(200, 305, 55, 40, "@||");
             o->callback((Fl_Callback*)cb_1);
           }
           o->end();
         }
         o->end();
       }
-      { Fl_Group* o = new Fl_Group(0, 275, 515, 190);
-        { Fl_Group* o = new Fl_Group(40, 275, 475, 190);
-          { Flmm_Scalebar* o = scaleBar = new Flmm_Scalebar(40, 445, 455, 20);
+      { Fl_Group* o = new Fl_Group(0, 345, 700, 255);
+        { Fl_Group* o = new Fl_Group(40, 345, 660, 255);
+          { Flmm_Scalebar* o = scaleBar = new Flmm_Scalebar(40, 580, 640, 20);
             o->type(1);
             o->box(FL_FLAT_BOX);
             o->color(FL_DARK2);
@@ -860,15 +860,15 @@ NleUI::NleUI() {
             o->align(FL_ALIGN_BOTTOM);
             o->when(FL_WHEN_CHANGED);
           }
-          { Fl_Group* o = new Fl_Group(40, 275, 475, 25);
-            { Fl_Button* o = new Fl_Button(40, 275, 25, 25);
+          { Fl_Group* o = new Fl_Group(40, 345, 660, 25);
+            { Fl_Button* o = new Fl_Button(40, 345, 25, 25);
               o->tooltip("Snapping");
               o->type(1);
               o->value(1);
               o->image(image_snap);
               o->callback((Fl_Callback*)cb_2);
             }
-            { nle::Ruler* o = new nle::Ruler(65, 275, 450, 25, "Ruler");
+            { nle::Ruler* o = new nle::Ruler(65, 345, 635, 25, "Ruler");
               o->box(FL_UP_BOX);
               o->color(FL_BACKGROUND_COLOR);
               o->selection_color(FL_BACKGROUND_COLOR);
@@ -882,12 +882,12 @@ NleUI::NleUI() {
             }
             o->end();
           }
-          { Fl_Scrollbar* o = vScrollBar = new Fl_Scrollbar(495, 300, 20, 145);
+          { Fl_Scrollbar* o = vScrollBar = new Fl_Scrollbar(680, 370, 20, 210);
             o->maximum(50);
             o->slider_size(0.40404);
             o->callback((Fl_Callback*)cb_vScrollBar);
           }
-          { nle::TimelineScroll* o = scroll_area = new nle::TimelineScroll(40, 300, 455, 145);
+          { nle::TimelineScroll* o = scroll_area = new nle::TimelineScroll(40, 370, 640, 210);
             o->box(FL_NO_BOX);
             o->color(FL_BACKGROUND_COLOR);
             o->selection_color(FL_BACKGROUND_COLOR);
@@ -898,7 +898,7 @@ NleUI::NleUI() {
             o->callback((Fl_Callback*)cb_scroll_area);
             o->align(FL_ALIGN_TOP);
             o->when(FL_WHEN_CHANGED);
-            { nle::TimelineView* o = m_timelineView = new nle::TimelineView(40, 300, 455, 145);
+            { nle::TimelineView* o = m_timelineView = new nle::TimelineView(40, 370, 640, 210);
               o->box(FL_NO_BOX);
               o->color(FL_BACKGROUND_COLOR);
               o->selection_color(FL_BACKGROUND_COLOR);
@@ -916,9 +916,9 @@ NleUI::NleUI() {
           o->end();
           Fl_Group::current()->resizable(o);
         }
-        { Fl_Group* o = new Fl_Group(0, 275, 40, 190);
+        { Fl_Group* o = new Fl_Group(0, 345, 40, 255);
           o->labelsize(12);
-          { Fl_Button* o = positioningButton = new Fl_Button(0, 300, 40, 40);
+          { Fl_Button* o = positioningButton = new Fl_Button(0, 370, 40, 40);
             o->tooltip("Positioning (S)");
             o->type(102);
             o->value(1);
@@ -926,27 +926,27 @@ NleUI::NleUI() {
             o->image(image_tool_positioning);
             o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
           }
-          { Fl_Button* o = automationsButton = new Fl_Button(0, 340, 40, 40);
+          { Fl_Button* o = automationsButton = new Fl_Button(0, 410, 40, 40);
             o->tooltip("Automations (A)");
             o->type(102);
             o->shortcut(0x61);
             o->image(image_tool_automations);
             o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
           }
-          { Fl_Box* o = new Fl_Box(0, 420, 40, 5);
+          { Fl_Box* o = new Fl_Box(0, 490, 40, 70);
             o->box(FL_THIN_UP_BOX);
             Fl_Group::current()->resizable(o);
           }
-          { Fl_Box* o = new Fl_Box(0, 275, 40, 25, "Tools");
+          { Fl_Box* o = new Fl_Box(0, 345, 40, 25, "Tools");
             o->box(FL_UP_BOX);
             o->labelsize(12);
           }
-          { Fl_Box* o = trashCan = new Fl_Box(0, 425, 40, 40);
+          { Fl_Box* o = trashCan = new Fl_Box(0, 560, 40, 40);
             o->tooltip("Trash");
             o->box(FL_UP_BOX);
             o->image(image_trash_big);
           }
-          { Fl_Button* o = razorButton = new Fl_Button(0, 380, 40, 40);
+          { Fl_Button* o = razorButton = new Fl_Button(0, 450, 40, 40);
             o->tooltip("Split (R)");
             o->type(102);
             o->shortcut(0x72);
@@ -960,7 +960,7 @@ NleUI::NleUI() {
       o->end();
       Fl_Group::current()->resizable(o);
     }
-    { Fl_Choice* o = projectChoice = new Fl_Choice(345, 0, 170, 25);
+    { Fl_Choice* o = projectChoice = new Fl_Choice(530, 0, 170, 25);
       o->down_box(FL_BORDER_BOX);
       o->callback((Fl_Callback*)cb_projectChoice);
     }
