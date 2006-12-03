@@ -411,6 +411,55 @@ void NleUI::cb_1(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_1_i(o,v);
 }
 
+void NleUI::cb_pa_playButton_i(Fl_Button* o, void*) {
+  if ( strcmp( o->label(), "@>" ) == 0 ) {
+	o->label( "@square" );
+	lastButton->deactivate();
+	firstButton->deactivate();
+	forwardButton->deactivate();
+	backButton->deactivate();
+	m_videoView->play();
+} else {
+	o->label( "@>" );
+	m_videoView->stop();
+	lastButton->activate();
+	firstButton->activate();
+	forwardButton->activate();
+	backButton->activate();
+};
+}
+void NleUI::cb_pa_playButton(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_pa_playButton_i(o,v);
+}
+
+void NleUI::cb_pa_lastButton_i(Fl_Button*, void*) {
+  nle::g_ruler->skipLast();
+}
+void NleUI::cb_pa_lastButton(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_pa_lastButton_i(o,v);
+}
+
+void NleUI::cb_pa_firstButton_i(Fl_Button*, void*) {
+  nle::g_ruler->skipFirst();
+}
+void NleUI::cb_pa_firstButton(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_pa_firstButton_i(o,v);
+}
+
+void NleUI::cb_pa_backButton_i(Fl_Button*, void*) {
+  nle::g_ruler->skipBackward();
+}
+void NleUI::cb_pa_backButton(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_pa_backButton_i(o,v);
+}
+
+void NleUI::cb_pa_forwardButton_i(Fl_Button*, void*) {
+  nle::g_ruler->skipForward();
+}
+void NleUI::cb_pa_forwardButton(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_pa_forwardButton_i(o,v);
+}
+
 void NleUI::cb_scaleBar_i(Flmm_Scalebar* o, void*) {
   Flmm_Scalebar *sb = (Flmm_Scalebar *)o;
 float width = sb->w();
@@ -838,6 +887,32 @@ NleUI::NleUI() {
           }
           { Fl_Button* o = new Fl_Button(200, 305, 55, 40, "@||");
             o->callback((Fl_Callback*)cb_1);
+          }
+          { Fl_Button* o = pa_playButton = new Fl_Button(130, 305, 105, 40, "@>");
+            o->tooltip("Play (F7)");
+            o->shortcut(0xffc4);
+            o->callback((Fl_Callback*)cb_pa_playButton);
+            o->hide();
+          }
+          { Fl_Button* o = pa_lastButton = new Fl_Button(300, 305, 65, 40, "@>|");
+            o->tooltip("Goto End");
+            o->callback((Fl_Callback*)cb_pa_lastButton);
+            o->hide();
+          }
+          { Fl_Button* o = pa_firstButton = new Fl_Button(0, 305, 65, 40, "@|<");
+            o->tooltip("Goto Start");
+            o->callback((Fl_Callback*)cb_pa_firstButton);
+            o->hide();
+          }
+          { Fl_Button* o = pa_backButton = new Fl_Button(65, 305, 65, 40, "@<|");
+            o->tooltip("Skip Frame backwards");
+            o->callback((Fl_Callback*)cb_pa_backButton);
+            o->hide();
+          }
+          { Fl_Button* o = pa_forwardButton = new Fl_Button(235, 305, 65, 40, "@|>");
+            o->tooltip("Skip Frame forward");
+            o->callback((Fl_Callback*)cb_pa_forwardButton);
+            o->hide();
           }
           o->end();
         }

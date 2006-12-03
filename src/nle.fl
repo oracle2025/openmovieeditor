@@ -338,7 +338,7 @@ fb->load_rel();}
                 }
               }
               Fl_Group titles_tab {
-                label Titles selected
+                label Titles
                 private xywh {0 75 365 230} deactivate
               } {
                 Fl_Choice titles_fonts {
@@ -434,7 +434,7 @@ m_timelineView->titles_text( titles_text->value() );}
 	firstButton->activate();
 	forwardButton->activate();
 	backButton->activate();
-}}
+}} selected
               tooltip {Play (F7)} xywh {110 305 90 40} shortcut 0xffc4
             }
             Fl_Button lastButton {
@@ -471,6 +471,45 @@ if ( name ) {
               label {@||}
               callback {m_videoView->pause();}
               xywh {200 305 55 40}
+            }
+            Fl_Button pa_playButton {
+              label {@>}
+              callback {if ( strcmp( o->label(), "@>" ) == 0 ) {
+	o->label( "@square" );
+	lastButton->deactivate();
+	firstButton->deactivate();
+	forwardButton->deactivate();
+	backButton->deactivate();
+	m_videoView->play();
+} else {
+	o->label( "@>" );
+	m_videoView->stop();
+	lastButton->activate();
+	firstButton->activate();
+	forwardButton->activate();
+	backButton->activate();
+}}
+              tooltip {Play (F7)} xywh {130 305 105 40} shortcut 0xffc4 hide
+            }
+            Fl_Button pa_lastButton {
+              label {@>|}
+              callback {nle::g_ruler->skipLast()}
+              tooltip {Goto End} xywh {300 305 65 40} hide
+            }
+            Fl_Button pa_firstButton {
+              label {@|<}
+              callback {nle::g_ruler->skipFirst();}
+              tooltip {Goto Start} xywh {0 305 65 40} hide
+            }
+            Fl_Button pa_backButton {
+              label {@<|}
+              callback {nle::g_ruler->skipBackward();}
+              tooltip {Skip Frame backwards} xywh {65 305 65 40} hide
+            }
+            Fl_Button pa_forwardButton {
+              label {@|>}
+              callback {nle::g_ruler->skipForward();}
+              tooltip {Skip Frame forward} xywh {235 305 65 40} hide
             }
           }
         }
