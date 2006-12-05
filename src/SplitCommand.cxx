@@ -23,6 +23,7 @@
 #include "VideoClip.H"
 #include "AudioClip.H"
 #include "AudioFileFactory.H"
+#include "TitleClip.H"
 
 namespace nle
 {
@@ -37,6 +38,7 @@ SplitCommand::SplitCommand( Clip* clip, int64_t position )
 	m_position = position;
 	m_length = clip->length();
 	m_audioClip = 0;
+	m_titleClip = 0;
 	AudioClip* ac = dynamic_cast<AudioClip*>(clip);
 	if ( ac ) {
 		m_audioClip = true;
@@ -56,7 +58,16 @@ SplitCommand::SplitCommand( Clip* clip, int64_t position )
 			n = n->next;
 			i++;
 		}
-	} 
+	}
+	TitleClip* tc = dynamic_cast<TitleClip*>(clip);
+	if ( tc ) {
+		m_titleClip = true;
+		m_text = tc->text();
+		m_font = tc->font();
+		m_size = tc->size();
+		m_x = tc->x();
+		m_y = tc->y();
+	}
 }
 SplitCommand::~SplitCommand()
 {
@@ -104,6 +115,14 @@ void SplitCommand::doo()
 			i++;
 		}
 		g_timeline->addClip( m_track, ac );
+	} else if ( m_titleClip ) {
+		TitleClip* tc = new TitleClip( t, m_position, m_length - ( m_position - c->position() ) + c->trimA() - c->trimB(), m_clipNr2 );
+		tc->text(m_text.c_str());
+		tc->font(m_font);
+		tc->size(m_size);
+		tc->x(m_x);
+		tc->y(m_y);
+		g_timeline->addClip( m_track, tc );
 	} else {
 		g_timeline->addFile( m_track, m_position, c->filename(), ( m_position - c->position() ) + c->trimA(), c->trimB(), mute, m_clipNr2, m_length );
 	}

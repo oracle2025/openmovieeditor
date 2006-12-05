@@ -49,6 +49,12 @@ class SplitCommand : public Command
 		auto_node* m_automationPoints;
 		int m_automationsCount;
 		bool m_audioClip;
+		bool m_titleClip;
+		string m_text;
+		int m_size;
+		int m_font;
+		float m_x;
+		float m_y;
 };
 
 } /* namespace nle */
