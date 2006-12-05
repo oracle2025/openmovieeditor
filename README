@@ -1,7 +1,7 @@
 The Open Movie Editor
 
 
-... is a Non Linear Movie Editor, it is in it's very early stages of development.
+... is a Non Linear Movie Editor, it is in its very early stages of development.
 
 http://openmovieeditor.sourceforge.net/
 
@@ -32,7 +32,7 @@ libquicktime:
  required dependency.
 
 libsndfile:
- There is a yet to be merged variant of libsndfile that supports ogg files. It's
+ There is a yet to be merged variant of libsndfile that supports ogg files. Its
  at http://www.metadecks.org/software/libsndfile/ . However, I do not use it
  because ffmpeg does ogg as well.
 
