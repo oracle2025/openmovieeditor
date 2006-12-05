@@ -1091,5 +1091,9 @@ void TimelineView::remove()
 	clear_selection();
 	setSelectionButtons();
 }
+void TimelineView::help()
+{
+// Create a HelpDialog and show the Help
+}
 
 } /* namespace nle */

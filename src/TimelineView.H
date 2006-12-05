@@ -92,6 +92,7 @@ class TimelineView : public Fl_Widget
 		void paste();
 		void remove();
 		void setSelectionButtons();
+		void help();
 	protected:
 		void draw();
 	private:
