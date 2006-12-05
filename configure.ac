@@ -64,7 +64,7 @@ CPPFLAGS="$CPPFLAGS $SNDFILE_CFLAGS"
 LDFLAGS="$LDFLAGS $SNDFILE_LIBS"
 
 PKG_CHECK_MODULES(GAVL, gavl >= 0.2.3,,
-  AC_MSG_ERROR([*** gavl 0.2.3 not found - this program requires the gmerlin audio
+  AC_MSG_ERROR([*** gavl >= 0.2.3 not found - this program requires the gmerlin audio
   video library >= 0.2.3 http://gmerlin.sourceforge.net/ ***]))
 CPPFLAGS="$CPPFLAGS $GAVL_CFLAGS"
 LDFLAGS="$LDFLAGS $GAVL_LIBS"
