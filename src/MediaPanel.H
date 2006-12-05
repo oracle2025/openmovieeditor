@@ -21,12 +21,13 @@
 #define _MEDIA_PANEL_H_
 
 #include <FL/Fl.H>
-#include <FL/Fl_Tile.H>
+//#include <FL/Fl_Tile.H>
 #include "FolderBrowser.H"
 #include "MediaBrowser.H"
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Output.H>
+#include "Fl_Split.h"
 
 namespace nle
 {
@@ -39,7 +40,7 @@ class MediaPanel : public Fl_Group
 		void load( const char* folder );
 		MediaBrowser *files;
 		Fl_Output *folderDisplay;
-		Fl_Tile *bt;
+		Fl_Split *bt;
 		nle::FolderBrowser *browser;
 	private:
 		inline void cb_browser_i(nle::FolderBrowser*, void*);

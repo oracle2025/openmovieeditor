@@ -206,5 +206,7 @@ openmovieeditor_SOURCES = nle.cxx\
 	SpecialClipsBrowser.H\
 	SpecialClipsBrowser.cxx\
 	TitleClip.cxx\
-	TitleClip.H
+	TitleClip.H\
+	Fl_Split.cpp\
+	Fl_Split.h
 

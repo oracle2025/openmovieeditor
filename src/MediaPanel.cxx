@@ -19,6 +19,7 @@
 #include <FL/filename.H>
 #include "MediaPanel.H"
 #include "Prefs.H"
+#include "Fl_Split.h"
 
 namespace nle
 {
@@ -98,7 +99,7 @@ namespace nle
 	  {
 	    Fl_Group* o = this;
 	    o->user_data((void*)(this));
-	    { Fl_Tile* o = bt = new Fl_Tile(0, 20, 360, 225);
+	    { Fl_Split* o = bt = new Fl_Split(0, 20, 360, 225);
 	      { nle::FolderBrowser* o = browser = new nle::FolderBrowser(0, 20, 185, 225);
 		o->box(FL_NO_BOX);
 		o->color(FL_BACKGROUND2_COLOR);
