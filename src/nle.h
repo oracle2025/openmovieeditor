@@ -23,11 +23,13 @@
 #include "IVideoEffect.H"
 #include <FL/Fl_Button.H>
 #include "SpecialClipsBrowser.H"
-#include <FL/Fl_Choice.H>
-#include <FL/Fl_Value_Input.H>
-#include <math.h>
-#include <FL/Fl_Slider.H>
 #include <FL/Fl_Input.H>
+#include <FL/Fl_Value_Input.H>
+#include <FL/Fl_Choice.H>
+#include <math.h>
+#include <FL/fl_show_colormap.H>
+#include <FL/Fl_Slider.H>
+#include <FL/Fl_Box.H>
 #include "Flmm_Scalebar.H"
 #include "globals.H"
 using namespace std;
@@ -35,7 +37,6 @@ using namespace std;
 #include <FL/Fl_Scrollbar.H>
 #include "TimelineScroll.H"
 #include "TimelineView.H"
-#include <FL/Fl_Box.H>
 
 class NleUI {
 public:
@@ -135,6 +136,11 @@ public:
 private:
   Fl_Group *titles_tab;
 public:
+  Fl_Input *titles_text;
+private:
+  void cb_titles_text_i(Fl_Input*, void*);
+  static void cb_titles_text(Fl_Input*, void*);
+public:
   Fl_Choice *titles_fonts;
 private:
   void cb_titles_fonts_i(Fl_Choice*, void*);
@@ -145,21 +151,18 @@ public:
 private:
   void cb_titles_size_i(Fl_Value_Input*, void*);
   static void cb_titles_size(Fl_Value_Input*, void*);
-public:
-  Fl_Slider *titles_y;
-private:
-  void cb_titles_y_i(Fl_Slider*, void*);
-  static void cb_titles_y(Fl_Slider*, void*);
+  void cb_Color_i(Fl_Button*, void*);
+  static void cb_Color(Fl_Button*, void*);
 public:
   Fl_Slider *titles_x;
 private:
   void cb_titles_x_i(Fl_Slider*, void*);
   static void cb_titles_x(Fl_Slider*, void*);
 public:
-  Fl_Input *titles_text;
+  Fl_Slider *titles_y;
 private:
-  void cb_titles_text_i(Fl_Input*, void*);
-  static void cb_titles_text(Fl_Input*, void*);
+  void cb_titles_y_i(Fl_Slider*, void*);
+  static void cb_titles_y(Fl_Slider*, void*);
 public:
   Fl_Button *playButton;
 private:

@@ -289,12 +289,19 @@ void NleUI::cb_m_edit_effect(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_m_edit_effect_i(o,v);
 }
 
+void NleUI::cb_titles_text_i(Fl_Input* o, void*) {
+  m_timelineView->titles_text( o->value() );
+}
+void NleUI::cb_titles_text(Fl_Input* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_titles_text_i(o,v);
+}
+
 void NleUI::cb_titles_fonts_i(Fl_Choice* o, void*) {
   m_timelineView->titles_font( o->value() );
 m_timelineView->titles_text( titles_text->value() );
 }
 void NleUI::cb_titles_fonts(Fl_Choice* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_titles_fonts_i(o,v);
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_titles_fonts_i(o,v);
 }
 
 Fl_Menu_Item NleUI::menu_titles_fonts[] = {
@@ -318,15 +325,15 @@ void NleUI::cb_titles_size_i(Fl_Value_Input* o, void*) {
 m_timelineView->titles_text( titles_text->value() );
 }
 void NleUI::cb_titles_size(Fl_Value_Input* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_titles_size_i(o,v);
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_titles_size_i(o,v);
 }
 
-void NleUI::cb_titles_y_i(Fl_Slider* o, void*) {
-  m_timelineView->titles_y( o->value() );
-m_timelineView->titles_text( titles_text->value() );
+void NleUI::cb_Color_i(Fl_Button* o, void*) {
+  o->color(fl_show_colormap(o->color()));
+o->redraw();
 }
-void NleUI::cb_titles_y(Fl_Slider* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_titles_y_i(o,v);
+void NleUI::cb_Color(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_Color_i(o,v);
 }
 
 void NleUI::cb_titles_x_i(Fl_Slider* o, void*) {
@@ -334,14 +341,15 @@ void NleUI::cb_titles_x_i(Fl_Slider* o, void*) {
 m_timelineView->titles_text( titles_text->value() );
 }
 void NleUI::cb_titles_x(Fl_Slider* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_titles_x_i(o,v);
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_titles_x_i(o,v);
 }
 
-void NleUI::cb_titles_text_i(Fl_Input* o, void*) {
-  m_timelineView->titles_text( o->value() );
+void NleUI::cb_titles_y_i(Fl_Slider* o, void*) {
+  m_timelineView->titles_y( o->value() );
+m_timelineView->titles_text( titles_text->value() );
 }
-void NleUI::cb_titles_text(Fl_Input* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_titles_text_i(o,v);
+void NleUI::cb_titles_y(Fl_Slider* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_titles_y_i(o,v);
 }
 
 void NleUI::cb_playButton_i(Fl_Button* o, void*) {
@@ -826,33 +834,56 @@ NleUI::NleUI() {
               o->end();
             }
             { Fl_Group* o = titles_tab = new Fl_Group(0, 75, 365, 230, "Titles");
-              o->deactivate();
-              { Fl_Choice* o = titles_fonts = new Fl_Choice(85, 80, 235, 25, "Font");
+              { Fl_Input* o = titles_text = new Fl_Input(205, 80, 155, 220);
+                o->type(4);
+                o->callback((Fl_Callback*)cb_titles_text);
+                Fl_Group::current()->resizable(o);
+              }
+              { Fl_Group* o = new Fl_Group(5, 80, 195, 220);
+                o->box(FL_ENGRAVED_FRAME);
+                { Fl_Value_Input* o = new Fl_Value_Input(95, 160, 100, 20, "Line Spacing");
+                o->labelsize(12);
+                o->maximum(5);
+                o->step(0.5);
+                }
+                { Fl_Choice* o = titles_fonts = new Fl_Choice(95, 85, 100, 20, "Font");
                 o->down_box(FL_BORDER_BOX);
+                o->labelsize(12);
                 o->callback((Fl_Callback*)cb_titles_fonts);
                 o->menu(menu_titles_fonts);
-              }
-              { Fl_Value_Input* o = titles_size = new Fl_Value_Input(320, 80, 40, 25);
+                }
+                { Fl_Value_Input* o = titles_size = new Fl_Value_Input(95, 110, 100, 20, "Font Size");
+                o->labelsize(12);
                 o->minimum(10);
                 o->maximum(200);
                 o->step(2);
                 o->value(20);
                 o->callback((Fl_Callback*)cb_titles_size);
-              }
-              { Fl_Slider* o = titles_y = new Fl_Slider(335, 135, 25, 165);
-                o->type(4);
-                o->value(0.5);
-                o->callback((Fl_Callback*)cb_titles_y);
-              }
-              { Fl_Slider* o = titles_x = new Fl_Slider(5, 110, 330, 25);
+                }
+                { Fl_Button* o = new Fl_Button(95, 135, 100, 20, "Color");
+                o->color(FL_BACKGROUND2_COLOR);
+                o->labelsize(12);
+                o->callback((Fl_Callback*)cb_Color);
+                o->align(FL_ALIGN_LEFT);
+                }
+                { Fl_Slider* o = titles_x = new Fl_Slider(95, 185, 100, 20, "@<->");
+                o->tooltip("Horizontal Text Alignment");
                 o->type(5);
                 o->value(0.5);
                 o->callback((Fl_Callback*)cb_titles_x);
-              }
-              { Fl_Input* o = titles_text = new Fl_Input(5, 135, 330, 165);
-                o->type(4);
-                o->callback((Fl_Callback*)cb_titles_text);
+                o->align(FL_ALIGN_LEFT);
+                }
+                { Fl_Slider* o = titles_y = new Fl_Slider(95, 210, 100, 20, "@8<->");
+                o->tooltip("Vertical Text Alignment");
+                o->type(5);
+                o->value(0.5);
+                o->callback((Fl_Callback*)cb_titles_y);
+                o->align(FL_ALIGN_LEFT);
+                }
+                { Fl_Box* o = new Fl_Box(100, 250, 25, 25);
                 Fl_Group::current()->resizable(o);
+                }
+                o->end();
               }
               o->end();
             }
