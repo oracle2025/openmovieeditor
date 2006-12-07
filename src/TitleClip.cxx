@@ -68,6 +68,9 @@ void TitleClip::init()
 		return;
 	}
 	m_dirty = false;
+	char* text = new char[m_text.length() + 1];
+	strcpy( text, m_text.c_str() );
+	
 	
 //	uchar* pixels;
 //	uchar* alpha;
@@ -83,22 +86,47 @@ void TitleClip::init()
 	int y_range = ( 576 - h );
 	int x = lrint(x_range * m_x);
 	int y = h + lrint(y_range * m_y) - fl_descent();
-	fl_color(FL_DARK3);
-	
-	fl_draw( m_text.c_str(), x, y );
-	
-	fl_color(FL_WHITE);
-	
-	fl_draw( m_text.c_str(), x - 2, y - 2 );
-	
+
+	char* p = strtok( text, "\n" );
+	int o_w = 0;
+	int o_h = 0;
+	fl_measure( p, o_w, o_h );
+	y = o_h + lrint(y_range * m_y) - fl_descent();
+	for ( ; p; p = strtok( 0, "\n" ) ) {
+		o_h = o_w = 0;
+		fl_measure( p, o_w, o_h );
+		x = lrint( ( 768 - o_w )* m_x);
+		cout << p << endl;
+		cout << o_h << endl;
+		fl_color(FL_DARK3);
+		fl_draw( p, x, y );
+		fl_color(FL_WHITE);
+		fl_draw( p, x - 2, y - 2 );
+		y = y + o_h;
+	}
+
 	fl_read_image(m_pixels, 0, 0, 768, 576, 255);
-	fl_draw_box(FL_FLAT_BOX, 0, 0, 768, 576, FL_BLUE);
-	fl_color(FL_WHITE);
+	x = lrint(x_range * m_x);
+	y = h + lrint(y_range * m_y) - fl_descent();
 	
-	fl_draw( m_text.c_str(), x, y );
+	fl_draw_box(FL_FLAT_BOX, 0, 0, 768, 576, FL_BLUE);	
 	
-	fl_draw( m_text.c_str(), x - 2, y - 2 );
 	//fl_draw_box(FL_BORDER_FRAME, x, y - h + fl_descent(), w, h, FL_WHITE);
+
+	strcpy( text, m_text.c_str() );
+	p = strtok( text, "\n" );
+	fl_color(FL_WHITE);
+	y = o_h + lrint(y_range * m_y) - fl_descent();
+	for ( ; p; p = strtok( 0, "\n" ) ) {
+		o_h = o_w = 0;
+		fl_measure( p, o_w, o_h );
+		x = lrint( ( 768 - o_w )* m_x);
+		fl_draw( p, x, y );
+		fl_draw( p, x - 2, y - 2 );
+		y = y + o_h;
+	}
+
+	
 	
 	fl_read_image(m_alpha, 0, 0, 768, 576);
 	uchar* src = m_alpha;
@@ -127,7 +155,7 @@ void TitleClip::init()
 	} else {
 		m_artist = new ImageClipArtist( m_image );
 	}
-		
+	delete [] text;
 }
 
 TitleClip::~TitleClip()
