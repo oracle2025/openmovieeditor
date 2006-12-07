@@ -96,8 +96,6 @@ void TitleClip::init()
 		o_h = o_w = 0;
 		fl_measure( p, o_w, o_h );
 		x = lrint( ( 768 - o_w )* m_x);
-		cout << p << endl;
-		cout << o_h << endl;
 		fl_color(FL_DARK3);
 		fl_draw( p, x, y );
 		fl_color(FL_WHITE);
