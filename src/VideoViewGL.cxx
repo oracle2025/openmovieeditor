@@ -197,7 +197,12 @@ void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 		glBindTexture( GL_TEXTURE_2D, video_canvas[i] );
 		float gl_x, gl_y, gl_w, gl_h;
 		{
-			float f_v = ( (float)fs[i]->w / (float)fs[i]->h );
+			float f_v;// = ( (float)fs[i]->w / (float)fs[i]->h );
+			if ( g_16_9 ) {
+				f_v = ( 16.0 / 9.0 );
+			} else {
+				f_v = ( 4.0 / 3.0 );
+			}
 			float f_w = ( (float)w() / (float)h() );
 			float f_g = f_v / f_w;
 			if ( f_g > 1.0 ) {
