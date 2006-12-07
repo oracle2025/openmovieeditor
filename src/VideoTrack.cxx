@@ -145,14 +145,8 @@ frame_struct** VideoTrack::getFrameStack( int64_t position )
 	if ( o ) {
 		IVideoReader* A;
 		IVideoReader* B;
-		A = dynamic_cast<VideoClip*>(o->clipA);
-		if ( !A ) {
-			A = dynamic_cast<ImageClip*>(o->clipA);
-		}
-		B = dynamic_cast<VideoClip*>(o->clipB);
-		if ( !B ) {
-			B = dynamic_cast<ImageClip*>(o->clipB);
-		}
+		A = dynamic_cast<IVideoReader*>(o->clipA);
+		B = dynamic_cast<IVideoReader*>(o->clipB);
 		assert( A );
 		assert( B );
 		frameStack[0] = A->getFrame( position );
@@ -167,14 +161,8 @@ frame_struct** VideoTrack::getFrameStack( int64_t position )
 	} else {
 		for ( clip_node *p = m_clips; p; p = p->next ) {
 			IVideoReader* current;
-			if ( p->clip->type() == CLIP_TYPE_VIDEO ) {
-				current = dynamic_cast<VideoClip*>(p->clip);
-			} else if ( p->clip->type() == CLIP_TYPE_IMAGE ) {
-				current = dynamic_cast<ImageClip*>(p->clip);
-				if ( !current ) {
-					current = dynamic_cast<TitleClip*>(p->clip);
-				}
-			} else {
+			current = dynamic_cast<IVideoReader*>(p->clip);
+			if ( !current ) {
 				continue;
 			}
 			frameStack[0] = current->getFrame( position );
