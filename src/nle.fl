@@ -226,7 +226,7 @@ if ( fullscreen_on ) {
         } {
           MenuItem {} {
             label {Tutorial...}
-            callback {m_timelineView->help();} selected
+            callback {m_timelineView->help();}
             xywh {0 0 100 20}
           }
           MenuItem {} {
@@ -343,14 +343,14 @@ fb->load_rel();}
                 }
               }
               Fl_Group titles_tab {
-                label Titles
-                private xywh {0 75 365 230}
+                label Titles open selected
+                private xywh {0 75 365 230} deactivate
               } {
                 Fl_Input titles_text {
                   callback {m_timelineView->titles_text( o->value() );}
                   xywh {205 80 155 220} type Multiline resizable
                 }
-                Fl_Group {} {open
+                Fl_Group {} {
                   xywh {5 80 195 220} box ENGRAVED_FRAME
                 } {
                   Fl_Value_Input {} {

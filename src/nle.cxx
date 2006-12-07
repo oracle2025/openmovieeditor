@@ -842,6 +842,7 @@ NleUI::NleUI() {
               o->end();
             }
             { Fl_Group* o = titles_tab = new Fl_Group(0, 75, 365, 230, "Titles");
+              o->deactivate();
               { Fl_Input* o = titles_text = new Fl_Input(205, 80, 155, 220);
                 o->type(4);
                 o->callback((Fl_Callback*)cb_titles_text);
