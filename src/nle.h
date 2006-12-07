@@ -98,6 +98,8 @@ private:
   static void cb_Scrub(Fl_Menu_*, void*);
   void cb_Fullscreen_i(Fl_Menu_*, void*);
   static void cb_Fullscreen(Fl_Menu_*, void*);
+  void cb_Tutorial_i(Fl_Menu_*, void*);
+  static void cb_Tutorial(Fl_Menu_*, void*);
   void cb_About_i(Fl_Menu_*, void*);
   static void cb_About(Fl_Menu_*, void*);
 public:

@@ -17,7 +17,7 @@ if ( Fl::event()==FL_CLOSE ) {
 }} open
       xywh {777 382 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
-      Fl_Menu_Bar {} {
+      Fl_Menu_Bar {} {open
         xywh {0 0 530 25}
       } {
         Submenu {} {
@@ -221,9 +221,14 @@ if ( fullscreen_on ) {
           }
         }
         Submenu {} {
-          label {&Help}
+          label {&Help} open
           xywh {20 20 100 20}
         } {
+          MenuItem {} {
+            label {Tutorial...}
+            callback {m_timelineView->help();} selected
+            xywh {0 0 100 20}
+          }
           MenuItem {} {
             label {About...}
             callback {AboutDialog dlg;
@@ -417,7 +422,7 @@ m_timelineView->titles_text( titles_text->value() );}
                   Fl_Button {} {
                     label Color
                     callback {o->color(fl_show_colormap(o->color()));
-o->redraw();} selected
+o->redraw();}
                     xywh {95 135 100 20} color 7 labelsize 12 align 4
                     code0 {\#include <FL/fl_show_colormap.H>}
                   }

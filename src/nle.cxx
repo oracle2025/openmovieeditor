@@ -188,6 +188,13 @@ void NleUI::cb_Fullscreen(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Fullscreen_i(o,v);
 }
 
+void NleUI::cb_Tutorial_i(Fl_Menu_*, void*) {
+  m_timelineView->help();
+}
+void NleUI::cb_Tutorial(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_Tutorial_i(o,v);
+}
+
 void NleUI::cb_About_i(Fl_Menu_*, void*) {
   AboutDialog dlg;
 dlg.show();
@@ -235,6 +242,7 @@ Fl_Menu_Item NleUI::menu_[] = {
  {"Track Overview", 0,  0, 0, 18, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"&Help", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Tutorial...", 0,  (Fl_Callback*)NleUI::cb_Tutorial, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"About...", 0,  (Fl_Callback*)NleUI::cb_About, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {0,0,0,0,0,0,0,0,0}

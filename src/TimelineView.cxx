@@ -18,11 +18,16 @@
  */
 
 #include <math.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 
 #include <FL/Fl.H>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Window.H>
 #include <FL/fl_draw.H>
+#include <FL/Fl_Help_Dialog.H>
 
 #include "sl/sl.h"
 
@@ -1094,6 +1099,20 @@ void TimelineView::remove()
 void TimelineView::help()
 {
 // Create a HelpDialog and show the Help
+	static Fl_Help_Dialog* help = 0;
+	if ( !help ) {
+		help = new Fl_Help_Dialog;
+	}
+	struct stat buf;
+	if ( stat( INSTALL_PREFIX "/share/doc/openmovieeditor/tutorial.html", &buf ) == 0 ) {
+		help->load( INSTALL_PREFIX "/share/doc/openmovieeditor/tutorial.html" );
+		help->show();
+	} else if ( stat( "../doc/tutorial.html", &buf ) == 0 ) {
+		help->load( "../doc/tutorial.html" );
+		help->show();
+	} else {
+		fl_alert( "Help File was not found." );
+	}
 }
 
 } /* namespace nle */
