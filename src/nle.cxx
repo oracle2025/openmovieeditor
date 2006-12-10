@@ -150,6 +150,14 @@ void NleUI::cb_16(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_16_i(o,v);
 }
 
+void NleUI::cb_Black_i(Fl_Menu_* o, void*) {
+  g_black_borders = (o->mvalue())->value();
+m_videoView->redraw();
+}
+void NleUI::cb_Black(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_Black_i(o,v);
+}
+
 void NleUI::cb_Transport_i(Fl_Menu_* o, void*) {
   // FIXME: allow change only if not currently playing ?!
 // -> assign this value in SimplePlaybackCore "on play"
@@ -205,7 +213,7 @@ void NleUI::cb_About(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_About_i(o,v);
 }
 
-Fl_Menu_Item NleUI::menu_[] = {
+Fl_Menu_Item NleUI::menu_Black[] = {
  {"&Project", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"New Project", 0,  (Fl_Callback*)NleUI::cb_New, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Save as...", 0x50073,  (Fl_Callback*)NleUI::cb_Save, 0, 128, FL_NORMAL_LABEL, 0, 14, 0},
@@ -231,7 +239,8 @@ Fl_Menu_Item NleUI::menu_[] = {
  {0,0,0,0,0,0,0,0,0},
  {"Format", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"4:3", 0,  (Fl_Callback*)NleUI::cb_4, 0, 12, FL_NORMAL_LABEL, 0, 14, 0},
- {"16:9", 0,  (Fl_Callback*)NleUI::cb_16, 0, 8, FL_NORMAL_LABEL, 0, 14, 0},
+ {"16:9", 0,  (Fl_Callback*)NleUI::cb_16, 0, 136, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Black Borders", 0,  (Fl_Callback*)NleUI::cb_Black, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"&JACK", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"Transport connect", 0,  (Fl_Callback*)NleUI::cb_Transport, 0, 6, FL_NORMAL_LABEL, 0, 14, 0},
@@ -247,12 +256,13 @@ Fl_Menu_Item NleUI::menu_[] = {
  {0,0,0,0,0,0,0,0,0},
  {0,0,0,0,0,0,0,0,0}
 };
-Fl_Menu_Item* NleUI::undo_item = NleUI::menu_ + 7;
-Fl_Menu_Item* NleUI::redo_item = NleUI::menu_ + 8;
-Fl_Menu_Item* NleUI::cut_item = NleUI::menu_ + 9;
-Fl_Menu_Item* NleUI::copy_item = NleUI::menu_ + 10;
-Fl_Menu_Item* NleUI::paste_item = NleUI::menu_ + 11;
-Fl_Menu_Item* NleUI::delete_item = NleUI::menu_ + 12;
+Fl_Menu_Item* NleUI::undo_item = NleUI::menu_Black + 7;
+Fl_Menu_Item* NleUI::redo_item = NleUI::menu_Black + 8;
+Fl_Menu_Item* NleUI::cut_item = NleUI::menu_Black + 9;
+Fl_Menu_Item* NleUI::copy_item = NleUI::menu_Black + 10;
+Fl_Menu_Item* NleUI::paste_item = NleUI::menu_Black + 11;
+Fl_Menu_Item* NleUI::delete_item = NleUI::menu_Black + 12;
+Fl_Menu_Item* NleUI::jackMenu = NleUI::menu_Black + 28;
 
 void NleUI::cb__i(nle::FileBrowser* o, void*) {
   nle::FileBrowser* fb = (nle::FileBrowser*)o;
@@ -420,28 +430,28 @@ void NleUI::cb_projectNameInput(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_projectNameInput_i(o,v);
 }
 
-void NleUI::cb_1_i(Fl_Button*, void*) {
+void NleUI::cb_pauseButton_i(Fl_Button*, void*) {
   m_videoView->pause();
 }
-void NleUI::cb_1(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_1_i(o,v);
+void NleUI::cb_pauseButton(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_pauseButton_i(o,v);
 }
 
 void NleUI::cb_pa_playButton_i(Fl_Button* o, void*) {
   if ( strcmp( o->label(), "@>" ) == 0 ) {
 	o->label( "@square" );
-	lastButton->deactivate();
-	firstButton->deactivate();
-	forwardButton->deactivate();
-	backButton->deactivate();
+	pa_lastButton->deactivate();
+	pa_firstButton->deactivate();
+	pa_forwardButton->deactivate();
+	pa_backButton->deactivate();
 	m_videoView->play();
 } else {
 	o->label( "@>" );
 	m_videoView->stop();
-	lastButton->activate();
-	firstButton->activate();
-	forwardButton->activate();
-	backButton->activate();
+	pa_lastButton->activate();
+	pa_firstButton->activate();
+	pa_forwardButton->activate();
+	pa_backButton->activate();
 };
 }
 void NleUI::cb_pa_playButton(Fl_Button* o, void* v) {
@@ -488,11 +498,11 @@ void NleUI::cb_scaleBar(Flmm_Scalebar* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_scaleBar_i(o,v);
 }
 
-void NleUI::cb_2_i(Fl_Button* o, void*) {
+void NleUI::cb_1_i(Fl_Button* o, void*) {
   g_snap = o->value();
 }
-void NleUI::cb_2(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_2_i(o,v);
+void NleUI::cb_1(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_1_i(o,v);
 }
 
 #include <FL/Fl_Pixmap.H>
@@ -709,8 +719,8 @@ NleUI::NleUI() {
   { Fl_Double_Window* o = mainWindow = new Fl_Double_Window(700, 600, "Open Movie Editor");
     w = o;
     o->callback((Fl_Callback*)cb_mainWindow, (void*)(this));
-    { Fl_Menu_Bar* o = new Fl_Menu_Bar(0, 0, 530, 25);
-      o->menu(menu_);
+    { Fl_Menu_Bar* o = new Fl_Menu_Bar(0, 0, 530, 25, "Black Borders");
+      o->menu(menu_Black);
     }
     { Fl_Tile* o = new Fl_Tile(0, 25, 700, 575);
       { Fl_Tile* o = new Fl_Tile(0, 25, 700, 320);
@@ -925,8 +935,8 @@ NleUI::NleUI() {
             o->callback((Fl_Callback*)cb_projectNameInput);
             o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
           }
-          { Fl_Button* o = new Fl_Button(200, 305, 55, 40, "@||");
-            o->callback((Fl_Callback*)cb_1);
+          { Fl_Button* o = pauseButton = new Fl_Button(200, 305, 55, 40, "@||");
+            o->callback((Fl_Callback*)cb_pauseButton);
           }
           { Fl_Button* o = pa_playButton = new Fl_Button(130, 305, 105, 40, "@>");
             o->tooltip("Play (F7)");
@@ -981,7 +991,7 @@ NleUI::NleUI() {
               o->type(1);
               o->value(1);
               o->image(image_snap);
-              o->callback((Fl_Callback*)cb_2);
+              o->callback((Fl_Callback*)cb_1);
             }
             { nle::Ruler* o = new nle::Ruler(65, 345, 635, 25, "Ruler");
               o->box(FL_UP_BOX);
@@ -1104,6 +1114,7 @@ g_seek_audio = true;
 scroll_area->type(0);
 g_v_scrollbar = vScrollBar;
 g_16_9 = false;
+g_black_borders = false;
 special_clips->add("Titles");
 }
 
@@ -1157,6 +1168,27 @@ titles_x->value( x );
 titles_y->value( y );
 titles_text->value( text );
 titles_tab->activate();
+}
+
+void NleUI::portaudio() {
+  playButton->hide();
+lastButton->hide();
+firstButton->hide();
+backButton->hide();
+forwardButton->hide();
+pauseButton->hide();
+
+pa_playButton->show();
+pa_lastButton->show();
+pa_firstButton->show();
+pa_backButton->show();
+pa_forwardButton->show();
+jackMenu->hide();
+g_playButton = pa_playButton;
+g_firstButton = pa_firstButton;
+g_lastButton = pa_lastButton;
+g_forwardButton = pa_forwardButton;
+g_backButton = pa_backButton;
 }
 Flmm_Scalebar* g_scrollBar;
 
@@ -6346,3 +6378,4 @@ bool g_scrub_audio;
 bool g_seek_audio;
 Fl_Scrollbar* g_v_scrollbar;
 bool g_16_9;
+bool g_black_borders;

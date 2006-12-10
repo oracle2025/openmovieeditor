@@ -189,7 +189,7 @@ void PortAudioPlaybackCore::flipFrame()
 	int64_t diff = m_lastFrame - m_currentFrame;
 	if ( abs( diff ) > VIDEO_DRIFT_LIMIT ) {
 		if ( diff > 0 ) {
-			while( ( m_lastFrame - m_currentFrame ) > VIDEO_DRIFT_LIMIT ) {
+			while( ( m_lastFrame - m_currentFrame ) > VIDEO_DRIFT_LIMIT && Pa_StreamActive( g_stream ) ) {
 				pthread_cond_wait( &condition_cond, &condition_mutex );
 			}
 		} else {

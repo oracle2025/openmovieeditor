@@ -84,6 +84,7 @@ int main( int argc, char** argv )
 	if ( !playbackCore->ok() ) {
 		delete playbackCore;
 		playbackCore = new nle::PortAudioPlaybackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
+		nui.portaudio();
 	}
 	//nle::PortAudioPlaybackCore playbackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
 	//nle::PlaybackCore playbackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );

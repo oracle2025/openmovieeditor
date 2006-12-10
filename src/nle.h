@@ -45,7 +45,7 @@ public:
 private:
   void cb_mainWindow_i(Fl_Double_Window*, void*);
   static void cb_mainWindow(Fl_Double_Window*, void*);
-  static Fl_Menu_Item menu_[];
+  static Fl_Menu_Item menu_Black[];
   void cb_New_i(Fl_Menu_*, void*);
   static void cb_New(Fl_Menu_*, void*);
   void cb_Save_i(Fl_Menu_*, void*);
@@ -92,6 +92,11 @@ private:
   static void cb_4(Fl_Menu_*, void*);
   void cb_16_i(Fl_Menu_*, void*);
   static void cb_16(Fl_Menu_*, void*);
+  void cb_Black_i(Fl_Menu_*, void*);
+  static void cb_Black(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *jackMenu;
+private:
   void cb_Transport_i(Fl_Menu_*, void*);
   static void cb_Transport(Fl_Menu_*, void*);
   void cb_Scrub_i(Fl_Menu_*, void*);
@@ -195,8 +200,11 @@ public:
 private:
   void cb_projectNameInput_i(Fl_Button*, void*);
   static void cb_projectNameInput(Fl_Button*, void*);
-  void cb_1_i(Fl_Button*, void*);
-  static void cb_1(Fl_Button*, void*);
+public:
+  Fl_Button *pauseButton;
+private:
+  void cb_pauseButton_i(Fl_Button*, void*);
+  static void cb_pauseButton(Fl_Button*, void*);
 public:
   Fl_Button *pa_playButton;
 private:
@@ -225,8 +233,8 @@ private:
   Flmm_Scalebar *scaleBar;
   void cb_scaleBar_i(Flmm_Scalebar*, void*);
   static void cb_scaleBar(Flmm_Scalebar*, void*);
-  void cb_2_i(Fl_Button*, void*);
-  static void cb_2(Fl_Button*, void*);
+  void cb_1_i(Fl_Button*, void*);
+  static void cb_1(Fl_Button*, void*);
 public:
   Fl_Scrollbar *vScrollBar;
 private:
@@ -256,6 +264,7 @@ public:
   void setEffectButtons();
   void deactivate_titles();
   void activate_titles(int font, int size, const char* text, float x, float y);
+  void portaudio();
 };
 extern Flmm_Scalebar* g_scrollBar;
 #include "IVideoReader.H"
@@ -385,4 +394,5 @@ extern bool g_scrub_audio;
 extern bool g_seek_audio;
 extern Fl_Scrollbar* g_v_scrollbar;
 extern bool g_16_9;
+extern bool g_black_borders;
 #endif

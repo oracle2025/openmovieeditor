@@ -17,7 +17,8 @@ if ( Fl::event()==FL_CLOSE ) {
 }} open
       xywh {777 382 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
-      Fl_Menu_Bar {} {open
+      Fl_Menu_Bar {} {
+        label {Black Borders} open
         xywh {0 0 530 25}
       } {
         Submenu {} {
@@ -171,10 +172,16 @@ m_videoView->redraw();}
             label {16:9}
             callback {g_16_9 = (o->mvalue())->value();
 m_videoView->redraw();}
-            xywh {0 0 100 20} type Radio
+            xywh {0 0 100 20} type Radio divider
+          }
+          MenuItem {} {
+            label {Black Borders}
+            callback {g_black_borders = (o->mvalue())->value();
+m_videoView->redraw();}
+            xywh {0 0 100 20} type Toggle
           }
         }
-        Submenu {} {
+        Submenu jackMenu {
           label {&JACK} open
           xywh {5 5 100 20}
         } {
@@ -343,7 +350,7 @@ fb->load_rel();}
                 }
               }
               Fl_Group titles_tab {
-                label Titles open selected
+                label Titles open
                 private xywh {0 75 365 230} deactivate
               } {
                 Fl_Input titles_text {
@@ -493,7 +500,7 @@ if ( name ) {
               xywh {0 25 365 25} labelfont 1 align 20
               code0 {\#include "LoadSaveManager/LoadSaveManager.H"}
             }
-            Fl_Button {} {
+            Fl_Button pauseButton {
               label {@||}
               callback {m_videoView->pause();}
               xywh {200 305 55 40}
@@ -502,18 +509,18 @@ if ( name ) {
               label {@>}
               callback {if ( strcmp( o->label(), "@>" ) == 0 ) {
 	o->label( "@square" );
-	lastButton->deactivate();
-	firstButton->deactivate();
-	forwardButton->deactivate();
-	backButton->deactivate();
+	pa_lastButton->deactivate();
+	pa_firstButton->deactivate();
+	pa_forwardButton->deactivate();
+	pa_backButton->deactivate();
 	m_videoView->play();
 } else {
 	o->label( "@>" );
 	m_videoView->stop();
-	lastButton->activate();
-	firstButton->activate();
-	forwardButton->activate();
-	backButton->activate();
+	pa_lastButton->activate();
+	pa_firstButton->activate();
+	pa_forwardButton->activate();
+	pa_backButton->activate();
 }}
               tooltip {Play (F7)} xywh {130 305 105 40} shortcut 0xffc4 hide
             }
@@ -643,7 +650,9 @@ g_seek_audio = true;
 scroll_area->type(0);
 g_v_scrollbar = vScrollBar;
 g_16_9 = false;
-special_clips->add("Titles");} {}
+g_black_borders = false;
+special_clips->add("Titles");} {selected
+    }
   }
   Function {~NleUI()} {} {
     code {delete mainWindow;} {}
@@ -685,14 +694,34 @@ if ( effect_browser->value() == 0 ) {
   Function {deactivate_titles()} {} {
     code {titles_tab->deactivate();} {}
   }
-  Function {activate_titles(int font, int size, const char* text, float x, float y)} {open
-  } {
+  Function {activate_titles(int font, int size, const char* text, float x, float y)} {} {
     code {titles_fonts->value( font );
 titles_size->value( size );
 titles_x->value( x );
 titles_y->value( y );
 titles_text->value( text );
 titles_tab->activate();} {}
+  }
+  Function {portaudio()} {open
+  } {
+    code {playButton->hide();
+lastButton->hide();
+firstButton->hide();
+backButton->hide();
+forwardButton->hide();
+pauseButton->hide();
+
+pa_playButton->show();
+pa_lastButton->show();
+pa_firstButton->show();
+pa_backButton->show();
+pa_forwardButton->show();
+jackMenu->hide();
+g_playButton = pa_playButton;
+g_firstButton = pa_firstButton;
+g_lastButton = pa_lastButton;
+g_forwardButton = pa_forwardButton;
+g_backButton = pa_backButton;} {}
   }
 } 
 
@@ -854,7 +883,8 @@ m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
     }
     code {m_codecParams = codecParams;} {}
   }
-  Function {show()} {} {
+  Function {show()} {open
+  } {
     code {audio_codec = 0;
 video_codec = 0;
 nle::setAudioCodecMenu( audio_codec_menu );
@@ -1084,4 +1114,7 @@ decl {Fl_Scrollbar* g_v_scrollbar;} {public
 } 
 
 decl {bool g_16_9;} {public
+} 
+
+decl {bool g_black_borders;} {public
 } 
