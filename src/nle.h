@@ -13,6 +13,7 @@
 #include "Timeline.H"
 #include "VideoTrack.H"
 #include "AudioTrack.H"
+#include <FL/Fl_Tooltip.H>
 #include <FL/Fl_Tile.H>
 #include <FL/Fl_Group.H>
 #include "VideoViewGL.H"
@@ -103,6 +104,10 @@ private:
   static void cb_Scrub(Fl_Menu_*, void*);
   void cb_Fullscreen_i(Fl_Menu_*, void*);
   static void cb_Fullscreen(Fl_Menu_*, void*);
+  void cb_Normal_i(Fl_Menu_*, void*);
+  static void cb_Normal(Fl_Menu_*, void*);
+  void cb_Plastic_i(Fl_Menu_*, void*);
+  static void cb_Plastic(Fl_Menu_*, void*);
   void cb_Tutorial_i(Fl_Menu_*, void*);
   static void cb_Tutorial(Fl_Menu_*, void*);
   void cb_About_i(Fl_Menu_*, void*);
@@ -265,6 +270,7 @@ public:
   void deactivate_titles();
   void activate_titles(int font, int size, const char* text, float x, float y);
   void portaudio();
+  void jack();
 };
 extern Flmm_Scalebar* g_scrollBar;
 #include "IVideoReader.H"

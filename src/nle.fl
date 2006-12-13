@@ -220,11 +220,32 @@ if ( fullscreen_on ) {
 	mainWindow->fullscreen();
 	fullscreen_on = true;
 }}
-            xywh {5 5 100 20} shortcut 0xffc8
+            xywh {5 5 100 20} shortcut 0xffc8 divider
           }
           MenuItem {} {
             label {Track Overview}
             xywh {5 5 100 20} type Toggle hide
+          }
+          MenuItem {} {
+            label {Normal Style}
+            callback {Fl_Tooltip::color( fl_rgb_color( 0, 0, 1 ) );
+Fl::background2( 34, 52, 103 );
+Fl::background( 93, 93, 114 );
+Fl::foreground( 255, 255, 255 );
+Fl::set_color( FL_BLACK, 200, 200, 200 );
+Fl::scheme("none");}
+            xywh {0 0 100 20}
+          }
+          MenuItem {} {
+            label {Plastic Style}
+            callback {Fl_Tooltip::color( fl_rgb_color( 255, 255, 191 ) );
+Fl::background2( 255, 255, 255 );
+Fl::background( 234, 234, 234 );
+Fl::foreground( 0, 0, 0 );
+Fl::set_color( FL_BLACK, 0, 0, 0 );
+Fl::scheme("plastic");} selected
+            xywh {0 0 100 20}
+            code0 {\#include <FL/Fl_Tooltip.H>}
           }
         }
         Submenu {} {
@@ -635,11 +656,6 @@ nle::g_loadSaveManager->load( name );}
 g_backseek = false;
 g_scrollBar = scaleBar;
 g_trashCan = trashCan;
-g_playButton = playButton;
-g_firstButton = firstButton;
-g_lastButton = lastButton;
-g_forwardButton = forwardButton;
-g_backButton = backButton;
 scaleBar->slider_size_i(300);
 mainWindow->show(argc, argv);
 projectNameInput->label("Project 1");
@@ -651,8 +667,7 @@ scroll_area->type(0);
 g_v_scrollbar = vScrollBar;
 g_16_9 = false;
 g_black_borders = false;
-special_clips->add("Titles");} {selected
-    }
+special_clips->add("Titles");} {}
   }
   Function {~NleUI()} {} {
     code {delete mainWindow;} {}
@@ -702,8 +717,7 @@ titles_y->value( y );
 titles_text->value( text );
 titles_tab->activate();} {}
   }
-  Function {portaudio()} {open
-  } {
+  Function {portaudio()} {} {
     code {playButton->hide();
 lastButton->hide();
 firstButton->hide();
@@ -722,6 +736,27 @@ g_firstButton = pa_firstButton;
 g_lastButton = pa_lastButton;
 g_forwardButton = pa_forwardButton;
 g_backButton = pa_backButton;} {}
+  }
+  Function {jack()} {open
+  } {
+    code {pa_playButton->hide();
+pa_lastButton->hide();
+pa_firstButton->hide();
+pa_backButton->hide();
+pa_forwardButton->hide();
+pauseButton->show();
+
+playButton->show();
+lastButton->show();
+firstButton->show();
+backButton->show();
+forwardButton->show();
+jackMenu->show();
+g_playButton = playButton;
+g_firstButton = firstButton;
+g_lastButton = lastButton;
+g_forwardButton = forwardButton;
+g_backButton = backButton;} {}
   }
 } 
 

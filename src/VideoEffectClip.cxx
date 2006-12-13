@@ -18,6 +18,7 @@
  */
 
 #include "sl/sl.h"
+#include "global_includes.H"
 
 #include "VideoEffectClip.H"
 #include "AbstractEffectFactory.H"
@@ -46,6 +47,7 @@ frame_struct* VideoEffectClip::getFrame( int64_t position )
 		f = node->effect->getFrame( f, position_in_file );
 		node = node->next;
 	}
+	f->render_strategy = m_render_strategy;
 	return f;
 
 }

@@ -196,6 +196,30 @@ void NleUI::cb_Fullscreen(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Fullscreen_i(o,v);
 }
 
+void NleUI::cb_Normal_i(Fl_Menu_*, void*) {
+  Fl_Tooltip::color( fl_rgb_color( 0, 0, 1 ) );
+Fl::background2( 34, 52, 103 );
+Fl::background( 93, 93, 114 );
+Fl::foreground( 255, 255, 255 );
+Fl::set_color( FL_BLACK, 200, 200, 200 );
+Fl::scheme("none");
+}
+void NleUI::cb_Normal(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_Normal_i(o,v);
+}
+
+void NleUI::cb_Plastic_i(Fl_Menu_*, void*) {
+  Fl_Tooltip::color( fl_rgb_color( 255, 255, 191 ) );
+Fl::background2( 255, 255, 255 );
+Fl::background( 234, 234, 234 );
+Fl::foreground( 0, 0, 0 );
+Fl::set_color( FL_BLACK, 0, 0, 0 );
+Fl::scheme("plastic");
+}
+void NleUI::cb_Plastic(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_Plastic_i(o,v);
+}
+
 void NleUI::cb_Tutorial_i(Fl_Menu_*, void*) {
   m_timelineView->help();
 }
@@ -247,8 +271,10 @@ Fl_Menu_Item NleUI::menu_Black[] = {
  {"Scrub audio", 0,  (Fl_Callback*)NleUI::cb_Scrub, 0, 6, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"&View", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
- {"Fullscreen", 0xffc8,  (Fl_Callback*)NleUI::cb_Fullscreen, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Fullscreen", 0xffc8,  (Fl_Callback*)NleUI::cb_Fullscreen, 0, 128, FL_NORMAL_LABEL, 0, 14, 0},
  {"Track Overview", 0,  0, 0, 18, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Normal Style", 0,  (Fl_Callback*)NleUI::cb_Normal, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Plastic Style", 0,  (Fl_Callback*)NleUI::cb_Plastic, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"&Help", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"Tutorial...", 0,  (Fl_Callback*)NleUI::cb_Tutorial, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
@@ -1099,11 +1125,6 @@ void NleUI::show( int argc, char **argv ) {
 g_backseek = false;
 g_scrollBar = scaleBar;
 g_trashCan = trashCan;
-g_playButton = playButton;
-g_firstButton = firstButton;
-g_lastButton = lastButton;
-g_forwardButton = forwardButton;
-g_backButton = backButton;
 scaleBar->slider_size_i(300);
 mainWindow->show(argc, argv);
 projectNameInput->label("Project 1");
@@ -1189,6 +1210,27 @@ g_firstButton = pa_firstButton;
 g_lastButton = pa_lastButton;
 g_forwardButton = pa_forwardButton;
 g_backButton = pa_backButton;
+}
+
+void NleUI::jack() {
+  pa_playButton->hide();
+pa_lastButton->hide();
+pa_firstButton->hide();
+pa_backButton->hide();
+pa_forwardButton->hide();
+pauseButton->show();
+
+playButton->show();
+lastButton->show();
+firstButton->show();
+backButton->show();
+forwardButton->show();
+jackMenu->show();
+g_playButton = playButton;
+g_firstButton = firstButton;
+g_lastButton = lastButton;
+g_forwardButton = forwardButton;
+g_backButton = backButton;
 }
 Flmm_Scalebar* g_scrollBar;
 

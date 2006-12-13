@@ -24,6 +24,13 @@
 
 namespace nle
 {
+	
+typedef enum {
+	RENDER_FIT = 0,
+	RENDER_CROP,
+	RENDER_STRETCH,
+	RENDER_DEFAULT
+} render_strategy_t;
 
 typedef struct
 {
@@ -35,6 +42,7 @@ typedef struct
 	float alpha;
 	bool has_alpha_channel;
 	bool cacheable;
+	render_strategy_t render_strategy;
 } frame_struct;
 
 } /* namespace nle */

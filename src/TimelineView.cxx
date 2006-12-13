@@ -206,27 +206,91 @@ int TimelineView::handle( int event )
 				}
 				if ( cl && vcl && vcl->hasAudio() && ( Fl::event_button() == FL_RIGHT_MOUSE ) ) {
 					if ( vcl->m_mute ) {
-						Fl_Menu_Item menuitem[] = { { "Unmute Original Sound", MENU_ITEM_INIT }, { "Select all Clips after Cursor", MENU_ITEM_INIT }, { 0L, MENU_ITEM_INIT } };
+						Fl_Menu_Item menuitem[] = { { "Crop", 0,0,0,FL_MENU_RADIO|( vcl->crop() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
+							{ "Fit", 0,0,0,FL_MENU_RADIO|( vcl->fit() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
+							{ "Stretch", 0,0,0,FL_MENU_RADIO |( vcl->stretch() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
+							{ "Default", 0,0,0,FL_MENU_RADIO | FL_MENU_DIVIDER|( vcl->def() ? FL_MENU_VALUE : 0 ),0,0,0,0 }, 
+							{ "Unmute Original Sound", MENU_ITEM_INIT }, { "Select all Clips after Cursor", MENU_ITEM_INIT }, 
+							{ 0L, MENU_ITEM_INIT } };
+						//menuitem[2].setonly();
 						Fl_Menu_Item* r = (Fl_Menu_Item*)menuitem->popup( Fl::event_x(), Fl::event_y() );
 						if ( r == &menuitem[0] ) {
+							vcl->crop( true );
+							g_videoView->redraw();
+						} else if ( r == &menuitem[1] ) {
+							vcl->fit( true );
+							g_videoView->redraw();
+						} else if ( r == &menuitem[2] ) {
+							vcl->stretch( true );
+							g_videoView->redraw();
+						} else if ( r == &menuitem[3] ) {
+							vcl->def( true );
+							g_videoView->redraw();
+						} else if ( r == &menuitem[4] ) {
 							vcl->m_mute = false;
 							redraw();
 							g_timeline->changing();
-						} else if ( r == &menuitem[1] ) {
+						} else if ( r == &menuitem[5] ) {
 							select_all_after_cursor();	
 						}
 					} else {
-						Fl_Menu_Item menuitem[] = { { "Mute Original Sound", MENU_ITEM_INIT }, { "Select all Clips after Cursor", MENU_ITEM_INIT }, { 0L, MENU_ITEM_INIT } };
+						Fl_Menu_Item menuitem[] = { { "Crop", 0,0,0,FL_MENU_RADIO|( vcl->crop() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
+							{ "Fit", 0,0,0,FL_MENU_RADIO|( vcl->fit() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
+							{ "Stretch", 0,0,0,FL_MENU_RADIO | ( vcl->stretch() ? FL_MENU_VALUE : 0 ),0,0,0,0 }, 
+							{ "Default", 0,0,0,FL_MENU_RADIO | FL_MENU_DIVIDER|( vcl->def() ? FL_MENU_VALUE : 0 ),0,0,0,0 }, 
+							{ "Mute Original Sound", MENU_ITEM_INIT }, 
+							{ "Select all Clips after Cursor", MENU_ITEM_INIT }, 
+							{ 0L, MENU_ITEM_INIT } };
+						//menuitem[2].setonly();
 						Fl_Menu_Item* r = (Fl_Menu_Item*)menuitem->popup( Fl::event_x(), Fl::event_y() );
 						if ( r == &menuitem[0] ) {
+							vcl->crop( true );
+							g_videoView->redraw();
+						} else if ( r == &menuitem[1] ) {
+							vcl->fit( true );
+							g_videoView->redraw();
+						} else if ( r == &menuitem[2] ) {
+							vcl->stretch( true );
+							g_videoView->redraw();
+						} else if ( r == &menuitem[3] ) {
+							vcl->def( true );
+							g_videoView->redraw();
+						} else if ( r == &menuitem[4] ) {
 							vcl->m_mute = true;
 							redraw();
 							g_timeline->changing();
-						} else if ( r == &menuitem[1] ) {
+						} else if ( r == &menuitem[5] ) {
 							select_all_after_cursor();	
 						}
 					}
 					return 1;
+				}
+				VideoEffectClip* vec;
+				if ( ( vec = dynamic_cast<VideoEffectClip*>(cl) ) && ( Fl::event_button() == FL_RIGHT_MOUSE ) ) {
+						Fl_Menu_Item menuitem[] = { { "Crop", 0,0,0,FL_MENU_RADIO|( vec->crop() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
+							{ "Fit", 0,0,0,FL_MENU_RADIO|( vec->fit() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
+							{ "Stretch", 0,0,0,FL_MENU_RADIO |( vec->stretch() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
+							{ "Default", 0,0,0,FL_MENU_RADIO | FL_MENU_DIVIDER|( vec->def() ? FL_MENU_VALUE : 0 ),0,0,0,0 }, 
+							{ "Select all Clips after Cursor", MENU_ITEM_INIT }, 
+							{ 0L, MENU_ITEM_INIT } };
+						//menuitem[2].setonly();
+						Fl_Menu_Item* r = (Fl_Menu_Item*)menuitem->popup( Fl::event_x(), Fl::event_y() );
+						if ( r == &menuitem[0] ) {
+							vec->crop( true );
+							g_videoView->redraw();
+						} else if ( r == &menuitem[1] ) {
+							vec->fit( true );
+							g_videoView->redraw();
+						} else if ( r == &menuitem[2] ) {
+							vec->stretch( true );
+							g_videoView->redraw();
+						} else if ( r == &menuitem[3] ) {
+							vec->def( true );
+							g_videoView->redraw();
+						} else if ( r == &menuitem[4] ) {
+							select_all_after_cursor();	
+						}
+						return 1;
 				}
 				if ( Fl::event_button() == FL_RIGHT_MOUSE ) {
 					Fl_Menu_Item menuitem[] = { { "Select all Clips after Cursor", MENU_ITEM_INIT }, { 0L, MENU_ITEM_INIT } };

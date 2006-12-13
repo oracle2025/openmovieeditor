@@ -96,7 +96,7 @@ void TitleClip::init()
 		o_h = o_w = 0;
 		fl_measure( p, o_w, o_h );
 		x = lrint( ( 768 - o_w )* m_x);
-		fl_color(FL_DARK3);
+		fl_color(fl_contrast(FL_DARK3,FL_WHITE));
 		fl_draw( p, x, y );
 		fl_color(FL_WHITE);
 		fl_draw( p, x - 2, y - 2 );

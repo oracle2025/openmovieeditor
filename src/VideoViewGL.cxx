@@ -72,7 +72,8 @@ static GLuint video_canvas[10];
 
 void VideoViewGL::drawVideoBorder()
 {
-	int w_ = 1024;
+	//int w_ = 1024;
+	int w_ = g_16_9 ? 1024 : 768;
 	int h_ = 576;
 	float gl_x, gl_y, gl_w, gl_h;
 	{
@@ -92,6 +93,44 @@ void VideoViewGL::drawVideoBorder()
 	}
 
 	glDisable (GL_TEXTURE_2D);
+	if ( g_black_borders ) {
+		int w_ = 1024;
+		int h_ = 576;
+		float gl_x, gl_y, gl_w, gl_h;
+		{
+			float f_v = ( (float)w_ / (float)h_ );
+			float f_w = ( (float)w() / (float)h() );
+			float f_g = f_v / f_w;
+			if ( f_g > 1.0 ) {
+				gl_h = 10.0 / f_g;
+				gl_w = 10.0;
+			} else {
+				gl_h = 10.0;
+				gl_w = f_g * 10.0;
+			}
+			gl_x = ( 10.0 - gl_w ) / 2;
+			gl_y = ( 10.0 - gl_h ) / 2;
+
+		}
+		
+		glBegin (GL_QUADS);
+
+		glColor4f( 0.0f, 0.0f, 0.0f, 1.0f );
+
+		glVertex3f( 0.0f, 0.0f, 0.0f );
+		glVertex3f( gl_x + gl_w, 0.0f, 0.0f );
+		glVertex3f( gl_x + gl_w, gl_y, 0.0f );
+		glVertex3f( 0.0f, gl_y, 0.0f );
+		
+		glVertex3f( 0.0f, gl_y + gl_h, 0.0f );
+		glVertex3f( gl_x + gl_w, gl_y + gl_h, 0.0f );
+		glVertex3f( gl_x + gl_w, 10.0f, 0.0f );
+		glVertex3f( 0.0f, 10.0f, 0.0f );
+
+
+		glEnd();
+	}
+
 	glLineWidth(3);
 	glBegin (GL_LINE_LOOP);
 	glColor4f( 0.0f, 0.0f, 0.0f, 1.0f );
@@ -112,8 +151,11 @@ void VideoViewGL::drawVideoBorder()
 	glVertex3f   (  gl_x,     gl_y + gl_h, 0.0 );
 
 	glEnd();
-	glEnable (GL_TEXTURE_2D);
 
+	
+	glEnable (GL_TEXTURE_2D);
+	
+/*
 	float _x, _y, _w, _h;
 	_x = gl_x + (gl_w / 8.0);
 	_y = gl_y;
@@ -141,6 +183,7 @@ void VideoViewGL::drawVideoBorder()
 
 	glEnd();
 	glEnable (GL_TEXTURE_2D);
+	*/
 }
 
 void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
@@ -231,6 +274,7 @@ void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 			glVertex3f   (  gl_x,     gl_y + gl_h, 0.0 );
 		glEnd ();
 	}
+	drawVideoBorder();
 /*	gl_font(FL_TIMES|FL_BOLD, 80);
 	glRasterPos3f( 2, 2, 0 );
 	gl_draw( "HELLO", strlen( "HELLO" ) );*/
@@ -305,24 +349,83 @@ void VideoViewGL::draw()
 			}
 			float gl_x, gl_y, gl_w, gl_h;
 			{
-				float f_v;// = ( (float)fs[i]->w / (float)fs[i]->h );
-				if ( g_16_9 ) {
-					f_v = ( 16.0 / 9.0 );
-				} else {
-					f_v = ( 4.0 / 3.0 );
-				}
-				float f_w = ( (float)w() / (float)h() );
-				float f_g = f_v / f_w;
-				if ( f_g > 1.0 ) {
-					gl_h = 10.0 / f_g;
-					gl_w = 10.0;
-				} else {
-					gl_h = 10.0;
-					gl_w = f_g * 10.0;
-				}
-				gl_x = ( 10.0 - gl_w ) / 2;
-				gl_y = ( 10.0 - gl_h ) / 2;
+				if ( fs[i]->render_strategy == RENDER_FIT ) {
+					float f_v = ( (float)fs[i]->w / (float)fs[i]->h );
+					float _4_3 = g_16_9 ? ( 16.0 / 9.0 ) : ( 4.0 / 3.0 );
+					float _4_3_w, _4_3_h, _4_3_x, _4_3_y;
+					float f_w = ( (float)w() / (float)h() );
+					{
+						float f_g = _4_3 / f_w;
+						if ( f_g > 1.0 ) {
+							_4_3_h = 10.0 / f_g;
+							_4_3_w = 10.0;
+						} else {
+							_4_3_h = 10.0;
+							_4_3_w = f_g * 10.0;
+						}
+						_4_3_x = ( 10.0 - _4_3_w ) / 2;
+						_4_3_y = ( 10.0 - _4_3_h ) / 2;
 
+					}
+					if ( f_v > _4_3 ) { //Banner Format
+						gl_w = _4_3_w;
+						gl_h = _4_3_w / (f_v / f_w);
+						gl_x = _4_3_x;
+						gl_y = ( 10.0 - gl_h ) / 2;
+					} else { //Skyscraper Format
+						gl_h = _4_3_h;
+						gl_w = _4_3_h * (f_v / f_w);
+						gl_y = _4_3_y;
+						gl_x = ( 10.0 - gl_w ) / 2;
+					}
+				} else if ( fs[i]->render_strategy == RENDER_CROP ) {
+					float f_v = ( (float)fs[i]->w / (float)fs[i]->h );
+					float _4_3 = g_16_9 ? ( 16.0 / 9.0 ) : ( 4.0 / 3.0 );
+					float _4_3_w, _4_3_h, _4_3_x, _4_3_y;
+					float f_w = ( (float)w() / (float)h() );
+					{
+						float f_g = _4_3 / f_w;
+						if ( f_g > 1.0 ) {
+							_4_3_h = 10.0 / f_g;
+							_4_3_w = 10.0;
+						} else {
+							_4_3_h = 10.0;
+							_4_3_w = f_g * 10.0;
+						}
+						_4_3_x = ( 10.0 - _4_3_w ) / 2;
+						_4_3_y = ( 10.0 - _4_3_h ) / 2;
+
+					}
+					if ( f_v > _4_3 ) { //Banner Format
+						gl_h = _4_3_h;
+						gl_w = _4_3_h * (f_v / f_w);
+						gl_y = _4_3_y;
+						gl_x = ( 10.0 - gl_w ) / 2;
+					} else { //Skyscraper Format
+						gl_w = _4_3_w;
+						gl_h = _4_3_w / (f_v / f_w);
+						gl_x = _4_3_x;
+						gl_y = ( 10.0 - gl_h ) / 2;
+					}
+				} else {
+					float f_v;// = ( (float)fs[i]->w / (float)fs[i]->h );
+					if ( g_16_9 ) {
+						f_v = ( 16.0 / 9.0 );
+					} else {
+						f_v = ( 4.0 / 3.0 );
+					}
+					float f_w = ( (float)w() / (float)h() );
+					float f_g = f_v / f_w;
+					if ( f_g > 1.0 ) {
+						gl_h = 10.0 / f_g;
+						gl_w = 10.0;
+					} else {
+						gl_h = 10.0;
+						gl_w = f_g * 10.0;
+					}
+					gl_x = ( 10.0 - gl_w ) / 2;
+					gl_y = ( 10.0 - gl_h ) / 2;
+				}
 			}
 
 			
@@ -345,7 +448,7 @@ void VideoViewGL::draw()
 /*	drawVideoBorder( 720, 576  ); //Pixel sind nicht quadratisch?
 	drawVideoBorder( 768, 576  );
 	drawVideoBorder( 1024, 576  );*/
-	//drawVideoBorder();
+	drawVideoBorder();
 #if 0 
 	float gl_x, gl_y, gl_w, gl_h;
 	{

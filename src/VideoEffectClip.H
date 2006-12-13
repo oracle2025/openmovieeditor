@@ -36,12 +36,6 @@ typedef struct _effect_stack {
 	IVideoEffect* effect;
 } effect_stack;
 
-typedef enum {
-	RENDER_FIT = 0,
-	RENDER_CROP,
-	RENDER_STRETCH
-} render_strategy_t;
-
 class VideoEffectClip : public IVideoReader
 {
 	public:
@@ -58,8 +52,21 @@ class VideoEffectClip : public IVideoReader
 		virtual int h() = 0;
 		void prepareFormat( int w, int h ); // might add fps here
 		frame_struct* getFormattedFrame( int64_t position );
+		bool crop() { return m_crop; }
+		bool fit() { return m_fit; }
+		bool stretch() { return m_stretch; }
+		bool def() { return m_default; }
+		void crop( bool v ) { if ( v ) { m_fit = m_stretch = m_default = !(m_crop = true); m_render_strategy = RENDER_CROP;} }
+		void fit( bool v ) { if ( v ) { m_crop = m_stretch = m_default = !(m_fit = true); m_render_strategy = RENDER_FIT;} }
+		void stretch( bool v ) { if ( v ) { m_fit = m_crop = m_default = !(m_stretch = true); m_render_strategy = RENDER_STRETCH;} }
+		void def( bool v ) { if ( v ) { m_fit = m_crop = m_stretch = !(m_default = true); m_render_strategy = RENDER_DEFAULT;} }
 	protected:
-		VideoEffectClip() { m_effects = 0; }
+		VideoEffectClip() { m_render_strategy = RENDER_DEFAULT; m_effects = 0; m_crop = m_fit = m_stretch = false; m_default = true; }
+		bool m_crop;
+		bool m_fit;
+		bool m_stretch;
+		bool m_default;
+		render_strategy_t m_render_strategy;
 	private:
 		effect_stack* m_effects;
 };
