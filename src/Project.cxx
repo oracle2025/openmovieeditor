@@ -134,6 +134,15 @@ int Project::write( string filename, string name )
 					automation->SetDoubleAttribute( "y", q->y );
 				}
 			} else if ( VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>(cn->clip) ) {
+				if ( vc->def() ) {
+					clip->SetAttribute( "render", "default" );
+				} else if ( vc->crop() ) {
+					clip->SetAttribute( "render", "crop" );
+				} else if ( vc->fit() ) {
+					clip->SetAttribute( "render", "fit" );
+				} else if ( vc->stretch() ) {
+					clip->SetAttribute( "render", "stretch" );
+				}
 				if ( VideoClip* vc = dynamic_cast<VideoClip*>(cn->clip) ) {
 					clip->SetAttribute( "mute", (int)vc->m_mute );
 				}
@@ -254,8 +263,10 @@ int Project::read( string filename )
 				continue;
 			j->Attribute( "mute", &mute );
 //			g_timeline->addFile( trackId, position, filename, trimA, trimB, mute, -1, length );
-			if ( strcmp(filename,"TitleClip") == 0 ) {
+			VideoEffectClip* vec = 0;
+			if ( strcmp( filename, "TitleClip" ) == 0 ) {
 				TitleClip* c = new TitleClip( tr, position, length - trimA - trimB, -1 );
+				vec = c;
 				const char* textp;
 				double x;
 				double y;
@@ -283,6 +294,7 @@ int Project::read( string filename )
 				IVideoFile* vf = VideoFileFactory::get( filename );
 				if ( vf ) {
 					VideoClip* c = new VideoClip( tr, position, vf, trimA, trimB, -1 );
+					vec = c;
 					c->m_mute = mute;
 					TiXmlElement* effectXml = TiXmlHandle( j ).FirstChildElement( "effect" ).Element();
 					for( ; effectXml; effectXml = effectXml->NextSiblingElement( "effect" ) ) {
@@ -323,6 +335,7 @@ int Project::read( string filename )
 					g_timeline->addClip( trackId, c );
 				} else {
 					ImageClip* ic = new ImageClip( tr, position, filename, length - trimA - trimB, -1 );
+					vec = ic;
 					if ( !ic->ok() ) {
 						delete ic;
 						if ( length > 0 ) {
@@ -371,6 +384,20 @@ int Project::read( string filename )
 
 						g_timeline->addClip( trackId, ic );
 					}
+				}
+			}
+			if ( vec ) {
+				const char* render;
+				render = j->Attribute( "render" );
+				if ( !render ) {
+				} else if ( strcmp( render, "default" ) == 0 ) {
+					vec->def( true );
+				} else if ( strcmp( render, "crop" ) == 0 ) {
+					vec->crop( true );
+				} else if ( strcmp( render, "fit" ) == 0 ) {
+					vec->fit( true );
+				} else if ( strcmp( render, "stretch" ) == 0 ) {
+					vec->stretch( true );
 				}
 			}
 
