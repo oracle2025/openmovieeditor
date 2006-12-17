@@ -60,6 +60,10 @@ class TitleClip : public Clip, public VideoEffectClip
 		int size() { return m_size; }
 		int font() { return m_font; }
 		void touch() { m_dirty = true; }
+		int aspectHeight() { return 4; }
+		int aspectWidth() { return 3; }
+		float aspectRatio() { return ( 4.0 / 3.0 ); }
+		int analogBlank() { return 0; }
 	private:
 		void init();
 		Fl_Image* m_image;

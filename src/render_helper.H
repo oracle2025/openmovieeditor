@@ -25,6 +25,21 @@
 namespace nle
 {
 
+void crop_format( int src_w, int src_h, float src_aspect, int src_blank,
+		int dst_w, int dst_h, float dst_aspect, int dst_blank,
+		double& src_rect_x, double& src_rect_y, double& src_rect_w, double& src_rect_h,
+       		int& dst_rect_x, int& dst_rect_y, int& dst_rect_w, int& dst_rect_h );
+void fit_format(
+		int src_w, int src_h, float src_aspect, int src_blank,
+		int dst_w, int dst_h, float dst_aspect, int dst_blank,
+		double& src_rect_x, double& src_rect_y, double& src_rect_w, double& src_rect_h,
+       		int& dst_rect_x, int& dst_rect_y, int& dst_rect_w, int& dst_rect_h );
+void stretch_format(
+		int src_w, int src_h, float src_aspect, int src_blank,
+		int dst_w, int dst_h, float dst_aspect, int dst_blank,
+		double& src_rect_x, double& src_rect_y, double& src_rect_w, double& src_rect_h,
+       		int& dst_rect_x, int& dst_rect_y, int& dst_rect_w, int& dst_rect_h );
+
 void crop( frame_struct* src, frame_struct* dst, int crop_top_bottom, int crop_left_right );
 void fit( frame_struct* src, frame_struct* dst );
 

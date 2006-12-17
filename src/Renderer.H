@@ -25,12 +25,17 @@
 
 typedef struct
 {
-	int x;
-	int y;
+	int w;
+	int h;
+	int aspect_w;
+	int aspect_h;
+	float aspect;
+	int analog_blank;
 } render_frame_size;
 
 extern render_frame_size fs720x576;
-extern render_frame_size fs360x288;
+extern render_frame_size fs768x576;
+extern render_frame_size fs384x288;
 extern render_frame_size fs640x480;
 extern render_frame_size fs320x240;
 
@@ -44,7 +49,7 @@ class CodecParameters;
 class Renderer
 {
 	public:
-		Renderer( string filename, int w, int h, int framerate, int samplerate, CodecParameters* params = 0 );
+		Renderer( string filename, render_frame_size* format, int framerate, int samplerate, CodecParameters* params = 0 );
 		~Renderer();
 		void go( IProgressListener* l = 0 );
 		bool ok();

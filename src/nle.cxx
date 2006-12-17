@@ -40,7 +40,7 @@ while (dlg.shown())
 if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 	ProgressDialog pDlg( "Rendering Project" );
 	render_frame_size* fs = (render_frame_size*)dlg.frameSize();
-	nle::Renderer ren( dlg.export_filename->value(), fs->x, fs->y, 25, 48000, &cp );
+	nle::Renderer ren( dlg.export_filename->value(), fs, 25, 48000, &cp );
 
 	/* stop playback before starting to render... */
 	g_playButton->label( "@>" );
@@ -1298,10 +1298,11 @@ Fl_Menu_Item EncodeDialog::menu_Framerate[] = {
 };
 
 Fl_Menu_Item EncodeDialog::menu_frame_size_choice[] = {
- {"720x576", 0,  0, (void*)(&fs720x576), 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"360x288", 0,  0, (void*)(&fs360x288), 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"640x480", 0,  0, (void*)(&fs640x480), 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"320x240", 0,  0, (void*)(&fs320x240), 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"720x576 (PAL 4:3) DV, DVD", 0,  0, (void*)(&fs720x576), 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"768x576 (PAL 4:3)", 0,  0, (void*)(&fs768x576), 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"384x288 (PAL \275 4:3)", 0,  0, (void*)(&fs384x288), 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"640x480 (VGA 4:3)", 0,  0, (void*)(&fs640x480), 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"320x240 (QVGA 4:3)", 0,  0, (void*)(&fs320x240), 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0}
 };
 

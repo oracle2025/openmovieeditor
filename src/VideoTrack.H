@@ -53,7 +53,7 @@ class VideoTrack : public TrackBase
 		float stretchFactor() { return 1.0; }
 		frame_struct* getFrame( int64_t position );
 		frame_struct** getFrameStack( int64_t position );
-		void prepareFormat( int w, int h );
+		void prepareFormat( int w, int h, int aspect_w, int aspect_h, float aspect, int analog_blank );
 		void unPrepareFormat();
 		frame_struct** getFormattedFrameStack( int64_t position );
 		void sort();

@@ -292,5 +292,71 @@ void decode_uint8_to_float(void * _in, float ** out, int num_channels, int num_s
     }
   }
 
+
+void crop_format( int src_w, int src_h, float src_aspect, int src_blank,
+		int dst_w, int dst_h, float dst_aspect, int dst_blank,
+		double& src_rect_x, double& src_rect_y, double& src_rect_w, double& src_rect_h,
+       		int& dst_rect_x, int& dst_rect_y, int& dst_rect_w, int& dst_rect_h )
+{
+		if ( src_aspect < dst_aspect ) { // Skyscraper
+			src_rect_x = src_blank;
+			src_rect_w = (src_w - 2 * src_blank);
+			src_rect_h = src_h / dst_aspect;
+			src_rect_y = ( src_h - src_rect_h ) / 2 ;
+		} else { // Banner
+			src_rect_y = 0.0;
+			src_rect_w = (src_w - 2 * src_blank) / dst_aspect;
+			src_rect_x = ( src_w - src_rect_w ) / 2;
+			src_rect_h = src_h;
+		}
+		dst_rect_x = dst_blank;
+		dst_rect_y = 0;
+		dst_rect_w = dst_w - 2 * dst_blank;
+		dst_rect_h = dst_h;
+
+}
+void fit_format(
+		int src_w, int src_h, float src_aspect, int src_blank,
+		int dst_w, int dst_h, float dst_aspect, int dst_blank,
+		double& src_rect_x, double& src_rect_y, double& src_rect_w, double& src_rect_h,
+       		int& dst_rect_x, int& dst_rect_y, int& dst_rect_w, int& dst_rect_h )
+{
+	if ( src_aspect > dst_aspect ) { // Banner
+		src_rect_x = src_blank;
+		src_rect_w = (src_w - 2 * src_blank);
+		src_rect_h = src_h * dst_aspect;
+		src_rect_y = ( src_h - src_rect_h ) / 2 ;
+	} else { // Skyscraper
+		src_rect_y = 0.0;
+		src_rect_w = (src_w - 2 * src_blank) * dst_aspect;
+		src_rect_x = ( src_w - src_rect_w ) / 2;
+		src_rect_h = src_h;
+	}
+	dst_rect_x = dst_blank;
+	dst_rect_y = 0;
+	dst_rect_w = dst_w - 2 * dst_blank;
+	dst_rect_h = dst_h;
+
+}
+void stretch_format(
+		int src_w, int src_h, float /*src_aspect*/, int src_blank,
+		int dst_w, int dst_h, float /*dst_aspect*/, int dst_blank,
+		double& src_rect_x, double& src_rect_y, double& src_rect_w, double& src_rect_h,
+       		int& dst_rect_x, int& dst_rect_y, int& dst_rect_w, int& dst_rect_h )
+{
+	src_rect_x = src_blank;
+	src_rect_y = 0;
+	src_rect_w = src_w;// - 2 * src_blank;
+	src_rect_h = src_h;
+
+	dst_rect_x = dst_blank;
+	dst_rect_y = 0;
+	dst_rect_w = dst_w - 2 * dst_blank + 2 * src_blank;
+	dst_rect_h = dst_h;
+
+}
+
+
+
 } /* namespace nle */
 

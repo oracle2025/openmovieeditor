@@ -27,6 +27,7 @@
 #include "VideoClipArtist.H"
 #include "FilmStripFactory.H"
 #include "IAudioFile.H"
+#include "helper.H"
 
 namespace nle
 {
@@ -44,6 +45,8 @@ VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A,
 	m_audioFile = AudioFileFactory::get( m_videoFile->filename() );
 	CLEAR_ERRORS();
 	m_artist = new VideoClipArtist( this );
+
+	guess_aspect( w(), h(), &m_aspectHeight, &m_aspectWidth, &m_aspectRatio, &m_analogBlank, 0, 0 );
 }
 int VideoClip::w()
 {

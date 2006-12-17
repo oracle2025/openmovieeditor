@@ -176,7 +176,7 @@ frame_struct** VideoTrack::getFrameStack( int64_t position )
 	}
 	return frameStack;
 }
-void VideoTrack::prepareFormat( int w, int h )
+void VideoTrack::prepareFormat( int w, int h, int aspect_w, int aspect_h, float aspect, int analog_blank )
 {
 	m_preparedFrame1.RGB = new unsigned char[w * h * 4];
 	m_preparedFrame2.RGB = new unsigned char[w * h * 4];
@@ -197,7 +197,7 @@ void VideoTrack::prepareFormat( int w, int h )
 	for ( clip_node* j = getClips(); j; j = j->next ) {
 		VideoEffectClip* vec = dynamic_cast<VideoEffectClip*>(j->clip);
 		if ( vec ) {
-			vec->prepareFormat( w, h );
+			vec->prepareFormat( w, h, aspect_w, aspect_h, aspect, analog_blank );
 		}
 	}
 

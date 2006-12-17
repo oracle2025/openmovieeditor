@@ -22,6 +22,7 @@
 #include "ImageClip.H"
 #include "ErrorDialog/IErrorHandler.H"
 #include "ImageClipArtist.H"
+#include "helper.H"
 
 namespace nle
 {
@@ -65,6 +66,11 @@ ImageClip::ImageClip( Track* track, int64_t position, string filename, int64_t l
 	char** d = (char**)m_image->data();
 	m_frame.RGB = (unsigned char *)d[0];
 	m_artist = new ImageClipArtist( m_image );
+	
+	unsigned long gcd_wh = gcd( m_frame.w, m_frame.h );
+	m_aspectHeight = m_frame.h / gcd_wh; 
+	m_aspectWidth = m_frame.w /gcd_wh;
+	m_aspectRatio = (float)m_aspectWidth / (float)m_aspectHeight;
 	m_ok = true;
 }
 

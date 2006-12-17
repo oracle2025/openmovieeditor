@@ -47,6 +47,10 @@ class VideoClip : public AudioClipBase, public VideoEffectClip
 		int64_t fileLength();
 		int w();
 		int h();
+		int aspectHeight() { return m_aspectHeight; }
+		int aspectWidth() { return m_aspectWidth; }
+		float aspectRatio() { return m_aspectRatio; }
+		int analogBlank() { return m_analogBlank; }
 	protected:
 		int64_t audioTrimA();
 		int64_t audioTrimB();
@@ -60,6 +64,10 @@ class VideoClip : public AudioClipBase, public VideoEffectClip
 		int64_t m_audioPosition;
 		bool m_noAudio;
 		IClipArtist* m_artist;
+		int m_aspectHeight;
+		int m_aspectWidth;
+		float m_aspectRatio;
+		int m_analogBlank;
 };
 
 } /* namespace nle */

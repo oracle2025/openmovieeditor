@@ -2,8 +2,7 @@
 version 1.0107 
 header_name {.h} 
 code_name {.cxx}
-class NleUI {open
-} {
+class NleUI {} {
   Function {NleUI()} {open
   } {
     Fl_Window mainWindow {
@@ -14,7 +13,7 @@ mainWindow->hide();
 if ( Fl::event()==FL_CLOSE ) {
 	m_videoView->stop();
 	nle::g_loadSaveManager->shutdown();
-}} open
+}}
       xywh {777 382 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
@@ -47,7 +46,7 @@ while (dlg.shown())
 if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 	ProgressDialog pDlg( "Rendering Project" );
 	render_frame_size* fs = (render_frame_size*)dlg.frameSize();
-	nle::Renderer ren( dlg.export_filename->value(), fs->x, fs->y, 25, 48000, &cp );
+	nle::Renderer ren( dlg.export_filename->value(), fs, 25, 48000, &cp );
 
 	/* stop playback before starting to render... */
 	g_playButton->label( "@>" );
@@ -243,7 +242,7 @@ Fl::background2( 255, 255, 255 );
 Fl::background( 234, 234, 234 );
 Fl::foreground( 0, 0, 0 );
 Fl::set_color( FL_BLACK, 0, 0, 0 );
-Fl::scheme("plastic");} selected
+Fl::scheme("plastic");}
             xywh {0 0 100 20}
             code0 {\#include <FL/Fl_Tooltip.H>}
           }
@@ -844,22 +843,27 @@ m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
         xywh {145 160 205 25} down_box BORDER_BOX
       } {
         MenuItem {} {
-          label 720x576
+          label {720x576 (PAL 4:3) DV, DVD}
           user_data {&fs720x576}
           xywh {0 0 100 20}
         }
         MenuItem {} {
-          label 360x288
-          user_data {&fs360x288}
+          label {768x576 (PAL 4:3)}
+          user_data {&fs768x576} selected
           xywh {0 0 100 20}
         }
         MenuItem {} {
-          label 640x480
+          label {384x288 (PAL ½ 4:3)}
+          user_data {&fs384x288}
+          xywh {0 0 100 20}
+        }
+        MenuItem {} {
+          label {640x480 (VGA 4:3)}
           user_data {&fs640x480}
           xywh {0 0 100 20}
         }
         MenuItem {} {
-          label 320x240
+          label {320x240 (QVGA 4:3)}
           user_data {&fs320x240}
           xywh {0 0 100 20}
         }

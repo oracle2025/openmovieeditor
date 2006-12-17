@@ -31,6 +31,7 @@
 
 #include "Codecs.H"
 #include "globals.H"
+#include "helper.H"
 
 using namespace std;
 
@@ -319,6 +320,10 @@ void CodecParameters::set( quicktime_t* qt, int w, int h )
 {
 	lqt_add_audio_track( qt, 2, 48000, 16, m_currentAudioCodec->codecInfo );
 	lqt_add_video_track( qt, w, h, 1200, 30000, m_currentVideoCodec->codecInfo ); // 30000 / 1200 == 25
+	int pixel_w;
+	int pixel_h;
+	guess_aspect( w, h, 0, 0, 0, 0, &pixel_w, &pixel_h );
+	lqt_set_pixel_aspect( qt, 0, pixel_w, pixel_h );
 
 	param_node* p;
 	for ( p = m_currentAudioCodec->parameters; p; p = p->next ) {

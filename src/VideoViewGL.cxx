@@ -241,7 +241,7 @@ void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 		float gl_x, gl_y, gl_w, gl_h;
 		{
 			if ( fs[i]->render_strategy == RENDER_FIT ) {
-				float f_v = ( (float)fs[i]->w / (float)fs[i]->h );
+				float f_v = fs[i]->aspect;
 				float _4_3 = g_16_9 ? ( 16.0 / 9.0 ) : ( 4.0 / 3.0 );
 				float _4_3_w, _4_3_h, _4_3_x, _4_3_y;
 				float f_w = ( (float)w() / (float)h() );
@@ -270,7 +270,7 @@ void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 					gl_x = ( 10.0 - gl_w ) / 2;
 				}
 			} else if ( fs[i]->render_strategy == RENDER_CROP ) {
-				float f_v = ( (float)fs[i]->w / (float)fs[i]->h );
+				float f_v = fs[i]->aspect;
 				float _4_3 = g_16_9 ? ( 16.0 / 9.0 ) : ( 4.0 / 3.0 );
 				float _4_3_w, _4_3_h, _4_3_x, _4_3_y;
 				float f_w = ( (float)w() / (float)h() );
@@ -352,17 +352,18 @@ void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 			glEnable (GL_TEXTURE_2D);
 		}
 
-		float ww = fs[i]->w / TEXTURE_WIDTH;
+		float ww = ( fs[i]->w - 2 * fs[i]->analog_blank ) / TEXTURE_WIDTH;
+		float xx = ( fs[i]->analog_blank ) / TEXTURE_WIDTH;
 		float hh = fs[i]->h / TEXTURE_HEIGHT;
 		glColor4f( 1.0f, 1.0f, 1.0f, fs[i]->alpha ); //Control Transparency
 		glBegin (GL_QUADS);
-			glTexCoord2f (  0.0,      0.0 );
+			glTexCoord2f (  xx,      0.0 );
 			glVertex3f   (  gl_x,      gl_y, 0.0 );
-			glTexCoord2f (  ww,  0.0 );  // (fs->w / 512.0)
+			glTexCoord2f (  xx + ww,  0.0 );  // (fs->w / 512.0)
 			glVertex3f   ( gl_x + gl_w,      gl_y, 0.0 );
-			glTexCoord2f (  ww,  hh ); // (368.0 / 512.0) (240.0 / 512.0)
+			glTexCoord2f (  xx + ww,  hh ); // (368.0 / 512.0) (240.0 / 512.0)
 			glVertex3f   ( gl_x + gl_w,     gl_y + gl_h, 0.0 );
-			glTexCoord2f (  0.0,      hh ); // (fs->h / 512.0)
+			glTexCoord2f (  xx,      hh ); // (fs->h / 512.0)
 			glVertex3f   (  gl_x,     gl_y + gl_h, 0.0 );
 		glEnd ();
 	}
@@ -442,7 +443,8 @@ void VideoViewGL::draw()
 			float gl_x, gl_y, gl_w, gl_h;
 			{
 				if ( fs[i]->render_strategy == RENDER_FIT ) {
-					float f_v = ( (float)fs[i]->w / (float)fs[i]->h );
+					
+					float f_v = fs[i]->aspect;
 					float _4_3 = g_16_9 ? ( 16.0 / 9.0 ) : ( 4.0 / 3.0 );
 					float _4_3_w, _4_3_h, _4_3_x, _4_3_y;
 					float f_w = ( (float)w() / (float)h() );
@@ -471,7 +473,7 @@ void VideoViewGL::draw()
 						gl_x = ( 10.0 - gl_w ) / 2;
 					}
 				} else if ( fs[i]->render_strategy == RENDER_CROP ) {
-					float f_v = ( (float)fs[i]->w / (float)fs[i]->h );
+					float f_v = fs[i]->aspect;
 					float _4_3 = g_16_9 ? ( 16.0 / 9.0 ) : ( 4.0 / 3.0 );
 					float _4_3_w, _4_3_h, _4_3_x, _4_3_y;
 					float f_w = ( (float)w() / (float)h() );
@@ -553,16 +555,17 @@ void VideoViewGL::draw()
 			}
 			
 			glColor4f( 1.0f, 1.0f, 1.0f, fs[i]->alpha ); //Control Transparency
-			float ww = fs[i]->w / TEXTURE_WIDTH;
+			float ww = ( fs[i]->w - 2 * fs[i]->analog_blank ) / TEXTURE_WIDTH;
+			float xx = ( fs[i]->analog_blank ) / TEXTURE_WIDTH;
 			float hh = fs[i]->h / TEXTURE_HEIGHT;
 			glBegin (GL_QUADS);
-				glTexCoord2f (  0.0,      0.0 );
+				glTexCoord2f (  xx,      0.0 );
 				glVertex3f   (  gl_x,      gl_y, 0.0 );
-				glTexCoord2f (  ww,  0.0 );  // (fs->w / 512.0)
+				glTexCoord2f (  xx + ww,  0.0 );  // (fs->w / 512.0)
 				glVertex3f   ( gl_x + gl_w,      gl_y, 0.0 );
-				glTexCoord2f (  ww,  hh ); // (368.0 / 512.0) (240.0 / 512.0)
+				glTexCoord2f (  xx + ww,  hh ); // (368.0 / 512.0) (240.0 / 512.0)
 				glVertex3f   ( gl_x + gl_w,     gl_y + gl_h, 0.0 );
-				glTexCoord2f (  0.0,      hh ); // (fs->h / 512.0)
+				glTexCoord2f (  xx,      hh ); // (fs->h / 512.0)
 				glVertex3f   (  gl_x,     gl_y + gl_h, 0.0 );
 			glEnd ();
 		}

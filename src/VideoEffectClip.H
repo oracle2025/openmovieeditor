@@ -52,8 +52,12 @@ class VideoEffectClip : public IVideoReader
 		effect_stack* getEffects() { return m_effects; }
 		virtual int w() = 0;
 		virtual int h() = 0;
+		virtual int aspectHeight() = 0;
+		virtual int aspectWidth() = 0;
+		virtual float aspectRatio() = 0;
+		virtual int analogBlank() = 0;
 		void unPrepareFormat();
-		void prepareFormat( int w, int h ); // might add fps here
+		void prepareFormat( int w, int h, int aspect_w, int aspect_h, float aspect, int analog_blank ); // might add fps here
 		frame_struct* getFormattedFrame( frame_struct* tmp_frame, int64_t position );
 		bool crop() { return m_crop; }
 		bool fit() { return m_fit; }

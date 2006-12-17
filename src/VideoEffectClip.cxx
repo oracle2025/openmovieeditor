@@ -27,6 +27,7 @@
 #include "VideoClip.H"
 #include "ImageClip.H"
 #include "TitleClip.H"
+#include "render_helper.H"
 
 namespace nle
 {
@@ -53,6 +54,8 @@ frame_struct* VideoEffectClip::getFrame( int64_t position )
 		node = node->next;
 	}
 	// TODO: Copy pixel aspect and analog_blank
+	f->aspect = aspectRatio();
+	f->analog_blank = analogBlank();
 	f->render_strategy = m_render_strategy;
 	return f;
 
@@ -134,9 +137,10 @@ void VideoEffectClip::removeEffect( int num )
 		delete node;
 	}
 }
-void VideoEffectClip::prepareFormat( int ww, int hh )
+//void VideoEffectClip::prepareFormat( int ww, int hh, int aspect_w, int aspect_h, float aspect, int analog_blank )
+void VideoEffectClip::prepareFormat( int ww, int hh, int , int , float aspect, int analog_blank )
 {
-	if ( ww == w() && hh == h() && ( m_render_strategy == RENDER_FIT || m_render_strategy == RENDER_DEFAULT ) ) {
+	if ( ww == w() && hh == h() ) {
 		return;
 	}
 	if ( m_video_scaler ) {
@@ -188,48 +192,27 @@ void VideoEffectClip::prepareFormat( int ww, int hh )
 	format_src.pixel_width = 1;
 	format_src.pixel_height = 1;
 	format_src.pixelformat = colorspace;
-
+	
 	if ( m_render_strategy == RENDER_CROP ) {
 		gavl_rectangle_f_t src_rect;
 		gavl_rectangle_i_t dst_rect;
-		float src_aspect = ( (float)w() / (float)h() );
-		float dst_aspect = ( (float)ww / (float)hh );
-		if ( src_aspect < dst_aspect ) { // Skyscraper
-			src_rect.x = 0.0;
-			src_rect.w = w();
-			src_rect.h = h() / dst_aspect;
-			src_rect.y = ( h() - src_rect.h ) / 2 ;
-		} else { // Banner
-			src_rect.y = 0.0;
-			src_rect.w = w() / dst_aspect;
-			src_rect.x = ( w() - src_rect.w ) / 2;
-			src_rect.h = h();
-		}
-		dst_rect.x = 0;
-		dst_rect.y = 0;
-		dst_rect.w = ww;
-		dst_rect.h = hh;
+		crop_format( w(), h(), aspectRatio(), analogBlank(), ww, hh, aspect, analog_blank,
+				src_rect.x, src_rect.y, src_rect.w, src_rect.h,
+				dst_rect.x, dst_rect.y, dst_rect.w, dst_rect.h );
 		gavl_video_options_set_rectangles( options, &src_rect, &dst_rect );
 	} else if ( m_render_strategy == RENDER_FIT ) {
 		gavl_rectangle_f_t src_rect;
 		gavl_rectangle_i_t dst_rect;
-		float src_aspect = ( (float)w() / (float)h() );
-		float dst_aspect = ( (float)ww / (float)hh );
-		if ( src_aspect > dst_aspect ) { // Banner
-			src_rect.x = 0.0;
-			src_rect.w = w();
-			src_rect.h = h() * dst_aspect;
-			src_rect.y = ( h() - src_rect.h ) / 2 ;
-		} else { // Skyscraper
-			src_rect.y = 0.0;
-			src_rect.w = w() * dst_aspect;
-			src_rect.x = ( w() - src_rect.w ) / 2;
-			src_rect.h = h();
-		}
-		dst_rect.x = 0;
-		dst_rect.y = 0;
-		dst_rect.w = ww;
-		dst_rect.h = hh;
+		fit_format( w(), h(), aspectRatio(), analogBlank(), ww, hh, aspect, analog_blank,
+				src_rect.x, src_rect.y, src_rect.w, src_rect.h,
+				dst_rect.x, dst_rect.y, dst_rect.w, dst_rect.h );
+		gavl_video_options_set_rectangles( options, &src_rect, &dst_rect );
+	} else if ( analogBlank() != analog_blank ) {
+		gavl_rectangle_f_t src_rect;
+		gavl_rectangle_i_t dst_rect;
+		stretch_format( w(), h(), aspectRatio(), analogBlank(), ww, hh, aspect, analog_blank,
+				src_rect.x, src_rect.y, src_rect.w, src_rect.h,
+				dst_rect.x, dst_rect.y, dst_rect.w, dst_rect.h );
 		gavl_video_options_set_rectangles( options, &src_rect, &dst_rect );
 	}
 	
