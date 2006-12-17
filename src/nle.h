@@ -163,8 +163,11 @@ public:
 private:
   void cb_titles_size_i(Fl_Value_Input*, void*);
   static void cb_titles_size(Fl_Value_Input*, void*);
-  void cb_Color_i(Fl_Button*, void*);
-  static void cb_Color(Fl_Button*, void*);
+public:
+  Fl_Button *titles_color;
+private:
+  void cb_titles_color_i(Fl_Button*, void*);
+  static void cb_titles_color(Fl_Button*, void*);
 public:
   Fl_Slider *titles_x;
 private:
@@ -268,7 +271,7 @@ public:
   int automationsMode();
   void setEffectButtons();
   void deactivate_titles();
-  void activate_titles(int font, int size, const char* text, float x, float y);
+  void activate_titles(int font, int size, const char* text, float x, float y, Fl_Color color );
   void portaudio();
   void jack();
 };

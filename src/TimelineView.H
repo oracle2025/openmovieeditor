@@ -86,6 +86,7 @@ class TimelineView : public Fl_Widget
 		void titles_y( float y );
 		void titles_size( int size );
 		void titles_font( int font );
+		void titles_color( Fl_Color color );
 		int m_trackHeight;
 		void cut();
 		void copy();

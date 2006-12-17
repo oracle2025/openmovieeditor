@@ -54,11 +54,13 @@ class TitleClip : public Clip, public VideoEffectClip
 		void y( float y ) { m_y = y; }
 		void size( int size ) { m_size = size; }
 		void font( int font ) { m_font = font; }
+		void color( Fl_Color color ) { m_color = color; }
 		const char* text() { return m_text.c_str(); }
 		float x() { return m_x; }
 		float y() { return m_y; }
 		int size() { return m_size; }
 		int font() { return m_font; }
+		Fl_Color color() { return m_color; }
 		void touch() { m_dirty = true; }
 		int aspectHeight() { return 4; }
 		int aspectWidth() { return 3; }
@@ -80,6 +82,7 @@ class TitleClip : public Clip, public VideoEffectClip
 		unsigned char* m_pixels;
 		unsigned char* m_alpha;
 		Fl_Offscreen m_offscreen;
+		Fl_Color m_color;
 };
 
 } /* namespace nle */

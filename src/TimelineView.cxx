@@ -820,7 +820,7 @@ void TimelineView::updateTitlesDisplay()
 		g_ui->deactivate_titles();
 		return;
 	}
-	g_ui->activate_titles( tc->font(), tc->size(), tc->text(), tc->x(), tc->y() );
+	g_ui->activate_titles( tc->font(), tc->size(), tc->text(), tc->x(), tc->y(), tc->color() );
 }
 void TimelineView::titles_text( const char* t )
 {
@@ -869,6 +869,16 @@ void TimelineView::titles_font( int font )
 		return;
 	}
 	tc->font( font );
+	tc->touch();
+	g_videoView->redraw();
+}
+void TimelineView::titles_color( Fl_Color color )
+{
+	TitleClip* tc = getTitleClip();
+	if ( !tc ) {
+		return;
+	}
+	tc->color( color );
 	tc->touch();
 	g_videoView->redraw();
 }

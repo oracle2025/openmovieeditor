@@ -372,12 +372,14 @@ void NleUI::cb_titles_size(Fl_Value_Input* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_titles_size_i(o,v);
 }
 
-void NleUI::cb_Color_i(Fl_Button* o, void*) {
+void NleUI::cb_titles_color_i(Fl_Button* o, void*) {
   o->color(fl_show_colormap(o->color()));
+m_timelineView->titles_color( o->color() );
+m_timelineView->titles_text( titles_text->value() );
 o->redraw();
 }
-void NleUI::cb_Color(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_Color_i(o,v);
+void NleUI::cb_titles_color(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_titles_color_i(o,v);
 }
 
 void NleUI::cb_titles_x_i(Fl_Slider* o, void*) {
@@ -905,10 +907,10 @@ NleUI::NleUI() {
                 o->value(20);
                 o->callback((Fl_Callback*)cb_titles_size);
                 }
-                { Fl_Button* o = new Fl_Button(95, 135, 100, 20, "Color");
+                { Fl_Button* o = titles_color = new Fl_Button(95, 135, 100, 20, "Color");
                 o->color(FL_BACKGROUND2_COLOR);
                 o->labelsize(12);
-                o->callback((Fl_Callback*)cb_Color);
+                o->callback((Fl_Callback*)cb_titles_color);
                 o->align(FL_ALIGN_LEFT);
                 }
                 { Fl_Slider* o = titles_x = new Fl_Slider(95, 185, 100, 20, "@<->");
@@ -1182,13 +1184,14 @@ void NleUI::deactivate_titles() {
   titles_tab->deactivate();
 }
 
-void NleUI::activate_titles(int font, int size, const char* text, float x, float y) {
+void NleUI::activate_titles(int font, int size, const char* text, float x, float y, Fl_Color color ) {
   titles_fonts->value( font );
 titles_size->value( size );
 titles_x->value( x );
 titles_y->value( y );
 titles_text->value( text );
 titles_tab->activate();
+titles_color->color( color );
 }
 
 void NleUI::portaudio() {

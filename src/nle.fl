@@ -2,7 +2,8 @@
 version 1.0107 
 header_name {.h} 
 code_name {.cxx}
-class NleUI {} {
+class NleUI {open
+} {
   Function {NleUI()} {open
   } {
     Fl_Window mainWindow {
@@ -446,9 +447,11 @@ m_timelineView->titles_text( titles_text->value() );}
                     xywh {95 110 100 20} labelsize 12 minimum 10 maximum 200 step 2 value 20
                     code0 {\#include <math.h>}
                   }
-                  Fl_Button {} {
+                  Fl_Button titles_color {
                     label Color
                     callback {o->color(fl_show_colormap(o->color()));
+m_timelineView->titles_color( o->color() );
+m_timelineView->titles_text( titles_text->value() );
 o->redraw();}
                     xywh {95 135 100 20} color 7 labelsize 12 align 4
                     code0 {\#include <FL/fl_show_colormap.H>}
@@ -708,13 +711,16 @@ if ( effect_browser->value() == 0 ) {
   Function {deactivate_titles()} {} {
     code {titles_tab->deactivate();} {}
   }
-  Function {activate_titles(int font, int size, const char* text, float x, float y)} {} {
+  Function {activate_titles(int font, int size, const char* text, float x, float y, Fl_Color color )} {open
+  } {
     code {titles_fonts->value( font );
 titles_size->value( size );
 titles_x->value( x );
 titles_y->value( y );
 titles_text->value( text );
-titles_tab->activate();} {}
+titles_tab->activate();
+titles_color->color( color );} {selected
+    }
   }
   Function {portaudio()} {} {
     code {playButton->hide();
@@ -849,7 +855,7 @@ m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
         }
         MenuItem {} {
           label {768x576 (PAL 4:3)}
-          user_data {&fs768x576} selected
+          user_data {&fs768x576}
           xywh {0 0 100 20}
         }
         MenuItem {} {

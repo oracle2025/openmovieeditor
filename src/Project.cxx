@@ -152,6 +152,7 @@ int Project::write( string filename, string name )
 					clip->SetDoubleAttribute( "y", tc->y() );
 					clip->SetAttribute( "size", tc->size() );
 					clip->SetAttribute( "font", tc->font() );
+					clip->SetAttribute( "color", tc->color() );
 				}
 
 				for ( effect_stack* p = vc->getEffects(); p; p = p->next ) {
@@ -272,6 +273,7 @@ int Project::read( string filename )
 				double y;
 				int size;
 				int font;
+				int color;
 				if ( ( textp = j->Attribute( "text" ) ) ) {
 					c->text( textp );
 				}
@@ -286,6 +288,9 @@ int Project::read( string filename )
 				}
 				if ( j->Attribute( "font", &font ) ) {
 					c->font( font );
+				}
+				if ( j->Attribute( "color", &color ) ) {
+					c->color( (Fl_Color)color );
 				}
 
 				

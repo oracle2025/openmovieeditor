@@ -61,6 +61,7 @@ TitleClip::TitleClip( Track* track, int64_t position, int64_t length, int id )
 	m_alpha = new unsigned char[ 768*576*3 ];
 	m_ok = true;
 	m_offscreen = 0;
+	m_color = FL_WHITE;
 }
 void TitleClip::init()
 {
@@ -98,9 +99,9 @@ void TitleClip::init()
 		o_h = o_w = 0;
 		fl_measure( p, o_w, o_h );
 		x = lrint( ( 768 - o_w )* m_x);
-		fl_color(fl_contrast(FL_DARK3,FL_WHITE));
+		fl_color(fl_contrast(FL_DARK3,m_color));
 		fl_draw( p, x, y );
-		fl_color(FL_WHITE);
+		fl_color(m_color);
 		fl_draw( p, x - 2, y - 2 );
 		y = y + o_h;
 	}
