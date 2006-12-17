@@ -8,6 +8,7 @@
 #include "ProgressDialog/ProgressDialog.h"
 #include "Renderer.H"
 #include "Codecs.H"
+#include "Prefs.H"
 #include "LoadSaveManager/LoadSaveManager.H"
 #include "DocManager.H"
 #include "Timeline.H"

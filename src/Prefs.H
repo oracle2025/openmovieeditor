@@ -38,10 +38,22 @@ class Prefs
 		void setMediaFolder( string filename ) { m_mediaFolder = filename; }
 		string lastProject();
 		void lastProject( string filename );
+		void lastVideoCodec( int codec ) { m_lastVideoCodec = codec; }
+		int lastVideoCodec() { return m_lastVideoCodec; }
+		void lastAudioCodec( int codec ) { m_lastAudioCodec = codec; }
+		int lastAudioCodec() { return m_lastAudioCodec; }
+		void lastRenderFilename( string filename ) { m_lastRenderFilename = filename; }
+		string lastRenderFilename() { return m_lastRenderFilename; }
+		void lastFramesize( int fs ) { m_lastFramesize = fs; }
+		int lastFramesize() { return m_lastFramesize; }
 	private:
 		string m_mediaFolder;
 		string m_browserFolder;
 		string m_lastProject;
+		string m_lastRenderFilename;
+		int m_lastVideoCodec;
+		int m_lastAudioCodec;
+		int m_lastFramesize;
 		
 };
 extern Prefs* g_preferences;

@@ -58,6 +58,11 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 	backButton->activate();
 
 	if ( ren.ok() ) {
+		nle::g_preferences->lastVideoCodec( dlg.video_codec_menu->value() );
+		nle::g_preferences->lastAudioCodec( dlg.audio_codec_menu->value() );
+		nle::g_preferences->lastFramesize( dlg.frame_size_choice->value() );
+		nle::g_preferences->lastRenderFilename( dlg.export_filename->value() );
+	
 		ren.go( &pDlg );
 	}
 	
@@ -71,6 +76,7 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
             code0 {\#include "ProgressDialog/ProgressDialog.h"}
             code1 {\#include "Renderer.H"}
             code2 {\#include "Codecs.H"}
+            code3 {\#include "Prefs.H"}
           }
           MenuItem {} {
             label Quit
@@ -382,7 +388,7 @@ fb->load_rel();}
                   xywh {5 80 195 220} box ENGRAVED_FRAME
                 } {
                   Fl_Value_Input {} {
-                    label {Line Spacing} selected
+                    label {Line Spacing}
                     xywh {95 160 100 20} labelsize 12 maximum 5 step 0.5 hide
                   }
                   Fl_Choice titles_fonts {
@@ -933,7 +939,19 @@ m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
 video_codec = 0;
 nle::setAudioCodecMenu( audio_codec_menu );
 nle::setVideoCodecMenu( video_codec_menu );
-encodeDialog->show();} {}
+
+video_codec_menu->value( nle::g_preferences->lastVideoCodec() );
+audio_codec_menu->value( nle::g_preferences->lastAudioCodec() );
+frame_size_choice->value( nle::g_preferences->lastFramesize() );
+export_filename->value( nle::g_preferences->lastRenderFilename().c_str() );
+
+video_codec = video_codec_menu->menu()[video_codec_menu->value()].user_data();
+m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );
+audio_codec = audio_codec_menu->menu()[audio_codec_menu->value()].user_data();
+m_codecParams->setAudioCodec( (lqt_codec_info_t*)audio_codec );
+
+encodeDialog->show();} {selected
+    }
   }
   Function {shown()} {return_type int
   } {

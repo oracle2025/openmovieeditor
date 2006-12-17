@@ -51,6 +51,11 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 	backButton->activate();
 
 	if ( ren.ok() ) {
+		nle::g_preferences->lastVideoCodec( dlg.video_codec_menu->value() );
+		nle::g_preferences->lastAudioCodec( dlg.audio_codec_menu->value() );
+		nle::g_preferences->lastFramesize( dlg.frame_size_choice->value() );
+		nle::g_preferences->lastRenderFilename( dlg.export_filename->value() );
+	
 		ren.go( &pDlg );
 	}
 	
@@ -1416,6 +1421,17 @@ void EncodeDialog::show() {
 video_codec = 0;
 nle::setAudioCodecMenu( audio_codec_menu );
 nle::setVideoCodecMenu( video_codec_menu );
+
+video_codec_menu->value( nle::g_preferences->lastVideoCodec() );
+audio_codec_menu->value( nle::g_preferences->lastAudioCodec() );
+frame_size_choice->value( nle::g_preferences->lastFramesize() );
+export_filename->value( nle::g_preferences->lastRenderFilename().c_str() );
+
+video_codec = video_codec_menu->menu()[video_codec_menu->value()].user_data();
+m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );
+audio_codec = audio_codec_menu->menu()[audio_codec_menu->value()].user_data();
+m_codecParams->setAudioCodec( (lqt_codec_info_t*)audio_codec );
+
 encodeDialog->show();
 }
 

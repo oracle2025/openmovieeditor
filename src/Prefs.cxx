@@ -43,6 +43,10 @@ Prefs::Prefs()
 	g_preferences = this;
 	m_browserFolder = getenv( "HOME" );
 	m_mediaFolder = getenv( "HOME" );
+	m_lastRenderFilename = "";
+	m_lastVideoCodec = 0;
+	m_lastAudioCodec = 0;
+	m_lastFramesize = 0;
 	TiXmlDocument doc( preferences_filename.c_str() );
 	if ( !doc.LoadFile() ) {
 		return;
@@ -63,6 +67,22 @@ Prefs::Prefs()
 	text = docH.FirstChildElement( "mediaFolder" ).Child( 0 ).Text();
 	if ( text ) {
 		m_mediaFolder = text->Value();
+	}
+	text = docH.FirstChildElement( "lastRenderFilename" ).Child( 0 ).Text();
+	if ( text ) {
+		m_lastRenderFilename = text->Value();
+	}
+	TiXmlElement* j = docH.FirstChildElement( "lastVideoCodec" ).Element();
+	if ( j ) {
+		j->Attribute( "value", &m_lastVideoCodec );
+	}
+	j = docH.FirstChildElement( "lastAudioCodec" ).Element();
+	if ( j ) {
+		j->Attribute( "value", &m_lastAudioCodec );
+	}
+	j = docH.FirstChildElement( "lastFramesize" ).Element();
+	if ( j ) {
+		j->Attribute( "value", &m_lastFramesize );
 	}
 
 }
@@ -95,6 +115,21 @@ Prefs::~Prefs()
 	doc.LinkEndChild( item );
 	text = new TiXmlText( m_lastProject.c_str() );
 	item->LinkEndChild( text );
+	
+	item = new TiXmlElement( "lastRenderFilename" );
+	doc.LinkEndChild( item );
+	text = new TiXmlText( m_lastRenderFilename.c_str() );
+	item->LinkEndChild( text );
+
+	item = new TiXmlElement( "lastVideoCodec" );
+	doc.LinkEndChild( item );
+	item->SetAttribute( "value", m_lastVideoCodec );
+	item = new TiXmlElement( "lastAudioCodec" );
+	doc.LinkEndChild( item );
+	item->SetAttribute( "value", m_lastAudioCodec );
+	item = new TiXmlElement( "lastFramesize" );
+	doc.LinkEndChild( item );
+	item->SetAttribute( "value", m_lastFramesize );
 
 	doc.SaveFile();
 }
