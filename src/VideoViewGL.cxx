@@ -319,6 +319,38 @@ void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 			}
 
 		}
+		
+		if ( fs[i]->render_strategy == RENDER_FIT && !fs[i]->has_alpha_channel ) {
+			int w_ = g_16_9 ? 1024 : 768;
+			int h_ = 576;
+			float gl_x, gl_y, gl_w, gl_h;
+			{
+				float f_v = ( (float)w_ / (float)h_ );
+				float f_w = ( (float)w() / (float)h() );
+				float f_g = f_v / f_w;
+				if ( f_g > 1.0 ) {
+					gl_h = 10.0 / f_g;
+					gl_w = 10.0;
+				} else {
+					gl_h = 10.0;
+					gl_w = f_g * 10.0;
+				}
+				gl_x = ( 10.0 - gl_w ) / 2;
+				gl_y = ( 10.0 - gl_h ) / 2;
+
+			}
+			glDisable (GL_TEXTURE_2D);
+			glBegin (GL_QUADS);
+			glColor4f( 0.0f, 0.0f, 0.0f, fs[i]->alpha );
+
+			glVertex3f   (  gl_x,      gl_y, 0.0 );
+			glVertex3f   ( gl_x + gl_w,      gl_y, 0.0 );
+			glVertex3f   ( gl_x + gl_w,     gl_y + gl_h, 0.0 );
+			glVertex3f   (  gl_x,     gl_y + gl_h, 0.0 );
+
+			glEnd();
+			glEnable (GL_TEXTURE_2D);
+		}
 
 		float ww = fs[i]->w / TEXTURE_WIDTH;
 		float hh = fs[i]->h / TEXTURE_HEIGHT;
@@ -488,6 +520,37 @@ void VideoViewGL::draw()
 				}
 			}
 
+			if ( fs[i]->render_strategy == RENDER_FIT && !fs[i]->has_alpha_channel ) {
+				int w_ = g_16_9 ? 1024 : 768;
+				int h_ = 576;
+				float gl_x, gl_y, gl_w, gl_h;
+				{
+					float f_v = ( (float)w_ / (float)h_ );
+					float f_w = ( (float)w() / (float)h() );
+					float f_g = f_v / f_w;
+					if ( f_g > 1.0 ) {
+						gl_h = 10.0 / f_g;
+						gl_w = 10.0;
+					} else {
+						gl_h = 10.0;
+						gl_w = f_g * 10.0;
+					}
+					gl_x = ( 10.0 - gl_w ) / 2;
+					gl_y = ( 10.0 - gl_h ) / 2;
+
+				}
+				glDisable (GL_TEXTURE_2D);
+				glBegin (GL_QUADS);
+				glColor4f( 0.0f, 0.0f, 0.0f, fs[i]->alpha );
+
+				glVertex3f   (  gl_x,      gl_y, 0.0 );
+				glVertex3f   ( gl_x + gl_w,      gl_y, 0.0 );
+				glVertex3f   ( gl_x + gl_w,     gl_y + gl_h, 0.0 );
+				glVertex3f   (  gl_x,     gl_y + gl_h, 0.0 );
+
+				glEnd();
+				glEnable (GL_TEXTURE_2D);
+			}
 			
 			glColor4f( 1.0f, 1.0f, 1.0f, fs[i]->alpha ); //Control Transparency
 			float ww = fs[i]->w / TEXTURE_WIDTH;

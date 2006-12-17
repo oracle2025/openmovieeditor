@@ -136,7 +136,7 @@ void VideoEffectClip::removeEffect( int num )
 }
 void VideoEffectClip::prepareFormat( int ww, int hh )
 {
-	if ( ww == w() && hh == h() ) {
+	if ( ww == w() && hh == h() && ( m_render_strategy == RENDER_FIT || m_render_strategy == RENDER_DEFAULT ) ) {
 		return;
 	}
 	if ( m_video_scaler ) {
@@ -168,7 +168,7 @@ void VideoEffectClip::prepareFormat( int ww, int hh )
 	}
  
 	m_video_scaler = gavl_video_scaler_create();
-	//gavl_video_options_t* options = gavl_video_scaler_get_options( m_video_scaler );
+	gavl_video_options_t* options = gavl_video_scaler_get_options( m_video_scaler );
 
 	gavl_video_format_t format_src;
 	gavl_video_format_t format_dst;
@@ -188,6 +188,50 @@ void VideoEffectClip::prepareFormat( int ww, int hh )
 	format_src.pixel_width = 1;
 	format_src.pixel_height = 1;
 	format_src.pixelformat = colorspace;
+
+	if ( m_render_strategy == RENDER_CROP ) {
+		gavl_rectangle_f_t src_rect;
+		gavl_rectangle_i_t dst_rect;
+		float src_aspect = ( (float)w() / (float)h() );
+		float dst_aspect = ( (float)ww / (float)hh );
+		if ( src_aspect < dst_aspect ) { // Skyscraper
+			src_rect.x = 0.0;
+			src_rect.w = w();
+			src_rect.h = h() / dst_aspect;
+			src_rect.y = ( h() - src_rect.h ) / 2 ;
+		} else { // Banner
+			src_rect.y = 0.0;
+			src_rect.w = w() / dst_aspect;
+			src_rect.x = ( w() - src_rect.w ) / 2;
+			src_rect.h = h();
+		}
+		dst_rect.x = 0;
+		dst_rect.y = 0;
+		dst_rect.w = ww;
+		dst_rect.h = hh;
+		gavl_video_options_set_rectangles( options, &src_rect, &dst_rect );
+	} else if ( m_render_strategy == RENDER_FIT ) {
+		gavl_rectangle_f_t src_rect;
+		gavl_rectangle_i_t dst_rect;
+		float src_aspect = ( (float)w() / (float)h() );
+		float dst_aspect = ( (float)ww / (float)hh );
+		if ( src_aspect > dst_aspect ) { // Banner
+			src_rect.x = 0.0;
+			src_rect.w = w();
+			src_rect.h = h() * dst_aspect;
+			src_rect.y = ( h() - src_rect.h ) / 2 ;
+		} else { // Skyscraper
+			src_rect.y = 0.0;
+			src_rect.w = w() * dst_aspect;
+			src_rect.x = ( w() - src_rect.w ) / 2;
+			src_rect.h = h();
+		}
+		dst_rect.x = 0;
+		dst_rect.y = 0;
+		dst_rect.w = ww;
+		dst_rect.h = hh;
+		gavl_video_options_set_rectangles( options, &src_rect, &dst_rect );
+	}
 	
 	if ( gavl_video_scaler_init( m_video_scaler, &format_src, &format_dst ) == -1 ) {
 		cerr << "Video Scaler Init failed" << endl;
