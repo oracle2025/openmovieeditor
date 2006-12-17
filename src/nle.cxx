@@ -892,6 +892,7 @@ NleUI::NleUI() {
                 o->labelsize(12);
                 o->maximum(5);
                 o->step(0.5);
+                o->hide();
                 }
                 { Fl_Choice* o = titles_fonts = new Fl_Choice(95, 85, 100, 20, "Font");
                 o->down_box(FL_BORDER_BOX);

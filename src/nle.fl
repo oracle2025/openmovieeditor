@@ -382,8 +382,8 @@ fb->load_rel();}
                   xywh {5 80 195 220} box ENGRAVED_FRAME
                 } {
                   Fl_Value_Input {} {
-                    label {Line Spacing}
-                    xywh {95 160 100 20} labelsize 12 maximum 5 step 0.5
+                    label {Line Spacing} selected
+                    xywh {95 160 100 20} labelsize 12 maximum 5 step 0.5 hide
                   }
                   Fl_Choice titles_fonts {
                     label Font
@@ -719,8 +719,7 @@ titles_x->value( x );
 titles_y->value( y );
 titles_text->value( text );
 titles_tab->activate();
-titles_color->color( color );} {selected
-    }
+titles_color->color( color );} {}
   }
   Function {portaudio()} {} {
     code {playButton->hide();
