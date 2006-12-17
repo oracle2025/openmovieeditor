@@ -28,6 +28,7 @@ namespace nle
 ImageClipArtist::ImageClipArtist( Fl_Image* image )
 {
 	m_image = image->copy( 40, 30 );
+	m_image_new = 0;
 }
 ImageClipArtist::~ImageClipArtist()
 {
@@ -37,6 +38,13 @@ ImageClipArtist::~ImageClipArtist()
 }
 void ImageClipArtist::render( Rect& rect, int64_t, int64_t )
 {
+	if ( m_image_new ) {
+		if ( m_image ) {
+			delete m_image;
+		}
+		m_image = m_image_new->copy( 40, 30 );
+		m_image_new = 0;
+	}
 	fl_push_clip( rect.x, rect.y, rect.w, rect.h );		
 	m_image->draw( rect.x, rect.y );
 	m_image->draw( rect.x + rect.w - 40, rect.y );
@@ -46,10 +54,8 @@ void ImageClipArtist::render( Rect& rect, int64_t, int64_t )
 }
 void ImageClipArtist::image( Fl_Image* image )
 {
-	if ( m_image ) {
-		delete m_image;
-	}
-	m_image = image->copy( 40, 30 );
+	m_image_new = image;
+	// This is evil, because it keeps the reference for later
 }
 
 

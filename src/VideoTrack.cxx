@@ -40,6 +40,8 @@ VideoTrack::VideoTrack( int num, string name )
 	m_vidCurrent = 0;
 	m_fade_overs = 0;
 	m_currentAudioFadeOver = 0;
+	m_preparedFrame1.RGB = 0;
+	m_preparedFrame2.RGB = 0;
 }
 VideoTrack::~VideoTrack()
 {
@@ -173,6 +175,84 @@ frame_struct** VideoTrack::getFrameStack( int64_t position )
 		}
 	}
 	return frameStack;
+}
+void VideoTrack::prepareFormat( int w, int h )
+{
+	m_preparedFrame1.RGB = new unsigned char[w * h * 4];
+	m_preparedFrame2.RGB = new unsigned char[w * h * 4];
+	//TODO: anders initialisieren?
+	m_preparedFrame1.x = 0;
+	m_preparedFrame1.y = 0;
+	m_preparedFrame1.w = w;
+	m_preparedFrame1.h = h;
+	m_preparedFrame1.alpha = 1.0;
+	m_preparedFrame1.has_alpha_channel = true;
+	m_preparedFrame2.x = 0;
+	m_preparedFrame2.y = 0;
+	m_preparedFrame2.w = w;
+	m_preparedFrame2.h = h;
+	m_preparedFrame2.alpha = 1.0;
+	m_preparedFrame2.has_alpha_channel = true;
+
+	for ( clip_node* j = getClips(); j; j = j->next ) {
+		VideoEffectClip* vec = dynamic_cast<VideoEffectClip*>(j->clip);
+		if ( vec ) {
+			vec->prepareFormat( w, h );
+		}
+	}
+
+}
+void VideoTrack::unPrepareFormat()
+{
+	if ( m_preparedFrame1.RGB ) {
+		delete [] m_preparedFrame1.RGB;
+		m_preparedFrame1.RGB = 0;
+	}
+	if ( m_preparedFrame2.RGB ) {
+		delete [] m_preparedFrame2.RGB;
+		m_preparedFrame2.RGB = 0;
+	}
+}
+frame_struct** VideoTrack::getFormattedFrameStack( int64_t position )
+{
+	static frame_struct* frameStack[3];
+	frameStack[0] = 0;
+	frameStack[1] = 0;
+	frameStack[2] = 0;
+
+	fade_over* o = (fade_over*)sl_map( m_fade_overs, find_fade_over_helper, &position );
+	if ( o ) {
+		VideoEffectClip* A;
+		VideoEffectClip* B;
+		A = dynamic_cast<VideoEffectClip*>(o->clipA);
+		B = dynamic_cast<VideoEffectClip*>(o->clipB);
+		assert( A );
+		assert( B );
+		frameStack[0] = A->getFormattedFrame( &m_preparedFrame1, position );
+		frameStack[1] = B->getFormattedFrame( &m_preparedFrame2, position );
+		if ( frameStack[0] && frameStack[1] ) {
+			get_alpha_values( o, frameStack[0]->alpha, frameStack[1]->alpha, position );
+			if ( !frameStack[0]->has_alpha_channel ) {
+				frameStack[1]->alpha = 1.0;
+			}
+		}
+		return frameStack;
+	} else {
+		for ( clip_node *p = m_clips; p; p = p->next ) {
+			VideoEffectClip* current;
+			current = dynamic_cast<VideoEffectClip*>(p->clip);
+			if ( !current ) {
+				continue;
+			}
+			frameStack[0] = current->getFormattedFrame( &m_preparedFrame1, position );
+			if ( frameStack[0] ) {
+				frameStack[0]->alpha = 1.0;
+				return frameStack;
+			}
+		}
+	}
+	return frameStack;
+
 }
 
 int fo_sort_helper( void* p, void* q )

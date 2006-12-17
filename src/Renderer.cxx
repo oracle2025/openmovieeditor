@@ -61,7 +61,10 @@ Renderer::Renderer( string filename, int w, int h, int framerate, int samplerate
 	params->set( qt, m_w, m_h );
 
 	lqt_set_cmodel( qt, 0, BC_RGB888 );
+	g_timeline->prepareFormat( w, h );
+
 	return;
+	//===================== THE FOLLOWING CODE IS NOT EXECUTED =====================
 
 	
 	lqt_codec_info_t **codecs = lqt_query_registry( 1, 0, 1, 0 );
@@ -82,6 +85,7 @@ Renderer::~Renderer()
 {
 	if (qt)
 		quicktime_close( qt );
+	g_timeline->unPrepareFormat();
 }
 
 //#define AUDIO_BUFFER_SIZE 480

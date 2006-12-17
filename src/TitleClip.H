@@ -20,6 +20,7 @@
 #ifndef _TITLE_CLIP_H_
 #define _TITLE_CLIP_H_
 
+#include <FL/x.H>
 #include "timeline/Clip.H"
 #include "IVideoReader.H"
 #include "global_includes.H"
@@ -74,6 +75,7 @@ class TitleClip : public Clip, public VideoEffectClip
 		bool m_dirty;
 		unsigned char* m_pixels;
 		unsigned char* m_alpha;
+		Fl_Offscreen m_offscreen;
 };
 
 } /* namespace nle */

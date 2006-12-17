@@ -129,6 +129,36 @@ frame_struct* Timeline::nextFrame( int64_t position )
 	}
 	return res;
 }
+frame_struct** Timeline::getFormattedFrameStack( int64_t position )
+{
+	static frame_struct* frameStack[8]; //At most 8 Frames, ought to be enough for everyone ;)
+	int cnt = 0;
+
+	if ( position < 0 ) {
+		position = m_seekPosition;
+		m_seekPosition++;
+	}
+	
+	m_playPosition = position;
+	
+	for ( track_node *p = m_allTracks; p; p = p->next ) {
+		VideoTrack* current = dynamic_cast<VideoTrack*>(p->track);
+		if ( !current ) {
+			continue;
+		}
+		frame_struct** fs = current->getFormattedFrameStack( position );
+		
+		for ( int i = 0; fs[i] && cnt <=7 ; i++ ) {
+			frameStack[cnt] = fs[i];
+			cnt++;
+		}
+		if ( cnt == 7 ) {
+			break;
+		}
+	}
+	frameStack[cnt] = 0;
+	return frameStack;
+}
 frame_struct** Timeline::getFrameStack( int64_t position )
 {
 	static frame_struct* frameStack[8]; //At most 8 Frames, ought to be enough for everyone ;)
@@ -159,8 +189,6 @@ frame_struct** Timeline::getFrameStack( int64_t position )
 	frameStack[cnt] = 0;
 	return frameStack;
 }
-
-
 int Timeline::fillBuffer( float* output, unsigned long frames )
 {
 	static float buffer1[23040*2] = {0};
@@ -213,7 +241,7 @@ void Timeline::getBlendedFrame( frame_struct* dst )
 }
 void Timeline::getBlendedFrame( int64_t position, frame_struct* dst )
 {
-	frame_struct** fs = getFrameStack( position );
+	frame_struct** fs = getFormattedFrameStack( position );
 	frame_struct tmp_frame;
 	tmp_frame.x = tmp_frame.y = 0;
 	tmp_frame.w = dst->w;
@@ -236,40 +264,21 @@ void Timeline::getBlendedFrame( int64_t position, frame_struct* dst )
 	if ( !fs[start] ) {
 		start--;
 		if ( start >= 0 ) {
-			if ( fs[start]->w != dst->w || fs[start]->h != dst->h ) {
-				unsigned char *src, *dest, *end;
-				src = fs[start]->RGB;
-				dest = fs[start]->RGB;
-				end = fs[start]->RGB + ( fs[start]->w * fs[start]->h * 4 );
-				while ( src < end ) {
-					dest[0] = src[0];
-					dest[1] = src[1];
-					dest[2] = src[2];
-					dest += 3;
-					src += 4;
-				}
-				scale_it( fs[start], dst );
-			} else {
-				int len = fs[start]->w * fs[start]->h * 4;
-				unsigned char *src, *dest, *end;
-				src = fs[start]->RGB;
-				dest = dst->RGB;
-				end = fs[start]->RGB + len;
-				while ( src < end ) {
-					dest[0] = src[0];
-					dest[1] = src[1];
-					dest[2] = src[2];
-					dest += 3;
-					src += 4;
-				}
+			int len = fs[start]->w * fs[start]->h * 4;
+			unsigned char *src, *dest, *end;
+			src = fs[start]->RGB;
+			dest = dst->RGB;
+			end = fs[start]->RGB + len;
+			while ( src < end ) {
+				dest[0] = src[0];
+				dest[1] = src[1];
+				dest[2] = src[2];
+				dest += 3;
+				src += 4;
 			}
 		}
 	} else {
-		if ( fs[start]->w != dst->w || fs[start]->h != dst->h ) {
-			scale_it( fs[start], dst );
-		} else {
-			memcpy( dst->RGB, fs[start]->RGB, dst->w * dst->h * 3 );
-		}
+		memcpy( dst->RGB, fs[start]->RGB, dst->w * dst->h * 3 );
 		if ( fs[start]->has_alpha_channel || fs[start]->alpha < 1.0 ) {
 			cout << "NO ALPHA CHANNEL FOR start" << endl;
 		}
@@ -277,20 +286,10 @@ void Timeline::getBlendedFrame( int64_t position, frame_struct* dst )
 	start--;
 	for ( int i = start; i >= stop; i-- ) {
 		if ( fs[i]->has_alpha_channel ) {
-			if ( fs[i]->w != dst->w || fs[i]->h != dst->h ) {
-				scale_it_alpha( fs[i], &tmp_frame );
-				blend_alpha( dst->RGB, dst->RGB, tmp_frame.RGB, fs[i]->alpha, dst->w * dst->h );
-			} else {
-				blend_alpha( dst->RGB, dst->RGB, fs[i]->RGB, fs[i]->alpha, dst->w * dst->h );
-			}
+			blend_alpha( dst->RGB, dst->RGB, fs[i]->RGB, fs[i]->alpha, dst->w * dst->h );
 			continue;
 		}
-		if ( fs[i]->w != dst->w || fs[i]->h != dst->h ) {
-			scale_it( fs[i], &tmp_frame );
-			blend( dst->RGB, tmp_frame.RGB, dst->RGB, fs[i]->alpha, dst->w * dst->h );
-		} else {
-			blend( dst->RGB, fs[i]->RGB, dst->RGB, fs[i]->alpha, dst->w * dst->h );
-		}
+		blend( dst->RGB, fs[i]->RGB, dst->RGB, fs[i]->alpha, dst->w * dst->h );
 	}
 	
 	// 0: ganz oben
@@ -299,6 +298,28 @@ void Timeline::getBlendedFrame( int64_t position, frame_struct* dst )
 
 	delete tmp_frame.RGB;
 }
+void Timeline::prepareFormat( int w, int h )
+{
+	for ( track_node *p = m_allTracks; p; p = p->next ) {
+		VideoTrack* current = dynamic_cast<VideoTrack*>(p->track);
+		if ( !current ) {
+			continue;
+		}
+		current->prepareFormat( w, h );
+	}
+
+}
+void Timeline::unPrepareFormat()
+{
+	for ( track_node *p = m_allTracks; p; p = p->next ) {
+		VideoTrack* current = dynamic_cast<VideoTrack*>(p->track);
+		if ( !current ) {
+			continue;
+		}
+		current->unPrepareFormat();
+	}
+}
+
 
 
 

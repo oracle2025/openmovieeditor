@@ -93,6 +93,11 @@ frame_struct* ImageClip::getRawFrame( int64_t position, int64_t &position_in_fil
 		return 0;
 	}
 }
+frame_struct* ImageClip::getFirstFrame()
+{
+	return &m_frame;
+}
+
 int ImageClip::w()
 {
 	return m_image->w();

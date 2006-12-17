@@ -25,6 +25,9 @@
 namespace nle
 {
 
+void crop( frame_struct* src, frame_struct* dst, int crop_top_bottom, int crop_left_right );
+void fit( frame_struct* src, frame_struct* dst );
+
 void halve_image( unsigned char *optr, unsigned char *iptr, int iw, int ih );
 
 void scale_it( frame_struct* src, frame_struct* dst );

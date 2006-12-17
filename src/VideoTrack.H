@@ -53,6 +53,9 @@ class VideoTrack : public TrackBase
 		float stretchFactor() { return 1.0; }
 		frame_struct* getFrame( int64_t position );
 		frame_struct** getFrameStack( int64_t position );
+		void prepareFormat( int w, int h );
+		void unPrepareFormat();
+		frame_struct** getFormattedFrameStack( int64_t position );
 		void sort();
 		void reconsiderFadeOver();
 		void removeClip( Clip* clip );
@@ -62,6 +65,8 @@ class VideoTrack : public TrackBase
 		clip_node* m_vidCurrent;
 		fade_over* m_fade_overs;
 		fade_over* m_currentAudioFadeOver;
+		frame_struct m_preparedFrame1;
+		frame_struct m_preparedFrame2;
 };
 	
 } /* namespace nle */

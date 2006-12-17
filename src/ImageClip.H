@@ -36,6 +36,7 @@ class ImageClip : public Clip, public VideoEffectClip
 		~ImageClip();
 		int64_t length();
 		frame_struct* getRawFrame( int64_t position, int64_t &position_in_file );
+		frame_struct* getFirstFrame();
 		bool ok() { return m_ok; }
 		string filename() { return m_filename; }
 		void reset() {}

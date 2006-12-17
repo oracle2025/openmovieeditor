@@ -25,6 +25,8 @@
 #include "frame_struct.h"
 #include "IVideoReader.H"
 
+typedef struct gavl_video_scaler_s gavl_video_scaler_t;
+typedef struct gavl_video_frame_s gavl_video_frame_t;
 namespace nle
 {
 
@@ -50,8 +52,9 @@ class VideoEffectClip : public IVideoReader
 		effect_stack* getEffects() { return m_effects; }
 		virtual int w() = 0;
 		virtual int h() = 0;
+		void unPrepareFormat();
 		void prepareFormat( int w, int h ); // might add fps here
-		frame_struct* getFormattedFrame( int64_t position );
+		frame_struct* getFormattedFrame( frame_struct* tmp_frame, int64_t position );
 		bool crop() { return m_crop; }
 		bool fit() { return m_fit; }
 		bool stretch() { return m_stretch; }
@@ -61,7 +64,13 @@ class VideoEffectClip : public IVideoReader
 		void stretch( bool v ) { if ( v ) { m_fit = m_crop = m_default = !(m_stretch = true); m_render_strategy = RENDER_STRETCH;} }
 		void def( bool v ) { if ( v ) { m_fit = m_crop = m_stretch = !(m_default = true); m_render_strategy = RENDER_DEFAULT;} }
 	protected:
-		VideoEffectClip() { m_render_strategy = RENDER_DEFAULT; m_effects = 0; m_crop = m_fit = m_stretch = false; m_default = true; }
+		VideoEffectClip() { m_render_strategy = RENDER_DEFAULT;
+			m_effects = 0;
+			m_crop = m_fit = m_stretch = false;
+			m_default = true;
+			m_video_scaler = 0;
+			m_frame_src = 0;
+			m_frame_dst = 0; }
 		bool m_crop;
 		bool m_fit;
 		bool m_stretch;
@@ -69,6 +78,10 @@ class VideoEffectClip : public IVideoReader
 		render_strategy_t m_render_strategy;
 	private:
 		effect_stack* m_effects;
+		gavl_video_scaler_t *m_video_scaler;
+		gavl_video_frame_t* m_frame_src;
+		gavl_video_frame_t* m_frame_dst;
+		int m_bits;
 };
 
 } /* namespace nle */

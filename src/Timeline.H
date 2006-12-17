@@ -44,6 +44,9 @@ class Timeline : public TimelineBase, public IAudioReader, public IVideoReader
 		frame_struct* getFrame( int64_t position );
 		void getBlendedFrame( frame_struct* dst );
 		void getBlendedFrame( int64_t position, frame_struct* dst );
+		void prepareFormat( int w, int h );
+		void unPrepareFormat();
+		frame_struct** getFormattedFrameStack( int64_t position );
 		frame_struct** getFrameStack( int64_t position );
 		int fillBuffer( float* output, unsigned long frames );
 		inline void seek( int64_t position ) { m_seekPosition = position; }

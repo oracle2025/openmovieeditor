@@ -21,7 +21,6 @@
 //#include <FL/Fl_Shared_Image.H>
 #include <FL/Fl_Image.H>
 #include <FL/fl_draw.H>
-#include <FL/x.H>
 
 #include "TitleClip.H"
 #include "ErrorDialog/IErrorHandler.H"
@@ -61,11 +60,15 @@ TitleClip::TitleClip( Track* track, int64_t position, int64_t length, int id )
 	m_pixels = new unsigned char[ 768*576*4 ];
 	m_alpha = new unsigned char[ 768*576*3 ];
 	m_ok = true;
+	m_offscreen = 0;
 }
 void TitleClip::init()
 {
 	if ( ( m_image && !m_dirty ) || g_PREVENT_OFFSCREEN_CRASH ) {
 		return;
+	}
+	if ( !m_offscreen ) {
+		m_offscreen = fl_create_offscreen(768, 576);
 	}
 	m_dirty = false;
 	char* text = new char[m_text.length() + 1];
@@ -74,8 +77,7 @@ void TitleClip::init()
 	
 //	uchar* pixels;
 //	uchar* alpha;
-	Fl_Offscreen offscreen = fl_create_offscreen(768, 576);
-	fl_begin_offscreen(offscreen);
+	fl_begin_offscreen(m_offscreen);
 	fl_draw_box(FL_FLAT_BOX, 0, 0, 768, 576, FL_BLUE);
 	fl_font(m_font, m_size);
 	int w = 0;
@@ -137,7 +139,6 @@ void TitleClip::init()
 	}
 	//free(alpha);
 	fl_end_offscreen();
-	fl_delete_offscreen(offscreen);
 	if ( !m_image ) {
 		m_image = new Fl_RGB_Image( m_pixels, 768, 576, 4 );
 	} else {
@@ -158,14 +159,17 @@ void TitleClip::init()
 
 TitleClip::~TitleClip()
 {
-	if ( m_image ) {
-		delete m_image;
-	}
 	if ( m_artist ) {
 		delete m_artist;
 	}
+	if ( m_image ) {
+		delete m_image;
+	}
 	if ( m_alpha ) {
 		free( m_alpha );
+	}
+	if ( m_offscreen ) {
+		fl_delete_offscreen(m_offscreen);
 	}
 }
 int64_t TitleClip::length()

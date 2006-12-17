@@ -240,23 +240,83 @@ void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 		glBindTexture( GL_TEXTURE_2D, video_canvas[i] );
 		float gl_x, gl_y, gl_w, gl_h;
 		{
-			float f_v;// = ( (float)fs[i]->w / (float)fs[i]->h );
-			if ( g_16_9 ) {
-				f_v = ( 16.0 / 9.0 );
+			if ( fs[i]->render_strategy == RENDER_FIT ) {
+				float f_v = ( (float)fs[i]->w / (float)fs[i]->h );
+				float _4_3 = g_16_9 ? ( 16.0 / 9.0 ) : ( 4.0 / 3.0 );
+				float _4_3_w, _4_3_h, _4_3_x, _4_3_y;
+				float f_w = ( (float)w() / (float)h() );
+				{
+					float f_g = _4_3 / f_w;
+					if ( f_g > 1.0 ) {
+						_4_3_h = 10.0 / f_g;
+						_4_3_w = 10.0;
+					} else {
+						_4_3_h = 10.0;
+						_4_3_w = f_g * 10.0;
+					}
+					_4_3_x = ( 10.0 - _4_3_w ) / 2;
+					_4_3_y = ( 10.0 - _4_3_h ) / 2;
+
+				}
+				if ( f_v > _4_3 ) { //Banner Format
+					gl_w = _4_3_w;
+					gl_h = _4_3_w / (f_v / f_w);
+					gl_x = _4_3_x;
+					gl_y = ( 10.0 - gl_h ) / 2;
+				} else { //Skyscraper Format
+					gl_h = _4_3_h;
+					gl_w = _4_3_h * (f_v / f_w);
+					gl_y = _4_3_y;
+					gl_x = ( 10.0 - gl_w ) / 2;
+				}
+			} else if ( fs[i]->render_strategy == RENDER_CROP ) {
+				float f_v = ( (float)fs[i]->w / (float)fs[i]->h );
+				float _4_3 = g_16_9 ? ( 16.0 / 9.0 ) : ( 4.0 / 3.0 );
+				float _4_3_w, _4_3_h, _4_3_x, _4_3_y;
+				float f_w = ( (float)w() / (float)h() );
+				{
+					float f_g = _4_3 / f_w;
+					if ( f_g > 1.0 ) {
+						_4_3_h = 10.0 / f_g;
+						_4_3_w = 10.0;
+					} else {
+						_4_3_h = 10.0;
+						_4_3_w = f_g * 10.0;
+					}
+					_4_3_x = ( 10.0 - _4_3_w ) / 2;
+					_4_3_y = ( 10.0 - _4_3_h ) / 2;
+
+				}
+				if ( f_v > _4_3 ) { //Banner Format
+					gl_h = _4_3_h;
+					gl_w = _4_3_h * (f_v / f_w);
+					gl_y = _4_3_y;
+					gl_x = ( 10.0 - gl_w ) / 2;
+				} else { //Skyscraper Format
+					gl_w = _4_3_w;
+					gl_h = _4_3_w / (f_v / f_w);
+					gl_x = _4_3_x;
+					gl_y = ( 10.0 - gl_h ) / 2;
+				}
 			} else {
-				f_v = ( 4.0 / 3.0 );
+				float f_v;// = ( (float)fs[i]->w / (float)fs[i]->h );
+				if ( g_16_9 ) {
+					f_v = ( 16.0 / 9.0 );
+				} else {
+					f_v = ( 4.0 / 3.0 );
+				}
+				float f_w = ( (float)w() / (float)h() );
+				float f_g = f_v / f_w;
+				if ( f_g > 1.0 ) {
+					gl_h = 10.0 / f_g;
+					gl_w = 10.0;
+				} else {
+					gl_h = 10.0;
+					gl_w = f_g * 10.0;
+				}
+				gl_x = ( 10.0 - gl_w ) / 2;
+				gl_y = ( 10.0 - gl_h ) / 2;
 			}
-			float f_w = ( (float)w() / (float)h() );
-			float f_g = f_v / f_w;
-			if ( f_g > 1.0 ) {
-				gl_h = 10.0 / f_g;
-				gl_w = 10.0;
-			} else {
-				gl_h = 10.0;
-				gl_w = f_g * 10.0;
-			}
-			gl_x = ( 10.0 - gl_w ) / 2;
-			gl_y = ( 10.0 - gl_h ) / 2;
 
 		}
 

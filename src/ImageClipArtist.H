@@ -38,6 +38,7 @@ class ImageClipArtist : public IClipArtist
 		void image( Fl_Image* image );
 	private:
 		Fl_Image* m_image;
+		Fl_Image* m_image_new;
 
 };
 

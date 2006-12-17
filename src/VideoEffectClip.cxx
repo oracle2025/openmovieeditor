@@ -17,12 +17,16 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <gavl/gavl.h>
 #include "sl/sl.h"
 #include "global_includes.H"
 
 #include "VideoEffectClip.H"
 #include "AbstractEffectFactory.H"
 #include "IVideoEffect.H"
+#include "VideoClip.H"
+#include "ImageClip.H"
+#include "TitleClip.H"
 
 namespace nle
 {
@@ -34,6 +38,7 @@ VideoEffectClip::~VideoEffectClip()
 		delete node->effect;
 		delete node;
 	}
+	unPrepareFormat();
 }
 frame_struct* VideoEffectClip::getFrame( int64_t position )
 {
@@ -47,6 +52,7 @@ frame_struct* VideoEffectClip::getFrame( int64_t position )
 		f = node->effect->getFrame( f, position_in_file );
 		node = node->next;
 	}
+	// TODO: Copy pixel aspect and analog_blank
 	f->render_strategy = m_render_strategy;
 	return f;
 
@@ -128,6 +134,120 @@ void VideoEffectClip::removeEffect( int num )
 		delete node;
 	}
 }
+void VideoEffectClip::prepareFormat( int ww, int hh )
+{
+	if ( ww == w() && hh == h() ) {
+		return;
+	}
+	if ( m_video_scaler ) {
+		gavl_video_scaler_destroy( m_video_scaler );
+		m_video_scaler = 0;
+	}
+	
+	gavl_pixelformat_t colorspace = GAVL_RGBA_32;
+	m_bits = 4;
+	if ( dynamic_cast<VideoClip*>(this) ) {
+		if ( m_effects ) {
+			colorspace = GAVL_RGBA_32;
+			m_bits = 4;
+		} else {
+			colorspace = GAVL_RGB_24;
+			m_bits = 3;
+		}
+	} else if ( dynamic_cast<TitleClip*>(this) ) {
+		colorspace = GAVL_RGBA_32;
+		m_bits = 4;
+	} else if ( ImageClip* ic = dynamic_cast<ImageClip*>(this) ) {
+		if ( m_effects || ic->getFirstFrame()->has_alpha_channel ) {
+			colorspace = GAVL_RGBA_32;
+			m_bits = 4;
+		} else {
+			colorspace = GAVL_RGB_24;
+			m_bits = 3;
+		}
+	}
+ 
+	m_video_scaler = gavl_video_scaler_create();
+	//gavl_video_options_t* options = gavl_video_scaler_get_options( m_video_scaler );
+
+	gavl_video_format_t format_src;
+	gavl_video_format_t format_dst;
+
+	format_dst.frame_width  = ww;
+	format_dst.frame_height = hh;
+	format_dst.image_width  = ww;
+	format_dst.image_height = hh;
+	format_dst.pixel_width = 1;
+	format_dst.pixel_height = 1;
+	format_dst.pixelformat = colorspace;
+	
+	format_src.frame_width  = w();
+	format_src.frame_height = h();
+	format_src.image_width  = w();
+	format_src.image_height = h();
+	format_src.pixel_width = 1;
+	format_src.pixel_height = 1;
+	format_src.pixelformat = colorspace;
+	
+	if ( gavl_video_scaler_init( m_video_scaler, &format_src, &format_dst ) == -1 ) {
+		cerr << "Video Scaler Init failed" << endl;
+		return;
+	}
+	
+	if ( m_frame_src ) {
+		gavl_video_frame_null( m_frame_src );
+		gavl_video_frame_destroy( m_frame_src );
+		m_frame_src = 0;
+	}
+	if ( m_frame_dst ) {
+		gavl_video_frame_null( m_frame_dst );
+		gavl_video_frame_destroy( m_frame_dst );
+		m_frame_dst = 0;
+	}
+	m_frame_src = gavl_video_frame_create( 0 );
+	m_frame_src->strides[0] = w() * m_bits;
+	m_frame_dst = gavl_video_frame_create( 0 );
+	m_frame_dst->strides[0] = ww * m_bits;
+
+}
+void VideoEffectClip::unPrepareFormat()
+{
+	if ( m_video_scaler ) {
+		gavl_video_scaler_destroy( m_video_scaler );
+		m_video_scaler = 0;
+	}
+	if ( m_frame_src ) {
+		gavl_video_frame_null( m_frame_src );
+		gavl_video_frame_destroy( m_frame_src );
+		m_frame_src = 0;
+	}
+	if ( m_frame_dst ) {
+		gavl_video_frame_null( m_frame_dst );
+		gavl_video_frame_destroy( m_frame_dst );
+		m_frame_dst = 0;
+	}
+
+
+}
+
+frame_struct* VideoEffectClip::getFormattedFrame( frame_struct* tmp_frame, int64_t position )
+{
+	frame_struct* f = getFrame( position );
+	if ( !f ) {
+		return 0;
+	}
+	if ( m_video_scaler ) {
+		m_frame_src->planes[0] = f->RGB;
+		m_frame_dst->planes[0] = tmp_frame->RGB;
+		tmp_frame->has_alpha_channel = ( m_bits == 4 );
+		tmp_frame->alpha = 1.0;
+		gavl_video_scaler_scale( m_video_scaler, m_frame_src, m_frame_dst );
+		return tmp_frame;
+	} else {
+		return f;
+	}
+}
+	
 
 
 } /* namespace nle */
