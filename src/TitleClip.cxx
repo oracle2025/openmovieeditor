@@ -32,19 +32,32 @@ namespace nle
 {
 
 
-TitleClip::TitleClip( Track* track, int64_t position, int64_t length, int id )
+TitleClip::TitleClip( Track* track, int64_t position, int64_t length, int id, ClipData* data )
 	: Clip( track, position, id )
 {
 	m_ok = false;
 	m_artist = 0;
 	m_image = 0;
-	m_font = FL_HELVETICA_BOLD;
-	m_size = 50;
-	m_x = 0.5;
-	m_y = 0.5;
+
+	TitleClipData* title_data = dynamic_cast<TitleClipData*>(data);	
+	if ( title_data ) {
+		m_font = title_data->font;
+		m_size = title_data->size;
+		m_x = title_data->x;
+		m_y = title_data->y;
+		m_color = title_data->color;
+		m_text = title_data->text;
+	} else {
+		m_font = FL_HELVETICA_BOLD;
+		m_size = 50;
+		m_x = 0.5;
+		m_y = 0.5;
+		m_color = FL_WHITE;
+		m_text = "A Movie by";
+	}
+	
 	m_dirty = false;
 
-	m_text = "A Movie by";
 	
 	if ( length > 0 ) {
 		m_length = length;
@@ -61,7 +74,6 @@ TitleClip::TitleClip( Track* track, int64_t position, int64_t length, int id )
 	m_alpha = new unsigned char[ 768*576*3 ];
 	m_ok = true;
 	m_offscreen = 0;
-	m_color = FL_WHITE;
 }
 void TitleClip::init()
 {
@@ -224,6 +236,17 @@ void TitleClip::trimB( int64_t trim )
 int64_t TitleClip::fileLength()
 {
 	return -1;
+}
+ClipData* TitleClip::getClipData()
+{
+	TitleClipData* data = new TitleClipData;
+	data->text = m_text;
+	data->size = m_size;
+	data->font = m_font;
+	data->x = m_x;
+	data->y = m_y;
+	data->color = m_color;
+	return data;
 }
 
 } /* namespace nle */

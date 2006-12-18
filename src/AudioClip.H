@@ -56,6 +56,7 @@ class AudioClip : public AudioClipBase
 		int fillBuffer( float* output, unsigned long frames, int64_t position );
 		void reset();
 		int64_t fileLength();
+		ClipData* getClipData() { return 0; }
 	protected:
 		int64_t audioTrimA();
 		int64_t audioTrimB();

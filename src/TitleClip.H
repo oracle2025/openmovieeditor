@@ -30,10 +30,21 @@ class Fl_Image;
 namespace nle
 {
 
+class TitleClipData : public ClipData
+{
+	public:
+		string text;
+		int size;
+		int font;
+		float x;
+		float y;
+		Fl_Color color;
+};
+
 class TitleClip : public Clip, public VideoEffectClip
 {
 	public:
-		TitleClip( Track* track, int64_t position, int64_t length = -1, int id = -1 );
+		TitleClip( Track* track, int64_t position, int64_t length = -1, int id = -1, ClipData* data = 0 );
 		~TitleClip();
 		int64_t length();
 		frame_struct* getRawFrame( int64_t position, int64_t &position_in_file );
@@ -66,6 +77,7 @@ class TitleClip : public Clip, public VideoEffectClip
 		int aspectWidth() { return 3; }
 		float aspectRatio() { return ( 4.0 / 3.0 ); }
 		int analogBlank() { return 0; }
+		ClipData* getClipData();
 	private:
 		void init();
 		Fl_Image* m_image;

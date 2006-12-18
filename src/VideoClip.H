@@ -51,6 +51,7 @@ class VideoClip : public AudioClipBase, public VideoEffectClip
 		int aspectWidth() { return m_aspectWidth; }
 		float aspectRatio() { return m_aspectRatio; }
 		int analogBlank() { return m_analogBlank; }
+		ClipData* getClipData() { return 0; }
 	protected:
 		int64_t audioTrimA();
 		int64_t audioTrimB();

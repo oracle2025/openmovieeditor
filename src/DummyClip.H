@@ -37,6 +37,7 @@ class DummyClip : public Clip
 		string filename() { return m_filename; }
 		int type() { return -1; }
 		IClipArtist* getArtist() { return m_artist; }
+		ClipData* getClipData() { return 0; }
 	private:
 		string m_filename;
 		int64_t m_fileLength;

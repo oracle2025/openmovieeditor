@@ -59,14 +59,10 @@ SplitCommand::SplitCommand( Clip* clip, int64_t position )
 			i++;
 		}
 	}
+	m_data = clip->getClipData();
 	TitleClip* tc = dynamic_cast<TitleClip*>(clip);
 	if ( tc ) {
 		m_titleClip = true;
-		m_text = tc->text();
-		m_font = tc->font();
-		m_size = tc->size();
-		m_x = tc->x();
-		m_y = tc->y();
 	}
 }
 SplitCommand::~SplitCommand()
@@ -76,6 +72,9 @@ SplitCommand::~SplitCommand()
 		m_automationPoints = 0;
 	}
 	m_automationsCount = 0;
+	if ( m_data ) {
+		delete m_data;
+	}
 }
 void SplitCommand::doo()
 {
@@ -116,12 +115,7 @@ void SplitCommand::doo()
 		}
 		g_timeline->addClip( m_track, ac );
 	} else if ( m_titleClip ) {
-		TitleClip* tc = new TitleClip( t, m_position, m_length - ( m_position - c->position() ) + c->trimA() - c->trimB(), m_clipNr2 );
-		tc->text(m_text.c_str());
-		tc->font(m_font);
-		tc->size(m_size);
-		tc->x(m_x);
-		tc->y(m_y);
+		TitleClip* tc = new TitleClip( t, m_position, m_length - ( m_position - c->position() ) + c->trimA() - c->trimB(), m_clipNr2, m_data );
 		g_timeline->addClip( m_track, tc );
 	} else {
 		g_timeline->addFile( m_track, m_position, c->filename(), ( m_position - c->position() ) + c->trimA(), c->trimB(), mute, m_clipNr2, m_length );

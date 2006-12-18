@@ -25,7 +25,7 @@
 
 namespace nle
 {
-
+class ClipData;
 typedef struct _auto_node auto_node;
 
 class RemoveCommand : public Command
@@ -47,6 +47,7 @@ class RemoveCommand : public Command
 		int64_t m_length;
 		bool m_audioClip;
 		bool m_mute;
+		ClipData* m_data;
 };		
 
 

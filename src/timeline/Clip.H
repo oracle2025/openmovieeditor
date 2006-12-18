@@ -38,6 +38,11 @@ enum Clip_Types {
 	CLIP_TYPE_IMAGE = 2
 };
 
+class ClipData
+{
+	public:
+		virtual ~ClipData() {}
+};
 
 class Clip
 {
@@ -63,6 +68,7 @@ class Clip
 		inline int id() { return m_id; }
 		inline void selected( bool s ) { m_selected = s; }
 		inline bool selected() { return m_selected; }
+		virtual ClipData* getClipData() = 0;
 	protected:
 		Clip( Track *track, int64_t position, int id = -1 );
 		int64_t m_position;

@@ -30,6 +30,7 @@ namespace nle
 {
 
 class Clip;
+class ClipData;
 class Track;
 typedef struct _auto_node auto_node;
 
@@ -50,11 +51,7 @@ class SplitCommand : public Command
 		int m_automationsCount;
 		bool m_audioClip;
 		bool m_titleClip;
-		string m_text;
-		int m_size;
-		int m_font;
-		float m_x;
-		float m_y;
+		ClipData* m_data;
 };
 
 } /* namespace nle */

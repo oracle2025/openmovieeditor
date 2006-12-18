@@ -67,6 +67,7 @@ RemoveCommand::RemoveCommand( Clip* clip )
 		VideoClip* vc = dynamic_cast<VideoClip*>(clip);
 		if ( vc ) { m_mute = vc->m_mute; }
 	}
+	m_data = clip->getClipData();
 }
 RemoveCommand::~RemoveCommand()
 {
@@ -75,6 +76,9 @@ RemoveCommand::~RemoveCommand()
 		m_automationPoints = 0;
 	}
 	m_automationsCount = 0;
+	if ( m_data ) {
+		delete m_data;
+	}
 }
 void RemoveCommand::doo()
 {
@@ -109,7 +113,7 @@ void RemoveCommand::undo()
 		}
 		g_timeline->addClip( m_track, c );
 	} else {
-		g_timeline->addFile( m_track, m_position, m_filename, m_trimA, m_trimB, m_mute, m_clip, m_length );
+		g_timeline->addFile( m_track, m_position, m_filename, m_trimA, m_trimB, m_mute, m_clip, m_length, m_data );
 	}
 	VideoTrack* vt = dynamic_cast<VideoTrack*>(t);
 	if ( vt ) { vt->reconsiderFadeOver(); }

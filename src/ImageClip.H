@@ -53,6 +53,7 @@ class ImageClip : public Clip, public VideoEffectClip
 		int aspectWidth() { return m_aspectWidth; }
 		float aspectRatio() { return m_aspectRatio; }
 		int analogBlank() { return 0; }
+		ClipData* getClipData() { return 0; }
 	private:
 		Fl_Shared_Image* m_image;
 		int64_t m_length;
