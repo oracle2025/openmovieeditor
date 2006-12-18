@@ -30,6 +30,23 @@
 
 namespace nle
 {
+class TitleClipData : public ClipData
+{
+	public:
+		~TitleClipData() { 
+			if ( effect_data ) {
+				delete effect_data;
+			}
+		}
+		string text;
+		int size;
+		int font;
+		float x;
+		float y;
+		Fl_Color color;
+		ClipData* effect_data;
+};
+
 
 
 TitleClip::TitleClip( Track* track, int64_t position, int64_t length, int id, ClipData* data )
@@ -39,22 +56,6 @@ TitleClip::TitleClip( Track* track, int64_t position, int64_t length, int id, Cl
 	m_artist = 0;
 	m_image = 0;
 
-	TitleClipData* title_data = dynamic_cast<TitleClipData*>(data);	
-	if ( title_data ) {
-		m_font = title_data->font;
-		m_size = title_data->size;
-		m_x = title_data->x;
-		m_y = title_data->y;
-		m_color = title_data->color;
-		m_text = title_data->text;
-	} else {
-		m_font = FL_HELVETICA_BOLD;
-		m_size = 50;
-		m_x = 0.5;
-		m_y = 0.5;
-		m_color = FL_WHITE;
-		m_text = "A Movie by";
-	}
 	
 	m_dirty = false;
 
@@ -74,6 +75,23 @@ TitleClip::TitleClip( Track* track, int64_t position, int64_t length, int id, Cl
 	m_alpha = new unsigned char[ 768*576*3 ];
 	m_ok = true;
 	m_offscreen = 0;
+	TitleClipData* title_data = dynamic_cast<TitleClipData*>(data);	
+	if ( title_data ) {
+		m_font = title_data->font;
+		m_size = title_data->size;
+		m_x = title_data->x;
+		m_y = title_data->y;
+		m_color = title_data->color;
+		m_text = title_data->text;
+		setEffects( title_data->effect_data );
+	} else {
+		m_font = FL_HELVETICA_BOLD;
+		m_size = 50;
+		m_x = 0.5;
+		m_y = 0.5;
+		m_color = FL_WHITE;
+		m_text = "A Movie by";
+	}
 }
 void TitleClip::init()
 {
@@ -246,6 +264,7 @@ ClipData* TitleClip::getClipData()
 	data->x = m_x;
 	data->y = m_y;
 	data->color = m_color;
+	data->effect_data = vec_getClipData();
 	return data;
 }
 

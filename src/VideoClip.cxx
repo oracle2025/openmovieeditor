@@ -31,7 +31,7 @@
 
 namespace nle
 {
-VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A, int64_t B, int id )
+VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A, int64_t B, int id, ClipData* data )
 	: AudioClipBase( track, position, 0, id ), VideoEffectClip()
 {
 	m_trimA = A;
@@ -47,6 +47,7 @@ VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A,
 	m_artist = new VideoClipArtist( this );
 
 	guess_aspect( w(), h(), &m_aspectHeight, &m_aspectWidth, &m_aspectRatio, &m_analogBlank, 0, 0 );
+	setEffects( data );
 }
 int VideoClip::w()
 {

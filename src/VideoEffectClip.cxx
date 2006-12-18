@@ -28,10 +28,81 @@
 #include "ImageClip.H"
 #include "TitleClip.H"
 #include "render_helper.H"
+#include "frei0r.h"
+#include "Frei0rEffect.H"
+#include "Frei0rFactory.H"
 
 namespace nle
 {
+extern Frei0rFactory* g_frei0rFactory;
+struct effect_parameter {
+	string name;
+	f0r_param_bool param_bool;
+	f0r_param_double param_double;
+	f0r_param_color_t param_color;
+	f0r_param_position_t param_position;
+	f0r_param_string* param_string;
+};
+struct effect_data {
+	string name;
+	struct effect_parameter* parameters;
+};
 
+class EffectClipData : public ClipData
+{
+	public:
+		~EffectClipData() {
+			for ( int i = 0; i < effect_count; i++ ) {
+				delete [] effects[i].parameters;
+			}
+			if ( effects ) {
+				delete [] effects;
+			}
+		}
+		struct effect_data* effects;
+		int effect_count;
+};
+
+VideoEffectClip::VideoEffectClip()
+{
+	m_render_strategy = RENDER_DEFAULT;
+	m_effects = 0;
+	m_crop = m_fit = m_stretch = false;
+	m_default = true;
+	m_video_scaler = 0;
+	m_frame_src = 0;
+	m_frame_dst = 0;
+}
+void VideoEffectClip::setEffects( ClipData* data )
+{
+	EffectClipData* edata = dynamic_cast<EffectClipData*>(data);
+	if ( edata ) {
+		AbstractEffectFactory* ef;
+		for ( int i = 0; i < edata->effect_count; i++ ) {
+			ef = g_frei0rFactory->get( edata->effects[i].name );
+			if ( ef ) {
+				Frei0rEffect* effectObj = dynamic_cast<Frei0rEffect*>( appendEffect( ef ) );
+				f0r_plugin_info_t* finfo = effectObj->getPluginInfo();
+				f0r_param_info_t pinfo;
+				for ( int j = 0; j < finfo->num_params; j++ ) {
+					effectObj->getParamInfo( &pinfo, j );
+					switch ( pinfo.type ) {
+						case F0R_PARAM_DOUBLE:
+							{
+								f0r_param_double dvalue;
+								dvalue = edata->effects[i].parameters[j].param_double;
+								effectObj->setValue( &dvalue, j );
+								break;
+							}
+						default:
+							break;
+					}
+				}
+			}
+			
+		}
+	}
+}
 VideoEffectClip::~VideoEffectClip()
 {
 	effect_stack* node;
@@ -275,6 +346,68 @@ frame_struct* VideoEffectClip::getFormattedFrame( frame_struct* tmp_frame, int64
 	}
 }
 	
+ClipData* VideoEffectClip::vec_getClipData()
+{
+	int effect_count = 0;
+	effect_stack *node = m_effects;
+	while ( node ) {
+		effect_count++;
+		node = node->next;
+	}
+	if ( effect_count == 0 ) {
+		return 0;
+	}
+	EffectClipData* data = new EffectClipData;
+	data->effects = new struct effect_data[effect_count];
+	data->effect_count = effect_count;
+	node = m_effects;
+	int i = 0;
+	while ( node ) {
+		data->effects[i].name = node->effect->name();
+		Frei0rEffect* fe = dynamic_cast<Frei0rEffect*>( node->effect );
+		f0r_plugin_info_t* finfo;
+		f0r_param_info_t pinfo;
+		finfo = fe->getPluginInfo();
+		data->effects[i].parameters = new struct effect_parameter[finfo->num_params];
+		for ( int j = 0; j < finfo->num_params; j++ ) {
+			fe->getParamInfo( &pinfo, j );
+			data->effects[i].parameters[j].name = pinfo.name;
+			switch ( pinfo.type ) {
+				case F0R_PARAM_DOUBLE:
+					{
+						f0r_param_double dvalue;
+						fe->getValue( &dvalue, j );
+						data->effects[i].parameters[j].param_double = (double)dvalue;
+						break;
+					}
+				case F0R_PARAM_BOOL:
+					{
+						f0r_param_bool bvalue;
+						fe->getValue( &bvalue, j );
+						data->effects[i].parameters[j].param_bool = bvalue;
+						break;
+					}
+				case F0R_PARAM_COLOR:
+					break;
+				case F0R_PARAM_POSITION:
+					{
+						f0r_param_position_t pos;
+						fe->getValue( &pos, j );
+						data->effects[i].parameters[j].param_position = pos;
+						break;
+					}
+				default:
+					break;
+			}
+		}
+		
+
+		
+		i++;
+		node = node->next;
+	}
+	return data;
+}
 
 
 } /* namespace nle */

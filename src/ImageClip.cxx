@@ -28,7 +28,7 @@ namespace nle
 {
 
 
-ImageClip::ImageClip( Track* track, int64_t position, string filename, int64_t length, int id )
+ImageClip::ImageClip( Track* track, int64_t position, string filename, int64_t length, int id, ClipData* data )
 	: Clip( track, position, id ), m_filename( filename )
 {
 	m_ok = false;
@@ -72,6 +72,7 @@ ImageClip::ImageClip( Track* track, int64_t position, string filename, int64_t l
 	m_aspectWidth = m_frame.w /gcd_wh;
 	m_aspectRatio = (float)m_aspectWidth / (float)m_aspectHeight;
 	m_ok = true;
+	setEffects( data );
 }
 
 ImageClip::~ImageClip()

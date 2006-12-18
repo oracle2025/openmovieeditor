@@ -25,19 +25,6 @@
 
 namespace nle
 {
-/*
-union effect_value
-{
-	double dval;
-	bool bval;
-};
-
-typedef struct _effect_node {
-	struct _effect_node* next;
-	string name;
-	union effect_value* params;
-} effect_node;
-*/
 typedef struct _auto_node auto_node;
 
 class PasteCommand : public Command
@@ -62,7 +49,6 @@ class PasteCommand : public Command
 		int64_t m_length;
 		bool m_audioClip;
 		bool m_mute;
-//		effect_node* m_effects;
 };
 
 } /* namespace nle */

@@ -118,7 +118,7 @@ void SplitCommand::doo()
 		TitleClip* tc = new TitleClip( t, m_position, m_length - ( m_position - c->position() ) + c->trimA() - c->trimB(), m_clipNr2, m_data );
 		g_timeline->addClip( m_track, tc );
 	} else {
-		g_timeline->addFile( m_track, m_position, c->filename(), ( m_position - c->position() ) + c->trimA(), c->trimB(), mute, m_clipNr2, m_length );
+		g_timeline->addFile( m_track, m_position, c->filename(), ( m_position - c->position() ) + c->trimA(), c->trimB(), mute, m_clipNr2, m_length, m_data );
 	}
 	c->trimB( ( c->position() + c->length() ) - m_position );
 	VideoTrack* vt = dynamic_cast<VideoTrack*>(t);

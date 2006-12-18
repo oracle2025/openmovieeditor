@@ -33,7 +33,7 @@ class IClipArtist;
 class VideoClip : public AudioClipBase, public VideoEffectClip
 {
 	public:
-		VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A = 0, int64_t B = 0, int id = -1 );
+		VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A = 0, int64_t B = 0, int id = -1, ClipData* data = 0 );
 		~VideoClip();
 		int64_t length();
 		void reset();
@@ -51,7 +51,7 @@ class VideoClip : public AudioClipBase, public VideoEffectClip
 		int aspectWidth() { return m_aspectWidth; }
 		float aspectRatio() { return m_aspectRatio; }
 		int analogBlank() { return m_analogBlank; }
-		ClipData* getClipData() { return 0; }
+		ClipData* getClipData() { return vec_getClipData(); }
 	protected:
 		int64_t audioTrimA();
 		int64_t audioTrimB();

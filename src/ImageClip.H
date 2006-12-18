@@ -32,7 +32,7 @@ namespace nle
 class ImageClip : public Clip, public VideoEffectClip
 {
 	public:
-		ImageClip( Track* track, int64_t position, string filename, int64_t length = -1, int id = -1 );
+		ImageClip( Track* track, int64_t position, string filename, int64_t length = -1, int id = -1, ClipData* data = 0 );
 		~ImageClip();
 		int64_t length();
 		frame_struct* getRawFrame( int64_t position, int64_t &position_in_file );
@@ -53,7 +53,7 @@ class ImageClip : public Clip, public VideoEffectClip
 		int aspectWidth() { return m_aspectWidth; }
 		float aspectRatio() { return m_aspectRatio; }
 		int analogBlank() { return 0; }
-		ClipData* getClipData() { return 0; }
+		ClipData* getClipData() { return vec_getClipData(); }
 	private:
 		Fl_Shared_Image* m_image;
 		int64_t m_length;

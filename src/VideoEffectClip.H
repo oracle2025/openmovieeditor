@@ -32,6 +32,7 @@ namespace nle
 
 class AbstractEffectFactory;
 class IVideoEffect;
+class ClipData;
 
 typedef struct _effect_stack {
 	struct _effect_stack* next;
@@ -68,18 +69,14 @@ class VideoEffectClip : public IVideoReader
 		void stretch( bool v ) { if ( v ) { m_fit = m_crop = m_default = !(m_stretch = true); m_render_strategy = RENDER_STRETCH;} }
 		void def( bool v ) { if ( v ) { m_fit = m_crop = m_stretch = !(m_default = true); m_render_strategy = RENDER_DEFAULT;} }
 	protected:
-		VideoEffectClip() { m_render_strategy = RENDER_DEFAULT;
-			m_effects = 0;
-			m_crop = m_fit = m_stretch = false;
-			m_default = true;
-			m_video_scaler = 0;
-			m_frame_src = 0;
-			m_frame_dst = 0; }
+		void setEffects( ClipData* data = 0 );
+		VideoEffectClip();
 		bool m_crop;
 		bool m_fit;
 		bool m_stretch;
 		bool m_default;
 		render_strategy_t m_render_strategy;
+		ClipData* vec_getClipData();
 	private:
 		effect_stack* m_effects;
 		gavl_video_scaler_t *m_video_scaler;

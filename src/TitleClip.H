@@ -30,17 +30,6 @@ class Fl_Image;
 namespace nle
 {
 
-class TitleClipData : public ClipData
-{
-	public:
-		string text;
-		int size;
-		int font;
-		float x;
-		float y;
-		Fl_Color color;
-};
-
 class TitleClip : public Clip, public VideoEffectClip
 {
 	public:
