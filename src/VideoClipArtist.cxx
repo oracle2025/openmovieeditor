@@ -20,6 +20,7 @@
 #include <cassert>
 
 #include <FL/fl_draw.H>
+#include <FL/filename.H>
 
 #include "VideoClipArtist.H"
 #include "VideoClip.H"
@@ -64,6 +65,14 @@ void VideoClipArtist::render( Rect& rect, int64_t, int64_t )
 	if ( m_clip->m_mute ) {
 		fl_draw_pixmap( mute_xpm, rect.x + 20, rect.y + 5 );
 	}
+
+	_x = g_timelineView->get_screen_position( m_clip->position(), m_clip->track()->stretchFactor() );
+	fl_color( FL_DARK3 );
+	fl_font( FL_HELVETICA, 11 );
+	fl_draw( fl_filename_name( m_clip->filename().c_str() ), _x + 6, rect.y + rect.h - 4 );
+	fl_color( FL_WHITE );
+	fl_draw( fl_filename_name( m_clip->filename().c_str() ), _x + 5, rect.y + rect.h - 5 );
+	
 	fl_pop_clip();
 }
 

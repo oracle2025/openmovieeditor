@@ -17,9 +17,14 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <FL/fl_draw.H>
+#include <FL/filename.H>
+
 #include "AudioClipArtist.H"
 #include "AudioClip.H"
 #include "WavArtist.H"
+#include "TimelineView.H"
+#include "timeline/Track.H"
 
 namespace nle
 {
@@ -45,6 +50,12 @@ void AudioClipArtist::render( Rect& rect, int64_t start, int64_t stop )
 		stop_ = m_clip->trimA() + m_clip->length();
 	}
 	g_wavArtist->render( m_clip->filename(), rect, start_, stop_ );
+	int _x = g_timelineView->get_screen_position( m_clip->position(), m_clip->track()->stretchFactor() );
+	fl_color( FL_DARK3 );
+	fl_font( FL_HELVETICA, 11 );
+	fl_draw( fl_filename_name( m_clip->filename().c_str() ), _x + 6, rect.y + rect.h - 4 );
+	fl_color( FL_WHITE );
+	fl_draw( fl_filename_name( m_clip->filename().c_str() ), _x + 5, rect.y + rect.h - 5 );
 }
 
 	
