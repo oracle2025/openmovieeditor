@@ -266,7 +266,7 @@ Fl_Menu_Item NleUI::menu_Black[] = {
  {"2x2 Scaling good", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"2x2 Scaling bad", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
- {"Format", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Format", 0,  0, 0, 80, FL_NORMAL_LABEL, 0, 14, 0},
  {"4:3", 0,  (Fl_Callback*)NleUI::cb_4, 0, 12, FL_NORMAL_LABEL, 0, 14, 0},
  {"16:9", 0,  (Fl_Callback*)NleUI::cb_16, 0, 136, FL_NORMAL_LABEL, 0, 14, 0},
  {"Black Borders", 0,  (Fl_Callback*)NleUI::cb_Black, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
@@ -795,7 +795,6 @@ NleUI::NleUI() {
               Fl_Group::current()->resizable(o);
             }
             { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Media Browser");
-              o->hide();
               { nle::MediaPanel* o = new nle::MediaPanel(5, 80, 355, 220);
                 o->box(FL_NO_BOX);
                 o->color(FL_BACKGROUND_COLOR);
@@ -885,6 +884,7 @@ NleUI::NleUI() {
               o->end();
             }
             { Fl_Group* o = titles_tab = new Fl_Group(0, 75, 365, 230, "Titles");
+              o->hide();
               o->deactivate();
               { Fl_Input* o = titles_text = new Fl_Input(205, 80, 155, 220);
                 o->type(4);
