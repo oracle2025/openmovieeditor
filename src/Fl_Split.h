@@ -36,7 +36,7 @@ public:
   int handle(int);
   Fl_Split(int X,int Y,int W,int H,const char*l=0) : Fl_Group(X,Y,W,H,l) {}
   void position(int, int, int, int);
-  void Fl_Split :: resize(int X,int Y,int W,int H);
+  void resize(int X,int Y,int W,int H);
 
 };
 
