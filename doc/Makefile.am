@@ -11,9 +11,3 @@
 EXTRA_DIST = style.css tutorial.html
 SUBDIRS=images
 
-install-data-local:
-	$(mkinstalldirs) $(prefix)/share/doc/openmovieeditor/
-	$(INSTALL_DATA) $(srcdir)/tutorial.html $(prefix)/share/doc/openmovieeditor/tutorial.html
-	$(INSTALL_DATA) $(srcdir)/style.css $(prefix)/share/doc/openmovieeditor/style.css
-
-
