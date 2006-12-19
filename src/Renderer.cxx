@@ -129,6 +129,7 @@ void Renderer::go( IProgressListener* l )
  * This is the chunk of audio that will be written between 12 Frames
  */
 	bool run = true;
+	int frames_to_write;
 	do {
 		res = g_timeline->fillBuffer( buffer, AUDIO_BUFFER_SIZE );
 		g_timeline->sampleseek( 0, AUDIO_BUFFER_SIZE );
@@ -137,8 +138,8 @@ void Renderer::go( IProgressListener* l )
 			right_buffer[i] = buffer[i*2+1];
 		}
 		lqt_encode_audio_track( qt, 0, buffer_p, res, 0 );
-
-		for ( int i = 0; i < 12; i++ ) {
+		frames_to_write = res / 1920;
+		for ( int i = 0; i < frames_to_write; i++ ) {
 			g_timeline->getBlendedFrame( &enc_frame );
 			quicktime_encode_video( qt, enc_frame.rows, 0 );
 			current_frame++;
