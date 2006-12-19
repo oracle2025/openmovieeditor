@@ -282,7 +282,7 @@ Fl_Menu_Item NleUI::menu_Black[] = {
  {"Plastic Style", 0,  (Fl_Callback*)NleUI::cb_Plastic, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"&Help", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
- {"Tutorial...", 0,  (Fl_Callback*)NleUI::cb_Tutorial, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Tutorial...", 0,  (Fl_Callback*)NleUI::cb_Tutorial, 0, 16, FL_NORMAL_LABEL, 0, 14, 0},
  {"About...", 0,  (Fl_Callback*)NleUI::cb_About, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {0,0,0,0,0,0,0,0,0}

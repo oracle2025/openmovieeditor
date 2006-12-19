@@ -18,7 +18,7 @@ if ( Fl::event()==FL_CLOSE ) {
       xywh {777 382 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
-        label {Black Borders} open
+        label {Black Borders} open selected
         xywh {0 0 530 25}
       } {
         Submenu {} {
@@ -261,7 +261,7 @@ Fl::scheme("plastic");}
           MenuItem {} {
             label {Tutorial...}
             callback {m_timelineView->help();}
-            xywh {0 0 100 20}
+            xywh {0 0 100 20} hide
           }
           MenuItem {} {
             label {About...}
@@ -308,7 +308,7 @@ fb->load_rel();}
                 }
               }
               Fl_Group {} {
-                label {Media Browser} selected
+                label {Media Browser}
                 xywh {0 75 365 230}
               } {
                 Fl_Group {} {open
