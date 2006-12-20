@@ -50,7 +50,6 @@ class TimelineBase
 		void removeClip( int track, Clip *clip );
 		void addTrack( Track* track, int position = -1 );
 		void removeTrack( int track );
-		void moveClip( int srcTrack, Clip *srcClip, int dstTrack, int64_t dstPosition );
 		Clip* find( int track, int64_t position );
 		int64_t length();
 		inline track_node* getTracks() { return m_allTracks; }
