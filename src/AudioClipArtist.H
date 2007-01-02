@@ -27,16 +27,16 @@
 namespace nle
 {
 
-class AudioClip;
+class AudioClipBase;
 
 class AudioClipArtist : public IClipArtist
 {
 	public:
-		AudioClipArtist( AudioClip* clip );
+		AudioClipArtist( AudioClipBase* clip );
 		~AudioClipArtist();
 		void render( Rect& rect, int64_t start, int64_t stop );
 	private:
-		AudioClip* m_clip;
+		AudioClipBase* m_clip;
 };
 
 } /* namespace nle */

@@ -34,6 +34,7 @@ class VideoClipArtist : public IClipArtist
 		void render( Rect& rect, int64_t start, int64_t stop ); 
 	private:
 		VideoClip* m_clip;
+		IClipArtist *m_audioClipArtist;
 };
 
 } /* namespace nle */

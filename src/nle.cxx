@@ -266,7 +266,7 @@ Fl_Menu_Item NleUI::menu_Black[] = {
  {"2x2 Scaling good", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"2x2 Scaling bad", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
- {"Format", 0,  0, 0, 80, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Format", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"4:3", 0,  (Fl_Callback*)NleUI::cb_4, 0, 12, FL_NORMAL_LABEL, 0, 14, 0},
  {"16:9", 0,  (Fl_Callback*)NleUI::cb_16, 0, 136, FL_NORMAL_LABEL, 0, 14, 0},
  {"Black Borders", 0,  (Fl_Callback*)NleUI::cb_Black, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},

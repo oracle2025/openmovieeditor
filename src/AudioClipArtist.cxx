@@ -21,7 +21,7 @@
 #include <FL/filename.H>
 
 #include "AudioClipArtist.H"
-#include "AudioClip.H"
+#include "AudioClipBase.H"
 #include "WavArtist.H"
 #include "TimelineView.H"
 #include "timeline/Track.H"
@@ -29,7 +29,7 @@
 namespace nle
 {
 
-AudioClipArtist::AudioClipArtist( AudioClip* clip )
+AudioClipArtist::AudioClipArtist( AudioClipBase* clip )
 	: m_clip( clip )
 {
 }
@@ -39,15 +39,15 @@ AudioClipArtist::~AudioClipArtist()
 void AudioClipArtist::render( Rect& rect, int64_t start, int64_t stop )
 {
 	int64_t start_, stop_;
-	if ( m_clip->position() < start ) {
-		start_ = m_clip->trimA() + ( start - m_clip->position() );
+	if ( m_clip->audioPosition() < start ) {
+		start_ = m_clip->audioTrimA() + ( start - m_clip->audioPosition() );
 	} else {
-		start_ = m_clip->trimA();
+		start_ = m_clip->audioTrimA();
 	}
-	if ( m_clip->position() + m_clip->length() > stop ) {
-		stop_ = m_clip->trimA() + ( stop - m_clip->position() );
+	if ( m_clip->audioPosition() + m_clip->audioLength() > stop ) {
+		stop_ = m_clip->audioTrimA() + ( stop - m_clip->audioPosition() );
 	} else {
-		stop_ = m_clip->trimA() + m_clip->length();
+		stop_ = m_clip->audioTrimA() + m_clip->audioLength();
 	}
 	g_wavArtist->render( m_clip->filename(), rect, start_, stop_ );
 	int _x = g_timelineView->get_screen_position( m_clip->position(), m_clip->track()->stretchFactor() );

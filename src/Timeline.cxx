@@ -216,7 +216,10 @@ int Timeline::fillBuffer( float* output, unsigned long frames )
 //		m_samplePosition += max_frames;
 		return max_frames;
 	}
-	rv = (dynamic_cast<TrackBase*>(p->track))->fillBuffer( buffer2, frames, m_samplePosition );
+	assert( p );
+	assert( p->track );
+	TrackBase* tb = dynamic_cast<TrackBase*>(p->track);
+	rv = tb->fillBuffer( buffer2, frames, m_samplePosition );
 	max_frames = rv > max_frames ? rv : max_frames;
 	mixChannels( buffer1, buffer2, output, frames );
 	p = p->next;

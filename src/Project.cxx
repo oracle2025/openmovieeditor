@@ -241,6 +241,10 @@ int Project::read( string filename )
 		if ( name ) {
 			tr->name( name );
 		}
+		int height = 30;
+		if ( track->Attribute( "height", &height ) ) {
+			tr->h( height );
+		}
 		
 		TiXmlElement* j = TiXmlHandle( track ).FirstChildElement( "clip" ).Element();
 		for ( ; j; j = j->NextSiblingElement( "clip" ) ) {

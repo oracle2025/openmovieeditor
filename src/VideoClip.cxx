@@ -28,6 +28,7 @@
 #include "FilmStripFactory.H"
 #include "IAudioFile.H"
 #include "helper.H"
+#include "WavArtist.H"
 
 namespace nle
 {
@@ -46,6 +47,10 @@ VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A,
 	CLEAR_ERRORS();
 	m_artist = new VideoClipArtist( this );
 
+	if ( m_audioFile ) {
+		g_wavArtist->add( m_audioFile );
+	}
+
 	guess_aspect( w(), h(), &m_aspectHeight, &m_aspectWidth, &m_aspectRatio, &m_analogBlank, 0, 0 );
 	setEffects( data );
 }
@@ -63,6 +68,9 @@ bool VideoClip::hasAudio()
 }
 VideoClip::~VideoClip()
 {
+	if ( m_audioFile ) {
+		g_wavArtist->remove( m_audioFile->filename() );
+	}
 	delete m_artist;
 	g_filmStripFactory->remove( m_filmStrip );//delete m_filmStrip;
 	delete m_videoFile;
