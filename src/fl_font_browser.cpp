@@ -551,7 +551,6 @@ void Fl_Font_Browser::SetFont( int fontname,int fontsize )
 		fontname--;
 		name = Fl::get_font_name( (Fl_Font)fontname, &t );
 	}
-	cout << "font name " << name << endl;
 	int size = lst_Font->size();
 	for ( int i = 1; i <= size; i++ ) {
 		if ( strcmp( name, lst_Font->text( i ) ) == 0 ) {
