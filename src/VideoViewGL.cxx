@@ -93,8 +93,9 @@ void VideoViewGL::drawVideoBorder()
 	}
 
 	glDisable (GL_TEXTURE_2D);
-	if ( g_black_borders ) {
-		int w_ = 1024;
+	if ( g_black_borders && !g_16_9 ) {
+		int w_ = 768;
+		//int w_ = 1024;
 		int h_ = 576;
 		float gl_x, gl_y, gl_w, gl_h;
 		{
@@ -108,6 +109,7 @@ void VideoViewGL::drawVideoBorder()
 				gl_h = 10.0;
 				gl_w = f_g * 10.0;
 			}
+			gl_h = gl_h / ( ( 16.0 / 9.0 ) / ( 4.0 / 3.0 ) );
 			gl_x = ( 10.0 - gl_w ) / 2;
 			gl_y = ( 10.0 - gl_h ) / 2;
 
