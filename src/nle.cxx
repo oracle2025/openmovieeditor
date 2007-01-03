@@ -345,30 +345,6 @@ void NleUI::cb_titles_text(Fl_Input* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_titles_text_i(o,v);
 }
 
-void NleUI::cb_titles_fonts_i(Fl_Choice* o, void*) {
-  m_timelineView->titles_font( o->value() );
-m_timelineView->titles_text( titles_text->value() );
-}
-void NleUI::cb_titles_fonts(Fl_Choice* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_titles_fonts_i(o,v);
-}
-
-Fl_Menu_Item NleUI::menu_titles_fonts[] = {
- {"Helvetica", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"Helvetica bold", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"Helvetica italic", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"Helvetica bold italic", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"Courier", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"Courier bold", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"Courier italic", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"Courier bold italic", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"Times", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"Times bold", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"Times italic", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"Times bold ital", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {0,0,0,0,0,0,0,0,0}
-};
-
 void NleUI::cb_titles_size_i(Fl_Value_Input* o, void*) {
   m_timelineView->titles_size( llrint(o->value()) );
 m_timelineView->titles_text( titles_text->value() );
@@ -401,6 +377,20 @@ m_timelineView->titles_text( titles_text->value() );
 }
 void NleUI::cb_titles_y(Fl_Slider* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_titles_y_i(o,v);
+}
+
+void NleUI::cb_Font_i(Fl_Button*, void*) {
+  Fl_Font_Browser dlg;
+dlg.SetFont( titleFont, llrint(titles_size->value()) );
+dlg.SetFontColor( titles_color->color() );
+dlg.show();
+dlg.callback( font_dialog_callback, &dlg );
+while ( dlg.shown() ) {
+	Fl::wait();
+};
+}
+void NleUI::cb_Font(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_Font_i(o,v);
 }
 
 void NleUI::cb_playButton_i(Fl_Button* o, void*) {
@@ -795,6 +785,7 @@ NleUI::NleUI() {
               Fl_Group::current()->resizable(o);
             }
             { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Media Browser");
+              o->hide();
               { nle::MediaPanel* o = new nle::MediaPanel(5, 80, 355, 220);
                 o->box(FL_NO_BOX);
                 o->color(FL_BACKGROUND_COLOR);
@@ -884,7 +875,6 @@ NleUI::NleUI() {
               o->end();
             }
             { Fl_Group* o = titles_tab = new Fl_Group(0, 75, 365, 230, "Titles");
-              o->hide();
               o->deactivate();
               { Fl_Input* o = titles_text = new Fl_Input(205, 80, 155, 220);
                 o->type(4);
@@ -898,12 +888,6 @@ NleUI::NleUI() {
                 o->maximum(5);
                 o->step(0.5);
                 o->hide();
-                }
-                { Fl_Choice* o = titles_fonts = new Fl_Choice(95, 85, 100, 20, "Font");
-                o->down_box(FL_BORDER_BOX);
-                o->labelsize(12);
-                o->callback((Fl_Callback*)cb_titles_fonts);
-                o->menu(menu_titles_fonts);
                 }
                 { Fl_Value_Input* o = titles_size = new Fl_Value_Input(95, 110, 100, 20, "Font Size");
                 o->labelsize(12);
@@ -933,8 +917,12 @@ NleUI::NleUI() {
                 o->callback((Fl_Callback*)cb_titles_y);
                 o->align(FL_ALIGN_LEFT);
                 }
-                { Fl_Box* o = new Fl_Box(100, 250, 25, 25);
+                { Fl_Box* o = new Fl_Box(100, 260, 25, 25);
                 Fl_Group::current()->resizable(o);
+                }
+                { Fl_Button* o = new Fl_Button(95, 85, 100, 20, "Font...");
+                o->labelsize(12);
+                o->callback((Fl_Callback*)cb_Font);
                 }
                 o->end();
               }
@@ -1191,7 +1179,7 @@ void NleUI::deactivate_titles() {
 }
 
 void NleUI::activate_titles(int font, int size, const char* text, float x, float y, Fl_Color color ) {
-  titles_fonts->value( font );
+  titleFont = (Fl_Font)font;
 titles_size->value( size );
 titles_x->value( x );
 titles_y->value( y );
@@ -6442,3 +6430,17 @@ bool g_seek_audio;
 Fl_Scrollbar* g_v_scrollbar;
 bool g_16_9;
 bool g_black_borders;
+
+void font_dialog_callback( Fl_Widget*, void* v ) {
+  Fl_Font_Browser* dlg = (Fl_Font_Browser*)v;
+nle::g_ui->titles_size->value( dlg->box_Example->GetFontSize() );
+titleFont = (Fl_Font)(dlg->box_Example->GetFontName() + dlg->box_Example->GetFontStyle());
+nle::g_ui->titles_color->color( dlg->box_Example->GetFontColor() );
+nle::g_ui->titles_color->redraw();
+nle::g_timelineView->titles_font( titleFont );
+nle::g_timelineView->titles_size( dlg->box_Example->GetFontSize() );
+nle::g_timelineView->titles_color( dlg->box_Example->GetFontColor() );
+
+dlg->hide();
+}
+Fl_Font titleFont;

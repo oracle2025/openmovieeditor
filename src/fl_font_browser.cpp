@@ -73,6 +73,7 @@ fontColor=FL_BLACK;  // Initial font color
 // Draw method for the font preview box 
 void Fl_Font_Preview_Box::draw()
 {
+  color( fl_contrast(FL_WHITE,fontColor) );
   draw_box(); 
   fl_font((Fl_Font)fontName+fontStyle, fontSize); // Select font to bo used by the widget
   fl_color(fontColor); // Select color to be used for drawing the label
@@ -182,10 +183,10 @@ void cb_okBtn_Red(Fl_Button* o, void* v)
 
 }
 
-void Fl_Font_Browser::cb_okBtn(Fl_Button*, void*v)
+void Fl_Font_Browser::cb_okBtn(Fl_Button*, void*)
 {
     // Do any callback that is registered...
-Fl_Font_Browser *ft=(Fl_Font_Browser*) v;
+//Fl_Font_Browser *ft=(Fl_Font_Browser*) v;
 if (callback_!=0)
    (*callback_)(this, data_);
 }
@@ -314,7 +315,7 @@ int fn = ft->lst_Font->value();
 char* ToUpperCase(const char* buf)
 {
  char *buf1=new char[strlen(buf)+1];
-for (int i=0; i<strlen(buf)+1;i++)
+for (unsigned int i=0; i<strlen(buf)+1;i++)
  {
   buf1[i]=toupper(buf[i]);
  }
@@ -325,7 +326,7 @@ for (int i=0; i<strlen(buf)+1;i++)
 char* ToLowerCase(const char* buf)
 {
  char *buf1=new char[strlen(buf)+1];
-for (int i=0; i<strlen(buf)+1;i++)
+for (unsigned int i=0; i<strlen(buf)+1;i++)
  {
   buf1[i]=tolower(buf[i]);
  }
@@ -400,7 +401,7 @@ Fl_Font_Browser *ft=(Fl_Font_Browser*)frmWid;
 }
 
 // if everything correct should return => zero .. <zero when error occure.
-int Fl_Font_Browser::GetFontNr(const char *fontNametoNr)
+int Fl_Font_Browser::GetFontNr(const char * /*fontNametoNr*/)
 {
   int t;
   char fontNameString[255];/// this should be fixed mariwan 2005-10-07
@@ -536,3 +537,32 @@ Fl_Font_Browser::Fl_Font_Browser():Fl_Window(100,100,550-60,332-5,"Font Browser"
   this->callback_ = 0;  // Initialize Widgets callback 
   this->data_ = 0;      // And the data
 }
+void Fl_Font_Browser::SetFont( int fontname,int fontsize )
+{
+	int t;
+	box_Example->SetFont( fontname, fontname % 3, fontsize );
+	//lst_Font->value( fontname );
+	lst_Size->value( fontsize );
+	txt_InputFont->value( lst_Font->text( lst_Font->value() ) );
+	txt_InputStyle->value( lst_Style->text( lst_Style->value() ) );
+	txt_InputSize->value( lst_Size->text( lst_Size->value() ) );
+	const char *name = Fl::get_font_name( (Fl_Font)fontname, &t );
+	while ( ( t & FL_BOLD ) || ( t & FL_ITALIC ) ) {
+		fontname--;
+		name = Fl::get_font_name( (Fl_Font)fontname, &t );
+	}
+	cout << "font name " << name << endl;
+	int size = lst_Font->size();
+	for ( int i = 1; i <= size; i++ ) {
+		if ( strcmp( name, lst_Font->text( i ) ) == 0 ) {
+			lst_Font->value( i );
+			break;
+		}
+	}
+}
+void Fl_Font_Browser::SetFontColor( Fl_Color fontColor )
+{
+	box_Example->SetFontColor( fontColor );
+	btn_Color->color( fontColor );
+}
+

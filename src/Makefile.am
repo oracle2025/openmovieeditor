@@ -208,6 +208,8 @@ openmovieeditor_SOURCES = nle.cxx\
 	TitleClip.cxx\
 	TitleClip.H\
 	Fl_Split.cpp\
-	Fl_Split.h
+	Fl_Split.h\
+	fl_font_browser.cpp\
+	fl_font_browser.h
 
 

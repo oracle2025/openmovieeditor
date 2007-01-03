@@ -78,7 +78,8 @@ void callback(void (*cb)(Fl_Widget *, void *), void *d = 0);
 public:
   Fl_Font_Browser();
   int GetFontNr(const char *fontNametoNr);
-
+  void SetFont( int fontname,int fontsize);
+  void SetFontColor(Fl_Color fontColor);
 public:
   int pickedsize ;
   Fl_Browser *lst_Font;

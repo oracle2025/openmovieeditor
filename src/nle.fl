@@ -165,7 +165,7 @@ m_timelineView->redraw();}
           }
         }
         Submenu {} {
-          label Format open selected
+          label Format open
           xywh {0 0 100 20}
         } {
           MenuItem {} {
@@ -309,7 +309,7 @@ fb->load_rel();}
               }
               Fl_Group {} {
                 label {Media Browser}
-                xywh {0 75 365 230}
+                xywh {0 75 365 230} hide
               } {
                 Fl_Group {} {open
                   xywh {5 80 355 220} resizable
@@ -378,73 +378,18 @@ fb->load_rel();}
               }
               Fl_Group titles_tab {
                 label Titles open
-                private xywh {0 75 365 230} hide deactivate
+                private xywh {0 75 365 230} deactivate
               } {
                 Fl_Input titles_text {
                   callback {m_timelineView->titles_text( o->value() );}
                   xywh {205 80 155 220} type Multiline resizable
                 }
-                Fl_Group {} {
+                Fl_Group {} {open
                   xywh {5 80 195 220} box ENGRAVED_FRAME
                 } {
                   Fl_Value_Input {} {
                     label {Line Spacing}
                     xywh {95 160 100 20} labelsize 12 maximum 5 step 0.5 hide
-                  }
-                  Fl_Choice titles_fonts {
-                    label Font
-                    callback {m_timelineView->titles_font( o->value() );
-m_timelineView->titles_text( titles_text->value() );} open
-                    xywh {95 85 100 20} down_box BORDER_BOX labelsize 12
-                  } {
-                    MenuItem {} {
-                      label Helvetica
-                      xywh {5 5 100 20}
-                    }
-                    MenuItem {} {
-                      label {Helvetica bold}
-                      xywh {5 5 100 20}
-                    }
-                    MenuItem {} {
-                      label {Helvetica italic}
-                      xywh {5 5 100 20}
-                    }
-                    MenuItem {} {
-                      label {Helvetica bold italic}
-                      xywh {5 5 100 20}
-                    }
-                    MenuItem {} {
-                      label Courier
-                      xywh {5 5 100 20}
-                    }
-                    MenuItem {} {
-                      label {Courier bold}
-                      xywh {5 5 100 20}
-                    }
-                    MenuItem {} {
-                      label {Courier italic}
-                      xywh {5 5 100 20}
-                    }
-                    MenuItem {} {
-                      label {Courier bold italic}
-                      xywh {5 5 100 20}
-                    }
-                    MenuItem {} {
-                      label Times
-                      xywh {5 5 100 20}
-                    }
-                    MenuItem {} {
-                      label {Times bold}
-                      xywh {5 5 100 20}
-                    }
-                    MenuItem {} {
-                      label {Times italic}
-                      xywh {5 5 100 20}
-                    }
-                    MenuItem {} {
-                      label {Times bold ital}
-                      xywh {5 5 100 20}
-                    }
                   }
                   Fl_Value_Input titles_size {
                     label {Font Size}
@@ -475,7 +420,20 @@ m_timelineView->titles_text( titles_text->value() );}
                     tooltip {Vertical Text Alignment} xywh {95 210 100 20} type {Horz Knob} align 4 value 0.5
                   }
                   Fl_Box {} {
-                    xywh {100 250 25 25} resizable
+                    xywh {100 260 25 25} resizable
+                  }
+                  Fl_Button {} {
+                    label {Font...}
+                    callback {Fl_Font_Browser dlg;
+dlg.SetFont( titleFont, llrint(titles_size->value()) );
+dlg.SetFontColor( titles_color->color() );
+dlg.show();
+dlg.callback( font_dialog_callback, &dlg );
+while ( dlg.shown() ) {
+	Fl::wait();
+}} selected
+                    xywh {95 85 100 20} labelsize 12
+                    code0 {\#include "fl_font_browser.h"}
                   }
                 }
               }
@@ -719,7 +677,7 @@ if ( effect_browser->value() == 0 ) {
   }
   Function {activate_titles(int font, int size, const char* text, float x, float y, Fl_Color color )} {open
   } {
-    code {titles_fonts->value( font );
+    code {titleFont = (Fl_Font)font;
 titles_size->value( size );
 titles_x->value( x );
 titles_y->value( y );
@@ -773,8 +731,7 @@ g_backButton = backButton;} {}
 decl {Flmm_Scalebar* g_scrollBar;} {public
 } 
 
-class EncodeDialog {open
-} {
+class EncodeDialog {} {
   Function {EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecParameters* codecParams )} {open
   } {
     Fl_Window encodeDialog {
@@ -1178,4 +1135,21 @@ decl {bool g_16_9;} {public
 } 
 
 decl {bool g_black_borders;} {public
+} 
+
+Function {font_dialog_callback( Fl_Widget*, void* v )} {open
+} {
+  code {Fl_Font_Browser* dlg = (Fl_Font_Browser*)v;
+nle::g_ui->titles_size->value( dlg->box_Example->GetFontSize() );
+titleFont = (Fl_Font)(dlg->box_Example->GetFontName() + dlg->box_Example->GetFontStyle());
+nle::g_ui->titles_color->color( dlg->box_Example->GetFontColor() );
+nle::g_ui->titles_color->redraw();
+nle::g_timelineView->titles_font( titleFont );
+nle::g_timelineView->titles_size( dlg->box_Example->GetFontSize() );
+nle::g_timelineView->titles_color( dlg->box_Example->GetFontColor() );
+
+dlg->hide();} {}
+} 
+
+decl {Fl_Font titleFont;} {public
 } 

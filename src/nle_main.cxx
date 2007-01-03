@@ -95,6 +95,7 @@ int main( int argc, char** argv )
 	nle::DocManager docManager;
 
 	Fl::visual(FL_DOUBLE|FL_RGB);
+	Fl::set_fonts(0);
 
 	Fl_Tooltip::color( fl_rgb_color( 0, 0, 1 ) );
 	Fl::background2( 34, 52, 103 );

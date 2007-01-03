@@ -27,11 +27,11 @@
 #include "SpecialClipsBrowser.H"
 #include <FL/Fl_Input.H>
 #include <FL/Fl_Value_Input.H>
-#include <FL/Fl_Choice.H>
 #include <math.h>
 #include <FL/fl_show_colormap.H>
 #include <FL/Fl_Slider.H>
 #include <FL/Fl_Box.H>
+#include "fl_font_browser.h"
 #include "Flmm_Scalebar.H"
 #include "globals.H"
 using namespace std;
@@ -39,6 +39,7 @@ using namespace std;
 #include <FL/Fl_Scrollbar.H>
 #include "TimelineScroll.H"
 #include "TimelineView.H"
+#include <FL/Fl_Choice.H>
 
 class NleUI {
 public:
@@ -154,12 +155,6 @@ private:
   void cb_titles_text_i(Fl_Input*, void*);
   static void cb_titles_text(Fl_Input*, void*);
 public:
-  Fl_Choice *titles_fonts;
-private:
-  void cb_titles_fonts_i(Fl_Choice*, void*);
-  static void cb_titles_fonts(Fl_Choice*, void*);
-  static Fl_Menu_Item menu_titles_fonts[];
-public:
   Fl_Value_Input *titles_size;
 private:
   void cb_titles_size_i(Fl_Value_Input*, void*);
@@ -179,6 +174,8 @@ public:
 private:
   void cb_titles_y_i(Fl_Slider*, void*);
   static void cb_titles_y(Fl_Slider*, void*);
+  void cb_Font_i(Fl_Button*, void*);
+  static void cb_Font(Fl_Button*, void*);
 public:
   Fl_Button *playButton;
 private:
@@ -405,4 +402,6 @@ extern bool g_seek_audio;
 extern Fl_Scrollbar* g_v_scrollbar;
 extern bool g_16_9;
 extern bool g_black_borders;
+void font_dialog_callback( Fl_Widget*, void* v );
+extern Fl_Font titleFont;
 #endif
