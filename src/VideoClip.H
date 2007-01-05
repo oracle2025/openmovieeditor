@@ -70,6 +70,8 @@ class VideoClip : public AudioClipBase, public VideoEffectClip
 		IVideoFile* m_videoFile;
 		FilmStrip* m_filmStrip;
 		frame_struct m_previewFrame;
+		frame_struct* m_frame;
+		int64_t m_lastFrame;
 
 		int64_t m_audioPosition;
 		bool m_noAudio;

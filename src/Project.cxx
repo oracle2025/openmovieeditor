@@ -146,6 +146,7 @@ int Project::write( string filename, string name )
 				}
 				if ( VideoClip* vc = dynamic_cast<VideoClip*>(cn->clip) ) {
 					clip->SetAttribute( "mute", (int)vc->m_mute );
+					clip->SetAttribute( "freezeframe", (int)vc->freezeFrame() );
 				}
 				if ( TitleClip* tc = dynamic_cast<TitleClip*>(cn->clip) ) {
 					clip->SetAttribute( "text", tc->text() );
@@ -338,6 +339,10 @@ int Project::read( string filename )
 				IVideoFile* vf = VideoFileFactory::get( filename );
 				if ( vf ) {
 					VideoClip* c = new VideoClip( tr, position, vf, trimA, trimB, -1 );
+					int freezeframe;
+					if ( j->Attribute( "freezeframe", &freezeframe ) ) {
+						c->freezeFrame( freezeframe );
+					}
 					vec = c;
 					c->m_mute = mute;
 					TiXmlElement* effectXml = TiXmlHandle( j ).FirstChildElement( "effect" ).Element();

@@ -68,6 +68,8 @@ class VideoEffectClip : public IVideoReader
 		void fit( bool v ) { if ( v ) { m_crop = m_stretch = m_default = !(m_fit = true); m_render_strategy = RENDER_FIT;} }
 		void stretch( bool v ) { if ( v ) { m_fit = m_crop = m_default = !(m_stretch = true); m_render_strategy = RENDER_STRETCH;} }
 		void def( bool v ) { if ( v ) { m_fit = m_crop = m_stretch = !(m_default = true); m_render_strategy = RENDER_DEFAULT;} }
+		void freezeFrame( bool f ) { m_freezeFrame = f; }
+		bool freezeFrame() { return m_freezeFrame; }
 	protected:
 		void setEffects( ClipData* data = 0 );
 		VideoEffectClip();
@@ -77,6 +79,7 @@ class VideoEffectClip : public IVideoReader
 		bool m_default;
 		render_strategy_t m_render_strategy;
 		ClipData* vec_getClipData();
+		bool m_freezeFrame;
 	private:
 		effect_stack* m_effects;
 		gavl_video_scaler_t *m_video_scaler;

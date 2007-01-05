@@ -41,8 +41,9 @@ VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A,
 	m_audioFile = 0;
 	m_envelopeClip = 0;
 	m_videoFile = vf;
+	m_frame = 0;
+	m_lastFrame = -1;
 
-	
 	m_filmStrip = g_filmStripFactory->get( vf ); //new FilmStrip( vf );
 	
 	m_audioFile = AudioFileFactory::get( m_videoFile->filename() );
@@ -111,6 +112,7 @@ void VideoClip::reset()
 {
 	AudioClipBase::reset();
 	m_envelopeClip->reset();
+	m_lastFrame = -1;
 }
 frame_struct* VideoClip::getRawFrame( int64_t position, int64_t &position_in_file )
 {
@@ -118,8 +120,17 @@ frame_struct* VideoClip::getRawFrame( int64_t position, int64_t &position_in_fil
 		return NULL;
 	int64_t s_pos = position - m_position + m_trimA;
 	position_in_file = s_pos;
-	frame_struct *f = m_videoFile->getFrame( s_pos );
-	return f;
+	if ( !m_freezeFrame ) {
+		m_frame = m_videoFile->getFrame( s_pos );
+	} else {
+		if ( m_lastFrame == m_trimA ) {
+			return m_frame;
+		} else {
+			m_lastFrame = m_trimA;
+			m_frame = m_videoFile->getFrame( m_trimA );
+		}
+	}
+	return m_frame;
 }
 int64_t VideoClip::fileLength()
 {

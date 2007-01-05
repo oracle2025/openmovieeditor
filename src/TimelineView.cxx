@@ -208,7 +208,9 @@ int TimelineView::handle( int event )
 							{ "Fit", 0,0,0,FL_MENU_RADIO|( vcl->fit() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
 							{ "Stretch", 0,0,0,FL_MENU_RADIO |( vcl->stretch() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
 							{ "Default", 0,0,0,FL_MENU_RADIO | FL_MENU_DIVIDER|( vcl->def() ? FL_MENU_VALUE : 0 ),0,0,0,0 }, 
-							{ "Unmute Original Sound", MENU_ITEM_INIT }, { "Select all Clips after Cursor", MENU_ITEM_INIT }, 
+							{ "Unmute Original Sound", MENU_ITEM_INIT },
+							{ "Freeze Frame", 0,0,0,FL_MENU_TOGGLE|( vcl->freezeFrame() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
+							{ "Select all Clips after Cursor", MENU_ITEM_INIT }, 
 							{ 0L, MENU_ITEM_INIT } };
 						//menuitem[2].setonly();
 						Fl_Menu_Item* r = (Fl_Menu_Item*)menuitem->popup( Fl::event_x(), Fl::event_y() );
@@ -229,6 +231,9 @@ int TimelineView::handle( int event )
 							redraw();
 							g_timeline->changing();
 						} else if ( r == &menuitem[5] ) {
+							vcl->freezeFrame( !vcl->freezeFrame() );
+							g_videoView->redraw();
+						} else if ( r == &menuitem[6] ) {
 							select_all_after_cursor();	
 						}
 					} else {
@@ -237,6 +242,7 @@ int TimelineView::handle( int event )
 							{ "Stretch", 0,0,0,FL_MENU_RADIO | ( vcl->stretch() ? FL_MENU_VALUE : 0 ),0,0,0,0 }, 
 							{ "Default", 0,0,0,FL_MENU_RADIO | FL_MENU_DIVIDER|( vcl->def() ? FL_MENU_VALUE : 0 ),0,0,0,0 }, 
 							{ "Mute Original Sound", MENU_ITEM_INIT }, 
+							{ "Freeze Frame", 0,0,0,FL_MENU_TOGGLE|( vcl->freezeFrame() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
 							{ "Select all Clips after Cursor", MENU_ITEM_INIT }, 
 							{ 0L, MENU_ITEM_INIT } };
 						//menuitem[2].setonly();
@@ -258,6 +264,9 @@ int TimelineView::handle( int event )
 							redraw();
 							g_timeline->changing();
 						} else if ( r == &menuitem[5] ) {
+							vcl->freezeFrame( !vcl->freezeFrame() );
+							g_videoView->redraw();
+						} else if ( r == &menuitem[6] ) {
 							select_all_after_cursor();	
 						}
 					}
@@ -270,6 +279,7 @@ int TimelineView::handle( int event )
 							{ "Stretch", 0,0,0,FL_MENU_RADIO |( vec->stretch() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
 							{ "Default", 0,0,0,FL_MENU_RADIO | FL_MENU_DIVIDER|( vec->def() ? FL_MENU_VALUE : 0 ),0,0,0,0 }, 
 							{ "Select all Clips after Cursor", MENU_ITEM_INIT }, 
+							{ "Freeze Frame", 0,0,0,FL_MENU_TOGGLE|( vec->freezeFrame() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
 							{ 0L, MENU_ITEM_INIT } };
 						//menuitem[2].setonly();
 						Fl_Menu_Item* r = (Fl_Menu_Item*)menuitem->popup( Fl::event_x(), Fl::event_y() );
@@ -287,6 +297,9 @@ int TimelineView::handle( int event )
 							g_videoView->redraw();
 						} else if ( r == &menuitem[4] ) {
 							select_all_after_cursor();	
+						} else if ( r == &menuitem[5] ) {
+							vec->freezeFrame( !vec->freezeFrame() );
+							g_videoView->redraw();
 						}
 						return 1;
 				}
