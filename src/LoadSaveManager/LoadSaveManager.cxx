@@ -278,6 +278,7 @@ void LoadSaveManager::name( string v )
 }
 void LoadSaveManager::load( string v )
 {
+	g_timelineView->clear_selection();
 	g_project->write( m_video_projects + "/" + m_currentFilename, m_currentName );
 	m_currentFilename = v;
 	m_currentName = m_projectChoice->mvalue()->text;

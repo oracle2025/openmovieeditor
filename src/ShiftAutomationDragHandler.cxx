@@ -22,7 +22,7 @@
 #include "globals.H"
 #include "global_includes.H"
 #include "TimelineView.H"
-#include "AudioClip.H"
+#include "AudioClipBase.H"
 #include "timeline/Track.H"
 #include "DocManager.H"
 #include "AutomationDuoMoveCommand.H"
@@ -36,7 +36,7 @@ ShiftAutomationDragHandler::ShiftAutomationDragHandler( Clip* clip, const Rect& 
 	: DragHandler( g_timelineView, clip )
 {
 	m_outline = rect;
-	m_audioClip = dynamic_cast<AudioClip*>(m_clip);
+	m_audioClip = dynamic_cast<AudioClipBase*>(m_clip);
 	m_nodeA = 0;
 	m_nodeB = 0;
 	auto_node* r = m_audioClip->getAutoPoints();
@@ -64,8 +64,8 @@ ShiftAutomationDragHandler::ShiftAutomationDragHandler( Clip* clip, const Rect& 
 	}
 	int i = 0;
 	for ( ; r && r->next; r = r->next ) {
-		int x_1 = g_timelineView->get_screen_position( m_clip->position() + r->x, m_clip->track()->stretchFactor() );
-		int x_2 = g_timelineView->get_screen_position( m_clip->position() + r->next->x, m_clip->track()->stretchFactor() );
+		int x_1 = g_timelineView->get_screen_position( m_audioClip->audioPosition() + r->x, ( 48000 / g_fps ) );
+		int x_2 = g_timelineView->get_screen_position( m_audioClip->audioPosition() + r->next->x, ( 48000 / g_fps ) );
 		if ( x_ > x_1 && x_ < x_2 ) {
 			m_nodeA = r;
 			m_nodeB = r->next;

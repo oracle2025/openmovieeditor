@@ -26,7 +26,7 @@ namespace nle
 {
 
 struct _auto_node;
-class AudioClip;
+class AudioClipBase;
 
 class ShiftAutomationDragHandler : public DragHandler
 {
@@ -41,7 +41,7 @@ class ShiftAutomationDragHandler : public DragHandler
 		struct _auto_node* m_nodeB;
 		//bool m_firstA;
 		//bool m_lastB;
-		AudioClip* m_audioClip;
+		AudioClipBase* m_audioClip;
 		struct _auto_node* m_nodesCopy;
 		struct _auto_node* m_nodesOriginal;
 		int m_node_number;

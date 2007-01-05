@@ -53,7 +53,7 @@ auto_node* AudioClip::getAutoPoints()
 void AudioClip::setAutoPoints( auto_node* a )
 {
 	assert( m_envelopeClip );
-	return m_envelopeClip->setAutoPoints( a );
+	m_envelopeClip->setAutoPoints( a );
 }
 int64_t AudioClip::length()
 {

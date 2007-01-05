@@ -24,7 +24,7 @@
 #include "globals.H"
 #include "global_includes.H"
 #include "TimelineView.H"
-#include "AudioClip.H"
+#include "AudioClipBase.H"
 #include "timeline/Track.H"
 #include "AutomationMoveCommand.H"
 #include "AutomationAddCommand.H"
@@ -38,14 +38,14 @@ namespace nle
 static int g_x_off;
 static int g_y_off;
 
-bool inside_node( auto_node* n, Rect& r, AudioClip* clip, int _x, int _y, bool first = false, bool last = false )
+bool inside_node( auto_node* n, Rect& r, AudioClipBase* clip, int _x, int _y, bool first = false, bool last = false )
 {
 	if ( first ) {
 		_x = _x - 5;
 	} else if ( last ) {
 		_x = _x + 5;
 	}
-	int x = g_timelineView->get_screen_position( clip->position() + n->x, clip->track()->stretchFactor() ) - 5;
+	int x = g_timelineView->get_screen_position( clip->audioPosition() + n->x, ( 48000 / g_fps ) ) - 5;
 	int y = (int)( r.y + ( ( clip->track()->h() - 10 ) * ( 1.0 - n->y ) ) );
 	int w = 10;
 	int h = 10;
@@ -54,7 +54,7 @@ bool inside_node( auto_node* n, Rect& r, AudioClip* clip, int _x, int _y, bool f
 	Rect node( x, y, w, h );
 	return node.inside( _x, _y );
 }
-void screen_to_node( int64_t& x, float& y, int in_x, int in_y, auto_node* n, auto_node* n_before, Rect& r, AudioClip* clip, bool first = false, bool last = false )
+void screen_to_node( int64_t& x, float& y, int in_x, int in_y, auto_node* n, auto_node* n_before, Rect& r, AudioClipBase* clip, bool first = false, bool last = false )
 {
 	if ( in_x < r.x ) { in_x = r.x; }
 	if ( in_x > r.x + r.w - 10 ) { in_x = r.x + r.w - 10; }
@@ -67,7 +67,7 @@ void screen_to_node( int64_t& x, float& y, int in_x, int in_y, auto_node* n, aut
 	} else if ( last ) {
 		x = clip->length();
 	} else {
-		x = g_timelineView->get_real_position( in_x + 5, clip->track()->stretchFactor() ) - clip->position();
+		x = g_timelineView->get_real_position( in_x + 5, ( 48000 / g_fps ) ) - clip->audioPosition();
 	}
 	if ( !first && !last ) {
 		if ( n->next && x > n->next->x - 1000 ) {
@@ -84,7 +84,7 @@ AutomationDragHandler::AutomationDragHandler( Clip* clip, const Rect& rect, stru
 	m_dragging = false;
 	m_outline = rect;
 	m_node = n;
-	m_audioClip = dynamic_cast<AudioClip*>(m_clip);
+	m_audioClip = dynamic_cast<AudioClipBase*>(m_clip);
 	auto_node* r = m_audioClip->getAutoPoints();
 	m_nodesOriginal = m_audioClip->getAutoPoints();
 	m_removed = false;
@@ -179,7 +179,7 @@ void AutomationDragHandler::OnDrop( int x, int y )
 	if ( m_removed ) { return; }
 	if ( !m_dragging && m_outline.inside( x, y ) ) {
 		auto_node* r = m_audioClip->getAutoPoints();
-		int64_t _x = g_timelineView->get_real_position( x + 5, m_audioClip->track()->stretchFactor() ) - m_audioClip->position();
+		int64_t _x = g_timelineView->get_real_position( x + 5, ( 48000 / g_fps ) ) - m_audioClip->audioPosition();
 
 		int i = 0;
 		for ( ;r ; r = r->next ) {

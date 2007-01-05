@@ -19,7 +19,7 @@
 
 #include "AutomationDuoMoveCommand.H"
 #include "Timeline.H"
-#include "AudioClip.H"
+#include "AudioClipBase.H"
 #include "timeline/Track.H"
 
 
@@ -41,7 +41,7 @@ AutomationDuoMoveCommand::AutomationDuoMoveCommand( Clip* clip, int node1, int n
 	m_node2 = node2;
 	m_clipNr = clip->id();
 	m_track = clip->track()->num();
-	AudioClip* ac = dynamic_cast<AudioClip*>(clip);
+	AudioClipBase* ac = dynamic_cast<AudioClipBase*>(clip);
 	auto_node* p = find_n( node1, ac->getAutoPoints() );
 	m_srcValue1 = p->y;
 	p = find_n( node2, ac->getAutoPoints() );
@@ -54,7 +54,7 @@ void AutomationDuoMoveCommand::doo()
 {
 	Track* t = g_timeline->getTrack( m_track );
 	Clip* c = t->getClip( m_clipNr );
-	AudioClip* ac = dynamic_cast<AudioClip*>(c);
+	AudioClipBase* ac = dynamic_cast<AudioClipBase*>(c);
 	auto_node* p = find_n( m_node1, ac->getAutoPoints() );
 	p->y = m_dstValue;
 	p = find_n( m_node2, ac->getAutoPoints() );
@@ -65,7 +65,7 @@ void AutomationDuoMoveCommand::undo()
 {
 	Track* t = g_timeline->getTrack( m_track );
 	Clip* c = t->getClip( m_clipNr );
-	AudioClip* ac = dynamic_cast<AudioClip*>(c);
+	AudioClipBase* ac = dynamic_cast<AudioClipBase*>(c);
 	auto_node* p = find_n( m_node1, ac->getAutoPoints() );
 	p->y = m_srcValue1;
 	p = find_n( m_node2, ac->getAutoPoints() );

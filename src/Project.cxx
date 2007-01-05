@@ -125,7 +125,7 @@ int Project::write( string filename, string name )
 			clip->SetAttribute( "trimA", cn->clip->trimA() );
 			clip->SetAttribute( "trimB", cn->clip->trimB() );
 			clip->SetAttribute( "trimB", cn->clip->trimB() );
-			if ( AudioClip* ac = dynamic_cast<AudioClip*>(cn->clip) ) {
+			if ( AudioClipBase* ac = dynamic_cast<AudioClipBase*>(cn->clip) ) {
 				auto_node* q = ac->getAutoPoints();
 				for ( ; q; q = q->next ) {
 					automation = new TiXmlElement( "automation" );
@@ -133,7 +133,8 @@ int Project::write( string filename, string name )
 					automation->SetAttribute( "x", q->x );
 					automation->SetDoubleAttribute( "y", q->y );
 				}
-			} else if ( VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>(cn->clip) ) {
+			}
+			if ( VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>(cn->clip) ) {
 				if ( vc->def() ) {
 					clip->SetAttribute( "render", "default" );
 				} else if ( vc->crop() ) {
@@ -373,6 +374,33 @@ int Project::read( string filename )
 									}
 								}
 							}
+						}
+					}
+					if ( c->has_automation() ) {
+						//read and process Automations
+						TiXmlElement* automation = TiXmlHandle( j ).FirstChildElement( "automation" ).Element();
+						auto_node* autonode = c->getAutoPoints();
+						int x;
+						double y;
+						bool fff = false;
+						for ( ; automation; automation = automation->NextSiblingElement( "automation" ) ) {
+							if ( fff ) {
+								if ( !autonode->next ) {
+									autonode->next = new auto_node;
+									autonode->next->next = 0;
+									autonode->next->x = autonode->x + 1;
+									autonode->next->y = 1.0;
+								}
+								autonode = autonode->next;
+							} else {
+								fff = true;
+							}
+							if ( ! automation->Attribute( "x", &x ) )
+								continue;
+							if ( ! automation->Attribute( "y", &y ) )
+								continue;
+							autonode->x = x;
+							autonode->y = y;
 						}
 					}
 					g_timeline->addClip( trackId, c );

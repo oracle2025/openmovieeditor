@@ -443,13 +443,19 @@ void TimelineView::draw()
 			} else {
 				fl_draw_box( FL_BORDER_FRAME, scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h, FL_DARK3 );
 			}
-			if ( track->type() == TRACK_TYPE_AUDIO ) {
+			if ( clip->has_automation() /*track->type() == TRACK_TYPE_AUDIO*/ ) {
 				//Draw Automations
-				AudioClip* audioClip = dynamic_cast<AudioClip*>(clip);
+				AudioClipBase* audioClip = dynamic_cast<AudioClipBase*>(clip);
 
 				if ( !audioClip ) {
 					continue;
 				}
+				float stretchF;
+				if ( track->type() == TRACK_TYPE_AUDIO ) {
+					stretchF = track->stretchFactor();
+				} else {
+					stretchF = ( 48000 / g_fps );
+				} 
 				fl_push_clip( scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h );
 				
 				auto_node* nodes = audioClip->getAutoPoints();
@@ -458,9 +464,9 @@ void TimelineView::draw()
 				for ( ; nodes && nodes->next; nodes = nodes->next ) {
 					int y = (int)( scr_clip_y + ( ( track->h() - 10 ) * ( 1.0 - nodes->y ) ) + 5 );
 					int y_next = (int)( scr_clip_y + ( ( track->h() - 10 ) * ( 1.0 - nodes->next->y ) ) + 5 );
-					fl_line( get_screen_position( audioClip->position() + nodes->x, track->stretchFactor() ),
+					fl_line( get_screen_position( audioClip->audioPosition() + nodes->x, stretchF ),
 							y,
-							get_screen_position( audioClip->position() + nodes->next->x, track->stretchFactor() ),
+							get_screen_position( audioClip->audioPosition() + nodes->next->x, stretchF ),
 							y_next );
 				}
 				nodes = audioClip->getAutoPoints();
@@ -469,11 +475,11 @@ void TimelineView::draw()
 					int x;
 					int y = (int)( scr_clip_y + ( ( track->h() - 10 ) * ( 1.0 - nodes->y ) ) );
 					if ( !nodes->next ) {
-						x = get_screen_position( audioClip->position() + nodes->x, track->stretchFactor() ) - 10;
+						x = get_screen_position( audioClip->audioPosition() + nodes->x, stretchF ) - 10;
 					} else if ( nodes == audioClip->getAutoPoints() ) {
-						x = get_screen_position( audioClip->position() + nodes->x, track->stretchFactor() );
+						x = get_screen_position( audioClip->audioPosition() + nodes->x, stretchF );
 					} else {
-						x = get_screen_position( audioClip->position() + nodes->x, track->stretchFactor() ) - 5;
+						x = get_screen_position( audioClip->audioPosition() + nodes->x, stretchF ) - 5;
 					}
 					fl_draw_box( FL_UP_BOX, x, y, 10, 10, FL_RED );
 				}

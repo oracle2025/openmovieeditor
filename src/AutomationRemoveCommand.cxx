@@ -20,7 +20,7 @@
 
 #include "AutomationRemoveCommand.H"
 #include "Timeline.H"
-#include "AudioClip.H"
+#include "AudioClipBase.H"
 #include "timeline/Track.H"
 
 
@@ -34,7 +34,7 @@ AutomationRemoveCommand::AutomationRemoveCommand( Clip* clip, int node )
 	m_clipNr = clip->id();
 	m_track = clip->track()->num();
 
-	AudioClip* ac = dynamic_cast<AudioClip*>(clip);
+	AudioClipBase* ac = dynamic_cast<AudioClipBase*>(clip);
 	auto_node* q = ac->getAutoPoints();
 	for ( int i = 0; i < node && q; i++ ){
 		q = q->next;
@@ -50,7 +50,7 @@ void AutomationRemoveCommand::doo()
 	auto_node* q;
 	Track* t = g_timeline->getTrack( m_track );
 	Clip* c = t->getClip( m_clipNr );
-	AudioClip* ac = dynamic_cast<AudioClip*>(c);
+	AudioClipBase* ac = dynamic_cast<AudioClipBase*>(c);
 	q = ac->getAutoPoints();
 	for ( int i = 0; i < m_node && q; i++ ){
 		q = q->next;
@@ -67,7 +67,7 @@ void AutomationRemoveCommand::undo()
 	auto_node* q;
 	Track* t = g_timeline->getTrack( m_track );
 	Clip* c = t->getClip( m_clipNr );
-	AudioClip* ac = dynamic_cast<AudioClip*>(c);
+	AudioClipBase* ac = dynamic_cast<AudioClipBase*>(c);
 	q = ac->getAutoPoints();
 	for ( int i = 0; i < m_node && q; i++ ){
 		q = q->next;

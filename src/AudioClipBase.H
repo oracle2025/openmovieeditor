@@ -52,6 +52,8 @@ class AudioClipBase : public Clip
 		virtual int64_t audioTrimB() = 0;
 		int64_t audioLength();
 		virtual int64_t audioPosition() = 0;
+		virtual auto_node* getAutoPoints() { return 0; }
+		virtual void setAutoPoints( auto_node* ) {}
 	protected:
 		AudioClipBase( Track *track, int64_t position, IAudioFile* af = 0, int id = -1 );
 		string audioFilename();

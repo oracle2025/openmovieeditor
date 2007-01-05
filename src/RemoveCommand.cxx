@@ -44,7 +44,7 @@ RemoveCommand::RemoveCommand( Clip* clip )
 	m_position = clip->position();
 	m_length = clip->length();
 	m_audioClip = 0;
-	AudioClip* ac = dynamic_cast<AudioClip*>(clip);
+	AudioClipBase* ac = dynamic_cast<AudioClipBase*>(clip);
 	if ( ac ) {
 		m_audioClip = true;
 		auto_node* n = ac->getAutoPoints();

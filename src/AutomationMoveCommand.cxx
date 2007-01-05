@@ -25,7 +25,7 @@
 
 #include "AutomationMoveCommand.H"
 #include "Timeline.H"
-#include "AudioClip.H"
+#include "AudioClipBase.H"
 #include "timeline/Track.H"
 
 
@@ -36,7 +36,7 @@ static auto_node* find_n( int n, int track, int clip )
 {
 	Track* t = g_timeline->getTrack( track );
 	Clip* c = t->getClip( clip );
-	AudioClip* ac = dynamic_cast<AudioClip*>(c);
+	AudioClipBase* ac = dynamic_cast<AudioClipBase*>(c);
 	return find_n( n, ac->getAutoPoints() );
 }
 static auto_node* find_n( int n, auto_node* start )
@@ -53,7 +53,7 @@ AutomationMoveCommand::AutomationMoveCommand( Clip* clip, int node, int64_t posi
 	m_node = node;
 	m_clipNr = clip->id();
 	m_track = clip->track()->num();
-	AudioClip* ac = dynamic_cast<AudioClip*>(clip);
+	AudioClipBase* ac = dynamic_cast<AudioClipBase*>(clip);
 	auto_node* p = find_n( node, ac->getAutoPoints() );
 	m_srcPos = p->x;
 	m_srcVal = p->y;
