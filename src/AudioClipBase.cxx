@@ -55,6 +55,10 @@ int64_t AudioClipBase::audioLength()
 	return m_audioFile->length() - ( audioTrimA() + audioTrimB() );
 }
 
+int AudioClipBase::fillBufferForEnvelope( float* output, unsigned long frames, int64_t position )
+{
+	return AudioClipBase::fillBuffer( output, frames, position );
+}
 int AudioClipBase::fillBuffer( float* output, unsigned long frames, int64_t position )
 {
 	if ( m_mute ) {

@@ -26,9 +26,14 @@
 
 namespace nle
 {
+typedef struct _auto_node {
+	struct _auto_node *next;
+	int64_t x;
+	float y;
+} auto_node;
 
 class IAudioFile;
-
+class EnvelopeClip;
 /*
  * This is the base class for both, Audio and Video Clips,
  * because Video Clips can handle Audio as well, since most
@@ -37,6 +42,7 @@ class IAudioFile;
  */
 class AudioClipBase : public Clip
 {
+	friend class EnvelopeClip;
 	public:
 		virtual ~AudioClipBase();
 		virtual int fillBuffer( float* output, unsigned long frames, int64_t position );
@@ -51,6 +57,7 @@ class AudioClipBase : public Clip
 		string audioFilename();
 		IAudioFile* m_audioFile;
 	private:
+		int fillBufferForEnvelope( float* output, unsigned long frames, int64_t position );
 		int64_t m_lastSamplePosition;
 };
 

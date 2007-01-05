@@ -28,13 +28,7 @@ namespace nle
 {
 
 class IClipArtist;
-	
-typedef struct _auto_node {
-	struct _auto_node *next;
-	int64_t x;
-	float y;
-} auto_node;
-	
+class EnvelopeClip;
 class AudioClip : public AudioClipBase
 {
 	public:
@@ -42,10 +36,8 @@ class AudioClip : public AudioClipBase
 		~AudioClip();
 		int64_t length();
 		string filename();
-		inline auto_node* getAutoPoints() { return m_automationPoints; }
-		inline void setAutoPoints( auto_node* a ) { m_automationPoints = a; }
-		inline float basicLevel() { return m_basicLevel; }
-		inline void basicLevel( float o ) { m_basicLevel = o; }
+		auto_node* getAutoPoints();
+		void setAutoPoints( auto_node* a );
 		bool has_automation() { return true; }
 		int type() { return CLIP_TYPE_AUDIO; }
 		inline IClipArtist* getArtist() { return m_artist; }
@@ -62,11 +54,8 @@ class AudioClip : public AudioClipBase
 		int64_t audioTrimB();
 		int64_t audioPosition();
 	private:
-		float getEnvelope( int64_t position );
-		float m_basicLevel;
-		auto_node* m_automationPoints;
-		auto_node* m_autoCache;
 		IClipArtist* m_artist;
+		EnvelopeClip* m_envelopeClip;
 };
 
 
