@@ -38,7 +38,7 @@
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Check_Button.H>
 #include <FL/fl_draw.H>
-#include <FL/fl_show_colormap.h>
+#include <FL/fl_show_colormap.H>
 #include <iostream>
 // Preview box for showing font
 class Fl_Font_Preview_Box : public Fl_Widget
