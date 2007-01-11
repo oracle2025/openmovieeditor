@@ -112,12 +112,18 @@ int AudioFileFfmpeg::fillBuffer( float* output, unsigned long frames )
 					optr[2 * i + 1] = optr[i];
 					optr[2 * i] = optr[i];
 				}
+				optr += s * 2;
+				m_tmpBufferStart += s;
+				m_tmpBufferLen -= s;
+				written += s / m_codecContext->channels;
+				ret = 0;
+			} else {
+				optr += s;
+				m_tmpBufferStart += s;
+				m_tmpBufferLen -= s;
+				written += s / m_codecContext->channels;
+				ret = 0;
 			}
-			optr += s;
-			m_tmpBufferStart += s;
-			m_tmpBufferLen -= s;
-			written += s / m_codecContext->channels;
-			ret = 0;
 		} else {
 			ret = av_read_frame( m_formatContext, &m_packet );
 			int len = m_packet.size;

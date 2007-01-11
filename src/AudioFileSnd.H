@@ -37,6 +37,7 @@ class AudioFileSnd : public IAudioFile
 		int fillBuffer( float* output, unsigned long frames );
 	private:
 		SNDFILE *m_sndfile;
+		bool m_mono;
 
 };
 

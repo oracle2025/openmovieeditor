@@ -25,6 +25,7 @@ namespace nle
 
 AudioFileSnd::AudioFileSnd( string filename )
 {
+	m_mono = false;
 	m_ok = false;
 	SF_INFO sfinfo;
 	m_sndfile = sf_open( filename.c_str(), SFM_READ, &sfinfo );	
@@ -32,8 +33,8 @@ AudioFileSnd::AudioFileSnd( string filename )
 		ERROR_DETAIL( "This is not a supported audio file format" );
 		return;
 	}
-	if ( sfinfo.channels != 2 ) {
-		ERROR_DETAIL( "Only Stereo audio files are supported" );
+	if ( sfinfo.channels != 2 && sfinfo.channels != 1 ) {
+		ERROR_DETAIL( "Only Stereo and Mono audio files are supported" );
 		return;
 	}
 	if ( sfinfo.frames==0 ) {
@@ -47,6 +48,9 @@ AudioFileSnd::AudioFileSnd( string filename )
 	}
 	m_length = sfinfo.frames;
 	m_filename = filename;
+	if ( sfinfo.channels == 1 ) {
+		m_mono = true;
+	}
 	m_ok = true;
 }
 AudioFileSnd::~AudioFileSnd()
@@ -64,7 +68,17 @@ void AudioFileSnd::seek( int64_t sample )
 
 int AudioFileSnd::fillBuffer( float* output, unsigned long frames )
 {
-	return sf_readf_float( m_sndfile, output, frames );
+	int read;
+	if ( m_mono ) {
+		read = sf_readf_float( m_sndfile, output, frames );
+		for ( int i = read - 1; i >= 0; i-- ) {
+			output[2 * i + 1] = output[i];
+			output[2 * i] = output[i];
+		}
+		return read;
+	} else {
+		return sf_readf_float( m_sndfile, output, frames );
+	}
 }
 
 
