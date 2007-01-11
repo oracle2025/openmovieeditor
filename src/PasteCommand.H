@@ -37,6 +37,7 @@ class PasteCommand : public Command
 		int64_t position() { return m_position; }
 		void doo();
 		void undo();
+		bool m_audioClip;
 	private:
 		int m_track;
 		int m_clip;
@@ -47,7 +48,6 @@ class PasteCommand : public Command
 		int64_t m_trimB;
 		int64_t m_position;
 		int64_t m_length;
-		bool m_audioClip;
 		bool m_mute;
 };
 

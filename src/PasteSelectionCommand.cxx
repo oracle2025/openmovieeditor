@@ -23,6 +23,7 @@
 #include "timeline/Track.H"
 #include "DocManager.H"
 #include "PasteCommand.H"
+extern float g_fps;
 
 namespace nle
 {
@@ -52,25 +53,37 @@ PasteSelectionCommand::PasteSelectionCommand( PasteSelectionCommand* command )
 	}
 
 }
-
 void PasteSelectionCommand::position( int64_t position )
 {
+	//TODO: Compensate for Audio
 	//find minimum of all Commands
 	int64_t minimum = 0;
 	PasteCommand* cmd = dynamic_cast<PasteCommand*>(m_subCmdList->command);
 	if ( cmd ) {
-		minimum = cmd->position();
+		if ( cmd->m_audioClip ) {
+			minimum = (int64_t)( cmd->position() / ( 48000 / g_fps ) );
+		} else {
+			minimum = cmd->position();
+		}
 	} else {
 		return;
 	}
 	for ( command_node* n = m_subCmdList; n; n = n->next ) {
 		cmd = dynamic_cast<PasteCommand*>(n->command);
-		minimum = min( minimum, cmd->position() );
+		if ( cmd->m_audioClip ) {
+			minimum = min( minimum, (int64_t)( cmd->position() / ( 48000 / g_fps ) ) );
+		} else {
+			minimum = min( minimum, cmd->position() );
+		}
 	}
 	int64_t diff = position - minimum;
 	for ( command_node* n = m_subCmdList; n; n = n->next ) {
 		cmd = dynamic_cast<PasteCommand*>(n->command);
-		cmd->position( cmd->position() + diff );
+		if ( cmd->m_audioClip ) {
+			cmd->position( cmd->position() + (int64_t)( diff * ( 48000 / g_fps ) ) );
+		} else {
+			cmd->position( cmd->position() + diff );
+		}
 	}
 }
 
