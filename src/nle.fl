@@ -431,7 +431,7 @@ dlg.show();
 dlg.callback( font_dialog_callback, &dlg );
 while ( dlg.shown() ) {
 	Fl::wait();
-}} selected
+}}
                     xywh {95 85 100 20} labelsize 12
                     code0 {\#include "fl_font_browser.h"}
                   }
@@ -1062,7 +1062,7 @@ class AboutDialog {} {
         xywh {0 155 340 30} labelfont 1 labelsize 16
       }
       Fl_Box {} {
-        label {(C)opyright 2005, 2006 Richard Spindler}
+        label {(C)opyright 2005-2007 Richard Spindler} selected
         xywh {0 210 340 40} labelsize 12
       }
       Fl_Box version_box {

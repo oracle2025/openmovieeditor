@@ -6388,7 +6388,7 @@ AboutDialog::AboutDialog() {
       o->labelfont(1);
       o->labelsize(16);
     }
-    { Fl_Box* o = new Fl_Box(0, 210, 340, 40, "(C)opyright 2005, 2006 Richard Spindler");
+    { Fl_Box* o = new Fl_Box(0, 210, 340, 40, "(C)opyright 2005-2007 Richard Spindler");
       o->labelsize(12);
     }
     { Fl_Box* o = version_box = new Fl_Box(0, 185, 340, 25, "0.0.0");
