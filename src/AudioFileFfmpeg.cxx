@@ -76,7 +76,8 @@ AudioFileFfmpeg::AudioFileFfmpeg( string filename )
 	}
 
 	int64_t len = m_formatContext->duration - m_formatContext->start_time;
-	m_length = (int64_t)( len * m_samplerate / AV_TIME_BASE );
+	//m_length = (int64_t)( len * m_samplerate / AV_TIME_BASE );
+	m_length = (int64_t)( len * NLE_TIME_BASE / AV_TIME_BASE );
 	m_ok = true;
 }
 AudioFileFfmpeg::~AudioFileFfmpeg()
@@ -85,11 +86,10 @@ AudioFileFfmpeg::~AudioFileFfmpeg()
 		av_close_input_file( m_formatContext );
 	}
 }
-void AudioFileFfmpeg::seek( int64_t sample )
+void AudioFileFfmpeg::seek( int64_t position )
 {
 	avcodec_flush_buffers( m_codecContext );
-	const int64_t time_base = 1;
-	int64_t timestamp = ( sample * AV_TIME_BASE * time_base ) / (int64_t)m_samplerate;
+	int64_t timestamp = ( position * AV_TIME_BASE ) / (int64_t)NLE_TIME_BASE;
 	av_seek_frame( m_formatContext, -1, timestamp, 0 );
 
 	m_tmpBufferStart = m_tmpBuffer;

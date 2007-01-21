@@ -36,7 +36,7 @@ class AudioFileQT : public IAudioFile
 	public:
 		AudioFileQT( string filename );
 		~AudioFileQT();
-		void seek( int64_t sample );
+		void seek( int64_t position );
 		int fillBuffer( float* output, unsigned long frames );
 			// sizof(output) == frames * 2
 			// File Format: 48000 stereo interleaved

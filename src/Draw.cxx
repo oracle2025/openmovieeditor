@@ -51,7 +51,7 @@ void Draw::triangle( float x, float y, bool direction )
 	float _x;
 	float zoom = SwitchBoard::i()->zoom();
 	if ( USING_AUDIO ) {
-		_x = direction ? 8 * ( 48000 / g_fps ) : - 8 * ( 48000 / g_fps );
+		_x = direction ? 8 * 48000 / NLE_TIME_BASE : - 8 * 48000 / NLE_TIME_BASE;
 	} else {
 		_x = direction ? 8 : -8;
 	}

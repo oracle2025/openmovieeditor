@@ -21,7 +21,9 @@
 #define _GLOBALS_H_
 
 #define STR_LEN 512
-#define OME_VERSION "0.0.0"
+
+#define NLE_TIME_BASE 30000
+//#define NLE_TIME_BASE 35280000
 
 #include <lqt.h>
 

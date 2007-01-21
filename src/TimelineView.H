@@ -27,6 +27,7 @@
 
 #include "Rect.H"
 #include "global_includes.H"
+#include "globals.H"
 
 namespace nle
 {
@@ -70,8 +71,8 @@ class TimelineView : public Fl_Widget
 		void stylus( long stylus_pos );
 		long stylus();
 		void zoom( float zoom );
-		int64_t get_real_position( int p, float stretchFactor = 1.0 );
-		int64_t get_screen_position( int64_t p, float stretchFactor = 1.0 );
+		int64_t get_real_position( int p, float stretchFactor = NLE_TIME_BASE );
+		int64_t get_screen_position( int64_t p, float stretchFactor = NLE_TIME_BASE );
 		int64_t scrollPosition() { return m_scrollPosition; }
 		int64_t m_stylusPosition;
 		void end() {}

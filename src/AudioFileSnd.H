@@ -33,7 +33,7 @@ class AudioFileSnd : public IAudioFile
 	public:
 		AudioFileSnd( string filename );
 		~AudioFileSnd();
-		void seek( int64_t sample );
+		void seek( int64_t position );
 		int fillBuffer( float* output, unsigned long frames );
 	private:
 		SNDFILE *m_sndfile;

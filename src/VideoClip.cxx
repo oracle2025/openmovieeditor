@@ -88,7 +88,7 @@ string VideoClip::filename()
 }
 int64_t VideoClip::maxAudioLength()
 {
-	return m_videoFile->length() * (int64_t)( 48000 / g_fps );
+	return m_videoFile->length() * 48000 / NLE_TIME_BASE;
 }
 int64_t VideoClip::length()
 {
@@ -96,17 +96,17 @@ int64_t VideoClip::length()
 }
 int64_t VideoClip::audioTrimA()
 {
-	return m_trimA * (int64_t)( 48000 / g_fps );
+	return m_trimA * 48000 / NLE_TIME_BASE;
 }
 int64_t VideoClip::audioTrimB()
 {
-	int64_t r = m_trimB * (int64_t)( 48000 / g_fps );
+	int64_t r = m_trimB * 48000 / NLE_TIME_BASE;
 	int64_t t = m_audioFile->length() - maxAudioLength() + r;
 	return t < 0 ? 0 : t;
 }
 int64_t VideoClip::audioPosition()
 {
-	return m_position * (int64_t)( 48000 / g_fps );
+	return m_position * 48000 / NLE_TIME_BASE;
 }
 void VideoClip::reset()
 {

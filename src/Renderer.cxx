@@ -108,7 +108,7 @@ void Renderer::go( IProgressListener* l )
 	float right_buffer[AUDIO_BUFFER_SIZE];
 	float *buffer_p[2] = { left_buffer, right_buffer };
 
-	int64_t length = g_timeline->length();
+	int64_t length = g_timeline->length() / 1200;
 	int64_t current_frame = 0;
 
 	frame_struct enc_frame;

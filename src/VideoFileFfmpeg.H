@@ -39,10 +39,13 @@ class VideoFileFfmpeg : public IVideoFile
 		~VideoFileFfmpeg();
 		bool ok();
 		int64_t length();
-		double fps();
+//		double fps();
 		frame_struct* read();
 		void read( unsigned char** rows, int w, int h );
-		void seek( int64_t frame );
+		void seek( int64_t position );
+	protected:
+		int64_t ticksPerFrame();
+		void seekToFrame( int64_t frame );
 	private:
 		AVFormatContext* m_formatContext;
 		AVCodecContext*  m_codecContext;
@@ -54,9 +57,10 @@ class VideoFileFfmpeg : public IVideoFile
 		unsigned char*   m_frame;
 		unsigned char**  m_rows;
 		bool             m_ok;
-		double           m_framerate;
+//		double           m_framerate;
 		int64_t          m_length;
 		int              m_videoStream;
+		int64_t          m_ticksPerFrame;
 };
 	
 } /* namespace nle */

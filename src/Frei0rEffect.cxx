@@ -23,6 +23,7 @@
 #include "Frei0rEffect.H"
 #include "global_includes.H"
 #include "IDeleteMe.H"
+#include "globals.H"
 
 namespace nle
 {
@@ -67,7 +68,7 @@ Frei0rEffect::~Frei0rEffect()
 frame_struct* Frei0rEffect::getFrame( frame_struct* frame, int64_t position )
 {
 	if ( frame->has_alpha_channel ) {
-		f0r_update( m_instance, position * 0.04, (uint32_t*)frame->RGB, (uint32_t*)m_frame );
+		f0r_update( m_instance, position / (float)NLE_TIME_BASE, (uint32_t*)frame->RGB, (uint32_t*)m_frame );
 	} else {
 		int len = frame->w * frame->h * 3;
 		unsigned char *src, *dst, *end;
@@ -82,7 +83,7 @@ frame_struct* Frei0rEffect::getFrame( frame_struct* frame, int64_t position )
 			dst += 4;
 			src += 3;
 		}
-		f0r_update( m_instance, position * 0.04, (uint32_t*)m_tmpFrame, (uint32_t*)m_frame );
+		f0r_update( m_instance, position / (float)NLE_TIME_BASE, (uint32_t*)m_tmpFrame, (uint32_t*)m_frame );
 	}
 	return &m_framestruct;
 }

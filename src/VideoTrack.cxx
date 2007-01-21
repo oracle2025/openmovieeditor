@@ -317,10 +317,11 @@ int VideoTrack::fillBuffer( float* output, unsigned long frames, int64_t positio
 	while ( m_current && m_current->clip->type() != CLIP_TYPE_VIDEO && m_current->clip->type() != CLIP_TYPE_AUDIO ) {
 		m_current = m_current->next;
 	}
-	while ( m_currentAudioFadeOver && fade_over_end( m_currentAudioFadeOver ) * 1920 < position + frames  ) { // 48000 / 25 == 1920
+	//while ( m_currentAudioFadeOver && fade_over_end( m_currentAudioFadeOver ) * 1920 < position + frames  ) { // 48000 / 25 == 1920
+	while ( m_currentAudioFadeOver && fade_over_end( m_currentAudioFadeOver ) * 1.6 < position + frames  ) { // 48000 / 30000 == 1.6
 		m_currentAudioFadeOver = m_currentAudioFadeOver->next;
 	}
-	if ( m_currentAudioFadeOver && position > fade_over_start( m_currentAudioFadeOver ) * 1920 ) {
+	if ( m_currentAudioFadeOver && position > fade_over_start( m_currentAudioFadeOver ) * 1.6 ) {
 		AudioClipBase* ac1 = dynamic_cast<AudioClipBase*>(m_currentAudioFadeOver->clipA);
 		AudioClipBase* ac2 = dynamic_cast<AudioClipBase*>(m_currentAudioFadeOver->clipB);
 		for ( int i = (frames * 2) - 1; i >= 0; i-- ) {

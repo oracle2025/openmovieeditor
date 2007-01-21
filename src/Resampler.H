@@ -36,7 +36,7 @@ class Resampler : public IAudioFile
 	public:
 		Resampler( IAudioFile* audiofile );
 		~Resampler();
-		void seek( int64_t sample );
+		void seek( int64_t position );
 		int fillBuffer( float* output, unsigned long frames );
 		float m_buffer[4096*2];
 		IAudioFile* m_audiofile;

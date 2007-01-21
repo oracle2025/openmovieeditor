@@ -37,7 +37,7 @@ class AudioFileFfmpeg : public IAudioFile
 	public:
 		AudioFileFfmpeg( string filename );
 		~AudioFileFfmpeg();
-		void seek( int64_t sample );
+		void seek( int64_t position );
 		int fillBuffer( float* output, unsigned long frames );
 	private:
 		AVFormatContext* m_formatContext;

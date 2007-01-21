@@ -38,7 +38,7 @@
 #include "Timeline.H"
 #include "ErrorDialog/IErrorHandler.H"
 
-#define VIDEO_DRIFT_LIMIT 2 //Calculate this based on frame size
+#define VIDEO_DRIFT_LIMIT (2 * 1200) //Calculate this based on frame size
 #define FRAMES 4096
 
 namespace nle
@@ -127,7 +127,7 @@ void PortAudioPlaybackCore::play()
 	}
 	m_currentFrame = g_timeline->m_seekPosition;
 	m_lastFrame = g_timeline->m_seekPosition;
-	m_audioPosition = m_currentFrame * ( 48000 / 25 );
+	m_audioPosition = m_currentFrame * 48000 / NLE_TIME_BASE;
 	m_audioReader->sampleseek(1, m_audioPosition); // set absolute audio sample start position
 
 
@@ -173,7 +173,7 @@ int PortAudioPlaybackCore::readAudio( float* output, unsigned long frames )
 	m_audioReader->sampleseek(0,r); // set relative sample position;
 	m_audioPosition += r;
 	pthread_mutex_lock( &condition_mutex );
-	m_currentFrame = m_audioPosition / ( 48000 / 25 ); //FIXME: highly dependent from 'frames' :(
+	m_currentFrame = m_audioPosition / 48000 / NLE_TIME_BASE; //FIXME: highly dependent from 'frames' :(
 	pthread_cond_signal( &condition_cond );
 	pthread_mutex_unlock( &condition_mutex );
 	return r != frames;

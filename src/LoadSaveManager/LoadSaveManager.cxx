@@ -83,7 +83,7 @@ LoadSaveManager::LoadSaveManager( Fl_Choice* projectChoice, Fl_Button* projectIn
 	g_loadSaveManager = this;
 	int count = 0;
 	dirent** list;
-	m_video_projects = home + "/Video Projects";
+	m_video_projects = home + "/Video Projects-exp";
 	if ( fl_filename_isdir( m_video_projects.c_str() ) ) {
 		count = scandir( m_video_projects.c_str(), &list, 0, alphasort );
 		m_projectChoice->clear();

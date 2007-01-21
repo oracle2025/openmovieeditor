@@ -54,11 +54,16 @@ VideoFileQT::VideoFileQT( string filename )
 		return;
 	}
 	// check frame rate
-	if ( quicktime_frame_rate( m_qt, 0 ) < 24.9 || quicktime_frame_rate( m_qt, 0 ) > 25.1 ) {
+	int frame_duration = lqt_frame_duration( m_qt, 0, 0 );
+	int time_scale = lqt_video_time_scale( m_qt, 0 );
+	m_ticksPerFrame = ( frame_duration * NLE_TIME_BASE ) / time_scale;
+	
+/*	if ( quicktime_frame_rate( m_qt, 0 ) < 24.9 || quicktime_frame_rate( m_qt, 0 ) > 25.1 ) {
 		CLEAR_ERRORS();
 		ERROR_DETAIL( "Video framerates other than 25 are not supported" );
 		return;
-	}
+	}*/
+	
 	lqt_set_cmodel( m_qt, 0, BC_RGB888);
 	m_width = quicktime_video_width( m_qt, 0 );
 	m_height = quicktime_video_height( m_qt, 0 );
@@ -92,12 +97,12 @@ VideoFileQT::~VideoFileQT()
 bool VideoFileQT::ok() { return m_ok; }
 int64_t VideoFileQT::length()
 {
-	return quicktime_video_length( m_qt, 0 );
+	return quicktime_video_length( m_qt, 0 ) * m_ticksPerFrame;
 }
-double VideoFileQT::fps()
+/*double VideoFileQT::fps()
 {
 	return quicktime_frame_rate( m_qt, 0 ); 
-}
+}*/
 frame_struct* VideoFileQT::read()
 {
 	quicktime_decode_video( m_qt, m_rows, 0);
@@ -108,7 +113,15 @@ void VideoFileQT::read( unsigned char** rows, int w, int h )
 {
 	quicktime_decode_scaled( m_qt, 0, 0, m_width, m_height, w, h, BC_RGB888, rows, 0 );
 }
-void VideoFileQT::seek( int64_t frame )
+void VideoFileQT::seek( int64_t position )
+{
+	quicktime_set_video_position( m_qt, position / m_ticksPerFrame, 0 );
+}
+int64_t VideoFileQT::ticksPerFrame()
+{
+	return m_ticksPerFrame;
+}
+void VideoFileQT::seekToFrame( int64_t frame )
 {
 	quicktime_set_video_position( m_qt, frame, 0 );
 }

@@ -41,7 +41,7 @@ FilmStrip::FilmStrip( IVideoFile* vfile )
 
 	if ( m_cache->isEmpty() ) {
 		m_vfile = VideoFileFactory::get( vfile->filename() );
-		m_countAll = m_vfile->length() / 100;
+		m_countAll = m_vfile->length() / 120000;
 	} else {
 		m_countAll = m_cache->size() / ( 3 * PIC_WIDTH * PIC_HEIGHT );
 	}
@@ -79,7 +79,7 @@ bool FilmStrip::process()
 		return false;
 	}
 	if ( m_cache->isEmpty() ) {
-		m_vfile->seek( m_count * 100 );
+		m_vfile->seek( m_count * 120000 );
 		m_pics[m_count].data = new unsigned char[PIC_WIDTH * PIC_HEIGHT * 3];
 		m_pics[m_count].w = PIC_WIDTH;
 		m_pics[m_count].h = PIC_HEIGHT;

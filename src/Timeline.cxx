@@ -94,13 +94,13 @@ void Timeline::sort()
 {
 	TimelineBase::sort();
 	m_playPosition = m_seekPosition;
-	m_samplePosition = int64_t( m_seekPosition * ( 48000 / g_fps ) );
+	m_samplePosition = int64_t( m_seekPosition * 48000 / NLE_TIME_BASE );
 	{
 		int64_t audio_max = 0;
 		int64_t video_max = 0;
 		sl_map( m_allTracks, audio_length_helper, &audio_max );
 		sl_map( m_allTracks, video_length_helper, &video_max );
-		video_max = (int64_t)( video_max * ( 48000 / g_fps ) );
+		video_max = (int64_t)( video_max * 48000 / NLE_TIME_BASE );
 		m_soundLength = video_max > audio_max ? video_max : audio_max;
 	}
 }
@@ -108,12 +108,12 @@ frame_struct* Timeline::getFrame( int64_t position )
 {
 	return nextFrame( position );
 }
-frame_struct* Timeline::nextFrame( int64_t position )
+frame_struct* Timeline::nextFrame( int64_t position ) //only used from VideoViewGL
 {
 	static int64_t last_frame = -1;
 	frame_struct* res = NULL;
-	if ( position < 0 || last_frame < 0 || last_frame + 1 == position ) {
-		m_playPosition++;
+	if ( position < 0 || last_frame < 0 || last_frame + 1200 == position ) {
+		m_playPosition += 1200;
 	} else {
 		m_playPosition = position;
 	}
@@ -123,7 +123,7 @@ frame_struct* Timeline::nextFrame( int64_t position )
 		if ( !current ) {
 			continue;
 		}
-		res = current->getFrame( m_playPosition - 1 );
+		res = current->getFrame( m_playPosition - 1200 );
 		if ( res )
 			return res;
 	}

@@ -22,6 +22,7 @@
 #include "VideoFileFfmpeg.H"
 #include "render_helper.H"
 #include "ErrorDialog/IErrorHandler.H"
+#include "globals.H"
 
 namespace nle
 {
@@ -94,16 +95,25 @@ VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 	m_framestruct.cacheable = false;
 	m_filename = filename;
 
-	m_framerate = av_q2d( m_formatContext->streams[m_videoStream]->r_frame_rate );
+
+	int num = m_formatContext->streams[m_videoStream]->r_frame_rate.num;
+	int den = m_formatContext->streams[m_videoStream]->r_frame_rate.den;
+
+	m_ticksPerFrame = ( den * NLE_TIME_BASE ) / num;
+	cout << "num: " << num << " den: " << den << endl;
+
+/*	m_framerate = av_q2d( m_formatContext->streams[m_videoStream]->r_frame_rate );
 	if ( m_framerate < 24.9 || m_framerate > 25.1 ) {
 		CLEAR_ERRORS();
 		ERROR_DETAIL( "Video framerates other than 25 are not supported" );
 		return;
-	}
+	}*/
 
 	
 	int64_t len = m_formatContext->duration - m_formatContext->start_time;
-	m_length = (int64_t)( len * m_framerate / AV_TIME_BASE ) - 1;
+	m_length = (int64_t)( len * NLE_TIME_BASE / AV_TIME_BASE ) - m_ticksPerFrame;
+	cout << "len: " << len << " m_ticksPerFrame: " << m_ticksPerFrame << endl;
+	cout << "AV_TIME_BASE: " << AV_TIME_BASE << " m_length: " << m_length << endl;
 	
 	m_ok = true;
 }
@@ -122,7 +132,7 @@ VideoFileFfmpeg::~VideoFileFfmpeg()
 }
 bool VideoFileFfmpeg::ok() { return m_ok; }
 int64_t VideoFileFfmpeg::length() { return m_length; }
-double VideoFileFfmpeg::fps() { return m_framerate; }
+//double VideoFileFfmpeg::fps() { return m_framerate; }
 
 frame_struct* VideoFileFfmpeg::read()
 {
@@ -154,12 +164,22 @@ void VideoFileFfmpeg::read( unsigned char** rows, int w, int h )
 	read();
 	scale_it( &m_framestruct, &fs );
 }
-void VideoFileFfmpeg::seek( int64_t frame )
+void VideoFileFfmpeg::seek( int64_t position )
 {
 	avcodec_flush_buffers( m_codecContext );
-	const int64_t time_base = 1;
-	int64_t timestamp = ( frame * AV_TIME_BASE * time_base ) / (int64_t)m_framerate;
+	int64_t timestamp = ( position * AV_TIME_BASE ) / (int64_t)NLE_TIME_BASE;
 	av_seek_frame( m_formatContext, -1, timestamp, 0 );
+}
+void VideoFileFfmpeg::seekToFrame( int64_t frame )
+{
+	seek( frame * m_ticksPerFrame );
+/*	avcodec_flush_buffers( m_codecContext );
+	int64_t timestamp = ( frame * AV_TIME_BASE ) / (int64_t)m_framerate;
+	av_seek_frame( m_formatContext, -1, timestamp, 0 );*/
+}
+int64_t VideoFileFfmpeg::ticksPerFrame()
+{
+	return m_ticksPerFrame;
 }
 
 } /* namespace nle */

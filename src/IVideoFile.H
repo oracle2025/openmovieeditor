@@ -32,33 +32,36 @@ class IVideoFile : public IVideoReader
 {
 	public:
 		virtual ~IVideoFile() {}
-		virtual int64_t length() = 0;
+		virtual int64_t length() = 0; //TODO: return length in ticks ( length * 1200 )
 		inline int width() { return m_width; }
 		inline int height() { return m_height; }
-		virtual double fps() = 0;
+//		virtual double fps() = 0; //TODO: remove this
 		virtual frame_struct* read() = 0;
 		//======== From IVideoReader
-		frame_struct* getFrame( int64_t position ) {
-			if ( m_lastFramePosition + 1 == position ) {
-				m_lastFramePosition = position;
+		frame_struct* getFrame( int64_t position ) { //TODO: use ticks ( position / 1200 )
+			int64_t frameNum = position / ticksPerFrame();
+			if ( m_lastFramePosition + 1 == frameNum ) {
+				m_lastFramePosition = frameNum;
 				return read();
 			} else {
-				m_lastFramePosition = position;
-				seek( position );
+				m_lastFramePosition = frameNum;
+				seekToFrame( frameNum );
 				return read();
 			}
 		}
 		//========
 		virtual void read( unsigned char** rows, int w, int h ) = 0; //For Timeline Picture Preview
-		virtual void seek( int64_t frame ) = 0;
+		virtual void seek( int64_t position ) = 0; //TODO: use ticks
 		string filename() { return m_filename; }
 		virtual bool ok() = 0;
 	protected:
+		virtual int64_t ticksPerFrame() = 0;
+		virtual void seekToFrame( int64_t frame ) = 0;
 		IVideoFile() { m_lastFramePosition = -1; }
 		int m_width;
 		int m_height;
 		string m_filename;
-		int64_t m_lastFramePosition;
+		int64_t m_lastFramePosition; //TODO: is this ticks or frames? frames is propable more useful
 };
 
 } /* namespace nle */

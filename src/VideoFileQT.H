@@ -36,16 +36,20 @@ class VideoFileQT : public IVideoFile
 		~VideoFileQT();
 		bool ok();
 		int64_t length();
-		double fps();
+//		double fps();
 		frame_struct* read();
 		void read( unsigned char** rows, int w, int h );
-		void seek( int64_t frame );
+		void seek( int64_t position );
+	protected:
+		int64_t ticksPerFrame();
+		void seekToFrame( int64_t frame );
 	private:
 		quicktime_t* m_qt;
 		unsigned char *m_frame;
 		unsigned char **m_rows;
 		frame_struct m_framestruct;
 		bool m_ok;
+		int64_t m_ticksPerFrame;
 };
 
 } /* namespace nle */

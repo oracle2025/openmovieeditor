@@ -40,7 +40,7 @@ class AudioTrack : public TrackBase
 		void addFile( int64_t position, string filename, int64_t trimA = 0, int64_t trimB = 0, int mute = 0, int id = -1, int64_t length = -1, ClipData* data = 0 );
 		int type() { return TRACK_TYPE_AUDIO; }
 		void sort();
-		float stretchFactor() { return ( 48000 / g_fps ); }
+		float stretchFactor() { return ( 48000.0 ); }
 		int64_t soundLength();
 };
 	

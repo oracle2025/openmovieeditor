@@ -23,6 +23,7 @@
 #include "TrackBase.H"
 #include "frame_struct.h"
 #include "global_includes.H"
+#include "globals.H"
 
 namespace nle
 {
@@ -50,7 +51,7 @@ class VideoTrack : public TrackBase
 
 		void addFile( int64_t position, string filename, int64_t trimA = 0, int64_t trimB = 0, int mute = 0, int id = -1, int64_t length = -1, ClipData* data = 0 );
 		int type() { return TRACK_TYPE_VIDEO; }
-		float stretchFactor() { return 1.0; }
+		float stretchFactor() { return (float)NLE_TIME_BASE; }
 		frame_struct* getFrame( int64_t position );
 		frame_struct** getFrameStack( int64_t position );
 		void prepareFormat( int w, int h, int aspect_w, int aspect_h, float aspect, int analog_blank );

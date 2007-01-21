@@ -201,13 +201,13 @@ long jack_poll_frame (void)
 	/* Calculate frame. */
 	jack_transport_query(jack_client, &jack_position);
 	jack_time = jack_position.frame / (double) jack_position.frame_rate;
-	frame = (int) rint(25.0 * jack_time );
+	frame = (int) rint(1200.0 * jack_time );
 	return(frame);
 }
 
 void jack_reposition(int vframe)
 {
-	jack_nframes_t frame= 48000/25 * vframe;
+	jack_nframes_t frame= vframe * 48000/NLE_TIME_BASE;
 	if (jack_client)
 		jack_transport_locate (jack_client, frame);
 }
@@ -278,7 +278,7 @@ void JackPlaybackCore::play()
 	m_scrubmax = (jack_bufsiz!=0)?(int)ceil((double)(scrublen/jack_bufsiz)):1;
 
 	if (!g_use_jack_transport) {
-		m_audioPosition = m_currentFrame * ( 48000 / 25 ); 
+		m_audioPosition = m_currentFrame * 48000 / NLE_TIME_BASE; 
 	} else {
 		jack_reposition(m_currentFrame);
 
@@ -412,7 +412,7 @@ void JackPlaybackCore::flipFrame()
 	} else if (jack_connected()) { // jack audio with local transport
 		// FIXME: for larger jack buffer sizes, this can become inaccurate due to rounding
 		// issues. -> do something similar as the portaudio drift sync...
-		m_lastFrame = llrint(m_audioPosition*25/48000);
+		m_lastFrame = llrint(m_audioPosition * NLE_TIME_BASE / 48000);
 	} 
 	static frame_struct** fs = 0;
 	if ( fs ) {

@@ -39,7 +39,7 @@ Resampler::Resampler( IAudioFile* audiofile )
 	m_filename = audiofile->filename();
 	m_state = src_callback_new( resampler_callback, SRC_SINC_MEDIUM_QUALITY, 2, &m_error, this  );
 	src_set_ratio( m_state, ( 48000.0 / 44100.0 ) );
-	m_length = ( m_audiofile->length() * 48000 ) / 44100;
+	m_length = m_audiofile->length();
 	m_samplerate = 48000;
 	m_ok = true;
 }
@@ -50,9 +50,9 @@ Resampler::~Resampler()
 	m_state = src_delete( m_state );
 }
 
-void Resampler::seek( int64_t sample )
+void Resampler::seek( int64_t position )
 {
-	m_audiofile->seek( ( sample * 44100 ) / 48000 );
+	m_audiofile->seek( position );
 	src_reset( m_state );
 }
 
