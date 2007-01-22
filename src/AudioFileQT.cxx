@@ -52,7 +52,8 @@ AudioFileQT::AudioFileQT( string filename )
 		return;
 	}
 	m_samplerate = quicktime_sample_rate( m_qt, 0 );
-	m_length = quicktime_audio_length( m_qt, 0 ) * NLE_TIME_BASE / m_samplerate;
+	//m_length = quicktime_audio_length( m_qt, 0 ) * NLE_TIME_BASE / m_samplerate;
+	m_length = quicktime_audio_length( m_qt, 0 );
 	if ( m_samplerate != 48000 && m_samplerate != 44100 ) {
 		CLEAR_ERRORS();
 		ERROR_DETAIL( "Audio samplerates other than 48000 and 44100 are not supported" );
@@ -72,7 +73,8 @@ AudioFileQT::~AudioFileQT()
 }
 void AudioFileQT::seek( int64_t position )
 {
-	quicktime_set_audio_position( m_qt, position * m_samplerate / NLE_TIME_BASE, 0 );
+	//quicktime_set_audio_position( m_qt, position * m_samplerate / NLE_TIME_BASE, 0 );
+	quicktime_set_audio_position( m_qt, position, 0 );
 	m_oneShot = true;
 }
 int AudioFileQT::fillBuffer( float* output, unsigned long frames )

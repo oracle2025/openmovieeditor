@@ -64,8 +64,8 @@ ShiftAutomationDragHandler::ShiftAutomationDragHandler( Clip* clip, const Rect& 
 	}
 	int i = 0;
 	for ( ; r && r->next; r = r->next ) {
-		int x_1 = g_timelineView->get_screen_position( m_audioClip->audioPosition() + r->x, ( 48000 / g_fps ) );
-		int x_2 = g_timelineView->get_screen_position( m_audioClip->audioPosition() + r->next->x, ( 48000 / g_fps ) );
+		int x_1 = g_timelineView->get_screen_position( m_audioClip->audioPosition() + r->x, 48000 );
+		int x_2 = g_timelineView->get_screen_position( m_audioClip->audioPosition() + r->next->x, 48000 );
 		if ( x_ > x_1 && x_ < x_2 ) {
 			m_nodeA = r;
 			m_nodeB = r->next;

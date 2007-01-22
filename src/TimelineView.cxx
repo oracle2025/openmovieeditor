@@ -467,7 +467,7 @@ void TimelineView::draw()
 				if ( track->type() == TRACK_TYPE_AUDIO ) {
 					stretchF = track->stretchFactor();
 				} else {
-					stretchF = ( 48000 / g_fps );
+					stretchF = ( 48000 );
 				} 
 				fl_push_clip( scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h );
 				

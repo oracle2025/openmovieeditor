@@ -197,7 +197,6 @@ int Timeline::fillBuffer( float* output, unsigned long frames )
 	unsigned int max_frames = 0;
 	track_node* p = m_allTracks;
 	assert( frames <= 23040);
-//	p = p->next->next->next;
 	if ( !p )
 		return 0;
 	rv = (dynamic_cast<TrackBase*>(p->track))->fillBuffer( buffer1, frames, m_samplePosition );

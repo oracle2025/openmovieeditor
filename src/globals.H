@@ -22,8 +22,8 @@
 
 #define STR_LEN 512
 
-#define NLE_TIME_BASE 30000
-//#define NLE_TIME_BASE 35280000
+//#define NLE_TIME_BASE 30000
+#define NLE_TIME_BASE 35280000
 
 #include <lqt.h>
 

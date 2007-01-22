@@ -27,7 +27,7 @@ namespace nle
 TrackBase::TrackBase( int num, string name )
 	: Track( num, name )
 {
-	prev_position = 0;
+	m_prev_position = 0;
 }
 
 int TrackBase::fillBuffer( float* output, unsigned long frames, int64_t position )
@@ -37,14 +37,14 @@ int TrackBase::fillBuffer( float* output, unsigned long frames, int64_t position
 	unsigned long emptyItems = 0;
 	float* incBuffer = output;
 	// allow backwards seeks. (reinit whole track)
-	if (prev_position > position ) { m_current=m_clips; g_backseek = true; }
-	prev_position = position;
+	if (m_prev_position > position ) { m_current=m_clips; g_backseek = true; }
+	m_prev_position = position;
 
-//	ASSERT(m_current)
 	while ( m_current && m_current->clip->type() != CLIP_TYPE_VIDEO && m_current->clip->type() != CLIP_TYPE_AUDIO ) {
 		m_current = m_current->next;
 	}
 	while( written < frames && m_current ) {
+		/* TODO: Use dynamic_cast instead if CLIP_TYPE_* */
 		inc = ( dynamic_cast<AudioClipBase*>(m_current->clip) )->fillBuffer( incBuffer,
 				 frames - written, position + written
 				);
@@ -55,6 +55,7 @@ int TrackBase::fillBuffer( float* output, unsigned long frames, int64_t position
 			m_current = m_current->next;
 		}
 	}
+	
 	if ( m_current == 0 ) {
 		while( written < frames ) {
 			*incBuffer = 0.0;

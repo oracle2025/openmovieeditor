@@ -61,7 +61,7 @@ void PasteSelectionCommand::position( int64_t position )
 	PasteCommand* cmd = dynamic_cast<PasteCommand*>(m_subCmdList->command);
 	if ( cmd ) {
 		if ( cmd->m_audioClip ) {
-			minimum = (int64_t)( cmd->position() / ( 48000 / g_fps ) );
+			minimum = (int64_t)( cmd->position() / 48000 * NLE_TIME_BASE );
 		} else {
 			minimum = cmd->position();
 		}
@@ -71,7 +71,7 @@ void PasteSelectionCommand::position( int64_t position )
 	for ( command_node* n = m_subCmdList; n; n = n->next ) {
 		cmd = dynamic_cast<PasteCommand*>(n->command);
 		if ( cmd->m_audioClip ) {
-			minimum = min( minimum, (int64_t)( cmd->position() / ( 48000 / g_fps ) ) );
+			minimum = min( minimum, (int64_t)( cmd->position() / 48000 * NLE_TIME_BASE ) );
 		} else {
 			minimum = min( minimum, cmd->position() );
 		}
@@ -80,7 +80,7 @@ void PasteSelectionCommand::position( int64_t position )
 	for ( command_node* n = m_subCmdList; n; n = n->next ) {
 		cmd = dynamic_cast<PasteCommand*>(n->command);
 		if ( cmd->m_audioClip ) {
-			cmd->position( cmd->position() + (int64_t)( diff * ( 48000 / g_fps ) ) );
+			cmd->position( cmd->position() + (int64_t)( diff * 48000 / NLE_TIME_BASE ) );
 		} else {
 			cmd->position( cmd->position() + diff );
 		}

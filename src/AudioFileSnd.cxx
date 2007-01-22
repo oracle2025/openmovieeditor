@@ -19,6 +19,7 @@
 
 #include "AudioFileSnd.H"
 #include "ErrorDialog/IErrorHandler.H"
+#include "globals.H"
 
 namespace nle
 {
@@ -46,7 +47,8 @@ AudioFileSnd::AudioFileSnd( string filename )
 		ERROR_DETAIL( "Audio samplerates other than 48000 and 44100 are not supported" );
 		return;
 	}
-	m_length = sfinfo.frames * NLE_TIME_BASE / m_samplerate;
+	m_length = sfinfo.frames;
+//	m_length = sfinfo.frames * NLE_TIME_BASE / m_samplerate;
 	m_filename = filename;
 	if ( sfinfo.channels == 1 ) {
 		m_mono = true;
@@ -63,7 +65,8 @@ AudioFileSnd::~AudioFileSnd()
 
 void AudioFileSnd::seek( int64_t position )
 {
-	sf_seek( m_sndfile, position * m_samplerate / NLE_TIME_BASE, SEEK_SET );
+	//sf_seek( m_sndfile, position * m_samplerate / NLE_TIME_BASE, SEEK_SET );
+	sf_seek( m_sndfile, position, SEEK_SET );
 }
 
 int AudioFileSnd::fillBuffer( float* output, unsigned long frames )

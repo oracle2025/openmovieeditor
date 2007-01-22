@@ -45,7 +45,7 @@ bool inside_node( auto_node* n, Rect& r, AudioClipBase* clip, int _x, int _y, bo
 	} else if ( last ) {
 		_x = _x + 5;
 	}
-	int x = g_timelineView->get_screen_position( clip->audioPosition() + n->x, ( 48000 / g_fps ) ) - 5;
+	int x = g_timelineView->get_screen_position( clip->audioPosition() + n->x, 48000 ) - 5;
 	int y = (int)( r.y + ( ( clip->track()->h() - 10 ) * ( 1.0 - n->y ) ) );
 	int w = 10;
 	int h = 10;
@@ -67,7 +67,7 @@ void screen_to_node( int64_t& x, float& y, int in_x, int in_y, auto_node* n, aut
 	} else if ( last ) {
 		x = clip->length();
 	} else {
-		x = g_timelineView->get_real_position( in_x + 5, ( 48000 / g_fps ) ) - clip->audioPosition();
+		x = g_timelineView->get_real_position( in_x + 5, 48000 ) - clip->audioPosition();
 	}
 	if ( !first && !last ) {
 		if ( n->next && x > n->next->x - 1000 ) {
@@ -179,7 +179,7 @@ void AutomationDragHandler::OnDrop( int x, int y )
 	if ( m_removed ) { return; }
 	if ( !m_dragging && m_outline.inside( x, y ) ) {
 		auto_node* r = m_audioClip->getAutoPoints();
-		int64_t _x = g_timelineView->get_real_position( x + 5, ( 48000 / g_fps ) ) - m_audioClip->audioPosition();
+		int64_t _x = g_timelineView->get_real_position( x + 5, 48000 ) - m_audioClip->audioPosition();
 
 		int i = 0;
 		for ( ;r ; r = r->next ) {

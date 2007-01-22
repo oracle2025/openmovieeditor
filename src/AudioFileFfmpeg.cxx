@@ -22,6 +22,7 @@
 #include "render_helper.H"
 #include "AudioFileFfmpeg.H"
 #include "ErrorDialog/IErrorHandler.H"
+#include "globals.H"
 
 namespace nle
 {
@@ -76,8 +77,8 @@ AudioFileFfmpeg::AudioFileFfmpeg( string filename )
 	}
 
 	int64_t len = m_formatContext->duration - m_formatContext->start_time;
-	//m_length = (int64_t)( len * m_samplerate / AV_TIME_BASE );
-	m_length = (int64_t)( len * NLE_TIME_BASE / AV_TIME_BASE );
+	m_length = (int64_t)( len * m_samplerate / AV_TIME_BASE );
+	//m_length = (int64_t)( len * NLE_TIME_BASE / AV_TIME_BASE );
 	m_ok = true;
 }
 AudioFileFfmpeg::~AudioFileFfmpeg()
@@ -89,7 +90,8 @@ AudioFileFfmpeg::~AudioFileFfmpeg()
 void AudioFileFfmpeg::seek( int64_t position )
 {
 	avcodec_flush_buffers( m_codecContext );
-	int64_t timestamp = ( position * AV_TIME_BASE ) / (int64_t)NLE_TIME_BASE;
+	//int64_t timestamp = ( position * AV_TIME_BASE ) / (int64_t)NLE_TIME_BASE;
+	int64_t timestamp = ( position * AV_TIME_BASE ) / (int64_t)m_samplerate;
 	av_seek_frame( m_formatContext, -1, timestamp, 0 );
 
 	m_tmpBufferStart = m_tmpBuffer;

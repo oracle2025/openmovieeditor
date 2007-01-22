@@ -33,7 +33,7 @@ class TrackBase : public Track
 		TrackBase( int num, string name );
 		clip_node* m_current;
 	private:
-		int64_t prev_position;
+		int64_t m_prev_position;
 };
 
 } /* namespace nle */

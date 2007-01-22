@@ -173,7 +173,7 @@ int PortAudioPlaybackCore::readAudio( float* output, unsigned long frames )
 	m_audioReader->sampleseek(0,r); // set relative sample position;
 	m_audioPosition += r;
 	pthread_mutex_lock( &condition_mutex );
-	m_currentFrame = m_audioPosition / 48000 / NLE_TIME_BASE; //FIXME: highly dependent from 'frames' :(
+	m_currentFrame = m_audioPosition * NLE_TIME_BASE / 48000; //FIXME: highly dependent from 'frames' :(
 	pthread_cond_signal( &condition_cond );
 	pthread_mutex_unlock( &condition_mutex );
 	return r != frames;
