@@ -37,7 +37,7 @@ namespace nle
 const char* timestamp_to_string( int64_t timestamp )
 {
 	static char buffer[256];
-	int hours = (int) ( timestamp / ( NLE_TIME_BASE * 60 * 60 ) );
+	int hours = (int) ( timestamp / NLE_TIME_BASE / 60 / 60 );
 	int minutes = (int) ( ( timestamp / ( NLE_TIME_BASE * 60 ) ) ) % 60;
 	int seconds = (int) ( ( timestamp / NLE_TIME_BASE ) ) % 60;
 	snprintf( buffer, 256, "%02d:%02d:%02d", hours, minutes, seconds );

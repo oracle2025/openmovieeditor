@@ -633,7 +633,11 @@ scroll_area->type(0);
 g_v_scrollbar = vScrollBar;
 g_16_9 = false;
 g_black_borders = false;
-special_clips->add("Titles");} {}
+special_clips->add("Titles");
+special_clips->add("Volume Automations");
+special_clips->add("Freeze Frame");
+special_clips->add("Crop/Fit/Stretch");} {selected
+    }
   }
   Function {~NleUI()} {} {
     code {delete mainWindow;} {}
@@ -1062,7 +1066,7 @@ class AboutDialog {} {
         xywh {0 155 340 30} labelfont 1 labelsize 16
       }
       Fl_Box {} {
-        label {(C)opyright 2005-2007 Richard Spindler} selected
+        label {(C)opyright 2005-2007 Richard Spindler}
         xywh {0 210 340 40} labelsize 12
       }
       Fl_Box version_box {

@@ -1133,6 +1133,9 @@ g_v_scrollbar = vScrollBar;
 g_16_9 = false;
 g_black_borders = false;
 special_clips->add("Titles");
+special_clips->add("Volume Automations");
+special_clips->add("Freeze Frame");
+special_clips->add("Crop/Fit/Stretch");
 }
 
 NleUI::~NleUI() {

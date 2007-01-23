@@ -63,7 +63,7 @@ TitleClip::TitleClip( Track* track, int64_t position, int64_t length, int id, Cl
 	if ( length > 0 ) {
 		m_length = length;
 	} else {
-		m_length = 25 * 10;
+		m_length = NLE_TIME_BASE * 10;
 	}
 	m_frame.x = m_frame.y = 0;
 	m_frame.w = 768;

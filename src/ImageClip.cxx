@@ -47,7 +47,7 @@ ImageClip::ImageClip( Track* track, int64_t position, string filename, int64_t l
 	if ( length > 0 ) {
 		m_length = length;
 	} else {
-		m_length = 25 * 10;
+		m_length = NLE_TIME_BASE * 10;
 	}
 	m_frame.x = m_frame.y = 0;
 	m_frame.w = m_image->w();
