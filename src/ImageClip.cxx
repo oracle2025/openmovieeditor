@@ -23,6 +23,7 @@
 #include "ErrorDialog/IErrorHandler.H"
 #include "ImageClipArtist.H"
 #include "helper.H"
+#include "globals.H"
 
 namespace nle
 {

@@ -212,6 +212,8 @@ openmovieeditor_SOURCES = nle.cxx\
 	fl_font_browser.cpp\
 	fl_font_browser.h\
 	EnvelopeClip.cxx\
-	EnvelopeClip.H
+	EnvelopeClip.H\
+	HistogramView.H\
+	HistogramView.cxx
 
 

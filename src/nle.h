@@ -32,6 +32,8 @@
 #include <FL/Fl_Slider.H>
 #include <FL/Fl_Box.H>
 #include "fl_font_browser.h"
+#include "HistogramView.H"
+#include <FL/Fl_Choice.H>
 #include "Flmm_Scalebar.H"
 #include "globals.H"
 using namespace std;
@@ -39,7 +41,6 @@ using namespace std;
 #include <FL/Fl_Scrollbar.H>
 #include "TimelineScroll.H"
 #include "TimelineView.H"
-#include <FL/Fl_Choice.H>
 
 class NleUI {
 public:
@@ -110,6 +111,8 @@ private:
   static void cb_Normal(Fl_Menu_*, void*);
   void cb_Plastic_i(Fl_Menu_*, void*);
   static void cb_Plastic(Fl_Menu_*, void*);
+  void cb_Plastic1_i(Fl_Menu_*, void*);
+  static void cb_Plastic1(Fl_Menu_*, void*);
   void cb_Tutorial_i(Fl_Menu_*, void*);
   static void cb_Tutorial(Fl_Menu_*, void*);
   void cb_About_i(Fl_Menu_*, void*);
@@ -176,6 +179,7 @@ private:
   static void cb_titles_y(Fl_Slider*, void*);
   void cb_Font_i(Fl_Button*, void*);
   static void cb_Font(Fl_Button*, void*);
+  static Fl_Menu_Item menu_[];
 public:
   Fl_Button *playButton;
 private:
@@ -277,10 +281,11 @@ extern Flmm_Scalebar* g_scrollBar;
 #include "IVideoReader.H"
 #include "IAudioReader.H"
 #include <FL/Fl_Return_Button.H>
-#include <iostream>
+#include <FL/Fl_Browser.H>
 #include <FL/Fl_File_Input.H>
 #include <stdlib.h>
 #include <FL/Fl_File_Chooser.H>
+#include <iostream>
 
 class EncodeDialog {
 public:
@@ -291,6 +296,16 @@ private:
   static void cb_Encode(Fl_Return_Button*, void*);
   void cb_Cancel_i(Fl_Button*, void*);
   static void cb_Cancel(Fl_Button*, void*);
+  static Fl_Menu_Item menu_Framerate[];
+  static Fl_Menu_Item menu_Framesize[];
+  static Fl_Menu_Item menu_Samplerate[];
+  static Fl_Menu_Item menu_Quality[];
+  static Fl_Menu_Item menu_Aspect[];
+public:
+  Fl_File_Input *export_filename_simple;
+private:
+  void cb_File_i(Fl_Button*, void*);
+  static void cb_File(Fl_Button*, void*);
 public:
   Fl_Choice *audio_codec_menu;
 private:
@@ -301,8 +316,8 @@ public:
 private:
   void cb_video_codec_menu_i(Fl_Choice*, void*);
   static void cb_video_codec_menu(Fl_Choice*, void*);
-  static Fl_Menu_Item menu_Samplerate[];
-  static Fl_Menu_Item menu_Framerate[];
+  static Fl_Menu_Item menu_Samplerate1[];
+  static Fl_Menu_Item menu_Framerate1[];
 public:
   Fl_Choice *frame_size_choice;
   static Fl_Menu_Item menu_frame_size_choice[];
@@ -316,8 +331,8 @@ private:
 public:
   Fl_File_Input *export_filename;
 private:
-  void cb_File_i(Fl_Button*, void*);
-  static void cb_File(Fl_Button*, void*);
+  void cb_File1_i(Fl_Button*, void*);
+  static void cb_File1(Fl_Button*, void*);
 public:
   void show();
   int shown();

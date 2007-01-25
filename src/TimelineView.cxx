@@ -57,6 +57,7 @@
 #include "Frei0rDialog.H"
 #include "PasteSelectionCommand.H"
 #include "TitleClip.H"
+#include "HistogramView.H"
 
 #include "audio.xpm"
 #include "video.xpm"
@@ -916,11 +917,13 @@ void TimelineView::updateEffectDisplay()
 	g_ui->effect_browser->clear();
 	if ( !m_selectedClips || m_selectedClips->next ) {
 		g_ui->m_effectMenu->deactivate();
+		g_histogram->setVideoClip( 0, 0 );
 		return;
 	}
 	VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>( m_selectedClips->clip );
 	if ( !vc ) {
 		g_ui->m_effectMenu->deactivate();
+		g_histogram->setVideoClip( 0, 0 );
 		return;
 	}
 	g_ui->m_effectMenu->activate();
@@ -1133,6 +1136,16 @@ void TimelineView::move_cursor( int64_t position )
 	}
 	e_stylus_position( get_screen_position(m_stylusPosition) );
 	e_seek_position( m_stylusPosition );
+
+	// signal histogram view
+	if ( m_selectedClips && !m_selectedClips->next ) {
+		VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>( m_selectedClips->clip );
+		Clip* clip = m_selectedClips->clip;
+		if ( vc && m_stylusPosition >= clip->A() && m_stylusPosition <= clip->B() ) {
+			g_histogram->setVideoClip( vc, m_stylusPosition );
+		}
+
+	}
 }
 void TimelineView::stylus( long stylus_pos )
 {

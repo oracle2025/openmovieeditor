@@ -15,7 +15,7 @@ if ( Fl::event()==FL_CLOSE ) {
 	m_videoView->stop();
 	nle::g_loadSaveManager->shutdown();
 }} open
-      xywh {777 382 700 600} type Double resizable size_range {450 380 0 0} visible
+      xywh {786 423 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
         label {Black Borders} open
@@ -253,6 +253,16 @@ Fl::scheme("plastic");}
             xywh {0 0 100 20}
             code0 {\#include <FL/Fl_Tooltip.H>}
           }
+          MenuItem {} {
+            label {Plastic Colors}
+            callback {Fl_Tooltip::color( fl_rgb_color( 255, 255, 191 ) );
+Fl::background2( 248, 247, 240 );
+Fl::background( 248, 247, 240 );
+Fl::foreground( 0, 0, 0 );
+Fl::set_color( FL_BLACK, 0, 0, 0 );
+Fl::scheme("plastic");}
+            xywh {0 0 100 20}
+          }
         }
         Submenu {} {
           label {&Help} open
@@ -378,7 +388,7 @@ fb->load_rel();}
               }
               Fl_Group titles_tab {
                 label Titles open
-                private xywh {0 75 365 230} deactivate
+                private xywh {0 75 365 230} hide deactivate
               } {
                 Fl_Input titles_text {
                   callback {m_timelineView->titles_text( o->value() );}
@@ -434,6 +444,28 @@ while ( dlg.shown() ) {
 }}
                     xywh {95 85 100 20} labelsize 12
                     code0 {\#include "fl_font_browser.h"}
+                  }
+                }
+              }
+              Fl_Group {} {
+                label Histogram open
+                xywh {0 75 365 230}
+              } {
+                Fl_Box {} {selected
+                  xywh {5 110 355 190} box DOWN_FRAME resizable
+                  code0 {\#include "HistogramView.H"}
+                  class {nle::HistogramView}
+                }
+                Fl_Choice {} {open
+                  xywh {5 80 355 25} down_box BORDER_BOX
+                } {
+                  MenuItem {} {
+                    label Combined
+                    xywh {0 0 100 20}
+                  }
+                  MenuItem {} {
+                    label RGB
+                    xywh {0 0 100 20}
                   }
                 }
               }
@@ -636,8 +668,7 @@ g_black_borders = false;
 special_clips->add("Titles");
 special_clips->add("Volume Automations");
 special_clips->add("Freeze Frame");
-special_clips->add("Crop/Fit/Stretch");} {selected
-    }
+special_clips->add("Crop/Fit/Stretch");} {}
   }
   Function {~NleUI()} {} {
     code {delete mainWindow;} {}
@@ -740,7 +771,7 @@ class EncodeDialog {} {
   } {
     Fl_Window encodeDialog {
       label Render open
-      private xywh {695 778 485 340} type Double
+      private xywh {549 378 485 400} type Double
       code0 {\#include "IVideoReader.H"}
       code1 {\#include "IAudioReader.H"} modal visible
     } {
@@ -769,84 +800,175 @@ if ( audio_codec_menu->value() < 0 || video_codec_menu->value() < 0 ) {
 //nle::renderMovie();
 go = true;
 o->window()->hide();}
-        xywh {250 300 200 25} hotspot
+        xywh {250 365 200 25} hotspot
       }
       Fl_Button {} {
         label Cancel
         callback {go = false;
 o->window()->hide();}
-        xywh {35 300 200 25}
-      }
-      Fl_Choice audio_codec_menu {
-        label {Audio Codec}
-        callback {audio_codec = o->menu()[o->value()].user_data();
-m_codecParams->setAudioCodec( (lqt_codec_info_t*)audio_codec );} open
-        xywh {145 220 205 25} down_box BORDER_BOX
-        code0 {\#include "Codecs.H"}
-        code1 {\#include <iostream>}
-        code2 {using namespace std;}
-      } {}
-      Fl_Choice video_codec_menu {
-        label {Video Codec}
-        callback {video_codec = o->menu()[o->value()].user_data();
-m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
-        xywh {145 100 205 25} down_box BORDER_BOX
-      } {}
-      Fl_Choice {} {
-        label Samplerate open
-        xywh {145 250 205 25} down_box BORDER_BOX
-      } {
-        MenuItem {} {
-          label 48000
-          xywh {0 0 100 20}
-        }
-      }
-      Fl_Choice {} {
-        label Framerate open
-        xywh {145 130 205 25} down_box BORDER_BOX
-      } {
-        MenuItem {} {
-          label {25 (PAL)}
-          xywh {0 0 100 20}
-        }
-      }
-      Fl_Choice frame_size_choice {
-        label Framesize open
-        xywh {145 160 205 25} down_box BORDER_BOX
-      } {
-        MenuItem {} {
-          label {720x576 (PAL 4:3) DV, DVD}
-          user_data {&fs720x576}
-          xywh {0 0 100 20}
-        }
-        MenuItem {} {
-          label {768x576 (PAL 4:3)}
-          user_data {&fs768x576}
-          xywh {0 0 100 20}
-        }
-        MenuItem {} {
-          label {384x288 (PAL ½ 4:3)}
-          user_data {&fs384x288}
-          xywh {0 0 100 20}
-        }
-        MenuItem {} {
-          label {640x480 (VGA 4:3)}
-          user_data {&fs640x480}
-          xywh {0 0 100 20}
-        }
-        MenuItem {} {
-          label {320x240 (QVGA 4:3)}
-          user_data {&fs320x240}
-          xywh {0 0 100 20}
-        }
+        xywh {35 365 200 25}
       }
       Fl_Box {} {
         label Export
         xywh {0 0 485 35} labelfont 1 labelsize 16
       }
-      Fl_Button audio_options {
-        label {Options...}
-        callback {if ( audio_codec ) {
+      Fl_Tabs {} {open
+        xywh {5 35 475 320}
+      } {
+        Fl_Group {} {
+          label Simple open
+          xywh {5 60 475 295}
+        } {
+          Fl_Box {} {
+            label Format
+            xywh {15 130 190 215} box ENGRAVED_FRAME labelfont 1 align 5
+          }
+          Fl_Browser {} {
+            xywh {25 140 170 195}
+          }
+          Fl_Box {} {
+            label Video
+            xywh {210 130 255 135} box ENGRAVED_FRAME labelfont 1 align 5
+          }
+          Fl_Box {} {
+            label Audio
+            xywh {210 285 255 60} box ENGRAVED_FRAME labelfont 1 align 5
+          }
+          Fl_Choice {} {
+            label Framerate open
+            xywh {300 140 155 25} down_box BORDER_BOX
+          } {
+            MenuItem {} {
+              label {25 (PAL)}
+              xywh {10 10 100 20}
+            }
+          }
+          Fl_Choice {} {
+            label Framesize open
+            xywh {300 170 155 25} down_box BORDER_BOX
+          } {
+            MenuItem {} {
+              label 720x576
+              xywh {10 10 100 20}
+            }
+            MenuItem {} {
+              label 768x576
+              xywh {10 10 100 20}
+            }
+          }
+          Fl_Choice {} {
+            label Samplerate open
+            xywh {300 295 155 25} down_box BORDER_BOX
+          } {
+            MenuItem {} {
+              label 48000
+              xywh {20 20 100 20}
+            }
+          }
+          Fl_Choice {} {
+            label Quality open
+            xywh {300 230 155 25} down_box BORDER_BOX
+          } {
+            MenuItem {} {
+              label {Best (1024 KBit)}
+              xywh {30 30 100 20}
+            }
+          }
+          Fl_Choice {} {
+            label Aspect open
+            xywh {300 200 155 25} down_box BORDER_BOX
+          } {
+            MenuItem {} {
+              label {4:3}
+              xywh {10 10 100 20}
+            }
+            MenuItem {} {
+              label {16:9}
+              xywh {10 10 100 20}
+            }
+          }
+          Fl_File_Input export_filename_simple {
+            label Filename
+            xywh {145 70 205 35}
+          }
+          Fl_Button {} {
+            label {File...}
+            callback {export_filename_simple->value( fl_file_chooser( "Set Export Filename", 0, 0 ) );}
+            xywh {355 80 75 25}
+            code0 {\#include <stdlib.h>}
+            code1 {\#include <FL/Fl_File_Chooser.H>}
+          }
+        }
+        Fl_Group {} {
+          label Extended open
+          xywh {5 60 475 295} hide
+        } {
+          Fl_Choice audio_codec_menu {
+            label {Audio Codec}
+            callback {audio_codec = o->menu()[o->value()].user_data();
+m_codecParams->setAudioCodec( (lqt_codec_info_t*)audio_codec );} open
+            xywh {145 250 205 25} down_box BORDER_BOX
+            code0 {\#include "Codecs.H"}
+            code1 {\#include <iostream>}
+            code2 {using namespace std;}
+          } {}
+          Fl_Choice video_codec_menu {
+            label {Video Codec}
+            callback {video_codec = o->menu()[o->value()].user_data();
+m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
+            xywh {145 130 205 25} down_box BORDER_BOX
+          } {}
+          Fl_Choice {} {
+            label Samplerate open
+            xywh {145 280 205 25} down_box BORDER_BOX
+          } {
+            MenuItem {} {
+              label 48000
+              xywh {5 5 100 20}
+            }
+          }
+          Fl_Choice {} {
+            label Framerate open
+            xywh {145 160 205 25} down_box BORDER_BOX
+          } {
+            MenuItem {} {
+              label {25 (PAL)}
+              xywh {5 5 100 20}
+            }
+          }
+          Fl_Choice frame_size_choice {
+            label Framesize open
+            xywh {145 190 205 25} down_box BORDER_BOX
+          } {
+            MenuItem {} {
+              label {720x576 (PAL 4:3) DV, DVD}
+              user_data {&fs720x576}
+              xywh {5 5 100 20}
+            }
+            MenuItem {} {
+              label {768x576 (PAL 4:3)}
+              user_data {&fs768x576}
+              xywh {5 5 100 20}
+            }
+            MenuItem {} {
+              label {384x288 (PAL ½ 4:3)}
+              user_data {&fs384x288}
+              xywh {5 5 100 20}
+            }
+            MenuItem {} {
+              label {640x480 (VGA 4:3)}
+              user_data {&fs640x480}
+              xywh {5 5 100 20}
+            }
+            MenuItem {} {
+              label {320x240 (QVGA 4:3)}
+              user_data {&fs320x240}
+              xywh {5 5 100 20}
+            }
+          }
+          Fl_Button audio_options {
+            label {Options...}
+            callback {if ( audio_codec ) {
 	Fl_Group::current( encodeDialog );
 	CodecOptions dlg;
 	dlg.m_audio = true;
@@ -856,11 +978,11 @@ m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
 	while (dlg.codecOptions->shown())
 		Fl::wait();
 }}
-        private xywh {355 220 75 25}
-      }
-      Fl_Button video_options {
-        label {Options...}
-        callback {if ( video_codec ) {
+            private xywh {355 250 75 25}
+          }
+          Fl_Button video_options {
+            label {Options...}
+            callback {if ( video_codec ) {
 	Fl_Group::current( encodeDialog );
 	CodecOptions dlg;
 	dlg.m_audio = false;
@@ -870,26 +992,28 @@ m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
 	while (dlg.codecOptions->shown())
 		Fl::wait();
 }}
-        private xywh {355 100 75 25}
-      }
-      Fl_File_Input export_filename {
-        label Filename
-        xywh {145 35 205 35}
-      }
-      Fl_Button {} {
-        label {File...}
-        callback {export_filename->value( fl_file_chooser( "Set Export Filename", 0, 0 ) );}
-        xywh {355 45 75 25}
-        code0 {\#include <stdlib.h>}
-        code1 {\#include <FL/Fl_File_Chooser.H>}
-      }
-      Fl_Box {} {
-        label Video
-        xywh {35 95 415 95} box ENGRAVED_FRAME labelfont 1 align 5
-      }
-      Fl_Box {} {
-        label Audio
-        xywh {35 215 415 65} box ENGRAVED_FRAME labelfont 1 align 5
+            private xywh {355 130 75 25}
+          }
+          Fl_Box {} {
+            label Video
+            xywh {35 125 415 95} box ENGRAVED_FRAME labelfont 1 align 5
+          }
+          Fl_Box {} {
+            label Audio
+            xywh {35 245 415 65} box ENGRAVED_FRAME labelfont 1 align 5
+          }
+          Fl_File_Input export_filename {
+            label Filename
+            xywh {145 70 205 35}
+          }
+          Fl_Button {} {
+            label {File...}
+            callback {export_filename->value( fl_file_chooser( "Set Export Filename", 0, 0 ) );}
+            xywh {355 80 75 25}
+            code0 {\#include <stdlib.h>}
+            code1 {\#include <FL/Fl_File_Chooser.H>}
+          }
+        }
       }
     }
     code {m_codecParams = codecParams;} {}
