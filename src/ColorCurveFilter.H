@@ -1,6 +1,6 @@
-/*  FilmStrip.H
+/* ColorCurveFilter.H
  *
- *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2007 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,46 +17,18 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _FILM_STRIP_H_
-#define _FILM_STRIP_H_
-
-#include <stdint.h>
-
-#include "IdleHandler.H"
+#ifndef _COLOR_CURVE_FILTER_H_
+#define _COLOR_CURVE_FILTER_H_
 
 namespace nle
 {
 
-typedef struct
-{
-	unsigned char* data;
-	int w;
-	int h;
-} pic_struct;
-
-class IVideoFile;
-class DiskCache;
-
-class FilmStrip : public IdleHandler
+class ColorCurveFilter : public IVideEffect
 {
 	public:
-		FilmStrip( IVideoFile* vfile );
-		~FilmStrip();
-		bool process();
-		inline int64_t count() { return m_count; }
-		inline pic_struct* get_pic( int64_t index )
-			{ return index < m_count ? &m_pics[index] : 0; }
-	private:
-		int64_t m_countAll;
-		int64_t m_count;
-		pic_struct *m_pics;
-		unsigned char **m_rows;
-		IVideoFile* m_vfile;
-		DiskCache* m_cache;
 };
 
-
+	
 } /* namespace nle */
 
-#endif /* _FILM_STRIP_H_ */
-
+#endif /* _COLOR_CURVE_FILTER_H_ */

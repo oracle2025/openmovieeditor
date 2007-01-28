@@ -573,7 +573,7 @@ int64_t TimelineView::get_real_position( int p, float stretchFactor )
 }
 int64_t TimelineView::get_screen_position( int64_t p, float stretchFactor )
 {
-	return llrint( float( p - ( m_scrollPosition * stretchFactor ) ) * SwitchBoard::i()->zoom() / stretchFactor ) + LEFT_TRACK_SPACING + x();
+	return llrint( float( float(p) - ( m_scrollPosition * stretchFactor ) ) * SwitchBoard::i()->zoom() / stretchFactor ) + LEFT_TRACK_SPACING + x();
 
 }
 void TimelineView::scroll( int64_t position )

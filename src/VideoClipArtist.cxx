@@ -59,16 +59,16 @@ void VideoClipArtist::render( Rect& rect_in, int64_t start, int64_t stop )
 	fl_push_clip( rect.x, rect.y, rect.w, rect.h );		
 	int _x;
 	FilmStrip* fs = m_clip->getFilmStrip();
-	int s = m_clip->trimA() / 120000;
-	int e = ( m_clip->length() / 120000 ) + s;
-	int off = m_clip->trimA() % 120000;
-	int64_t inc = 1 + (int64_t)( 0.5 / SwitchBoard::i()->zoom() );
+	int64_t s = m_clip->trimA() / (4 * NLE_TIME_BASE);
+	int64_t e = ( m_clip->length() / (4 * NLE_TIME_BASE) ) + s;
+	int64_t off = m_clip->trimA() % (NLE_TIME_BASE * 4);
+	int64_t inc = 1 + (int64_t)( 10.0 / SwitchBoard::i()->zoom() );
 	assert( inc >= 1 );
-	for ( int k = s; k < e + 2; k += inc ) {
+	for ( int64_t k = s; k < e + 2; k += inc ) {
 		// TODO: g_timeline should not be used, rect, start and stop are
 		// sufficient
 
-		_x = g_timelineView->get_screen_position( m_clip->position() + (k - s) * 120000, m_clip->track()->stretchFactor()  ) - off;
+		_x = g_timelineView->get_screen_position( m_clip->position() + (k - s) * NLE_TIME_BASE * 4, m_clip->track()->stretchFactor()  ) - off;
 		
 		pic_struct* f = fs->get_pic(k);
 		if ( f ) {
@@ -91,7 +91,7 @@ void VideoClipArtist::render( Rect& rect_in, int64_t start, int64_t stop )
 	if ( rect_in.h > 30 && m_audioClipArtist && !m_clip->m_mute ) {
 		rect.y += 35;
 		rect.h = rect_in.h - 35;
-		m_audioClipArtist->render( rect, llrint( start * ( 48000 / g_fps ) ), llrint( stop * ( 48000 / g_fps ) ) );
+		m_audioClipArtist->render( rect, llrint( start * 48000 / NLE_TIME_BASE ), llrint( stop * 48000 / NLE_TIME_BASE ) );
 		fl_push_clip( rect_in.x, rect_in.y, rect_in.w, rect_in.h );		
 		fl_color( FL_WHITE );
 		fl_rectf( rect_in.x, rect_in.y + 30, rect_in.w, 5 );

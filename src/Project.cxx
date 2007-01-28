@@ -66,6 +66,7 @@ int Project::write( string filename, string name )
 	strlcpy( project_filename, getenv( "HOME" ), sizeof(project_filename) );
 	strncat( project_filename, "/.openme.project", sizeof(project_filename) - strlen( project_filename ) - 1 );
 */	
+	char buffer[512];
 	TiXmlDocument doc( filename.c_str() );
 	TiXmlDeclaration* dec = new TiXmlDeclaration( "1.0", "", "no" );
 	doc.LinkEndChild( dec );
@@ -120,7 +121,8 @@ int Project::write( string filename, string name )
 			clip = new TiXmlElement( "clip" );
 			track->LinkEndChild( clip );
 			clip->SetAttribute( "filename", cn->clip->filename().c_str() );
-			clip->SetAttribute( "position", cn->clip->position() );
+			snprintf( buffer, sizeof(buffer), "%lld", cn->clip->position() );
+			clip->SetAttribute( "position", buffer );
 			clip->SetAttribute( "length", cn->clip->length() );
 			clip->SetAttribute( "trimA", cn->clip->trimA() );
 			clip->SetAttribute( "trimB", cn->clip->trimB() );
@@ -250,14 +252,16 @@ int Project::read( string filename )
 		
 		TiXmlElement* j = TiXmlHandle( track ).FirstChildElement( "clip" ).Element();
 		for ( ; j; j = j->NextSiblingElement( "clip" ) ) {
-			int position; //TODO: int64_t problem
+			int64_t position; //TODO: int64_t problem
 			int trimA;
 			int trimB;
 			int mute = 0;
 			int length;
 			char filename[1024];
-			if ( ! j->Attribute( "position", &position ) )
+			const char* position_str;
+			if ( ! ( position_str = j->Attribute( "position" ) ) )
 				continue;
+			position = atoll( position_str );
 			if ( ! j->Attribute( "trimA", &trimA ) )
 				continue;
 			if ( ! j->Attribute( "trimB", &trimB ) )
@@ -496,13 +500,15 @@ int Project::read( string filename )
 		
 		TiXmlElement* j = TiXmlHandle( track ).FirstChildElement( "clip" ).Element();
 		for ( ; j; j = j->NextSiblingElement( "clip" ) ) {
-			int position;
+			int64_t position;
 			int trimA;
 			int trimB;
 			int length;
 			char filename[1024];
-			if ( ! j->Attribute( "position", &position ) )
+			const char* position_str;
+			if ( ! ( position_str = j->Attribute( "position" ) ) )
 				continue;
+			position = atoll( position_str );
 			if ( ! j->Attribute( "trimA", &trimA ) )
 				continue;
 			if ( ! j->Attribute( "trimB", &trimB ) )

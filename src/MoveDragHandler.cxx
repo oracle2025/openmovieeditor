@@ -44,6 +44,7 @@ MoveDragHandler::MoveDragHandler( TimelineView *tlv,
 }
 void MoveDragHandler::OnDrag( int x, int y )
 {
+	int64_t tmp_x;
 	Rect tmp( x - ( m_x - m_rect.x ),
 			m_tlv->y() + y - ( m_y - m_rect.y ),
 			m_rect.w, m_rect.h );
@@ -52,10 +53,11 @@ void MoveDragHandler::OnDrag( int x, int y )
 		Rect tr_rect = m_tlv->get_track_rect( tr );
 		tmp.y = m_tlv->y() + tr_rect.y;
 		if ( g_snap ) {
-			tmp.x = m_tlv->get_real_position( tmp.x, tr->stretchFactor() );
-			tmp.x = tr->getSnapA( m_clip, tmp.x );
-			tmp.x = tr->getSnapB( m_clip, tmp.x );
-			tmp.x = m_tlv->get_screen_position( tmp.x, tr->stretchFactor() );
+			tmp_x = m_tlv->get_real_position( tmp.x, tr->stretchFactor() );
+			tmp_x = tr->getSnapA( m_clip, tmp_x );
+			tmp_x = tr->getSnapB( m_clip, tmp_x );
+			tmp.x = m_tlv->get_screen_position( tmp_x, tr->stretchFactor() );
+			
 		} else {
 			tmp.x = m_tlv->get_screen_position( m_tlv->get_real_position( tmp.x, tr->stretchFactor() ), tr->stretchFactor() );
 		}

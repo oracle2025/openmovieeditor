@@ -100,7 +100,6 @@ VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 	int den = m_formatContext->streams[m_videoStream]->r_frame_rate.den;
 
 	m_ticksPerFrame = ( den * NLE_TIME_BASE ) / num;
-	cout << "num: " << num << " den: " << den << endl;
 
 /*	m_framerate = av_q2d( m_formatContext->streams[m_videoStream]->r_frame_rate );
 	if ( m_framerate < 24.9 || m_framerate > 25.1 ) {
@@ -112,8 +111,6 @@ VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 	
 	int64_t len = m_formatContext->duration - m_formatContext->start_time;
 	m_length = (int64_t)( len * NLE_TIME_BASE / AV_TIME_BASE ) - m_ticksPerFrame;
-	cout << "len: " << len << " m_ticksPerFrame: " << m_ticksPerFrame << endl;
-	cout << "AV_TIME_BASE: " << AV_TIME_BASE << " m_length: " << m_length << endl;
 	
 	m_ok = true;
 }
