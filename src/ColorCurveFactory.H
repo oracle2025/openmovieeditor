@@ -1,6 +1,6 @@
-/* Frei0rDialog.H
+/* ColorCurveFactory.H
  *
- *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2007 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,44 +17,23 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _FREI0R_DIALOG_H_
-#define _FREI0R_DIALOG_H_
+#ifndef _COLOR_CURVE_FACTORY_H_
+#define _COLOR_CURVE_FACTORY_H_
 
-#include "IEffectDialog.H"
-
-class Fl_Double_Window;
+#include "AbstractEffectFactory.H"
 
 namespace nle
 {
 
-class Frei0rDialog;
-
-typedef struct _callback_info {
-	Frei0rDialog* dialog;
-	int number;
-	double x, y;
-} callback_info;
-
-
-class Frei0rEffect;
-
-class Frei0rDialog : public IEffectDialog
+class ColorCurveFactory : public AbstractEffectFactory
 {
 	public:
-		Frei0rDialog( Frei0rEffect* effect );
-		~Frei0rDialog();
-		void show();
-		int shown();
-		void setDouble( int num, double val );
-		void setBool( int num, bool val );
-		void setPositionX( int num, double val );
-		void setPositionY( int num, double val );
-	private:
-		Fl_Double_Window* m_dialog;
-		Frei0rEffect* m_effect;
-		callback_info* m_infostack;
+		ColorCurveFactory();
+		~ColorCurveFactory();
+		IVideoEffect* get( int w, int h );
+		const char* name();
 };
 
 } /* namespace nle */
 
-#endif /* _FREI0R_DIALOG_H_ */
+#endif /* _COLOR_CURVE_FACTORY_H_ */

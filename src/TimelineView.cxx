@@ -52,9 +52,8 @@
 #include "IPlaybackCore.H"
 #include "DocManager.H"
 #include "Commands.H"
-#include "Frei0rFactoryPlugin.H"
-#include "Frei0rEffect.H"
-#include "Frei0rDialog.H"
+#include "IVideoEffect.H"
+#include "IEffectDialog.H"
 #include "PasteSelectionCommand.H"
 #include "TitleClip.H"
 #include "HistogramView.H"
@@ -1078,25 +1077,12 @@ void TimelineView::editEffect()
 	for ( int i = 1; i < c && es ; i++ ) {
 		es = es->next;
 	}
-/*	Frei0rEffect* fe = dynamic_cast<Frei0rEffect*>( vc->getEffect() );
-	for ( int i = 1; i < c && fe ; i++ ) {
-		fe = dynamic_cast<Frei0rEffect*>( fe->getReader() );
-	}*/
 	if ( !es ) {
 		return;
 	}
-	Frei0rEffect* fe = dynamic_cast<Frei0rEffect*>( es->effect );
-	Frei0rDialog* dialog = dynamic_cast<Frei0rDialog*>(fe->m_dialog);
-	if ( !dialog ) {
-		dialog = new Frei0rDialog( fe );
-		fe->m_dialog = dialog;
-	}
+	IVideoEffect* fe = es->effect;
+	IEffectDialog* dialog = fe->dialog();
 	dialog->show();
-/*	Frei0rDialog dialog( fe );
-	dialog.show();
-	while ( dialog.shown() ) {
-		Fl::wait();
-	}*/
 
 }
 

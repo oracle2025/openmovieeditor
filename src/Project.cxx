@@ -166,6 +166,9 @@ int Project::write( string filename, string name )
 					clip->LinkEndChild( effect );
 					effect->SetAttribute( "name", p->effect->name() );
 					Frei0rEffect* fe = dynamic_cast<Frei0rEffect*>( p->effect );
+					if ( !fe ) {
+						continue;
+					}
 					f0r_plugin_info_t* finfo;
 					f0r_param_info_t pinfo;
 					finfo = fe->getPluginInfo();

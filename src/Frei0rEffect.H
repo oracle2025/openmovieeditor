@@ -32,7 +32,7 @@ typedef void (*f0r_get_param_value_f)(f0r_instance_t instance, f0r_param_t param
 namespace nle
 {
 
-class IDeleteMe;
+class IEffectDialog;
 
 class Frei0rEffect : public IVideoEffect
 {
@@ -46,7 +46,8 @@ class Frei0rEffect : public IVideoEffect
 		void setValue( f0r_param_t param, int param_index );
 		const char* name();
 		int numParams();
-		IDeleteMe* m_dialog;
+		IEffectDialog* m_dialog;
+		IEffectDialog* dialog();
 	private:
 		f0r_instance_t m_instance;
 		unsigned char *m_tmpFrame;

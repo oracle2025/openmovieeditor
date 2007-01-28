@@ -50,6 +50,7 @@
 #include "Frei0rFactoryPlugin.H"
 #include "FltkEffectMenu.H"
 #include "Frei0rFactory.H"
+#include "ColorCurveFactory.H"
 
 namespace nle 
 {
@@ -80,6 +81,10 @@ int main( int argc, char** argv )
 	NleUI nui;
 	nle::g_ui = &nui;
 	nle::Frei0rFactory effectFactory( nui.m_effectMenu );
+
+	nui.m_effectMenu->addEffect( new nle::ColorCurveFactory() );
+
+	
 	nle::IPlaybackCore* playbackCore = new nle::JackPlaybackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
 	if ( !playbackCore->ok() ) {
 		delete playbackCore;

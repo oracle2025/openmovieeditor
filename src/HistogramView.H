@@ -47,6 +47,7 @@ class HistogramView : public Fl_Widget
 		int m_r[256];
 		int m_g[256];
 		int m_b[256];
+		int m_max;
 };
 
 } /* namespace nle */

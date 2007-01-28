@@ -214,6 +214,15 @@ openmovieeditor_SOURCES = nle.cxx\
 	EnvelopeClip.cxx\
 	EnvelopeClip.H\
 	HistogramView.H\
-	HistogramView.cxx
+	HistogramView.cxx\
+	IEffectDialog.H\
+	ColorCurveFactory.cxx\
+	ColorCurveFactory.H\
+	ColorCurveFilter.cxx\
+	ColorCurveFilter.H\
+	CurveEditor.cxx\
+	CurveEditor.H\
+	ColorCurveDialog.cxx\
+	ColorCurveDialog.H
 
 

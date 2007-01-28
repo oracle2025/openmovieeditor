@@ -34,6 +34,7 @@ HistogramView::HistogramView( int x, int y, int w, int h, const char* label )
 	for ( int i = 0; i < 256; i++ ) {
 		m_r[i] = m_g[i] = m_b[i] = 0;
 	}
+	m_max = 0;
 }	
 HistogramView::~HistogramView()
 {
@@ -49,20 +50,33 @@ void HistogramView::setVideoClip( VideoEffectClip* clip, int64_t position )
 			m_r[i] = m_g[i] = m_b[i] = 0;
 		}
 		frame_struct* fs = m_clip->getFrame( m_position );
+		int mul;
+		if ( fs->has_alpha_channel ) {
+			mul = 4;
+		} else {
+			mul = 3;
+		}
 		if ( fs ) {
 			for ( int x = 0; x < fs->w; x++ ) {
 				for ( int y = 0; y < fs->h; y++ ) {
-					m_r[fs->RGB[x * 3 + y * fs->w * 3]]++;
-						m_g[fs->RGB[x * 3 + y * fs->w * 3 + 1]]++;
-						m_b[fs->RGB[x * 3 + y * fs->w * 3 + 2]]++;
+					m_r[fs->RGB[x * mul + y * fs->w * mul]]++;
+					m_g[fs->RGB[x * mul + y * fs->w * mul + 1]]++;
+					m_b[fs->RGB[x * mul + y * fs->w * mul + 2]]++;
 				}
 			}
+		}
+		m_max = 0;
+		for ( int i = 0; i < 255; i++ ) {
+			m_max = m_r[i] > m_max ? m_r[i] : m_max;
+			m_max = m_g[i] > m_max ? m_g[i] : m_max;
+			m_max = m_b[i] > m_max ? m_b[i] : m_max;
 		}
 		redraw();
 	}
 }
 void HistogramView::draw()
 {
+	float scale = h() / float(m_max);
 	fl_draw_box( FL_DOWN_BOX, x(), y(), w(), h(), FL_BACKGROUND_COLOR );
 	if ( !m_clip ) {
 		return;
@@ -70,15 +84,15 @@ void HistogramView::draw()
 	fl_push_clip( x() + 2, y() + 2,  w() - 4, h() - 4 );
 	fl_color( FL_RED );
 	for ( int i = 0; i < 255; i++ ) {
-		fl_line( x() + i, y() + h(), x() + i, y() + h() - (int)(m_r[i] * 0.1) );
+		fl_line( x() + i, y() + h(), x() + i, y() + h() - (int)(m_r[i] * scale) );
 	}
 	fl_color( FL_GREEN );
 	for ( int i = 0; i < 255; i++ ) {
-		fl_line( x() + i, y() + h(), x() + i, y() + h() - (int)(m_g[i] * 0.1) );
+		fl_line( x() + i, y() + h(), x() + i, y() + h() - (int)(m_g[i] * scale) );
 	}
 	fl_color( FL_BLUE );
 	for ( int i = 0; i < 255; i++ ) {
-		fl_line( x() + i, y() + h(), x() + i, y() + h() - (int)(m_b[i] * 0.1) );
+		fl_line( x() + i, y() + h(), x() + i, y() + h() - (int)(m_b[i] * scale) );
 	}
 	fl_pop_clip();
 }

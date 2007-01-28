@@ -22,8 +22,8 @@
 #include "frei0r.h"
 #include "Frei0rEffect.H"
 #include "global_includes.H"
-#include "IDeleteMe.H"
 #include "globals.H"
+#include "Frei0rDialog.H"
 
 namespace nle
 {
@@ -64,6 +64,9 @@ Frei0rEffect::~Frei0rEffect()
 	if ( m_dialog ) {
 		delete m_dialog;
 	}
+	delete m_tmpFrame;
+	delete m_frame;
+	delete m_rows;
 }
 frame_struct* Frei0rEffect::getFrame( frame_struct* frame, int64_t position )
 {
@@ -109,6 +112,13 @@ const char* Frei0rEffect::name()
 int Frei0rEffect::numParams()
 {
 	return m_info->num_params;
+}
+IEffectDialog* Frei0rEffect::dialog()
+{
+	if ( !m_dialog ) {
+		m_dialog = new Frei0rDialog( this );
+	}
+	return m_dialog;
 }
 
 } /* namespace nle */

@@ -20,12 +20,26 @@
 #ifndef _COLOR_CURVE_FILTER_H_
 #define _COLOR_CURVE_FILTER_H_
 
+#include "IVideoEffect.H"
+
 namespace nle
 {
 
-class ColorCurveFilter : public IVideEffect
+class ColorCurveFilter : public IVideoEffect
 {
 	public:
+		ColorCurveFilter( int w, int h );
+		~ColorCurveFilter();
+		frame_struct* getFrame( frame_struct* frame, int64_t position = -1 );
+		const char* name();
+		int numParams() { return 1; }
+		IEffectDialog* dialog();
+		IEffectDialog* m_dialog;
+		unsigned char m_values[256];
+	private:
+		unsigned char *m_frame;
+		unsigned char **m_rows;
+		frame_struct m_framestruct;
 };
 
 	
