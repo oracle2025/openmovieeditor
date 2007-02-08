@@ -406,12 +406,6 @@ void NleUI::cb_Font(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_Font_i(o,v);
 }
 
-Fl_Menu_Item NleUI::menu_[] = {
- {"Combined", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"RGB", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {0,0,0,0,0,0,0,0,0}
-};
-
 void NleUI::cb_playButton_i(Fl_Button* o, void*) {
   if ( strcmp( o->label(), "@>" ) == 0 ) {
 	o->label( "@square" );
@@ -782,7 +776,7 @@ NleUI::NleUI() {
           o->end();
         }
         { Fl_Group* o = new Fl_Group(0, 25, 365, 320);
-          { Fl_Tabs* o = new Fl_Tabs(0, 50, 365, 255);
+          { Fl_Tabs* o = tab_view = new Fl_Tabs(0, 50, 365, 255);
             o->box(FL_UP_BOX);
             o->labelcolor(FL_GRAY0);
             { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Files");
@@ -820,9 +814,9 @@ NleUI::NleUI() {
               }
               o->end();
             }
-            { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Effects");
+            { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Video Effects");
               o->hide();
-              { nle::FltkEffectMenu* o = m_effectMenu = new nle::FltkEffectMenu(5, 80, 355, 25, "Add Effect");
+              { nle::FltkEffectMenu* o = m_effectMenu = new nle::FltkEffectMenu(5, 80, 355, 25, "Add Video Effect");
                 o->box(FL_UP_BOX);
                 o->color(FL_BACKGROUND_COLOR);
                 o->selection_color(FL_SELECTION_COLOR);
@@ -948,22 +942,36 @@ NleUI::NleUI() {
               }
               o->end();
             }
-            { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Histogram");
-              { nle::HistogramView* o = new nle::HistogramView(5, 110, 355, 190);
-                o->box(FL_DOWN_FRAME);
-                o->color(FL_BACKGROUND_COLOR);
-                o->selection_color(FL_BACKGROUND_COLOR);
-                o->labeltype(FL_NORMAL_LABEL);
-                o->labelfont(0);
-                o->labelsize(14);
-                o->labelcolor(FL_FOREGROUND_COLOR);
-                o->align(FL_ALIGN_CENTER);
-                o->when(FL_WHEN_RELEASE);
+            { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Audio Effects");
+              { Fl_Menu_Button* o = new Fl_Menu_Button(5, 80, 355, 25, "Add Audio Effect");
+                o->deactivate();
+              }
+              { Fl_Browser* o = new Fl_Browser(5, 105, 355, 170);
                 Fl_Group::current()->resizable(o);
               }
-              { Fl_Choice* o = new Fl_Choice(5, 80, 355, 25);
-                o->down_box(FL_BORDER_BOX);
-                o->menu(menu_);
+              { Fl_Group* o = new Fl_Group(5, 275, 355, 25);
+                { Fl_Group* o = new Fl_Group(5, 275, 50, 25);
+                { Fl_Button* o = new Fl_Button(5, 275, 25, 25, "@8->");
+                o->tooltip("Move Up");
+                o->deactivate();
+                }
+                { Fl_Button* o = new Fl_Button(30, 275, 25, 25, "@2->");
+                o->tooltip("Move Down");
+                o->deactivate();
+                }
+                o->end();
+                }
+                { Fl_Group* o = new Fl_Group(55, 275, 305, 25);
+                { Fl_Button* o = new Fl_Button(55, 275, 155, 25, "Remove Effect");
+                o->deactivate();
+                }
+                { Fl_Button* o = new Fl_Button(210, 275, 150, 25, "Edit Effect");
+                o->deactivate();
+                }
+                o->end();
+                Fl_Group::current()->resizable(o);
+                }
+                o->end();
               }
               o->end();
             }
@@ -1228,6 +1236,7 @@ titles_y->value( y );
 titles_text->value( text );
 titles_tab->activate();
 titles_color->color( color );
+tab_view->value( titles_tab );
 }
 
 void NleUI::portaudio() {

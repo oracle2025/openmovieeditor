@@ -32,8 +32,8 @@
 #include <FL/Fl_Slider.H>
 #include <FL/Fl_Box.H>
 #include "fl_font_browser.h"
-#include "HistogramView.H"
-#include <FL/Fl_Choice.H>
+#include <FL/Fl_Menu_Button.H>
+#include <FL/Fl_Browser.H>
 #include "Flmm_Scalebar.H"
 #include "globals.H"
 using namespace std;
@@ -41,6 +41,7 @@ using namespace std;
 #include <FL/Fl_Scrollbar.H>
 #include "TimelineScroll.H"
 #include "TimelineView.H"
+#include <FL/Fl_Choice.H>
 
 class NleUI {
 public:
@@ -119,6 +120,7 @@ private:
   static void cb_About(Fl_Menu_*, void*);
 public:
   nle::VideoViewGL *m_videoView;
+  Fl_Tabs *tab_view;
 private:
   void cb__i(nle::FileBrowser*, void*);
   static void cb_(nle::FileBrowser*, void*);
@@ -179,7 +181,6 @@ private:
   static void cb_titles_y(Fl_Slider*, void*);
   void cb_Font_i(Fl_Button*, void*);
   static void cb_Font(Fl_Button*, void*);
-  static Fl_Menu_Item menu_[];
 public:
   Fl_Button *playButton;
 private:
@@ -281,7 +282,6 @@ extern Flmm_Scalebar* g_scrollBar;
 #include "IVideoReader.H"
 #include "IAudioReader.H"
 #include <FL/Fl_Return_Button.H>
-#include <FL/Fl_Browser.H>
 #include <FL/Fl_File_Input.H>
 #include <stdlib.h>
 #include <FL/Fl_File_Chooser.H>

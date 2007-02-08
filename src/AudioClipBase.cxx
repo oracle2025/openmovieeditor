@@ -28,6 +28,7 @@ AudioClipBase::AudioClipBase( Track *track, int64_t position, IAudioFile* af, in
 {
 	m_audioFile = af;
 	m_mute = false;
+	m_automations = false;
 }
 AudioClipBase::~AudioClipBase()
 {
@@ -64,32 +65,33 @@ int AudioClipBase::fillBuffer( float* output, unsigned long frames, int64_t posi
 	if ( m_mute ) {
 		return 0;
 	}
-	unsigned int frames_written = 0;
+	int64_t frames_written = 0;
 	int64_t currentPosition = audioPosition();
 	int64_t aLength = audioLength();
 	int64_t trimA = audioTrimA();
+	int64_t frames64 = frames;
 	if ( !m_audioFile ) {
 		return 0;
 	}
 	if ( currentPosition + aLength < position ) { return 0; }
 	if ( currentPosition > position ) {
-		unsigned long empty_frames = ( currentPosition - position )
-				< frames ? ( currentPosition - position ) : frames;
-		for ( unsigned long i = 0; i < frames * 2; i++ ) {
+		int64_t empty_frames = ( currentPosition - position )
+				< frames64 ? ( currentPosition - position ) : frames64;
+		for ( unsigned long i = 0; i < frames64 * 2; i++ ) {
 			//TODO eingentlich sollten nur empty_frames geschrieben werden
 			output[i] = 0.0;
 		}
 		frames_written += empty_frames;
-		if ( empty_frames == frames ) {
+		if ( empty_frames == frames64 ) {
 			return frames_written;
 		}
 	}
-	if ( m_lastSamplePosition + frames != position ) {
+	if ( m_lastSamplePosition + frames64 != position ) {
 		m_audioFile->seek( position + frames_written - currentPosition + trimA );
 	}
 	m_lastSamplePosition = position;
 	return frames_written + m_audioFile->fillBuffer(
-			&output[frames_written], frames - frames_written
+			&output[frames_written], frames64 - frames_written
 			);
 }
 string AudioClipBase::audioFilename()

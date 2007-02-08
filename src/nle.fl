@@ -15,10 +15,10 @@ if ( Fl::event()==FL_CLOSE ) {
 	m_videoView->stop();
 	nle::g_loadSaveManager->shutdown();
 }} open
-      xywh {786 423 700 600} type Double resizable size_range {450 380 0 0} visible
+      xywh {449 361 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
-        label {Black Borders} open
+        label {Black Borders}
         xywh {0 0 530 25}
       } {
         Submenu {} {
@@ -302,7 +302,7 @@ while (dlg.shown())
           Fl_Group {} {open
             xywh {0 25 365 320}
           } {
-            Fl_Tabs {} {open
+            Fl_Tabs tab_view {open
               xywh {0 50 365 255} box UP_BOX labelcolor 32 resizable
             } {
               Fl_Group {} {
@@ -328,11 +328,11 @@ fb->load_rel();}
                 } {}
               }
               Fl_Group {} {
-                label Effects open
+                label {Video Effects} open
                 xywh {0 75 365 230} hide
               } {
                 Fl_Menu_Button m_effectMenu {
-                  label {Add Effect} open
+                  label {Add Video Effect} open
                   xywh {5 80 355 25} deactivate
                   code0 {\#include "FltkEffectMenu.H"}
                   class {nle::FltkEffectMenu}
@@ -394,7 +394,7 @@ fb->load_rel();}
                   callback {m_timelineView->titles_text( o->value() );}
                   xywh {205 80 155 220} type Multiline resizable
                 }
-                Fl_Group {} {open
+                Fl_Group {} {
                   xywh {5 80 195 220} box ENGRAVED_FRAME
                 } {
                   Fl_Value_Input {} {
@@ -448,24 +448,42 @@ while ( dlg.shown() ) {
                 }
               }
               Fl_Group {} {
-                label Histogram open
+                label {Audio Effects} open
                 xywh {0 75 365 230}
               } {
-                Fl_Box {} {selected
-                  xywh {5 110 355 190} box DOWN_FRAME resizable
-                  code0 {\#include "HistogramView.H"}
-                  class {nle::HistogramView}
+                Fl_Menu_Button {} {
+                  label {Add Audio Effect} open
+                  xywh {5 80 355 25} deactivate
+                } {}
+                Fl_Browser {} {
+                  xywh {5 105 355 170} resizable
                 }
-                Fl_Choice {} {open
-                  xywh {5 80 355 25} down_box BORDER_BOX
+                Fl_Group {} {open
+                  xywh {5 275 355 25}
                 } {
-                  MenuItem {} {
-                    label Combined
-                    xywh {0 0 100 20}
+                  Fl_Group {} {open
+                    xywh {5 275 50 25}
+                  } {
+                    Fl_Button {} {
+                      label {@8->}
+                      tooltip {Move Up} xywh {5 275 25 25} deactivate
+                    }
+                    Fl_Button {} {
+                      label {@2->}
+                      tooltip {Move Down} xywh {30 275 25 25} deactivate
+                    }
                   }
-                  MenuItem {} {
-                    label RGB
-                    xywh {0 0 100 20}
+                  Fl_Group {} {open
+                    xywh {55 275 305 25} resizable
+                  } {
+                    Fl_Button {} {
+                      label {Remove Effect}
+                      xywh {55 275 155 25} deactivate
+                    }
+                    Fl_Button {} {
+                      label {Edit Effect} selected
+                      xywh {210 275 150 25} deactivate
+                    }
                   }
                 }
               }
@@ -718,7 +736,8 @@ titles_x->value( x );
 titles_y->value( y );
 titles_text->value( text );
 titles_tab->activate();
-titles_color->color( color );} {}
+titles_color->color( color );
+tab_view->value( titles_tab );} {}
   }
   Function {portaudio()} {} {
     code {playButton->hide();
@@ -771,9 +790,9 @@ class EncodeDialog {} {
   } {
     Fl_Window encodeDialog {
       label Render open
-      private xywh {549 378 485 400} type Double
+      private xywh {549 378 485 400} type Double hide
       code0 {\#include "IVideoReader.H"}
-      code1 {\#include "IAudioReader.H"} modal visible
+      code1 {\#include "IAudioReader.H"} modal
     } {
       Fl_Return_Button {} {
         label Encode
@@ -1061,7 +1080,7 @@ class ChangesDialog {} {
   } {
     Fl_Window {} {
       label {Unsaved changes!} open
-      xywh {613 161 410 80} type Double visible
+      xywh {613 161 410 80} type Double hide
     } {
       Fl_Box {} {
         label {Save changes?}
@@ -1094,7 +1113,7 @@ class CodecOptions {} {
   } {
     Fl_Window codecOptions {
       label {Codec Options}
-      xywh {45 855 345 305} type Double resizable modal visible
+      xywh {45 855 345 305} type Double hide resizable modal
     } {
       Fl_Box codec_label {
         label Codec
@@ -1180,7 +1199,7 @@ class AboutDialog {} {
   } {
     Fl_Window aboutDialog {
       label {About Dialog} open
-      xywh {1243 364 340 370} type Double modal visible
+      xywh {1243 364 340 370} type Double hide modal
     } {
       Fl_Box {} {
         image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/logo.xpm} xywh {0 0 340 155}

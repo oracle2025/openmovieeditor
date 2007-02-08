@@ -96,8 +96,8 @@ VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 	m_filename = filename;
 
 
-	int num = m_formatContext->streams[m_videoStream]->r_frame_rate.num;
-	int den = m_formatContext->streams[m_videoStream]->r_frame_rate.den;
+	int64_t num = m_formatContext->streams[m_videoStream]->r_frame_rate.num;
+	int64_t den = m_formatContext->streams[m_videoStream]->r_frame_rate.den;
 
 	m_ticksPerFrame = ( den * NLE_TIME_BASE ) / num;
 

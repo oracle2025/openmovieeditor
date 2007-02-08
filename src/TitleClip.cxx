@@ -109,7 +109,7 @@ void TitleClip::init()
 //	uchar* pixels;
 //	uchar* alpha;
 	fl_begin_offscreen(m_offscreen);
-	fl_draw_box(FL_FLAT_BOX, 0, 0, 768, 576, FL_BLUE);
+	fl_draw_box(FL_FLAT_BOX, 0, 0, 768, 576, FL_DARK3);
 	fl_font(m_font, m_size);
 	int w = 0;
 	int h = 0;
@@ -140,7 +140,7 @@ void TitleClip::init()
 	x = lrint(x_range * m_x);
 	y = h + lrint(y_range * m_y) - fl_descent();
 	
-	fl_draw_box(FL_FLAT_BOX, 0, 0, 768, 576, FL_BLUE);	
+	fl_draw_box(FL_FLAT_BOX, 0, 0, 768, 576, FL_DARK3);	
 	
 	//fl_draw_box(FL_BORDER_FRAME, x, y - h + fl_descent(), w, h, FL_WHITE);
 

@@ -54,8 +54,8 @@ VideoFileQT::VideoFileQT( string filename )
 		return;
 	}
 	// check frame rate
-	int frame_duration = lqt_frame_duration( m_qt, 0, 0 );
-	int time_scale = lqt_video_time_scale( m_qt, 0 );
+	int64_t frame_duration = lqt_frame_duration( m_qt, 0, 0 );
+	int64_t time_scale = lqt_video_time_scale( m_qt, 0 );
 	m_ticksPerFrame = ( frame_duration * NLE_TIME_BASE ) / time_scale;
 	
 /*	if ( quicktime_frame_rate( m_qt, 0 ) < 24.9 || quicktime_frame_rate( m_qt, 0 ) > 25.1 ) {

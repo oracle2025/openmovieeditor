@@ -150,7 +150,7 @@ void EnvelopeClip::trimB( int64_t trim )
 	if ( trim > 0 ) {
 		//etwas von den Automations entfernen
 		auto_node* n = m_automationPoints;
-		while ( m_audioClip->audioLength() - trim > n->next->x ) {
+		while ( n->next && m_audioClip->audioLength() - trim > n->next->x ) {
 			n = n->next;
 		}
 		int64_t next_x = n->next->x;

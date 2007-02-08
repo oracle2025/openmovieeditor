@@ -28,6 +28,7 @@ TrackBase::TrackBase( int num, string name )
 	: Track( num, name )
 {
 	m_prev_position = 0;
+	m_current = 0;
 }
 
 int TrackBase::fillBuffer( float* output, unsigned long frames, int64_t position )
@@ -50,7 +51,9 @@ int TrackBase::fillBuffer( float* output, unsigned long frames, int64_t position
 				);
 		written += inc;
 		incBuffer += inc;
-		if ( written < frames ) { m_current = m_current->next; }
+		if ( written < frames ) {
+			m_current = m_current->next;
+		}
 		while ( m_current && m_current->clip->type() != CLIP_TYPE_VIDEO && m_current->clip->type() != CLIP_TYPE_AUDIO ) {
 			m_current = m_current->next;
 		}

@@ -56,7 +56,7 @@
 #include "IEffectDialog.H"
 #include "PasteSelectionCommand.H"
 #include "TitleClip.H"
-#include "HistogramView.H"
+//#include "HistogramView.H"
 
 #include "audio.xpm"
 #include "video.xpm"
@@ -209,6 +209,7 @@ int TimelineView::handle( int event )
 							{ "Stretch", 0,0,0,FL_MENU_RADIO |( vcl->stretch() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
 							{ "Default", 0,0,0,FL_MENU_RADIO | FL_MENU_DIVIDER|( vcl->def() ? FL_MENU_VALUE : 0 ),0,0,0,0 }, 
 							{ "Unmute Original Sound", MENU_ITEM_INIT },
+							{ "Audio Automations", 0,0,0,FL_MENU_TOGGLE|( vcl->automations() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
 							{ "Freeze Frame", 0,0,0,FL_MENU_TOGGLE|( vcl->freezeFrame() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
 							{ "Select all Clips after Cursor", MENU_ITEM_INIT }, 
 							{ 0L, MENU_ITEM_INIT } };
@@ -231,9 +232,14 @@ int TimelineView::handle( int event )
 							redraw();
 							g_timeline->changing();
 						} else if ( r == &menuitem[5] ) {
+							vcl->automations( !vcl->automations() );
+							redraw();
+							g_timeline->changing();
+						} else if ( r == &menuitem[6] ) {
 							vcl->freezeFrame( !vcl->freezeFrame() );
 							g_videoView->redraw();
-						} else if ( r == &menuitem[6] ) {
+							g_timeline->changing();
+						} else if ( r == &menuitem[7] ) {
 							select_all_after_cursor();	
 						}
 					} else {
@@ -242,6 +248,7 @@ int TimelineView::handle( int event )
 							{ "Stretch", 0,0,0,FL_MENU_RADIO | ( vcl->stretch() ? FL_MENU_VALUE : 0 ),0,0,0,0 }, 
 							{ "Default", 0,0,0,FL_MENU_RADIO | FL_MENU_DIVIDER|( vcl->def() ? FL_MENU_VALUE : 0 ),0,0,0,0 }, 
 							{ "Mute Original Sound", MENU_ITEM_INIT }, 
+							{ "Audio Automations", 0,0,0,FL_MENU_TOGGLE|( vcl->automations() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
 							{ "Freeze Frame", 0,0,0,FL_MENU_TOGGLE|( vcl->freezeFrame() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
 							{ "Select all Clips after Cursor", MENU_ITEM_INIT }, 
 							{ 0L, MENU_ITEM_INIT } };
@@ -264,9 +271,13 @@ int TimelineView::handle( int event )
 							redraw();
 							g_timeline->changing();
 						} else if ( r == &menuitem[5] ) {
+							vcl->automations( !vcl->automations() );
+							redraw();
+							g_timeline->changing();
+						} else if ( r == &menuitem[6] ) {
 							vcl->freezeFrame( !vcl->freezeFrame() );
 							g_videoView->redraw();
-						} else if ( r == &menuitem[6] ) {
+						} else if ( r == &menuitem[7] ) {
 							select_all_after_cursor();	
 						}
 					}
@@ -303,6 +314,22 @@ int TimelineView::handle( int event )
 						}
 						return 1;
 				}
+				AudioClip* audioC = dynamic_cast<AudioClip*>(cl);
+				if ( audioC && Fl::event_button() == FL_RIGHT_MOUSE ) {
+					Fl_Menu_Item menuitem[] = {
+						{ "Audio Automations", 0,0,0,FL_MENU_TOGGLE|( audioC->automations() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
+						{ "Select all Clips after Cursor", MENU_ITEM_INIT },
+						{ 0L, MENU_ITEM_INIT } };
+					Fl_Menu_Item* r = (Fl_Menu_Item*)menuitem->popup( Fl::event_x(), Fl::event_y() );
+					if ( r == &menuitem[0] ) {
+						audioC->automations( !audioC->automations() );
+						redraw();
+						g_timeline->changing();
+					} else if ( r == &menuitem[1] ) {
+						select_all_after_cursor();
+					}
+					return 1;
+				}
 				if ( Fl::event_button() == FL_RIGHT_MOUSE ) {
 					Fl_Menu_Item menuitem[] = { { "Select all Clips after Cursor", MENU_ITEM_INIT }, { 0L, MENU_ITEM_INIT } };
 					if ( menuitem->popup( Fl::event_x(), Fl::event_y() ) ) {
@@ -310,7 +337,8 @@ int TimelineView::handle( int event )
 					}
 					return 1;
 				}
-				if ( cl && g_ui->automationsMode() == 1 && cl->has_automation() ) {
+				AudioClipBase* audioClip = dynamic_cast<AudioClipBase*>(cl);
+				if ( cl && g_ui->automationsMode() == 1 && cl->has_automation() && audioClip && audioClip->automations() ) {
 					if ( FL_SHIFT & Fl::event_state() ) {
 						m_dragHandler = new ShiftAutomationDragHandler( cl, get_clip_rect( cl, true ), _x, _y );
 					} else {
@@ -456,13 +484,14 @@ void TimelineView::draw()
 			} else {
 				fl_draw_box( FL_BORDER_FRAME, scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h, FL_DARK3 );
 			}
-			if ( clip->has_automation() /*track->type() == TRACK_TYPE_AUDIO*/ ) {
+			AudioClipBase* audioClip = dynamic_cast<AudioClipBase*>(clip);
+			if ( !audioClip ) {
+				continue;
+			}
+			if ( clip->has_automation() && audioClip->automations() ) {
 				//Draw Automations
 				AudioClipBase* audioClip = dynamic_cast<AudioClipBase*>(clip);
 
-				if ( !audioClip ) {
-					continue;
-				}
 				float stretchF;
 				if ( track->type() == TRACK_TYPE_AUDIO ) {
 					stretchF = track->stretchFactor();
@@ -581,7 +610,7 @@ void TimelineView::scroll( int64_t position )
 }
 void TimelineView::zoom( float zoom )
 {
-	if ( isinf(zoom) || isnan(zoom) || zoom >= 10.0 ) {
+	if ( isinf(zoom) || isnan(zoom) || zoom >= 300.0 ) {
 		redraw();
 		e_stylus_position( get_screen_position(m_stylusPosition) );
 		return;
@@ -916,13 +945,13 @@ void TimelineView::updateEffectDisplay()
 	g_ui->effect_browser->clear();
 	if ( !m_selectedClips || m_selectedClips->next ) {
 		g_ui->m_effectMenu->deactivate();
-		g_histogram->setVideoClip( 0, 0 );
+		//g_histogram->setVideoClip( 0, 0 );
 		return;
 	}
 	VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>( m_selectedClips->clip );
 	if ( !vc ) {
 		g_ui->m_effectMenu->deactivate();
-		g_histogram->setVideoClip( 0, 0 );
+		//g_histogram->setVideoClip( 0, 0 );
 		return;
 	}
 	g_ui->m_effectMenu->activate();
@@ -1108,30 +1137,30 @@ void TimelineView::move_cursor( int64_t position )
 	}
 	window()->make_current();
 	long screen_pos = get_screen_position(m_stylusPosition);
-	if ( screen_pos < ( LEFT_TRACK_SPACING + x() ) ) {
-		m_scrollPosition = get_real_position( screen_pos );
+	if ( screen_pos > w() + x() - 30 ) {
+		m_scrollPosition += (int64_t)( ( 30 - x() - w() + screen_pos ) / SwitchBoard::i()->zoom() );
 		adjustScrollbar();
 		redraw();
-	} else if ( screen_pos > w() + x() - TRACK_SPACING - 50 ) {
-		m_scrollPosition = get_real_position( screen_pos );
+	} else if ( screen_pos < x() + LEFT_TRACK_SPACING + 20 && m_scrollPosition > 0 ) {
+		m_scrollPosition -= (int64_t)( ( 20 - ( screen_pos - x() - LEFT_TRACK_SPACING ) ) / SwitchBoard::i()->zoom() );
+		if ( m_scrollPosition < 0 ) { m_scrollPosition = 0; }
 		adjustScrollbar();
 		redraw();
 	} else {
-		window()->make_current();
 		fl_overlay_rect( get_screen_position(m_stylusPosition), parent()->y(), 1, parent()->h() );
 	}
 	e_stylus_position( get_screen_position(m_stylusPosition) );
 	e_seek_position( m_stylusPosition );
 
 	// signal histogram view
-	if ( m_selectedClips && !m_selectedClips->next ) {
+/*	if ( m_selectedClips && !m_selectedClips->next ) {
 		VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>( m_selectedClips->clip );
 		Clip* clip = m_selectedClips->clip;
 		if ( vc && m_stylusPosition >= clip->A() && m_stylusPosition <= clip->B() ) {
 			g_histogram->setVideoClip( vc, m_stylusPosition );
 		}
 
-	}
+	}*/
 }
 void TimelineView::stylus( long stylus_pos )
 {

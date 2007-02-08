@@ -1,4 +1,4 @@
-/* ColorCurveFilter.H
+/* IVideoEffect.H
  *
  *  Copyright (C) 2007 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,35 +17,20 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _COLOR_CURVE_FILTER_H_
-#define _COLOR_CURVE_FILTER_H_
+#ifndef _AUTOMATION_PLUGIN_H_
+#define _AUTOMATION_PLUGIN_H_
 
 #include "IVideoEffect.H"
 
 namespace nle
 {
 
-class ColorCurveFilter : public IVideoEffect
+class AutomationPlugin : public IVideoEffect
 {
 	public:
-		ColorCurveFilter( int w, int h );
-		~ColorCurveFilter();
-		frame_struct* getFrame( frame_struct* frame, int64_t position = -1 );
-		const char* name();
-		int numParams() { return 1; }
-		IEffectDialog* dialog();
-		IEffectDialog* m_dialog;
-		unsigned char m_values[256];
-		unsigned char m_values_r[256];
-		unsigned char m_values_g[256];
-		unsigned char m_values_b[256];
 	private:
-		unsigned char *m_frame;
-		unsigned char **m_rows;
-		frame_struct m_framestruct;
-};
+}
 
-	
 } /* namespace nle */
 
-#endif /* _COLOR_CURVE_FILTER_H_ */
+#endif /* _AUTOMATION_PLUGIN_H_ */

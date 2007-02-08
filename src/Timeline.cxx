@@ -136,7 +136,7 @@ frame_struct** Timeline::getFormattedFrameStack( int64_t position )
 
 	if ( position < 0 ) {
 		position = m_seekPosition;
-		m_seekPosition++;
+		m_seekPosition += 35280000 / (int)g_fps;
 	}
 	
 	m_playPosition = position;
@@ -166,7 +166,7 @@ frame_struct** Timeline::getFrameStack( int64_t position )
 
 	if ( position < 0 ) {
 		position = m_seekPosition;
-		m_seekPosition++;
+		m_seekPosition += 35280000 / (int)g_fps;
 	}
 	
 	m_playPosition = position;

@@ -23,6 +23,7 @@
 #include "ColorCurveDialog.H"
 #include "CurveEditor.H"
 #include "ColorCurveFilter.H"
+#include "ColorGrader.h"
 
 
 namespace nle
@@ -36,11 +37,17 @@ static void closeCallback( Fl_Widget*, void* data ) {
 ColorCurveDialog::ColorCurveDialog( ColorCurveFilter* filter )
 	: m_filter( filter )
 {
-	m_dialog = new Fl_Double_Window( 210, 210 + 25 + 5, "Frei0r Effect" );
+	m_dialog = new Fl_Double_Window( 430, 335 + 25 + 10, "Color Curves" );
 
-	new CurveEditor( 5, 5, 200, 200, filter->m_values );
+	ColorGrader* cg = new ColorGrader( 0, 0, 430, 335 );
+
+	cg->m_values_r = filter->m_values_r;
+	cg->m_values_g = filter->m_values_g;
+	cg->m_values_b = filter->m_values_b;
+
+	//new CurveEditor( 5, 5, 200, 200, filter->m_values );
 	{
-		Fl_Return_Button* o = new Fl_Return_Button( 5, 210, 200, 25, "Close" );
+		Fl_Return_Button* o = new Fl_Return_Button( 5, 340, 420, 25, "Close" );
 		o->callback( closeCallback, this );
 		m_dialog->hotspot( o );
 	}

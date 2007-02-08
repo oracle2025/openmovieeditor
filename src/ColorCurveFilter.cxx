@@ -20,7 +20,6 @@
 #include "ColorCurveFilter.H"
 #include "ColorCurveDialog.H"
 
-
 namespace nle
 {
 
@@ -64,18 +63,18 @@ frame_struct* ColorCurveFilter::getFrame( frame_struct* frame, int64_t )
 		m_framestruct.has_alpha_channel = true;
 		while (len--)
 		{
-			*dst++ = m_values[*src++];
-			*dst++ = m_values[*src++];
-			*dst++ = m_values[*src++];
+			*dst++ = m_values_r[*src++];
+			*dst++ = m_values_g[*src++];
+			*dst++ = m_values_b[*src++];
 			*dst++ = *src++; // copy alpha
 		}
 	} else {
 		m_framestruct.has_alpha_channel = false;
 		while (len--)
 		{
-			*dst++ = m_values[*src++];
-			*dst++ = m_values[*src++];
-			*dst++ = m_values[*src++];
+			*dst++ = m_values_r[*src++];
+			*dst++ = m_values_g[*src++];
+			*dst++ = m_values_b[*src++];
 		}
 	}
 	return &m_framestruct;

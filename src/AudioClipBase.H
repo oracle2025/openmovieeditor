@@ -54,10 +54,13 @@ class AudioClipBase : public Clip
 		virtual int64_t audioPosition() = 0;
 		virtual auto_node* getAutoPoints() { return 0; }
 		virtual void setAutoPoints( auto_node* ) {}
+		bool automations() { return m_automations; }
+		void automations( bool b ) { m_automations = b; }
 	protected:
 		AudioClipBase( Track *track, int64_t position, IAudioFile* af = 0, int id = -1 );
 		string audioFilename();
 		IAudioFile* m_audioFile;
+		bool m_automations;
 	private:
 		int fillBufferForEnvelope( float* output, unsigned long frames, int64_t position );
 		int64_t m_lastSamplePosition;

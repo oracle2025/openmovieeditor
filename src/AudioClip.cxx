@@ -106,7 +106,11 @@ void AudioClip::reset()
 }
 int AudioClip::fillBuffer( float* output, unsigned long frames, int64_t position )
 {
-	return m_envelopeClip->fillBuffer( output, frames, position );
+	if ( m_automations ) {
+		return m_envelopeClip->fillBuffer( output, frames, position );
+	} else {
+		return AudioClipBase::fillBuffer( output, frames, position );
+	}
 }
 int64_t AudioClip::fileLength()
 {

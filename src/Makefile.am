@@ -213,8 +213,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	fl_font_browser.h\
 	EnvelopeClip.cxx\
 	EnvelopeClip.H\
-	HistogramView.H\
-	HistogramView.cxx\
 	IEffectDialog.H\
 	ColorCurveFactory.cxx\
 	ColorCurveFactory.H\
@@ -223,6 +221,12 @@ openmovieeditor_SOURCES = nle.cxx\
 	CurveEditor.cxx\
 	CurveEditor.H\
 	ColorCurveDialog.cxx\
-	ColorCurveDialog.H
+	ColorCurveDialog.H\
+	CurveViewRGB.cxx\
+	CurveViewRGB.H\
+	ColorWheel.H\
+	ColorWheel.cxx\
+	ColorGrader.h\
+	ColorGrader.cxx
 
 

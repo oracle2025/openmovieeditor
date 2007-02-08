@@ -46,7 +46,6 @@ RemoveCommand::RemoveCommand( Clip* clip )
 	m_audioClip = 0;
 	AudioClipBase* ac = dynamic_cast<AudioClipBase*>(clip);
 	if ( ac ) {
-		m_audioClip = true;
 		auto_node* n = ac->getAutoPoints();
 		int i = 0;
 		while ( n ) {
@@ -63,10 +62,13 @@ RemoveCommand::RemoveCommand( Clip* clip )
 			n = n->next;
 			i++;
 		}
-	} else {
-		VideoClip* vc = dynamic_cast<VideoClip*>(clip);
-		if ( vc ) { m_mute = vc->m_mute; }
 	}
+	AudioClip* acc = dynamic_cast<AudioClip*>(clip);
+	if ( acc ) {
+		m_audioClip = true;
+	}
+	VideoClip* vc = dynamic_cast<VideoClip*>(clip);
+	if ( vc ) { m_mute = vc->m_mute; }
 	m_data = clip->getClipData();
 }
 RemoveCommand::~RemoveCommand()
@@ -90,6 +92,7 @@ void RemoveCommand::doo()
 
 void RemoveCommand::undo()
 {
+	cout << "remove command" << endl;
 	Track* t = g_timeline->getTrack( m_track );
 	Clip* c;
 	if ( m_audioClip ) {

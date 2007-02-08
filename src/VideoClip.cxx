@@ -163,7 +163,7 @@ void VideoClip::trimA( int64_t trim )
 	if ( length() - trim <= 0 || trim == 0 ) {
 		return;
 	}
-	m_envelopeClip->trimA( trim * (int64_t)( 48000 / g_fps ) );
+	if ( m_envelopeClip ) { m_envelopeClip->trimA( trim * 48000 / NLE_TIME_BASE ); }
 	Clip::trimA( trim );
 }
 void VideoClip::trimB( int64_t trim )
@@ -174,12 +174,17 @@ void VideoClip::trimB( int64_t trim )
 	if ( length() - trim <= 0 ) {
 		return;
 	}
-	m_envelopeClip->trimB( trim * (int64_t)( 48000 / g_fps ) );
+	if ( m_envelopeClip ) { m_envelopeClip->trimB( trim * 48000 / NLE_TIME_BASE ); }
 	Clip::trimB( trim );
 }
 int VideoClip::fillBuffer( float* output, unsigned long frames, int64_t position )
 {
-	return m_envelopeClip->fillBuffer( output, frames, position );
+	if ( !m_envelopeClip ) { return 0; }
+	if ( m_automations ) {
+		return m_envelopeClip->fillBuffer( output, frames, position );
+	} else {
+		return AudioClipBase::fillBuffer( output, frames, position );
+	}
 }
 
 } /* namespace nle */

@@ -123,10 +123,12 @@ int Project::write( string filename, string name )
 			clip->SetAttribute( "filename", cn->clip->filename().c_str() );
 			snprintf( buffer, sizeof(buffer), "%lld", cn->clip->position() );
 			clip->SetAttribute( "position", buffer );
-			clip->SetAttribute( "length", cn->clip->length() );
-			clip->SetAttribute( "trimA", cn->clip->trimA() );
-			clip->SetAttribute( "trimB", cn->clip->trimB() );
-			clip->SetAttribute( "trimB", cn->clip->trimB() );
+			snprintf( buffer, sizeof(buffer), "%lld", cn->clip->length() );
+			clip->SetAttribute( "length", buffer );
+			snprintf( buffer, sizeof(buffer), "%lld", cn->clip->trimA() );
+			clip->SetAttribute( "trimA", buffer );
+			snprintf( buffer, sizeof(buffer), "%lld", cn->clip->trimB() );
+			clip->SetAttribute( "trimB", buffer );
 			if ( AudioClipBase* ac = dynamic_cast<AudioClipBase*>(cn->clip) ) {
 				auto_node* q = ac->getAutoPoints();
 				for ( ; q; q = q->next ) {
@@ -256,15 +258,25 @@ int Project::read( string filename )
 		TiXmlElement* j = TiXmlHandle( track ).FirstChildElement( "clip" ).Element();
 		for ( ; j; j = j->NextSiblingElement( "clip" ) ) {
 			int64_t position; //TODO: int64_t problem
-			int trimA;
-			int trimB;
+			int64_t trimA;
+			int64_t trimB;
 			int mute = 0;
-			int length;
+			int64_t length;
 			char filename[1024];
 			const char* position_str;
 			if ( ! ( position_str = j->Attribute( "position" ) ) )
 				continue;
 			position = atoll( position_str );
+			if ( ! ( position_str = j->Attribute( "trimA" ) ) )
+				continue;
+			trimA = atoll( position_str );
+			if ( ! ( position_str = j->Attribute( "trimB" ) ) )
+				continue;
+			trimB = atoll( position_str );
+			if ( ! ( position_str = j->Attribute( "length" ) ) )
+				continue;
+			length = atoll( position_str );
+			/*
 			if ( ! j->Attribute( "trimA", &trimA ) )
 				continue;
 			if ( ! j->Attribute( "trimB", &trimB ) )
@@ -272,6 +284,7 @@ int Project::read( string filename )
 			if ( ! j->Attribute( "length", &length ) ) {
 				length = -1;
 			}
+			*/
 			strlcpy( filename, j->Attribute( "filename" ), sizeof(filename) );
 			if ( ! filename ) //TODO is this correct?
 				continue;
@@ -504,21 +517,32 @@ int Project::read( string filename )
 		TiXmlElement* j = TiXmlHandle( track ).FirstChildElement( "clip" ).Element();
 		for ( ; j; j = j->NextSiblingElement( "clip" ) ) {
 			int64_t position;
-			int trimA;
-			int trimB;
-			int length;
+			int64_t trimA;
+			int64_t trimB;
+			int64_t length;
 			char filename[1024];
 			const char* position_str;
 			if ( ! ( position_str = j->Attribute( "position" ) ) )
 				continue;
 			position = atoll( position_str );
-			if ( ! j->Attribute( "trimA", &trimA ) )
+			if ( ! ( position_str = j->Attribute( "trimA" ) ) )
+				continue;
+			trimA = atoll( position_str );
+			if ( ! ( position_str = j->Attribute( "trimB" ) ) )
+				continue;
+			trimB = atoll( position_str );
+			if ( ! ( position_str = j->Attribute( "length" ) ) )
+				continue;
+			length = atoll( position_str );
+
+			
+			/*if ( ! j->Attribute( "trimA", &trimA ) )
 				continue;
 			if ( ! j->Attribute( "trimB", &trimB ) )
 				continue;
 			if ( ! j->Attribute( "length", &length ) ) {
 				length = -1;
-			}
+			}*/
 			strlcpy( filename, j->Attribute( "filename" ), sizeof(filename) );
 			if ( ! filename )
 				continue;

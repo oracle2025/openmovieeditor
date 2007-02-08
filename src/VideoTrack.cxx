@@ -60,7 +60,6 @@ void VideoTrack::sort()
 }
 void VideoTrack::addFile( int64_t position, string filename, int64_t trimA, int64_t trimB, int mute, int id, int64_t length, ClipData* data )
 {
-	cout << "Filename: " << filename << endl;
 	if ( filename == "TitleClip" ) {
 		TitleClip* c = new TitleClip( this, position, length - trimA - trimB, id, data );
 		addClip( c );
@@ -313,7 +312,6 @@ int VideoTrack::fillBuffer( float* output, unsigned long frames, int64_t positio
 	float* incBuffer = output;
 	float buf[23040*2];
 	assert( frames <= 23040);
-
 	while ( m_current && m_current->clip->type() != CLIP_TYPE_VIDEO && m_current->clip->type() != CLIP_TYPE_AUDIO ) {
 		m_current = m_current->next;
 	}

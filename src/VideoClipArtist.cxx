@@ -61,14 +61,14 @@ void VideoClipArtist::render( Rect& rect_in, int64_t start, int64_t stop )
 	FilmStrip* fs = m_clip->getFilmStrip();
 	int64_t s = m_clip->trimA() / (4 * NLE_TIME_BASE);
 	int64_t e = ( m_clip->length() / (4 * NLE_TIME_BASE) ) + s;
-	int64_t off = m_clip->trimA() % (NLE_TIME_BASE * 4);
+	//int64_t off = m_clip->trimA() % (NLE_TIME_BASE * 4);
 	int64_t inc = 1 + (int64_t)( 10.0 / SwitchBoard::i()->zoom() );
 	assert( inc >= 1 );
 	for ( int64_t k = s; k < e + 2; k += inc ) {
 		// TODO: g_timeline should not be used, rect, start and stop are
 		// sufficient
 
-		_x = g_timelineView->get_screen_position( m_clip->position() + (k - s) * NLE_TIME_BASE * 4, m_clip->track()->stretchFactor()  ) - off;
+		_x = g_timelineView->get_screen_position( m_clip->position() + (k - s) * NLE_TIME_BASE * 4, m_clip->track()->stretchFactor() );
 		
 		pic_struct* f = fs->get_pic(k);
 		if ( f ) {

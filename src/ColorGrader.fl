@@ -1,0 +1,267 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0107 
+header_name {.h} 
+code_name {.cxx}
+widget_class ColorGrader {
+  label {Color Curves} open
+  xywh {571 206 430 335} type Double visible
+} {
+  Fl_Slider r_contrast_slider {
+    label R
+    callback {if ( contrast_combine->value() ) {
+	g_contrast_slider->value( o->value() );
+	b_contrast_slider->value( o->value() );
+}
+
+contrast_view->contrast( r_contrast_slider->value(),
+	g_contrast_slider->value(),
+	b_contrast_slider->value() );
+combine_curve();}
+    xywh {20 25 145 25} type {Horz Knob} color 9 align 4 minimum -256 maximum 256
+  }
+  Fl_Slider g_contrast_slider {
+    label G
+    callback {if ( contrast_combine->value() ) {
+	r_contrast_slider->value( o->value() );
+	b_contrast_slider->value( o->value() );
+}
+contrast_view->contrast( r_contrast_slider->value(),
+	g_contrast_slider->value(),
+	b_contrast_slider->value() );
+combine_curve();}
+    xywh {20 50 145 25} type {Horz Knob} color 10 align 4 minimum -256 maximum 256
+  }
+  Fl_Slider b_contrast_slider {
+    label B
+    callback {if ( contrast_combine->value() ) {
+	r_contrast_slider->value( o->value() );
+	g_contrast_slider->value( o->value() );
+}
+contrast_view->contrast( r_contrast_slider->value(),
+	g_contrast_slider->value(),
+	b_contrast_slider->value() );
+combine_curve();}
+    xywh {20 75 145 25} type {Horz Knob} color 12 align 4 minimum -256 maximum 256
+  }
+  Fl_Light_Button contrast_combine {
+    label {Combine Contrast}
+    xywh {20 5 145 20} value 1 labelsize 12
+  }
+  Fl_Box contrast_view {
+    label Contrast
+    xywh {180 5 95 95} box DOWN_BOX labelsize 12 align 21
+    code0 {\#include "CurveViewRGB.H"}
+    class CurveViewRGB
+  }
+  Fl_Light_Button brightness_combine {
+    label {Combine Brightness}
+    xywh {20 105 145 20} value 1 labelsize 12
+  }
+  Fl_Box brightness_view {
+    label Brightness
+    xywh {180 105 95 95} box DOWN_BOX labelsize 12 align 21
+    class CurveViewRGB
+  }
+  Fl_Slider r_gamma_slider {
+    label R
+    callback {if ( gamma_combine->value() ) {
+	g_gamma_slider->value( o->value() );
+	b_gamma_slider->value( o->value() );
+}
+gamma_view->gamma( r_gamma_slider->value(),
+	g_gamma_slider->value(),
+	b_gamma_slider->value() );
+combine_curve();}
+    xywh {20 225 145 25} type {Horz Knob} color 9 align 4 value 0.25
+  }
+  Fl_Slider g_gamma_slider {
+    label G
+    callback {if ( gamma_combine->value() ) {
+	r_gamma_slider->value( o->value() );
+	b_gamma_slider->value( o->value() );
+}
+gamma_view->gamma( r_gamma_slider->value(),
+	g_gamma_slider->value(),
+	b_gamma_slider->value() );
+combine_curve();}
+    xywh {20 250 145 25} type {Horz Knob} color 10 align 4 value 0.25
+  }
+  Fl_Slider b_gamma_slider {
+    label B
+    callback {if ( gamma_combine->value() ) {
+	r_gamma_slider->value( o->value() );
+	g_gamma_slider->value( o->value() );
+}
+gamma_view->gamma( r_gamma_slider->value(),
+	g_gamma_slider->value(),
+	b_gamma_slider->value() );
+combine_curve();}
+    xywh {20 275 145 25} type {Horz Knob} color 12 align 4 value 0.25
+  }
+  Fl_Light_Button gamma_combine {
+    label {Combine Gamma}
+    xywh {20 205 145 20} value 1 labelsize 12
+  }
+  Fl_Box gamma_view {
+    label Gamma
+    xywh {180 205 95 95} box DOWN_BOX labelsize 12 align 21
+    class CurveViewRGB
+  }
+  Fl_Button {} {
+    callback {r_contrast_slider->value(0);
+recalc_sliders();}
+    tooltip Reset xywh {165 25 15 25}
+  }
+  Fl_Button {} {
+    callback {g_contrast_slider->value(0);
+recalc_sliders();}
+    tooltip Reset xywh {165 50 15 25}
+  }
+  Fl_Button {} {
+    callback {b_contrast_slider->value(0);
+recalc_sliders();}
+    tooltip Reset xywh {165 75 15 25}
+  }
+  Fl_Button {} {
+    callback {r_brightness_slider->value(0);
+recalc_sliders();}
+    tooltip Reset xywh {165 125 15 25}
+  }
+  Fl_Button {} {
+    callback {g_brightness_slider->value(0);
+recalc_sliders();}
+    tooltip Reset xywh {165 150 15 25}
+  }
+  Fl_Button {} {
+    callback {b_brightness_slider->value(0);
+recalc_sliders();}
+    tooltip Reset xywh {165 175 15 25}
+  }
+  Fl_Button {} {
+    callback {r_gamma_slider->value(0.25);
+recalc_sliders();}
+    tooltip Reset xywh {165 225 15 25}
+  }
+  Fl_Button {} {
+    callback {g_gamma_slider->value(0.25);
+recalc_sliders();}
+    tooltip Reset xywh {165 250 15 25}
+  }
+  Fl_Button {} {
+    callback {b_gamma_slider->value(0.25);
+recalc_sliders();}
+    tooltip Reset xywh {165 275 15 25}
+  }
+  Fl_Box combined_view {
+    label Combined
+    xywh {280 5 145 145} box DOWN_BOX align 21
+    code0 {\#include "globals.H"}
+    code1 {\#include "VideoViewGL.H"}
+    class CurveViewRGB
+  }
+  Fl_Box {} {
+    label {Color Wheel}
+    xywh {280 155 145 145} box DOWN_BOX align 21
+    code0 {\#include "ColorWheel.H"}
+    class ColorWheel
+  }
+  Fl_Slider r_brightness_slider {
+    label R
+    callback {if ( brightness_combine->value() ) {
+	g_brightness_slider->value( o->value() );
+	b_brightness_slider->value( o->value() );
+}
+brightness_view->brightness( r_brightness_slider->value(),
+	g_brightness_slider->value(),
+	b_brightness_slider->value() );
+combine_curve();}
+    xywh {20 125 145 25} type {Horz Knob} color 9 align 4 minimum -256 maximum 256
+  }
+  Fl_Slider g_brightness_slider {
+    label G
+    callback {if ( brightness_combine->value() ) {
+	r_brightness_slider->value( o->value() );
+	b_brightness_slider->value( o->value() );
+}
+brightness_view->brightness( r_brightness_slider->value(),
+	g_brightness_slider->value(),
+	b_brightness_slider->value() );
+combine_curve();}
+    xywh {20 150 145 25} type {Horz Knob} color 10 align 4 minimum -256 maximum 256
+  }
+  Fl_Slider b_brightness_slider {
+    label B
+    callback {if ( brightness_combine->value() ) {
+	r_brightness_slider->value( o->value() );
+	g_brightness_slider->value( o->value() );
+}
+brightness_view->brightness( r_brightness_slider->value(),
+	g_brightness_slider->value(),
+	b_brightness_slider->value() );
+combine_curve();}
+    xywh {20 175 145 25} type {Horz Knob} color 12 align 4 minimum -256 maximum 256
+  }
+  Function {combine_curve()} {open
+  } {
+    code {int i;
+unsigned char *lut = combined_view->m_values_r;
+unsigned char *contrast = contrast_view->m_values_r;
+unsigned char *brightness = brightness_view->m_values_r;
+unsigned char *gamma = gamma_view->m_values_r;
+for (i=0; i<256; ++i) {
+	lut[i] = gamma[brightness[contrast[i]]];
+	m_values_r[i] = lut[i];
+}
+lut = combined_view->m_values_g;
+contrast = contrast_view->m_values_g;
+brightness = brightness_view->m_values_g;
+gamma = gamma_view->m_values_g;
+for (i=0; i<256; ++i) {
+	lut[i] = gamma[brightness[contrast[i]]];
+	m_values_g[i] = lut[i];
+}
+lut = combined_view->m_values_b;
+contrast = contrast_view->m_values_b;
+brightness = brightness_view->m_values_b;
+gamma = gamma_view->m_values_b;
+for (i=0; i<256; ++i) {
+	lut[i] = gamma[brightness[contrast[i]]];
+	m_values_b[i] = lut[i];
+}
+combined_view->redraw();
+nle::g_videoView->redraw();} {}
+  }
+  decl {unsigned char* m_values_r;} {public
+  }
+  decl {unsigned char* m_values_g;} {public
+  }
+  decl {unsigned char* m_values_b;} {public
+  }
+  Fl_Check_Button {} {
+    label Bypass
+    callback {if ( o->value() ) {
+	for (int i=0; i<256; ++i) {
+		m_values_r[i] = i;
+		m_values_g[i] = i;
+		m_values_b[i] = i;
+	}
+	nle::g_videoView->redraw();
+} else {
+	combine_curve();
+}} selected
+    xywh {20 305 145 25} down_box DOWN_BOX
+  }
+  Function {recalc_sliders()} {open
+  } {
+    code {contrast_view->contrast( r_contrast_slider->value(),
+	g_contrast_slider->value(),
+	b_contrast_slider->value() );
+brightness_view->brightness( r_brightness_slider->value(),
+	g_brightness_slider->value(),
+	b_brightness_slider->value() );
+gamma_view->gamma( r_gamma_slider->value(),
+	g_gamma_slider->value(),
+	b_gamma_slider->value() );
+combine_curve();} {}
+  }
+} 
