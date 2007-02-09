@@ -107,7 +107,7 @@ static int reset_clip( void* p, void* )
 static int cmp_clip(void *p1, void *p2)
 {
         clip_node *q1 = (clip_node*)p1, *q2 = (clip_node*)p2;
-        return q1->clip->position() - q2->clip->position();
+        return q1->clip->position() > q2->clip->position();
 }       
 void Track::sort()
 {
