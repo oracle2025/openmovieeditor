@@ -49,7 +49,6 @@
 
 namespace nle
 {
-//static char project_filename[1024];
 
 Project* g_project;
 
@@ -59,13 +58,6 @@ Project::Project()
 }
 int Project::write( string filename, string name )
 {
-/*	strcpy( project_filename, "" );
-	if ( !getenv( "HOME" ) ) {
-		return;
-	}
-	strlcpy( project_filename, getenv( "HOME" ), sizeof(project_filename) );
-	strncat( project_filename, "/.openme.project", sizeof(project_filename) - strlen( project_filename ) - 1 );
-*/	
 	char buffer[512];
 	TiXmlDocument doc( filename.c_str() );
 	TiXmlDeclaration* dec = new TiXmlDeclaration( "1.0", "", "no" );
@@ -224,13 +216,6 @@ int Project::write( string filename, string name )
 extern Frei0rFactory* g_frei0rFactory;
 int Project::read( string filename )
 {
-/*	strcpy( project_filename, "" );
-	if ( !getenv( "HOME" ) ) {
-		return;
-	}
-	strlcpy( project_filename, getenv( "HOME" ), sizeof(project_filename) );
-	strncat( project_filename, "/.openme.project", sizeof(project_filename) - strlen( project_filename ) - 1 );
-*/	
 	TiXmlDocument doc( filename.c_str() );
 	if ( !doc.LoadFile() ) {
 		return 0;
