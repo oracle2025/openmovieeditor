@@ -1,4 +1,4 @@
-/* IVideoEffect.H
+/* AutomationPlugin.H
  *
  *  Copyright (C) 2007 Richard Spindler <richard.spindler AT gmail.com>
  *
