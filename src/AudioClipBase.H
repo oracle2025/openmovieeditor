@@ -26,12 +26,18 @@
 
 namespace nle
 {
-typedef struct _auto_node {
+
+typedef struct _filter_stack {
+	struct _filter_stack* next;
+	AudioFilter* filter;
+} filter_stack;
+	
+/*typedef struct _auto_node {
 	struct _auto_node *next;
 	int64_t x;
 	float y;
 } auto_node;
-
+*/
 class IAudioFile;
 class EnvelopeClip;
 /*
@@ -45,25 +51,32 @@ class AudioClipBase : public Clip
 	friend class EnvelopeClip;
 	public:
 		virtual ~AudioClipBase();
+		
+		virtual int fillBufferRaw( float* output, unsigned long frames, int64_t position );
 		virtual int fillBuffer( float* output, unsigned long frames, int64_t position );
+
+		
 		virtual void reset();
 		bool m_mute;
 		virtual int64_t audioTrimA() = 0;
 		virtual int64_t audioTrimB() = 0;
 		int64_t audioLength();
 		virtual int64_t audioPosition() = 0;
-		virtual auto_node* getAutoPoints() { return 0; }
-		virtual void setAutoPoints( auto_node* ) {}
-		bool automations() { return m_automations; }
-		void automations( bool b ) { m_automations = b; }
+		int64_t trimA( int64_t trim );
+		int64_t trimB( int64_t trim );
+		
+		AudioFilter* appendFilter( AudioFilterFactory* factory );
+		void pushFilter( FilterFactory* factory )
+		filter_stack* getFilters() { return m_filters; }
+		
 	protected:
 		AudioClipBase( Track *track, int64_t position, IAudioFile* af = 0, int id = -1 );
 		string audioFilename();
 		IAudioFile* m_audioFile;
-		bool m_automations;
 	private:
 		int fillBufferForEnvelope( float* output, unsigned long frames, int64_t position );
 		int64_t m_lastSamplePosition;
+		filter_stack* m_filters;
 };
 
 } /* namespace nle */

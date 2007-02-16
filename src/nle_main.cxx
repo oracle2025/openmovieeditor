@@ -1,6 +1,6 @@
 /*  nle_main.cxx
  *
- *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2005-2007 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -81,8 +81,8 @@ int main( int argc, char** argv )
 	NleUI nui;
 	nle::g_ui = &nui;
 	nle::Frei0rFactory effectFactory( nui.m_effectMenu );
-
-	nui.m_effectMenu->addEffect( new nle::ColorCurveFactory() );
+	nle::ColorCurveFactory colorCurveFactory();
+	nui.m_effectMenu->addEffect( &colorCurveFactory );
 
 	
 	nle::IPlaybackCore* playbackCore = new nle::JackPlaybackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );

@@ -22,7 +22,7 @@
 #include "global_includes.H"
 
 #include "VideoEffectClip.H"
-#include "AbstractEffectFactory.H"
+#include "FilterFactory.H"
 #include "IVideoEffect.H"
 #include "VideoClip.H"
 #include "ImageClip.H"
@@ -78,7 +78,7 @@ void VideoEffectClip::setEffects( ClipData* data )
 {
 	EffectClipData* edata = dynamic_cast<EffectClipData*>(data);
 	if ( edata ) {
-		AbstractEffectFactory* ef;
+		FilterFactory* ef;
 		for ( int i = 0; i < edata->effect_count; i++ ) {
 			ef = g_frei0rFactory->get( edata->effects[i].name );
 			if ( ef ) {
@@ -132,18 +132,28 @@ frame_struct* VideoEffectClip::getFrame( int64_t position )
 	return f;
 
 }
-IVideoEffect* VideoEffectClip::appendEffect( AbstractEffectFactory* factory )
+IVideoEffect* VideoEffectClip::appendEffect( FilterFactory* factory )
 {
-	IVideoEffect* e = factory->get( w(), h() );
+	FilterBase* fb = factory->get( this );
+	IVideoEffect* e = dynamic_cast<IVideoEffect*>(fb);
+	if ( !e ) {
+		delete fb;
+		return 0;
+	}
 	effect_stack* n = new effect_stack;
 	n->next = 0;
 	n->effect = e;
 	m_effects = (effect_stack*)sl_unshift( m_effects, n );
 	return e;
 }
-void VideoEffectClip::pushEffect( AbstractEffectFactory* factory )
+void VideoEffectClip::pushEffect( FilterFactory* factory )
 {
-	IVideoEffect* e = factory->get( w(), h() );
+	FilterBase* fb = factory->get( this );
+	IVideoEffect* e = dynamic_cast<IVideoEffect*>(fb);
+	if ( !e ) {
+		delete fb;
+		return 0;
+	}
 	effect_stack* n = new effect_stack;
 	n->next = 0;
 	n->effect = e;

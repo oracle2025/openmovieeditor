@@ -126,7 +126,7 @@ void Frei0rFactory::list()
 {
 }
 
-AbstractEffectFactory* Frei0rFactory::get( string name )
+FilterFactory* Frei0rFactory::get( string name )
 {
 	effect_node* p;
 	for ( p = m_effects; p; p = p->next ) {

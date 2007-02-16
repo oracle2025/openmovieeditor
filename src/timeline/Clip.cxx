@@ -45,25 +45,29 @@ Clip::Clip( Track *track, int64_t position, int id )
 	}
 	m_selected = false;
 }
-void Clip::trimA( int64_t trim )
+int64_t Clip::trimA( int64_t trim )
 {
 	if ( length() - trim <= 0 ) {
-		return;
+		return 0;
 	}
 	m_position = m_position - m_trimA;
+	if ( ( m_trimA + trim ) < 0 ) {
+		trim = m_trimA;
+	}
 	m_trimA += trim;
-	if ( m_trimA < 0 )
-		m_trimA = 0;
 	m_position = m_position + m_trimA;
+	return trim;
 }
-void Clip::trimB( int64_t trim )
+int64_t Clip::trimB( int64_t trim )
 {
 	if ( length() - trim <= 0 ) {
-		return;
+		return 0;
+	}
+	if ( ( m_trimB + trim) < 0 ) {
+		trim = m_trimB;
 	}
 	m_trimB += trim;
-	if ( m_trimB < 0 )
-		m_trimB = 0;
+	return trim;
 }
 
 } /* namespace nle */

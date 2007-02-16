@@ -1,4 +1,4 @@
-/* ColorCurveFactory.H
+/*  AudioVolumeFilter.H
  *
  *  Copyright (C) 2007 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,25 +17,40 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _COLOR_CURVE_FACTORY_H_
-#define _COLOR_CURVE_FACTORY_H_
+#ifndef _AUDIO_VOLUME_FILTER_H_
+#define _AUDIO_VOLUME_FILTER_H_
 
-#include "FilterFactory.H"
+#include <stdint.h>
 
 namespace nle
 {
 
-class Clip;
+class DragHandler;
 
-class ColorCurveFactory : public FilterFactory
+class AudioVolumeFilter
 {
 	public:
-		ColorCurveFactory();
-		~ColorCurveFactory();
-		FilterBase* get( Clip* clip );
-		const char* name();
+		AudioVolumeFilter( AudioClipBase* clip );
+		~AudioVolumeFilter();
+		void onDraw();
+		DragHandler* onMouseDown();
+		int fillBuffer( float* input_output, unsigned long frames, int64_t position );
+		//void writeXML( xml_node );
+		//void readXML( xml_node );
+		//void setParams();
+		//void getParams();
+		void reset();
+		void trimA( int64_t trim );
+		void trimB( int64_t trim );
+	private:
+		float getEnvelope( int64_t position );
+		auto_node* m_automationPoints;
+		auto_node* m_autoCache;
+		AudioClipBase* m_audioClip;
 };
 
 } /* namespace nle */
 
-#endif /* _COLOR_CURVE_FACTORY_H_ */
+
+#endif /* _AUDIO_VOLUME_FILTER_H_ */
+

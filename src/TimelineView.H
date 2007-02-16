@@ -41,7 +41,7 @@ class Track;
 class Clip;
 class Timeline;
 class DragHandler;
-class AbstractEffectFactory;
+class FilterFactory;
 class PasteSelectionCommand;
 class TitleClip;
 	
@@ -77,7 +77,7 @@ class TimelineView : public Fl_Widget
 		int64_t m_stylusPosition;
 		void end() {}
 		void adjustScrollbar();
-		void addEffect( AbstractEffectFactory* effectFactory );
+		void addEffect( FilterFactory* effectFactory );
 		void editEffect();
 		void moveEffectUp();
 		void moveEffectDown();

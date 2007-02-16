@@ -28,7 +28,7 @@ AudioClipBase::AudioClipBase( Track *track, int64_t position, IAudioFile* af, in
 {
 	m_audioFile = af;
 	m_mute = false;
-	m_automations = false;
+	m_filters = 0;
 }
 AudioClipBase::~AudioClipBase()
 {
@@ -36,6 +36,12 @@ AudioClipBase::~AudioClipBase()
 		delete m_audioFile;
 		m_audioFile = 0;
 	}
+	filter_stack* node;
+	while ( ( node = (filter_stack*)sl_pop( &m_filters ) ) ) {
+		delete node->filter;
+		delete node;
+	}
+
 }
 
 void AudioClipBase::reset()
@@ -45,7 +51,53 @@ void AudioClipBase::reset()
 	}
 	m_lastSamplePosition = 0; // FIXME no hardcoded number!
 	//This es especially dangerous, because it forces continous seeking when
-	//rendereing
+	//rendereing <-- is this still true?
+	for ( filter_stack* node = m_filters; node; node = node->next ) {
+		node->filter->reset();
+	}
+}
+int64_t AudioClipBase::trimA( int64_t trim )
+{
+	trim = Clip::trimA( trim );
+	for ( filter_stack* node = m_filters; node; node = node->next ) {
+		node->filter->trimA( trim );
+	}
+}
+
+int64_t AudioClipBase::trimB( int64_t trim )
+{
+	trim = Clip::trimB( trim );
+	for ( filter_stack* node = m_filters; node; node = node->next ) {
+		node->filter->trimB( trim );
+	}
+}
+
+AudioFilter* AudioClipBase::appendFilter( FilterFactory* factory )
+{
+	FilterBase* f = factory->get( this );
+	AudioFilter* e = dynamic_cast<AudioFilter*>(fb);
+	if ( !e ) {
+		delete f;
+		return 0;
+	}
+	filter_stack* n = new filter_stack;
+	n->next = 0;
+	n->filter = f;
+	m_filters = (effect_stack*)sl_unshift( m_filters, n );
+	return f;
+}
+void AudioClipBase::pushFilter( FilterFactory* factory )
+{
+	FilterBase* f = factory->get( this );
+	AudioFilter* e = dynamic_cast<AudioFilter*>(fb);
+	if ( !e ) {
+		delete f;
+		return 0;
+	}
+	filter_stack* n = new filter_stack;
+	n->next = 0;
+	n->filter = f;
+	m_effects = (effect_stack*)sl_push( m_effects, n );
 }
 
 int64_t AudioClipBase::audioLength()
@@ -61,6 +113,16 @@ int AudioClipBase::fillBufferForEnvelope( float* output, unsigned long frames, i
 	return AudioClipBase::fillBuffer( output, frames, position );
 }
 int AudioClipBase::fillBuffer( float* output, unsigned long frames, int64_t position )
+{
+	int result = fillBufferRaw( output, frames, position );
+	filter_stack* node = m_filters;
+	while ( node ) {
+		node->filter->fillBuffer( output, frames, position );
+		node = node->next;
+	}
+	return result;
+}
+int AudioClipBase::fillBufferRaw( float* output, unsigned long frames, int64_t position )
 {
 	if ( m_mute ) {
 		return 0;

@@ -1,4 +1,4 @@
-/* ColorCurveFactory.H
+/* FilterFactory.H
  *
  *  Copyright (C) 2007 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,25 +17,24 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _COLOR_CURVE_FACTORY_H_
-#define _COLOR_CURVE_FACTORY_H_
+#ifndef _FILTER_FACTORY_
+#define _FILTER_FACTORY_
 
-#include "FilterFactory.H"
 
 namespace nle
 {
 
+class FilterBase;
 class Clip;
 
-class ColorCurveFactory : public FilterFactory
+class FilterFactory
 {
 	public:
-		ColorCurveFactory();
-		~ColorCurveFactory();
-		FilterBase* get( Clip* clip );
-		const char* name();
-};
-
+		virtual const char* name() = 0;
+		virtual FilterBase* get( Clip* clip ) = 0;
+		virtual ~FilterFactory() {}
+}
+	
 } /* namespace nle */
 
-#endif /* _COLOR_CURVE_FACTORY_H_ */
+#endif /* _FILTER_FACTORY_ */

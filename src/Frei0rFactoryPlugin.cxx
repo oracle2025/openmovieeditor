@@ -59,11 +59,22 @@ Frei0rFactoryPlugin::~Frei0rFactoryPlugin()
 	}
 }
 
+FilterBase* get( Clip* clip )
+{
+	VideoEffectClip* effectClip = dynamic_cast<VideoEffectClip*>(clip);
+	if ( !effectClip ) {
+		return 0;
+	}
+	Frei0rEffect* effect = new Frei0rEffect( &m_info, m_handle, effectClip->w(), effectClip->h() );
+	return effect;
+
+}
+/*
 IVideoEffect* Frei0rFactoryPlugin::get( int w, int h )
 {
 	Frei0rEffect* effect = new Frei0rEffect( &m_info, m_handle, w, h );
 	return effect;
-}
+}*/
 const char* Frei0rFactoryPlugin::name()
 {
 	return m_info.name;

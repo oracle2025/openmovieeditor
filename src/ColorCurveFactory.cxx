@@ -30,9 +30,13 @@ ColorCurveFactory::ColorCurveFactory()
 ColorCurveFactory::~ColorCurveFactory()
 {
 }
-IVideoEffect* ColorCurveFactory::get( int w, int h )
+IVideoEffect* ColorCurveFactory::get( Clip* clip )
 {
-	return new ColorCurveFilter( w, h );
+	VideoEffectClip* effectClip = dynamic_cast<VideoEffectClip*>(clip);
+	if ( !effectClip ) {
+		return 0;
+	}
+	return new ColorCurveFilter( effectClip->w(), effectClip->h() );
 }
 	
 const char* ColorCurveFactory::name()

@@ -22,7 +22,7 @@
 
 #include "frei0r.h"
 #include "global_includes.H"
-#include "AbstractEffectFactory.H"
+#include "FilterFactory.H"
 
 typedef void (*f0r_deinit_f)(void);
 typedef int (*f0r_init_f)(void);
@@ -34,12 +34,13 @@ namespace nle
 class Frei0rEffect;
 class IVideoReader;
 
-class Frei0rFactoryPlugin : public AbstractEffectFactory
+class Frei0rFactoryPlugin : public FilterFactory
 {
 	public:
 		Frei0rFactoryPlugin( string filename );
 		~Frei0rFactoryPlugin();
-		IVideoEffect* get( int w, int h );
+		FilterBase* get( Clip* clip );
+		//IVideoEffect* get( int w, int h );
 		bool ok() { return m_ok; }
 		const char* name();
 	private:

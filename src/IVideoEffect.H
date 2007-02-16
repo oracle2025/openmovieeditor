@@ -21,12 +21,13 @@
 
 
 #include "frame_struct.h"
+#include "FilterBase.H"
 namespace nle
 {
 
 class IEffectDialog;
 
-class IVideoEffect
+class IVideoEffect : public FilterBase
 {
 	public:
 		virtual ~IVideoEffect() {}

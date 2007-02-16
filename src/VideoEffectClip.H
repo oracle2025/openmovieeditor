@@ -30,7 +30,7 @@ typedef struct gavl_video_frame_s gavl_video_frame_t;
 namespace nle
 {
 
-class AbstractEffectFactory;
+class FilterFactory;
 class IVideoEffect;
 class ClipData;
 
@@ -45,8 +45,8 @@ class VideoEffectClip : public IVideoReader
 		~VideoEffectClip();
 		frame_struct* getFrame( int64_t position );
 		virtual frame_struct* getRawFrame( int64_t position, int64_t &position_in_file ) = 0;
-		void pushEffect( AbstractEffectFactory* factory );
-		IVideoEffect* appendEffect( AbstractEffectFactory* factory );
+		void pushEffect( FilterFactory* factory );
+		IVideoEffect* appendEffect( FilterFactory* factory );
 		void moveEffectUp( int num );
 		void moveEffectDown( int num );
 		void removeEffect( int num );

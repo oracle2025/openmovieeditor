@@ -1,4 +1,4 @@
-/* ColorCurveFactory.H
+/*  AudioFilterFactory.H
  *
  *  Copyright (C) 2007 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,25 +17,27 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _COLOR_CURVE_FACTORY_H_
-#define _COLOR_CURVE_FACTORY_H_
 
-#include "FilterFactory.H"
+#ifndef _AUDIO_FILTER_FACTORY_
+#define _AUDIO_FILTER_FACTORY_
+
 
 namespace nle
 {
 
-class Clip;
+class AudioClip;
+class AudioFilter;
 
-class ColorCurveFactory : public FilterFactory
+class AudioFilterFactory
 {
 	public:
-		ColorCurveFactory();
-		~ColorCurveFactory();
-		FilterBase* get( Clip* clip );
-		const char* name();
+		virtual ~AudioFilterFactory() {}
+		virtual AudioFilter* get( AudioClip* clip );
+		virtual const char* name() = 0;
+	private:
 };
 
 } /* namespace nle */
 
-#endif /* _COLOR_CURVE_FACTORY_H_ */
+#endif /* _AUDIO_FILTER_FACTORY_ */
+

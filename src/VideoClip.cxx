@@ -29,7 +29,6 @@
 #include "IAudioFile.H"
 #include "helper.H"
 #include "WavArtist.H"
-#include "EnvelopeClip.H"
 
 namespace nle
 {
@@ -39,12 +38,11 @@ VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A,
 	m_trimA = A;
 	m_trimB = B;
 	m_audioFile = 0;
-	m_envelopeClip = 0;
 	m_videoFile = vf;
 	m_frame = 0;
 	m_lastFrame = -1;
 
-	m_filmStrip = g_filmStripFactory->get( vf ); //new FilmStrip( vf );
+	m_filmStrip = g_filmStripFactory->get( vf );
 	
 	m_audioFile = AudioFileFactory::get( m_videoFile->filename() );
 	CLEAR_ERRORS();
@@ -55,7 +53,6 @@ VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A,
 	setEffects( data );
 	if ( m_audioFile ) {
 		g_wavArtist->add( m_audioFile );
-		m_envelopeClip = new EnvelopeClip( this );
 	}
 }
 int VideoClip::w()
@@ -76,11 +73,8 @@ VideoClip::~VideoClip()
 		g_wavArtist->remove( m_audioFile->filename() );
 	}
 	delete m_artist;
-	g_filmStripFactory->remove( m_filmStrip );//delete m_filmStrip;
+	g_filmStripFactory->remove( m_filmStrip );
 	delete m_videoFile;
-	if ( m_envelopeClip ) {
-		delete m_envelopeClip;
-	}
 }
 string VideoClip::filename()
 {
@@ -111,7 +105,6 @@ int64_t VideoClip::audioPosition()
 void VideoClip::reset()
 {
 	AudioClipBase::reset();
-	m_envelopeClip->reset();
 	m_lastFrame = -1;
 }
 frame_struct* VideoClip::getRawFrame( int64_t position, int64_t &position_in_file )
@@ -136,25 +129,6 @@ int64_t VideoClip::fileLength()
 {
 	return m_videoFile->length();
 }	
-auto_node* VideoClip::getAutoPoints()
-{
-	if ( !m_envelopeClip ) {
-		return 0;
-	}
-	return m_envelopeClip->getAutoPoints();
-}
-void VideoClip::setAutoPoints( auto_node* a )
-{
-	if ( !m_envelopeClip ) {
-		return;
-	}
-	m_envelopeClip->setAutoPoints( a );
-}
-
-bool VideoClip::has_automation()
-{
-	return (bool)m_envelopeClip;
-}
 void VideoClip::trimA( int64_t trim )
 {
 	if ( trim + m_trimA < 0 ) {
@@ -163,7 +137,7 @@ void VideoClip::trimA( int64_t trim )
 	if ( length() - trim <= 0 || trim == 0 ) {
 		return;
 	}
-	if ( m_envelopeClip ) { m_envelopeClip->trimA( trim * 48000 / NLE_TIME_BASE ); }
+//	if ( m_envelopeClip ) { m_envelopeClip->trimA( trim * 48000 / NLE_TIME_BASE ); }
 	Clip::trimA( trim );
 }
 void VideoClip::trimB( int64_t trim )
@@ -174,17 +148,12 @@ void VideoClip::trimB( int64_t trim )
 	if ( length() - trim <= 0 ) {
 		return;
 	}
-	if ( m_envelopeClip ) { m_envelopeClip->trimB( trim * 48000 / NLE_TIME_BASE ); }
+//	if ( m_envelopeClip ) { m_envelopeClip->trimB( trim * 48000 / NLE_TIME_BASE ); }
 	Clip::trimB( trim );
 }
 int VideoClip::fillBuffer( float* output, unsigned long frames, int64_t position )
 {
-	if ( !m_envelopeClip ) { return 0; }
-	if ( m_automations ) {
-		return m_envelopeClip->fillBuffer( output, frames, position );
-	} else {
-		return AudioClipBase::fillBuffer( output, frames, position );
-	}
+	return AudioClipBase::fillBuffer( output, frames, position );
 }
 
 } /* namespace nle */

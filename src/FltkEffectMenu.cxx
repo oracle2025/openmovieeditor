@@ -20,13 +20,13 @@
 #include "FltkEffectMenu.H"
 #include "global_includes.H"
 #include "TimelineView.H"
-#include "AbstractEffectFactory.H"
+#include "FilterFactory.H"
 
 namespace nle
 {
 
 void effect_callback( void*, void* v ) {
-	AbstractEffectFactory* effectFactory = (AbstractEffectFactory*)v;
+	FilterFactory* effectFactory = (FilterFactory*)v;
 	g_timelineView->addEffect( effectFactory );
 }
 
@@ -37,7 +37,7 @@ FltkEffectMenu::FltkEffectMenu(  int x, int y, int w, int h, const char *l )
 FltkEffectMenu::~FltkEffectMenu()
 {
 }
-void FltkEffectMenu::addEffect( AbstractEffectFactory* effectFactory )
+void FltkEffectMenu::addEffect( FilterFactory* effectFactory )
 {
 	add( effectFactory->name(), 0, (Fl_Callback*)effect_callback, effectFactory, 0 );
 }

@@ -27,14 +27,14 @@
 namespace nle
 {
 
-class AbstractEffectFactory;
+class FilterFactory;
 	
 class FltkEffectMenu : public Fl_Menu_Button, public IEffectMenu
 {
 	public:
 		FltkEffectMenu(  int x, int y, int w, int h, const char *l = 0  );
 		~FltkEffectMenu();
-		void addEffect( AbstractEffectFactory* effectFactory );
+		void addEffect( FilterFactory* effectFactory );
 };
 
 } /* namespace nle */

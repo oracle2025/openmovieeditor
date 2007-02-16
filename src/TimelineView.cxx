@@ -209,7 +209,6 @@ int TimelineView::handle( int event )
 							{ "Stretch", 0,0,0,FL_MENU_RADIO |( vcl->stretch() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
 							{ "Default", 0,0,0,FL_MENU_RADIO | FL_MENU_DIVIDER|( vcl->def() ? FL_MENU_VALUE : 0 ),0,0,0,0 }, 
 							{ "Unmute Original Sound", MENU_ITEM_INIT },
-							{ "Audio Automations", 0,0,0,FL_MENU_TOGGLE|( vcl->automations() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
 							{ "Freeze Frame", 0,0,0,FL_MENU_TOGGLE|( vcl->freezeFrame() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
 							{ "Select all Clips after Cursor", MENU_ITEM_INIT }, 
 							{ 0L, MENU_ITEM_INIT } };
@@ -232,14 +231,10 @@ int TimelineView::handle( int event )
 							redraw();
 							g_timeline->changing();
 						} else if ( r == &menuitem[5] ) {
-							vcl->automations( !vcl->automations() );
-							redraw();
-							g_timeline->changing();
-						} else if ( r == &menuitem[6] ) {
 							vcl->freezeFrame( !vcl->freezeFrame() );
 							g_videoView->redraw();
 							g_timeline->changing();
-						} else if ( r == &menuitem[7] ) {
+						} else if ( r == &menuitem[6] ) {
 							select_all_after_cursor();	
 						}
 					} else {
@@ -248,7 +243,6 @@ int TimelineView::handle( int event )
 							{ "Stretch", 0,0,0,FL_MENU_RADIO | ( vcl->stretch() ? FL_MENU_VALUE : 0 ),0,0,0,0 }, 
 							{ "Default", 0,0,0,FL_MENU_RADIO | FL_MENU_DIVIDER|( vcl->def() ? FL_MENU_VALUE : 0 ),0,0,0,0 }, 
 							{ "Mute Original Sound", MENU_ITEM_INIT }, 
-							{ "Audio Automations", 0,0,0,FL_MENU_TOGGLE|( vcl->automations() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
 							{ "Freeze Frame", 0,0,0,FL_MENU_TOGGLE|( vcl->freezeFrame() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
 							{ "Select all Clips after Cursor", MENU_ITEM_INIT }, 
 							{ 0L, MENU_ITEM_INIT } };
@@ -271,13 +265,9 @@ int TimelineView::handle( int event )
 							redraw();
 							g_timeline->changing();
 						} else if ( r == &menuitem[5] ) {
-							vcl->automations( !vcl->automations() );
-							redraw();
-							g_timeline->changing();
-						} else if ( r == &menuitem[6] ) {
 							vcl->freezeFrame( !vcl->freezeFrame() );
 							g_videoView->redraw();
-						} else if ( r == &menuitem[7] ) {
+						} else if ( r == &menuitem[6] ) {
 							select_all_after_cursor();	
 						}
 					}
@@ -313,22 +303,6 @@ int TimelineView::handle( int event )
 							g_videoView->redraw();
 						}
 						return 1;
-				}
-				AudioClip* audioC = dynamic_cast<AudioClip*>(cl);
-				if ( audioC && Fl::event_button() == FL_RIGHT_MOUSE ) {
-					Fl_Menu_Item menuitem[] = {
-						{ "Audio Automations", 0,0,0,FL_MENU_TOGGLE|( audioC->automations() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
-						{ "Select all Clips after Cursor", MENU_ITEM_INIT },
-						{ 0L, MENU_ITEM_INIT } };
-					Fl_Menu_Item* r = (Fl_Menu_Item*)menuitem->popup( Fl::event_x(), Fl::event_y() );
-					if ( r == &menuitem[0] ) {
-						audioC->automations( !audioC->automations() );
-						redraw();
-						g_timeline->changing();
-					} else if ( r == &menuitem[1] ) {
-						select_all_after_cursor();
-					}
-					return 1;
 				}
 				if ( Fl::event_button() == FL_RIGHT_MOUSE ) {
 					Fl_Menu_Item menuitem[] = { { "Select all Clips after Cursor", MENU_ITEM_INIT }, { 0L, MENU_ITEM_INIT } };
@@ -484,50 +458,6 @@ void TimelineView::draw()
 			} else {
 				fl_draw_box( FL_BORDER_FRAME, scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h, FL_DARK3 );
 			}
-			AudioClipBase* audioClip = dynamic_cast<AudioClipBase*>(clip);
-			if ( !audioClip ) {
-				continue;
-			}
-			if ( clip->has_automation() && audioClip->automations() ) {
-				//Draw Automations
-				AudioClipBase* audioClip = dynamic_cast<AudioClipBase*>(clip);
-
-				float stretchF;
-				if ( track->type() == TRACK_TYPE_AUDIO ) {
-					stretchF = track->stretchFactor();
-				} else {
-					stretchF = ( 48000 );
-				} 
-				fl_push_clip( scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h );
-				
-				auto_node* nodes = audioClip->getAutoPoints();
-
-				fl_color( FL_RED );
-				for ( ; nodes && nodes->next; nodes = nodes->next ) {
-					int y = (int)( scr_clip_y + ( ( track->h() - 10 ) * ( 1.0 - nodes->y ) ) + 5 );
-					int y_next = (int)( scr_clip_y + ( ( track->h() - 10 ) * ( 1.0 - nodes->next->y ) ) + 5 );
-					fl_line( get_screen_position( audioClip->audioPosition() + nodes->x, stretchF ),
-							y,
-							get_screen_position( audioClip->audioPosition() + nodes->next->x, stretchF ),
-							y_next );
-				}
-				nodes = audioClip->getAutoPoints();
-				for ( ; nodes; nodes = nodes->next ) {
-					//consider Trimming
-					int x;
-					int y = (int)( scr_clip_y + ( ( track->h() - 10 ) * ( 1.0 - nodes->y ) ) );
-					if ( !nodes->next ) {
-						x = get_screen_position( audioClip->audioPosition() + nodes->x, stretchF ) - 10;
-					} else if ( nodes == audioClip->getAutoPoints() ) {
-						x = get_screen_position( audioClip->audioPosition() + nodes->x, stretchF );
-					} else {
-						x = get_screen_position( audioClip->audioPosition() + nodes->x, stretchF ) - 5;
-					}
-					fl_draw_box( FL_UP_BOX, x, y, 10, 10, FL_RED );
-				}
-				fl_pop_clip();
-			}
-
 		}
 		if ( dynamic_cast<VideoTrack*>(track) ) {
 			for ( clip_node* j = track->getClips(); j; j = j->next ) {
@@ -1048,7 +978,8 @@ void TimelineView::moveEffectUp()
 	g_ui->setEffectButtons();
 	g_videoView->redraw();
 }
-void TimelineView::addEffect( AbstractEffectFactory* effectFactory )
+void TimelineView::addEffect( FilterFactory* effectFactory )
+	//TODO: make it generic for any 
 {
 	if ( !m_selectedClips ) {
 		return;
@@ -1058,7 +989,12 @@ void TimelineView::addEffect( AbstractEffectFactory* effectFactory )
 	}
 	VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>( m_selectedClips->clip );
 	if ( !vc ) {
-		return;
+		AudioClipBase* ac = dynamic_cast<AudioClipBase*>( m_selectedClips->clip );
+		if ( !ac ) {
+			return;
+		}
+		ac->pushFilter( effectFactory );
+		redraw();
 	}
 	vc->pushEffect( effectFactory );
 	updateEffectDisplay();

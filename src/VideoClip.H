@@ -30,7 +30,6 @@ namespace nle
 class IVideoFile;
 class FilmStrip;
 class IClipArtist;
-class EnvelopeClip;
 class VideoClip : public AudioClipBase, public VideoEffectClip
 {
 	public:
@@ -53,9 +52,6 @@ class VideoClip : public AudioClipBase, public VideoEffectClip
 		float aspectRatio() { return m_aspectRatio; }
 		int analogBlank() { return m_analogBlank; }
 		ClipData* getClipData() { return vec_getClipData(); }
-		auto_node* getAutoPoints();
-		void setAutoPoints( auto_node* a );
-		bool has_automation();
 		using Clip::trimA;
 		using Clip::trimB;
 		void trimA( int64_t trim );
