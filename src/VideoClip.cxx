@@ -129,27 +129,27 @@ int64_t VideoClip::fileLength()
 {
 	return m_videoFile->length();
 }	
-void VideoClip::trimA( int64_t trim )
+int64_t VideoClip::trimA( int64_t trim )
 {
 	if ( trim + m_trimA < 0 ) {
 		trim = -m_trimA;
 	}
 	if ( length() - trim <= 0 || trim == 0 ) {
-		return;
+		return 0;
 	}
 //	if ( m_envelopeClip ) { m_envelopeClip->trimA( trim * 48000 / NLE_TIME_BASE ); }
-	Clip::trimA( trim );
+	return Clip::trimA( trim );
 }
-void VideoClip::trimB( int64_t trim )
+int64_t VideoClip::trimB( int64_t trim )
 {
 	if ( trim + m_trimB < 0 ) {
 		trim = -m_trimB;
 	}
 	if ( length() - trim <= 0 ) {
-		return;
+		return 0;
 	}
 //	if ( m_envelopeClip ) { m_envelopeClip->trimB( trim * 48000 / NLE_TIME_BASE ); }
-	Clip::trimB( trim );
+	return Clip::trimB( trim );
 }
 int VideoClip::fillBuffer( float* output, unsigned long frames, int64_t position )
 {

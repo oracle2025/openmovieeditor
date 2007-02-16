@@ -81,7 +81,7 @@ int main( int argc, char** argv )
 	NleUI nui;
 	nle::g_ui = &nui;
 	nle::Frei0rFactory effectFactory( nui.m_effectMenu );
-	nle::ColorCurveFactory colorCurveFactory();
+	nle::ColorCurveFactory colorCurveFactory;
 	nui.m_effectMenu->addEffect( &colorCurveFactory );
 
 	

@@ -44,7 +44,7 @@ RemoveCommand::RemoveCommand( Clip* clip )
 	m_position = clip->position();
 	m_length = clip->length();
 	m_audioClip = 0;
-	AudioClipBase* ac = dynamic_cast<AudioClipBase*>(clip);
+	/*AudioClipBase* ac = dynamic_cast<AudioClipBase*>(clip);
 	if ( ac ) {
 		auto_node* n = ac->getAutoPoints();
 		int i = 0;
@@ -62,7 +62,7 @@ RemoveCommand::RemoveCommand( Clip* clip )
 			n = n->next;
 			i++;
 		}
-	}
+	}*/
 	AudioClip* acc = dynamic_cast<AudioClip*>(clip);
 	if ( acc ) {
 		m_audioClip = true;
@@ -73,11 +73,11 @@ RemoveCommand::RemoveCommand( Clip* clip )
 }
 RemoveCommand::~RemoveCommand()
 {
-	if ( m_automationPoints ) {
+/*	if ( m_automationPoints ) {
 		delete [] m_automationPoints;
 		m_automationPoints = 0;
 	}
-	m_automationsCount = 0;
+	m_automationsCount = 0;*/
 	if ( m_data ) {
 		delete m_data;
 	}
@@ -101,7 +101,7 @@ void RemoveCommand::undo()
 		AudioClip* ac = new AudioClip( t, m_position, af, m_trimA, m_trimB, m_clip );
 		c = ac;
 		/* add automations */
-		auto_node* n = ac->getAutoPoints();
+/*		auto_node* n = ac->getAutoPoints();
 		n->x = m_automationPoints[0].x;
 		n->y = m_automationPoints[0].y;
 		n = n->next;
@@ -113,7 +113,7 @@ void RemoveCommand::undo()
 			n->next->x = m_automationPoints[i].x;
 			n->next->y = m_automationPoints[i].y;
 			n = n->next;
-		}
+		}*/
 		g_timeline->addClip( m_track, c );
 	} else {
 		g_timeline->addFile( m_track, m_position, m_filename, m_trimA, m_trimB, m_mute, m_clip, m_length, m_data );

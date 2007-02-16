@@ -27,6 +27,9 @@
 namespace nle
 {
 
+class AudioFilter;
+class FilterFactory;
+
 typedef struct _filter_stack {
 	struct _filter_stack* next;
 	AudioFilter* filter;
@@ -62,11 +65,13 @@ class AudioClipBase : public Clip
 		virtual int64_t audioTrimB() = 0;
 		int64_t audioLength();
 		virtual int64_t audioPosition() = 0;
+		using Clip::trimA;
+		using Clip::trimB;
 		int64_t trimA( int64_t trim );
 		int64_t trimB( int64_t trim );
 		
-		AudioFilter* appendFilter( AudioFilterFactory* factory );
-		void pushFilter( FilterFactory* factory )
+		AudioFilter* appendFilter( FilterFactory* factory );
+		void pushFilter( FilterFactory* factory );
 		filter_stack* getFilters() { return m_filters; }
 		
 	protected:

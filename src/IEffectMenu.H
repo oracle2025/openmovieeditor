@@ -24,13 +24,13 @@
 namespace nle
 {
 
-class AbstractEffectFactory;
+class FilterFactory;
 
 class IEffectMenu
 {
 	public:
 		virtual ~IEffectMenu() {}
-		virtual void addEffect( AbstractEffectFactory* effectFactory ) = 0;
+		virtual void addEffect( FilterFactory* effectFactory ) = 0;
 };
 
 } /* namespace nle */

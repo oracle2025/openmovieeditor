@@ -33,7 +33,7 @@ class FilterFactory
 		virtual const char* name() = 0;
 		virtual FilterBase* get( Clip* clip ) = 0;
 		virtual ~FilterFactory() {}
-}
+};
 	
 } /* namespace nle */
 

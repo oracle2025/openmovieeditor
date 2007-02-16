@@ -98,7 +98,7 @@ int Project::write( string filename, string name )
 
 	TiXmlElement* track;
 	TiXmlElement* clip;
-	TiXmlElement* automation;
+	//TiXmlElement* automation;
 	while ( node ) {
 		track = new TiXmlElement( "track" );
 		track->SetAttribute( "height", node->track->h() );
@@ -121,7 +121,7 @@ int Project::write( string filename, string name )
 			clip->SetAttribute( "trimA", buffer );
 			snprintf( buffer, sizeof(buffer), "%lld", cn->clip->trimB() );
 			clip->SetAttribute( "trimB", buffer );
-			if ( AudioClipBase* ac = dynamic_cast<AudioClipBase*>(cn->clip) ) {
+/*			if ( AudioClipBase* ac = dynamic_cast<AudioClipBase*>(cn->clip) ) {
 				auto_node* q = ac->getAutoPoints();
 				for ( ; q; q = q->next ) {
 					automation = new TiXmlElement( "automation" );
@@ -129,7 +129,7 @@ int Project::write( string filename, string name )
 					automation->SetAttribute( "x", q->x );
 					automation->SetDoubleAttribute( "y", q->y );
 				}
-			}
+			}*/
 			if ( VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>(cn->clip) ) {
 				if ( vc->def() ) {
 					clip->SetAttribute( "render", "default" );
@@ -306,7 +306,7 @@ int Project::read( string filename )
 				TiXmlElement* effectXml = TiXmlHandle( j ).FirstChildElement( "effect" ).Element();
 				for( ; effectXml; effectXml = effectXml->NextSiblingElement( "effect" ) ) {
 					//addClip would propably be a better Idea
-					AbstractEffectFactory* ef = g_frei0rFactory->get( effectXml->Attribute( "name" ) );
+					FilterFactory* ef = g_frei0rFactory->get( effectXml->Attribute( "name" ) );
 					if ( ef ) {
 						Frei0rEffect* effectObj = dynamic_cast<Frei0rEffect*>( c->appendEffect( ef ) );
 						TiXmlElement* parameterXml = TiXmlHandle( effectXml ).FirstChildElement( "parameter" ).Element();
@@ -353,7 +353,7 @@ int Project::read( string filename )
 					TiXmlElement* effectXml = TiXmlHandle( j ).FirstChildElement( "effect" ).Element();
 					for( ; effectXml; effectXml = effectXml->NextSiblingElement( "effect" ) ) {
 						//addClip would propably be a better Idea
-						AbstractEffectFactory* ef = g_frei0rFactory->get( effectXml->Attribute( "name" ) );
+						FilterFactory* ef = g_frei0rFactory->get( effectXml->Attribute( "name" ) );
 						if ( ef ) {
 							Frei0rEffect* effectObj = dynamic_cast<Frei0rEffect*>( c->appendEffect( ef ) );
 							TiXmlElement* parameterXml = TiXmlHandle( effectXml ).FirstChildElement( "parameter" ).Element();
@@ -386,7 +386,7 @@ int Project::read( string filename )
 							}
 						}
 					}
-					if ( c->has_automation() ) {
+					/*if ( c->has_automation() ) {
 						//read and process Automations
 						TiXmlElement* automation = TiXmlHandle( j ).FirstChildElement( "automation" ).Element();
 						auto_node* autonode = c->getAutoPoints();
@@ -412,7 +412,7 @@ int Project::read( string filename )
 							autonode->x = x;
 							autonode->y = y;
 						}
-					}
+					}*/
 					g_timeline->addClip( trackId, c );
 				} else {
 					ImageClip* ic = new ImageClip( tr, position, filename, length - trimA - trimB, -1 );
@@ -429,7 +429,7 @@ int Project::read( string filename )
 						TiXmlElement* effectXml = TiXmlHandle( j ).FirstChildElement( "effect" ).Element();
 						for( ; effectXml; effectXml = effectXml->NextSiblingElement( "effect" ) ) {
 							//addClip would propably be a better Idea
-							AbstractEffectFactory* ef = g_frei0rFactory->get( effectXml->Attribute( "name" ) );
+							FilterFactory* ef = g_frei0rFactory->get( effectXml->Attribute( "name" ) );
 							if ( ef ) {
 								Frei0rEffect* effectObj = dynamic_cast<Frei0rEffect*>( ic->appendEffect( ef ) );
 								TiXmlElement* parameterXml = TiXmlHandle( effectXml ).FirstChildElement( "parameter" ).Element();
@@ -541,7 +541,7 @@ int Project::read( string filename )
 			AudioClip* ac = new AudioClip( tr, position, af, trimA, trimB );
 			Clip* clip = ac;
 			//read and process Automations
-			TiXmlElement* automation = TiXmlHandle( j ).FirstChildElement( "automation" ).Element();
+			/*TiXmlElement* automation = TiXmlHandle( j ).FirstChildElement( "automation" ).Element();
 			auto_node* autonode = ac->getAutoPoints();
 			int x;
 			double y;
@@ -564,7 +564,7 @@ int Project::read( string filename )
 					continue;
 				autonode->x = x;
 				autonode->y = y;
-			}
+			}*/
 			g_timeline->addClip( trackId, clip );
 		}
 	}

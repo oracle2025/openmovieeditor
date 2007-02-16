@@ -19,6 +19,9 @@
 
 #include "ColorCurveFactory.H"
 #include "ColorCurveFilter.H"
+#include "VideoClip.H"
+#include "ImageClip.H"
+#include "TitleClip.H"
 
 
 namespace nle
@@ -30,9 +33,21 @@ ColorCurveFactory::ColorCurveFactory()
 ColorCurveFactory::~ColorCurveFactory()
 {
 }
-IVideoEffect* ColorCurveFactory::get( Clip* clip )
+FilterBase* ColorCurveFactory::get( Clip* clip )
 {
-	VideoEffectClip* effectClip = dynamic_cast<VideoEffectClip*>(clip);
+	VideoEffectClip* effectClip = 0;
+	VideoClip* c1;
+	ImageClip* c2;
+	TitleClip* c3;
+	c1 = dynamic_cast<VideoClip*>(clip);
+	if ( c1 ) {
+		effectClip = c1;
+	} else if ( (c2 = dynamic_cast<ImageClip*>(clip)) ) {
+		effectClip = c2;
+	} else if ( (c3 = dynamic_cast<TitleClip*>(clip)) ) {
+		effectClip = c3;
+	}
+	//VideoEffectClip* effectClip = dynamic_cast<VideoEffectClip*>(clip);
 	if ( !effectClip ) {
 		return 0;
 	}

@@ -36,15 +36,15 @@ class AudioClip : public AudioClipBase
 		~AudioClip();
 		int64_t length();
 		string filename();
-		auto_node* getAutoPoints();
+/*		auto_node* getAutoPoints();
 		void setAutoPoints( auto_node* a );
-		bool has_automation() { return true; }
+		bool has_automation() { return true; }*/
 		int type() { return CLIP_TYPE_AUDIO; }
 		inline IClipArtist* getArtist() { return m_artist; }
 		using Clip::trimA;
 		using Clip::trimB;
-		void trimA( int64_t trim );
-		void trimB( int64_t trim );
+		int64_t trimA( int64_t trim );
+		int64_t trimB( int64_t trim );
 		int fillBuffer( float* output, unsigned long frames, int64_t position );
 		void reset();
 		int64_t fileLength();

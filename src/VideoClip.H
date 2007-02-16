@@ -54,8 +54,8 @@ class VideoClip : public AudioClipBase, public VideoEffectClip
 		ClipData* getClipData() { return vec_getClipData(); }
 		using Clip::trimA;
 		using Clip::trimB;
-		void trimA( int64_t trim );
-		void trimB( int64_t trim );
+		int64_t trimA( int64_t trim );
+		int64_t trimB( int64_t trim );
 		int fillBuffer( float* output, unsigned long frames, int64_t position );
 	protected:
 		int64_t audioTrimA();

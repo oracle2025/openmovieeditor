@@ -134,7 +134,20 @@ frame_struct* VideoEffectClip::getFrame( int64_t position )
 }
 IVideoEffect* VideoEffectClip::appendEffect( FilterFactory* factory )
 {
-	FilterBase* fb = factory->get( this );
+	FilterBase* fb;
+	VideoClip* c1;
+	ImageClip* c2;
+	TitleClip* c3;
+	c1 = dynamic_cast<VideoClip*>(this);
+	if ( c1 ) {
+		fb = factory->get( c1 );
+	} else if ( (c2 = dynamic_cast<ImageClip*>(this)) ) {
+		fb = factory->get( c2 );
+	} else if ( (c3 = dynamic_cast<TitleClip*>(this)) ) {
+		fb = factory->get( c3 );
+	}
+	assert(fb);
+	
 	IVideoEffect* e = dynamic_cast<IVideoEffect*>(fb);
 	if ( !e ) {
 		delete fb;
@@ -148,11 +161,23 @@ IVideoEffect* VideoEffectClip::appendEffect( FilterFactory* factory )
 }
 void VideoEffectClip::pushEffect( FilterFactory* factory )
 {
-	FilterBase* fb = factory->get( this );
+	FilterBase* fb;
+	VideoClip* c1;
+	ImageClip* c2;
+	TitleClip* c3;
+	c1 = dynamic_cast<VideoClip*>(this);
+	if ( c1 ) {
+		fb = factory->get( c1 );
+	} else if ( (c2 = dynamic_cast<ImageClip*>(this)) ) {
+		fb = factory->get( c2 );
+	} else if ( (c3 = dynamic_cast<TitleClip*>(this)) ) {
+		fb = factory->get( c3 );
+	}
+	assert(fb);
 	IVideoEffect* e = dynamic_cast<IVideoEffect*>(fb);
 	if ( !e ) {
 		delete fb;
-		return 0;
+		return;
 	}
 	effect_stack* n = new effect_stack;
 	n->next = 0;

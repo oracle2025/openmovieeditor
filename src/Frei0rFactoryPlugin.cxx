@@ -20,6 +20,9 @@
 #include <dlfcn.h>
 #include "Frei0rFactoryPlugin.H"
 #include "Frei0rEffect.H"
+#include "VideoClip.H"
+#include "ImageClip.H"
+#include "TitleClip.H"
 
 namespace nle
 {
@@ -59,9 +62,20 @@ Frei0rFactoryPlugin::~Frei0rFactoryPlugin()
 	}
 }
 
-FilterBase* get( Clip* clip )
+FilterBase* Frei0rFactoryPlugin::get( Clip* clip )
 {
-	VideoEffectClip* effectClip = dynamic_cast<VideoEffectClip*>(clip);
+	VideoEffectClip* effectClip = 0;
+	VideoClip* c1;
+	ImageClip* c2;
+	TitleClip* c3;
+	c1 = dynamic_cast<VideoClip*>(clip);
+	if ( c1 ) {
+		effectClip = c1;
+	} else if ( (c2 = dynamic_cast<ImageClip*>(clip)) ) {
+		effectClip = c2;
+	} else if ( (c3 = dynamic_cast<TitleClip*>(clip)) ) {
+		effectClip = c3;
+	}
 	if ( !effectClip ) {
 		return 0;
 	}

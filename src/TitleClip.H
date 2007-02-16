@@ -44,8 +44,8 @@ class TitleClip : public Clip, public VideoEffectClip
 		inline IClipArtist* getArtist() { return m_artist; }
 		using Clip::trimA;
 		using Clip::trimB;
-		void trimA( int64_t trim );
-		void trimB( int64_t trim );
+		int64_t trimA( int64_t trim );
+		int64_t trimB( int64_t trim );
 		int64_t fileLength();
 		int w();
 		int h();

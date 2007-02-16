@@ -19,6 +19,9 @@
 
 #include "AudioClipBase.H"
 #include "IAudioFile.H"
+#include "sl/sl.h"
+#include "AudioFilter.H"
+#include "FilterFactory.H"
 
 namespace nle
 {
@@ -62,6 +65,7 @@ int64_t AudioClipBase::trimA( int64_t trim )
 	for ( filter_stack* node = m_filters; node; node = node->next ) {
 		node->filter->trimA( trim );
 	}
+	return trim;
 }
 
 int64_t AudioClipBase::trimB( int64_t trim )
@@ -70,34 +74,35 @@ int64_t AudioClipBase::trimB( int64_t trim )
 	for ( filter_stack* node = m_filters; node; node = node->next ) {
 		node->filter->trimB( trim );
 	}
+	return trim;
 }
 
 AudioFilter* AudioClipBase::appendFilter( FilterFactory* factory )
 {
 	FilterBase* f = factory->get( this );
-	AudioFilter* e = dynamic_cast<AudioFilter*>(fb);
+	AudioFilter* e = dynamic_cast<AudioFilter*>(f);
 	if ( !e ) {
 		delete f;
 		return 0;
 	}
 	filter_stack* n = new filter_stack;
 	n->next = 0;
-	n->filter = f;
-	m_filters = (effect_stack*)sl_unshift( m_filters, n );
-	return f;
+	n->filter = e;
+	m_filters = (filter_stack*)sl_unshift( m_filters, n );
+	return e;
 }
 void AudioClipBase::pushFilter( FilterFactory* factory )
 {
 	FilterBase* f = factory->get( this );
-	AudioFilter* e = dynamic_cast<AudioFilter*>(fb);
+	AudioFilter* e = dynamic_cast<AudioFilter*>(f);
 	if ( !e ) {
 		delete f;
-		return 0;
+		return;
 	}
 	filter_stack* n = new filter_stack;
 	n->next = 0;
-	n->filter = f;
-	m_effects = (effect_stack*)sl_push( m_effects, n );
+	n->filter = e;
+	m_filters = (filter_stack*)sl_push( m_filters, n );
 }
 
 int64_t AudioClipBase::audioLength()

@@ -20,6 +20,7 @@
 #ifndef _FILTER_BASE_
 #define _FILTER_BASE_
 
+#include <stdint.h>
 
 namespace nle
 {
@@ -28,11 +29,14 @@ class FilterBase
 {
 	public:
 		virtual ~FilterBase() {}
+		virtual void reset() {}
+		virtual int64_t trimA( int64_t trim ) { return trim; }
+		virtual int64_t trimB( int64_t trim ) { return trim; }
 		//writeXML
 		//readXML
 		//trimA
 		//trimB
-}
+};
 	
 } /* namespace nle */
 

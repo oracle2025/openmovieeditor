@@ -114,24 +114,25 @@ int ImageClip::h()
 {
 	return m_image->h();
 }
-void ImageClip::trimA( int64_t trim )
+int64_t ImageClip::trimA( int64_t trim )
 {
 	if ( m_length - trim < 0 ) {
-		return;
+		return 0;
 	}
 	if ( m_position + trim < 0 ) {
 		trim = (-1) * m_position;
 	}
 	m_length -= trim;
 	m_position += trim;
-
+	return trim;
 }
-void ImageClip::trimB( int64_t trim )
+int64_t ImageClip::trimB( int64_t trim )
 {
 	if ( m_length - trim < 0 ) {
-		return;
+		return 0;
 	}
 	m_length -= trim;
+	return trim;
 }
 int64_t ImageClip::fileLength()
 {

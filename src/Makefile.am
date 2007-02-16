@@ -96,10 +96,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	IProject.H\
 	Rect.H\
 	TrimDragHandler.H\
-	AutomationDragHandler.H\
-	AutomationDragHandler.cxx\
-	ShiftAutomationDragHandler.H\
-	ShiftAutomationDragHandler.cxx\
 	IClipArtist.H\
 	AudioClipArtist.H\
 	AudioClipArtist.cxx\
@@ -141,14 +137,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	AddCommand.H\
 	SplitCommand.cxx\
 	SplitCommand.H\
-	AutomationMoveCommand.H\
-	AutomationMoveCommand.cxx\
-	AutomationDuoMoveCommand.H\
-	AutomationDuoMoveCommand.cxx\
-	AutomationAddCommand.H\
-	AutomationAddCommand.cxx\
-	AutomationRemoveCommand.H\
-	AutomationRemoveCommand.cxx\
 	RemoveTrackCommand.H\
 	RemoveTrackCommand.cxx\
 	AddTrackCommand.H\
@@ -184,7 +172,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	Frei0rFactoryPlugin.H\
 	Frei0rEffect.cxx\
 	Frei0rEffect.H\
-	AbstractEffectFactory.H\
 	Frei0rDialog.H\
 	Frei0rDialog.cxx\
 	IEffectMenu.H\
@@ -211,8 +198,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	Fl_Split.h\
 	fl_font_browser.cpp\
 	fl_font_browser.h\
-	EnvelopeClip.cxx\
-	EnvelopeClip.H\
 	IEffectDialog.H\
 	ColorCurveFactory.cxx\
 	ColorCurveFactory.H\
@@ -227,6 +212,23 @@ openmovieeditor_SOURCES = nle.cxx\
 	ColorWheel.H\
 	ColorWheel.cxx\
 	ColorGrader.h\
-	ColorGrader.cxx
+	ColorGrader.cxx\
+	FilterBase.H\
+	FilterFactory.H\
+	AudioFilter.H
+#	AutomationDragHandler.H\
+#	AutomationDragHandler.cxx\
+#	ShiftAutomationDragHandler.H\
+#	ShiftAutomationDragHandler.cxx\
+#	AutomationMoveCommand.H\
+#	AutomationMoveCommand.cxx\
+#	AutomationDuoMoveCommand.H\
+#	AutomationDuoMoveCommand.cxx\
+#	AutomationAddCommand.H\
+#	AutomationAddCommand.cxx\
+#	AutomationRemoveCommand.H\
+#	AutomationRemoveCommand.cxx\
+#	EnvelopeClip.cxx\
+#	EnvelopeClip.H
 
 
