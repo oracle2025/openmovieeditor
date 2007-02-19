@@ -32,7 +32,7 @@ class AudioVolumeFilter
 	public:
 		AudioVolumeFilter( AudioClipBase* clip );
 		~AudioVolumeFilter();
-		void onDraw();
+		void onDraw( Rect& rect );
 		DragHandler* onMouseDown();
 		int fillBuffer( float* input_output, unsigned long frames, int64_t position );
 		//void writeXML( xml_node );

@@ -874,14 +874,13 @@ void TimelineView::updateEffectDisplay()
 	updateTitlesDisplay();
 	g_ui->effect_browser->clear();
 	if ( !m_selectedClips || m_selectedClips->next ) {
-		g_ui->m_effectMenu->deactivate();
-		//g_histogram->setVideoClip( 0, 0 );
+		//g_ui->m_effectMenu->deactivate();
 		return;
 	}
 	VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>( m_selectedClips->clip );
 	if ( !vc ) {
-		g_ui->m_effectMenu->deactivate();
-		//g_histogram->setVideoClip( 0, 0 );
+		// Auskommentiert um auch für Audio Clips zu funktionieren
+		//g_ui->m_effectMenu->deactivate();
 		return;
 	}
 	g_ui->m_effectMenu->activate();
@@ -995,6 +994,7 @@ void TimelineView::addEffect( FilterFactory* effectFactory )
 		}
 		ac->pushFilter( effectFactory );
 		redraw();
+		return;
 	}
 	vc->pushEffect( effectFactory );
 	updateEffectDisplay();

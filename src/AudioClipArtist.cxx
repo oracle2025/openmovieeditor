@@ -25,6 +25,7 @@
 #include "WavArtist.H"
 #include "TimelineView.H"
 #include "timeline/Track.H"
+#include "AudioFilter.H"
 
 namespace nle
 {
@@ -58,6 +59,10 @@ void AudioClipArtist::render( Rect& rect, int64_t start, int64_t stop )
 	fl_color( FL_WHITE );
 	fl_draw( fl_filename_name( m_clip->filename().c_str() ), _x + 5, rect.y + rect.h - 5 );
 	fl_pop_clip();
+	filter_stack* n = m_clip->getFilters();
+	for ( ; n; n = n->next ) {
+		n->filter->onDraw(rect);
+	}
 }
 
 	

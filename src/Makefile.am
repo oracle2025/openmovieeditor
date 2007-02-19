@@ -215,7 +215,10 @@ openmovieeditor_SOURCES = nle.cxx\
 	ColorGrader.cxx\
 	FilterBase.H\
 	FilterFactory.H\
-	AudioFilter.H
+	AudioFilter.H\
+	TestFilter.H\
+	TestFilter.cxx\
+	TestFilterFactory.H
 #	AutomationDragHandler.H\
 #	AutomationDragHandler.cxx\
 #	ShiftAutomationDragHandler.H\

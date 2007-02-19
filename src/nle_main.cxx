@@ -51,6 +51,7 @@
 #include "FltkEffectMenu.H"
 #include "Frei0rFactory.H"
 #include "ColorCurveFactory.H"
+#include "TestFilterFactory.H"
 
 namespace nle 
 {
@@ -83,6 +84,8 @@ int main( int argc, char** argv )
 	nle::Frei0rFactory effectFactory( nui.m_effectMenu );
 	nle::ColorCurveFactory colorCurveFactory;
 	nui.m_effectMenu->addEffect( &colorCurveFactory );
+	nle::TestFilterFactory testFilterFactory;
+	nui.m_effectMenu->addEffect( &testFilterFactory );
 
 	
 	nle::IPlaybackCore* playbackCore = new nle::JackPlaybackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );

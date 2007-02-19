@@ -25,6 +25,8 @@
 namespace nle
 {
 
+class DragHandler;
+
 class FilterBase
 {
 	public:
@@ -32,6 +34,8 @@ class FilterBase
 		virtual void reset() {}
 		virtual int64_t trimA( int64_t trim ) { return trim; }
 		virtual int64_t trimB( int64_t trim ) { return trim; }
+		virtual void onDraw() {}
+		virtual DragHandler* onMouseDown() { return 0; }
 		//writeXML
 		//readXML
 		//trimA

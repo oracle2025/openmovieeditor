@@ -22,6 +22,7 @@
 
 #include <stdint.h>
 #include "FilterBase.H"
+#include "Rect.H"
 
 namespace nle
 {
@@ -32,7 +33,7 @@ class AudioFilter : public FilterBase
 {
 	public:
 		virtual ~AudioFilter() {}
-		virtual void onDraw() = 0;
+		virtual void onDraw( Rect& rect ) = 0;
 		virtual DragHandler* onMouseDown() = 0;
 		virtual int fillBuffer( float* input_output, unsigned long frames, int64_t position ) = 0;
 		//void writeXML( xml_node );

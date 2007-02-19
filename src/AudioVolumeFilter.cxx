@@ -46,7 +46,7 @@ AudioVolumeFilter::~AudioVolumeFilter()
 		delete node;
 	}	
 }
-void AudioVolumeFilter::onDraw( Rect clip_rect )
+void AudioVolumeFilter::onDraw( Rect& rect )
 {
 	Track* track;
 
@@ -89,14 +89,17 @@ void AudioVolumeFilter::onDraw( Rect clip_rect )
 }
 DragHandler* AudioVolumeFilter::onMouseDown()
 {
+	/*
 	if (  ) {
 		return new ShiftAutomationDragHandler( this );
 	} else {
 		return new AutomationDragHandler( this );
 	}
+	*/
 }
 int AudioVolumeFilter::fillBuffer( float* input_output, unsigned long frames, int64_t position )
 {
+	/*
 	int64_t currentPosition = m_audioClip->audioPosition();
 	int64_t aLength = m_audioClip->audioLength();
 	//Manipulate output
@@ -120,7 +123,7 @@ int AudioVolumeFilter::fillBuffer( float* input_output, unsigned long frames, in
 	}
 	return frames;
 
-
+*/
 }
 void AudioVolumeFilter::reset()
 {
