@@ -32,8 +32,6 @@
 #include <FL/Fl_Slider.H>
 #include <FL/Fl_Box.H>
 #include "fl_font_browser.h"
-#include <FL/Fl_Menu_Button.H>
-#include <FL/Fl_Browser.H>
 #include "Flmm_Scalebar.H"
 #include "globals.H"
 using namespace std;
@@ -282,6 +280,7 @@ extern Flmm_Scalebar* g_scrollBar;
 #include "IVideoReader.H"
 #include "IAudioReader.H"
 #include <FL/Fl_Return_Button.H>
+#include <FL/Fl_Browser.H>
 #include <FL/Fl_File_Input.H>
 #include <stdlib.h>
 #include <FL/Fl_File_Chooser.H>

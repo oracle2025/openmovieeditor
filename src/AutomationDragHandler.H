@@ -33,7 +33,8 @@ class Command;
 class AutomationDragHandler : public DragHandler
 {
 	public:
-		AutomationDragHandler( Clip* clip, const Rect& rect, struct _auto_node* n = 0, int x_off = 0, int y_off = 0, bool shift = false );
+		AutomationDragHandler( AudioClipBase* clip, const Rect& rect, struct _auto_node* nodes, int x_off, int y_off );
+		//AutomationDragHandler( Clip* clip, const Rect& rect, struct _auto_node* n = 0, int x_off = 0, int y_off = 0, bool shift = false );
 		~AutomationDragHandler();
 		void OnDrag( int x, int y );
 		void OnDrop( int x, int y );

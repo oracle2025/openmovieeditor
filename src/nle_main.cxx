@@ -52,6 +52,7 @@
 #include "Frei0rFactory.H"
 #include "ColorCurveFactory.H"
 #include "TestFilterFactory.H"
+#include "AudioVolumeFilterFactory.H"
 
 namespace nle 
 {
@@ -86,6 +87,8 @@ int main( int argc, char** argv )
 	nui.m_effectMenu->addEffect( &colorCurveFactory );
 	nle::TestFilterFactory testFilterFactory;
 	nui.m_effectMenu->addEffect( &testFilterFactory );
+	nle::AudioVolumeFilterFactory audioVolumeFilterFactory;
+	nui.m_effectMenu->addEffect( &audioVolumeFilterFactory );
 
 	
 	nle::IPlaybackCore* playbackCore = new nle::JackPlaybackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );

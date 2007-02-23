@@ -311,15 +311,17 @@ int TimelineView::handle( int event )
 					}
 					return 1;
 				}
-				/*AudioClipBase* audioClip = dynamic_cast<AudioClipBase*>(cl);
-				if ( cl && g_ui->automationsMode() == 1 && cl->has_automation() && audioClip && audioClip->automations() ) {
-					if ( FL_SHIFT & Fl::event_state() ) {
+				AudioClipBase* audioClip = dynamic_cast<AudioClipBase*>(cl);
+				if ( cl && g_ui->automationsMode() == 1 && audioClip ) {
+					Rect r = get_clip_rect( cl, true );
+					m_dragHandler = audioClip->onMouseDown( r, _x, _y, FL_SHIFT & Fl::event_state() );
+					/*if ( FL_SHIFT & Fl::event_state() ) {
 						m_dragHandler = new ShiftAutomationDragHandler( cl, get_clip_rect( cl, true ), _x, _y );
 					} else {
 						m_dragHandler = new AutomationDragHandler( cl, get_clip_rect( cl, true ), 0, _x, _y );
-					}
+					}*/
 					return 1;
-				} else*/ if ( cl ) {
+				} else if ( cl ) {
 					if ( _x < get_screen_position( cl->position(), cl->track()->stretchFactor() ) + 8 ) {
 						m_dragHandler = new TrimDragHandler(
 								this, cl, cl->track()->num(),

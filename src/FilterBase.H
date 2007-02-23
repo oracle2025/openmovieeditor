@@ -36,6 +36,7 @@ class FilterBase
 		virtual int64_t trimB( int64_t trim ) { return trim; }
 		virtual void onDraw() {}
 		virtual DragHandler* onMouseDown() { return 0; }
+		virtual const char* name() = 0;
 		//writeXML
 		//readXML
 		//trimA

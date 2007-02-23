@@ -46,6 +46,8 @@
 #include "Frei0rFactory.H"
 #include "VideoFileFactory.H"
 #include "TitleClip.H"
+#include "AudioFilter.H"
+#include "AudioVolumeFilterFactory.H"
 
 namespace nle
 {
@@ -121,6 +123,16 @@ int Project::write( string filename, string name )
 			clip->SetAttribute( "trimA", buffer );
 			snprintf( buffer, sizeof(buffer), "%lld", cn->clip->trimB() );
 			clip->SetAttribute( "trimB", buffer );
+			//TODO: Save Filter Params
+			if ( AudioClipBase* ac = dynamic_cast<AudioClipBase*>(cn->clip) ) {
+				filter_stack* filters;
+				for ( filters = ac->getFilters(); filters; filters = filters->next ) {
+					TiXmlElement* filter_xml = new TiXmlElement( "filter" );
+					clip->LinkEndChild( filter_xml );
+					filter_xml->SetAttribute( "name", filters->filter->name() );
+					filters->filter->writeXML( filter_xml );
+				}
+			}
 /*			if ( AudioClipBase* ac = dynamic_cast<AudioClipBase*>(cn->clip) ) {
 				auto_node* q = ac->getAutoPoints();
 				for ( ; q; q = q->next ) {
@@ -540,6 +552,14 @@ int Project::read( string filename )
 			}
 			AudioClip* ac = new AudioClip( tr, position, af, trimA, trimB );
 			Clip* clip = ac;
+
+			TiXmlElement* filterXml = TiXmlHandle( j ).FirstChildElement( "filter" ).Element();
+			for ( ; filterXml; filterXml = filterXml->NextSiblingElement( "filter" ) ) {
+				FilterFactory* ff = g_audioVolumeFilterFactory;
+				//TODO: Find the filter factory
+				AudioFilter* filter = ac->appendFilter( ff );
+				filter->readXML( filterXml );
+			}
 			//read and process Automations
 			/*TiXmlElement* automation = TiXmlHandle( j ).FirstChildElement( "automation" ).Element();
 			auto_node* autonode = ac->getAutoPoints();

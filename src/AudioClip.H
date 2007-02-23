@@ -41,8 +41,8 @@ class AudioClip : public AudioClipBase
 		bool has_automation() { return true; }*/
 		int type() { return CLIP_TYPE_AUDIO; }
 		inline IClipArtist* getArtist() { return m_artist; }
-		using Clip::trimA;
-		using Clip::trimB;
+		using AudioClipBase::trimA;
+		using AudioClipBase::trimB;
 		int64_t trimA( int64_t trim );
 		int64_t trimB( int64_t trim );
 		int fillBuffer( float* output, unsigned long frames, int64_t position );

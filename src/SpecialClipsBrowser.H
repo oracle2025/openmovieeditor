@@ -21,17 +21,46 @@
 #define _SPECIAL_CLIPS_BROWSER_H_
 
 #include "global_includes.H"
-#include <FL/Fl_Browser.H>
+#include <FL/Fl_Browser_.H>
 
 namespace nle
 {
 
-class SpecialClipsBrowser : public Fl_Browser
+typedef enum {
+	PL_VIDEO_SRC,
+	PL_AUDIO_FILTER,
+	PL_VIDEO_EFFECT
+} plugin_type;
+
+typedef struct plugin_item_ {
+	struct plugin_item_* next;
+	struct plugin_item_* prev;
+	string value;
+	plugin_type type;
+} plugin_item;
+
+
+class SpecialClipsBrowser : public Fl_Browser_
 {
 	public:
 		SpecialClipsBrowser( int x, int y, int w, int h, const char *l = 0 );
-		virtual ~SpecialClipsBrowser() {}
+		~SpecialClipsBrowser();
 		int handle( int event );
+		void add( const char* s, plugin_type type );
+
+	protected:
+		void item_draw( void* p, int x, int y, int w, int h ) const;
+		void* item_first() const;
+		int item_height( void* p ) const;
+		void* item_next( void* p ) const;
+		void* item_prev( void* p ) const;
+		int item_width( void* p ) const;
+	private:
+		void clear();
+		plugin_item* m_items;
+		plugin_item* m_last;
+		plugin_item* m_item_selected;
+
 };
 
 } /* namespace nle */

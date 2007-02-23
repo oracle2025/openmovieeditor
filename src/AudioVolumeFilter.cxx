@@ -17,14 +17,23 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <FL/fl_draw.H>
+#include <tinyxml.h>
+#include "sl/sl.h"
+
 #include "AudioVolumeFilter.H"
+#include "TimelineView.H"
+#include "AudioClipBase.H"
+#include "timeline/Track.H"
+#include "ShiftAutomationDragHandler.H"
+#include "AutomationDragHandler.H"
 
 namespace nle
 {
 
 AudioVolumeFilter::AudioVolumeFilter( AudioClipBase* clip )
 {
-	m_audioClip = audioClip;
+	m_audioClip = clip;
 	m_automationPoints = 0;
 	m_autoCache = 0;
 	
@@ -48,7 +57,7 @@ AudioVolumeFilter::~AudioVolumeFilter()
 }
 void AudioVolumeFilter::onDraw( Rect& rect )
 {
-	Track* track;
+	Track* track = m_audioClip->track();
 
 	float stretchF;
 	if ( track->type() == TRACK_TYPE_AUDIO ) {
@@ -56,50 +65,49 @@ void AudioVolumeFilter::onDraw( Rect& rect )
 	} else {
 		stretchF = ( 48000 );
 	} 
-	fl_push_clip( scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h );
+	//fl_push_clip( scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h );
 
 	auto_node* nodes = m_automationPoints;
 
 	fl_color( FL_RED );
 	for ( ; nodes && nodes->next; nodes = nodes->next ) {
-		int y = (int)( scr_clip_y + ( ( track->h() - 10 ) * ( 1.0 - nodes->y ) ) + 5 );
-		int y_next = (int)( scr_clip_y + ( ( track->h() - 10 ) * ( 1.0 - nodes->next->y ) ) + 5 );
-		fl_line( get_screen_position( audioClip->audioPosition() + nodes->x, stretchF ),
+		int y = (int)( rect.y + ( ( track->h() - 10 ) * ( 1.0 - nodes->y ) ) + 5 );
+		int y_next = (int)( rect.y + ( ( track->h() - 10 ) * ( 1.0 - nodes->next->y ) ) + 5 );
+		fl_line( g_timelineView->get_screen_position( m_audioClip->audioPosition() + nodes->x, stretchF ),
 				y,
-				get_screen_position( audioClip->audioPosition() + nodes->next->x, stretchF ),
+				g_timelineView->get_screen_position( m_audioClip->audioPosition() + nodes->next->x, stretchF ),
 				y_next );
 	}
-	nodes = audioClip->getAutoPoints();
+	nodes = m_automationPoints;
 	for ( ; nodes; nodes = nodes->next ) {
 		//consider Trimming
 		int x;
-		int y = (int)( scr_clip_y + ( ( track->h() - 10 ) * ( 1.0 - nodes->y ) ) );
+		int y = (int)( rect.y + ( ( track->h() - 10 ) * ( 1.0 - nodes->y ) ) );
 		if ( !nodes->next ) {
-			x = get_screen_position( audioClip->audioPosition() + nodes->x, stretchF ) - 10;
-		} else if ( nodes == audioClip->getAutoPoints() ) {
-			x = get_screen_position( audioClip->audioPosition() + nodes->x, stretchF );
+			x = g_timelineView->get_screen_position( m_audioClip->audioPosition() + nodes->x, stretchF ) - 10;
+		} else if ( nodes == m_automationPoints ) {
+			x = g_timelineView->get_screen_position( m_audioClip->audioPosition() + nodes->x, stretchF );
 		} else {
-			x = get_screen_position( audioClip->audioPosition() + nodes->x, stretchF ) - 5;
+			x = g_timelineView->get_screen_position( m_audioClip->audioPosition() + nodes->x, stretchF ) - 5;
 		}
 		fl_draw_box( FL_UP_BOX, x, y, 10, 10, FL_RED );
 	}
-	fl_pop_clip();
+	//fl_pop_clip();
 
 	
 }
-DragHandler* AudioVolumeFilter::onMouseDown()
+DragHandler* AudioVolumeFilter::onMouseDown( Rect& rect, int x, int y, bool /*shift*/ )
 {
-	/*
-	if (  ) {
-		return new ShiftAutomationDragHandler( this );
-	} else {
-		return new AutomationDragHandler( this );
-	}
-	*/
+/*	if ( shift ) {
+		return new ShiftAutomationDragHandler( m_audioClip, rect, x, y );
+	} else {*/
+		return new AutomationDragHandler( m_audioClip, rect, m_automationPoints, x, y );
+//	}
 }
 int AudioVolumeFilter::fillBuffer( float* input_output, unsigned long frames, int64_t position )
+//int AudioVolumeFilter::fillBuffer( float*, unsigned long frames, int64_t )
 {
-	/*
+	
 	int64_t currentPosition = m_audioClip->audioPosition();
 	int64_t aLength = m_audioClip->audioLength();
 	//Manipulate output
@@ -113,23 +121,21 @@ int AudioVolumeFilter::fillBuffer( float* input_output, unsigned long frames, in
 	float envelope;
 	for ( int64_t i = 0; i < count; i++ ) {
 		envelope = getEnvelope( start_clip + i );
-		output[(i*2)] = output[(i*2)] * envelope;
-		output[(i*2) + 1] = output[(i*2) + 1] * envelope;
+		input_output[(i*2)] = input_output[(i*2)] * envelope;
+		input_output[(i*2) + 1] = input_output[(i*2) + 1] * envelope;
 	}
 	if ( count < 0 ) { count = 0; }
 	count = count * 2;
 	for ( int64_t i = (frames * 2) - 1; i >= count; i-- ) {
-		output[i] = 0.0;
+		input_output[i] = 0.0;
 	}
 	return frames;
-
-*/
 }
 void AudioVolumeFilter::reset()
 {
 	m_autoCache = m_automationPoints;
 }
-void AudioVolumeFilter::trimA( int64_t trim )
+int64_t AudioVolumeFilter::trimA( int64_t trim )
 {
 	float last_y = m_automationPoints->y;
 	int64_t last_x = 0;
@@ -139,7 +145,7 @@ void AudioVolumeFilter::trimA( int64_t trim )
 			if ( n->x < trim ) {
 				if ( n != m_automationPoints ) {
 					cerr << "Fatal, this shouldn't happen (AudioClip::trimA)" << endl;
-					return;
+					return trim;
 				}
 				last_y = n->y;
 				last_x = n->x;
@@ -180,9 +186,9 @@ void AudioVolumeFilter::trimA( int64_t trim )
 			}
 		}
 	}
-
+	return trim;
 }
-void AudioVolumeFilter::trimB( int64_t trim )
+int64_t AudioVolumeFilter::trimB( int64_t trim )
 {
 	if ( trim > 0 ) {
 		//etwas von den Automations entfernen
@@ -220,7 +226,7 @@ void AudioVolumeFilter::trimB( int64_t trim )
 			n->next = r;
 		}
 	}
-
+	return trim;
 }
 float AudioVolumeFilter::getEnvelope( int64_t position )
 {
@@ -239,9 +245,47 @@ float AudioVolumeFilter::getEnvelope( int64_t position )
 	return 0.0;
 
 }
+void AudioVolumeFilter::writeXML( TiXmlElement* xml_node )
+{
+	TiXmlElement* automation;
+	auto_node* q = m_automationPoints;
+	for ( ; q; q = q->next ) {
+		automation = new TiXmlElement( "automation" );
+		xml_node->LinkEndChild( automation );
+		automation->SetAttribute( "x", q->x );
+		automation->SetDoubleAttribute( "y", q->y );
+	}
+}
+void AudioVolumeFilter::readXML( TiXmlElement* xml_node )
+{
+	auto_node* autonode = m_automationPoints;
+	TiXmlElement* automation = TiXmlHandle( xml_node ).FirstChildElement( "automation" ).Element();
+	int x;
+	double y;
+	bool fff = false;
+	for ( ; automation; automation = automation->NextSiblingElement( "automation" ) ) {
+		if ( fff ) {
+			if ( !autonode->next ) {
+				autonode->next = new auto_node;
+				autonode->next->next = 0;
+				autonode->next->x = autonode->x + 1;
+				autonode->next->y = 1.0;
+			}
+			autonode = autonode->next;
+		} else {
+			fff = true;
+		}
+		if ( ! automation->Attribute( "x", &x ) )
+			continue;
+		if ( ! automation->Attribute( "y", &y ) )
+			continue;
+		autonode->x = x;
+		autonode->y = y;
+	}
+
+}
 
 } /* namespace nle */
 
 
-#endif /* _AUDIO_VOLUME_FILTER_H_ */
 

@@ -388,7 +388,7 @@ fb->load_rel();}
               }
               Fl_Group titles_tab {
                 label Titles open
-                private xywh {0 75 365 230} hide deactivate
+                private xywh {0 75 365 230} deactivate
               } {
                 Fl_Input titles_text {
                   callback {m_timelineView->titles_text( o->value() );}
@@ -444,46 +444,6 @@ while ( dlg.shown() ) {
 }}
                     xywh {95 85 100 20} labelsize 12
                     code0 {\#include "fl_font_browser.h"}
-                  }
-                }
-              }
-              Fl_Group {} {
-                label {Audio Effects} open
-                xywh {0 75 365 230}
-              } {
-                Fl_Menu_Button {} {
-                  label {Add Audio Effect} open
-                  xywh {5 80 355 25} deactivate
-                } {}
-                Fl_Browser {} {
-                  xywh {5 105 355 170} resizable
-                }
-                Fl_Group {} {open
-                  xywh {5 275 355 25}
-                } {
-                  Fl_Group {} {open
-                    xywh {5 275 50 25}
-                  } {
-                    Fl_Button {} {
-                      label {@8->}
-                      tooltip {Move Up} xywh {5 275 25 25} deactivate
-                    }
-                    Fl_Button {} {
-                      label {@2->}
-                      tooltip {Move Down} xywh {30 275 25 25} deactivate
-                    }
-                  }
-                  Fl_Group {} {open
-                    xywh {55 275 305 25} resizable
-                  } {
-                    Fl_Button {} {
-                      label {Remove Effect}
-                      xywh {55 275 155 25} deactivate
-                    }
-                    Fl_Button {} {
-                      label {Edit Effect} selected
-                      xywh {210 275 150 25} deactivate
-                    }
                   }
                 }
               }
@@ -683,10 +643,11 @@ scroll_area->type(0);
 g_v_scrollbar = vScrollBar;
 g_16_9 = false;
 g_black_borders = false;
-special_clips->add("Titles");
-special_clips->add("Volume Automations");
-special_clips->add("Freeze Frame");
-special_clips->add("Crop/Fit/Stretch");} {}
+special_clips->add("Titles", nle::PL_VIDEO_SRC );
+special_clips->add("Volume Automations", nle::PL_AUDIO_FILTER );
+special_clips->add("Freeze Frame", nle::PL_VIDEO_EFFECT );
+special_clips->add("Crop/Fit/Stretch", nle::PL_VIDEO_EFFECT );} {selected
+    }
   }
   Function {~NleUI()} {} {
     code {delete mainWindow;} {}

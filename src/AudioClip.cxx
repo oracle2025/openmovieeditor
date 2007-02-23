@@ -86,7 +86,7 @@ int64_t AudioClip::trimA( int64_t trim )
 		return 0;
 	}
 	//m_envelopeClip->trimA( trim );
-	Clip::trimA( trim );
+	AudioClipBase::trimA( trim );
 	return trim;
 }
 int64_t AudioClip::trimB( int64_t trim )
@@ -98,7 +98,7 @@ int64_t AudioClip::trimB( int64_t trim )
 		return 0;
 	}
 	//m_envelopeClip->trimB( trim );
-	Clip::trimB( trim );
+	AudioClipBase::trimB( trim );
 	return trim;
 }
 void AudioClip::reset()

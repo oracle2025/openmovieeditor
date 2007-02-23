@@ -26,10 +26,11 @@
 #include "TimelineView.H"
 #include "AudioClipBase.H"
 #include "timeline/Track.H"
-#include "AutomationMoveCommand.H"
-#include "AutomationAddCommand.H"
-#include "AutomationRemoveCommand.H"
+//#include "AutomationMoveCommand.H"
+//#include "AutomationAddCommand.H"
+//#include "AutomationRemoveCommand.H"
 #include "DocManager.H"
+#include "AudioVolumeFilter.H"
 
 
 namespace nle
@@ -78,6 +79,91 @@ void screen_to_node( int64_t& x, float& y, int in_x, int in_y, auto_node* n, aut
 	}
 }
 
+AutomationDragHandler::AutomationDragHandler( AudioClipBase* clip, const Rect& rect, struct _auto_node* nodes, int x_off, int y_off )
+	: DragHandler( g_timelineView, clip ), m_x_off( x_off ), m_y_off( y_off )
+{
+	m_dragging = false;
+	m_outline = rect;
+	m_audioClip = clip;
+	m_nodesOriginal = nodes;
+	m_removed = false;
+	auto_node* r = m_nodesOriginal;
+	m_firstNode = false;
+	m_lastNode = false;
+	m_node_before = 0;
+	int i = 0;
+	for ( ; r; r = r->next ) {
+		if ( r->next == 0 ) {
+			m_lastNode = true;
+		} else if ( r == m_nodesOriginal ) {
+			m_firstNode = true;
+		}
+		if ( inside_node( r, m_outline, m_audioClip, x_off, y_off, m_firstNode, m_lastNode ) ) {
+			m_node = r;
+			m_node_number = i;
+			m_dragging = true;
+			m_x_off = g_x_off;
+			m_y_off = g_y_off;
+			if ( !m_firstNode ) {
+				auto_node* q = m_nodesOriginal;
+				while ( q->next && q->next != m_node ) {
+					q = q->next;
+				}
+				m_node_before = q;
+			}
+			break;
+		}
+		m_firstNode = m_lastNode = false;
+		i++;
+	}
+}
+AutomationDragHandler::~AutomationDragHandler()
+{
+}
+void AutomationDragHandler::OnDrag( int x, int y )
+{
+	if ( m_dragging ) {
+		screen_to_node( m_node->x, m_node->y, x + m_x_off, y + m_y_off, m_node, m_node_before, m_outline, m_audioClip, m_firstNode, m_lastNode );
+		if ( !m_firstNode && !m_lastNode && ( y < m_outline.y - 30 || y > m_outline.y + m_outline.h + 30 ) ) {
+			//remove Node
+			m_node_before->next = m_node->next;
+			delete m_node;
+			m_node = 0;
+			m_dragging = false;
+			m_removed = true;
+		}
+		g_timelineView->redraw();
+	}
+
+}
+void AutomationDragHandler::OnDrop( int x, int y )
+{
+
+	if ( m_removed ) { return; }
+	if ( !m_dragging && m_outline.inside( x, y ) ) {
+		auto_node* r = m_nodesOriginal;
+		int64_t _x = g_timelineView->get_real_position( x + 5, 48000 ) - m_audioClip->audioPosition();
+
+		int i = 0;
+		for ( ;r ; r = r->next ) {
+			if ( r->x < _x && r->next && r->next->x > _x ) {
+				auto_node* p = new auto_node;
+				p->next = r->next;
+				r->next = p;
+				screen_to_node( p->x, p->y, x - 5, y - 5, p, r, m_outline, m_audioClip );
+				/*
+				 * - 5 to place Point on the Center of the mouse
+				 * cursor
+				 */
+				g_timelineView->redraw();
+				break;
+			}
+			i++;
+		}
+	}
+}
+//---------------
+#if 0
 AutomationDragHandler::AutomationDragHandler( Clip* clip, const Rect& rect, struct _auto_node* n, int x_off, int y_off, bool shift )
 	: DragHandler( g_timelineView, clip ), m_x_off( x_off ), m_y_off( y_off ), m_shift( shift )
 {
@@ -92,7 +178,7 @@ AutomationDragHandler::AutomationDragHandler( Clip* clip, const Rect& rect, stru
 		auto_node* q  = 0;
 		auto_node* s  = 0;
 		m_nodesCopy = 0;
-		/* Copy them to m_nodesCopy; */
+		// Copy them to m_nodesCopy; 
 		for ( ; r; r = r->next ) {
 			s = new auto_node;
 			s->next = 0;
@@ -220,5 +306,5 @@ void AutomationDragHandler::OnDrop( int x, int y )
 		submit( cmd );
 	}
 }
-
+#endif
 } /* namespace nle */

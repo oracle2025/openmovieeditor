@@ -23,12 +23,14 @@
 #include "timeline/Clip.H"
 
 #include "global_includes.H"
+#include "Rect.H"
 
 namespace nle
 {
 
 class AudioFilter;
 class FilterFactory;
+class DragHandler;
 
 typedef struct _filter_stack {
 	struct _filter_stack* next;
@@ -58,6 +60,7 @@ class AudioClipBase : public Clip
 		virtual int fillBufferRaw( float* output, unsigned long frames, int64_t position );
 		virtual int fillBuffer( float* output, unsigned long frames, int64_t position );
 
+		DragHandler* onMouseDown( Rect& rect, int x, int y, bool shift );
 		
 		virtual void reset();
 		bool m_mute;

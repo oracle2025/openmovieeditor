@@ -888,7 +888,6 @@ NleUI::NleUI() {
               o->end();
             }
             { Fl_Group* o = titles_tab = new Fl_Group(0, 75, 365, 230, "Titles");
-              o->hide();
               o->deactivate();
               { Fl_Input* o = titles_text = new Fl_Input(205, 80, 155, 220);
                 o->type(4);
@@ -937,39 +936,6 @@ NleUI::NleUI() {
                 { Fl_Button* o = new Fl_Button(95, 85, 100, 20, "Font...");
                 o->labelsize(12);
                 o->callback((Fl_Callback*)cb_Font);
-                }
-                o->end();
-              }
-              o->end();
-            }
-            { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Audio Effects");
-              { Fl_Menu_Button* o = new Fl_Menu_Button(5, 80, 355, 25, "Add Audio Effect");
-                o->deactivate();
-              }
-              { Fl_Browser* o = new Fl_Browser(5, 105, 355, 170);
-                Fl_Group::current()->resizable(o);
-              }
-              { Fl_Group* o = new Fl_Group(5, 275, 355, 25);
-                { Fl_Group* o = new Fl_Group(5, 275, 50, 25);
-                { Fl_Button* o = new Fl_Button(5, 275, 25, 25, "@8->");
-                o->tooltip("Move Up");
-                o->deactivate();
-                }
-                { Fl_Button* o = new Fl_Button(30, 275, 25, 25, "@2->");
-                o->tooltip("Move Down");
-                o->deactivate();
-                }
-                o->end();
-                }
-                { Fl_Group* o = new Fl_Group(55, 275, 305, 25);
-                { Fl_Button* o = new Fl_Button(55, 275, 155, 25, "Remove Effect");
-                o->deactivate();
-                }
-                { Fl_Button* o = new Fl_Button(210, 275, 150, 25, "Edit Effect");
-                o->deactivate();
-                }
-                o->end();
-                Fl_Group::current()->resizable(o);
                 }
                 o->end();
               }
@@ -1179,10 +1145,10 @@ scroll_area->type(0);
 g_v_scrollbar = vScrollBar;
 g_16_9 = false;
 g_black_borders = false;
-special_clips->add("Titles");
-special_clips->add("Volume Automations");
-special_clips->add("Freeze Frame");
-special_clips->add("Crop/Fit/Stretch");
+special_clips->add("Titles", nle::PL_VIDEO_SRC );
+special_clips->add("Volume Automations", nle::PL_AUDIO_FILTER );
+special_clips->add("Freeze Frame", nle::PL_VIDEO_EFFECT );
+special_clips->add("Crop/Fit/Stretch", nle::PL_VIDEO_EFFECT );
 }
 
 NleUI::~NleUI() {

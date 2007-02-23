@@ -218,9 +218,13 @@ openmovieeditor_SOURCES = nle.cxx\
 	AudioFilter.H\
 	TestFilter.H\
 	TestFilter.cxx\
-	TestFilterFactory.H
-#	AutomationDragHandler.H\
-#	AutomationDragHandler.cxx\
+	TestFilterFactory.H\
+	AudioVolumeFilter.cxx\
+	AudioVolumeFilter.H\
+	AudioVolumeFilterFactory.cxx\
+	AudioVolumeFilterFactory.H\
+	AutomationDragHandler.H\
+	AutomationDragHandler.cxx
 #	ShiftAutomationDragHandler.H\
 #	ShiftAutomationDragHandler.cxx\
 #	AutomationMoveCommand.H\

@@ -16,8 +16,11 @@ class TestFilter : public AudioFilter
 	public:
 		TestFilter( Clip* clip );
 		void onDraw( Rect& rect );
-		DragHandler* onMouseDown();
+		DragHandler* onMouseDown( Rect& rect, int x, int y, bool shift );
 		int fillBuffer( float*, unsigned long frames, int64_t ) { return frames; }
+		const char* name() { return "Test Filter"; }
+		void writeXML( TiXmlElement* ) {}
+		void readXML( TiXmlElement* ) {}
 };
 
 } /* namespace nle */

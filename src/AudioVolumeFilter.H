@@ -21,27 +21,39 @@
 #define _AUDIO_VOLUME_FILTER_H_
 
 #include <stdint.h>
+#include "Rect.H"
+#include "AudioFilter.H"
 
 namespace nle
 {
 
 class DragHandler;
+class AudioClipBase;
 
-class AudioVolumeFilter
+typedef struct _auto_node {
+	struct _auto_node *next;
+	int64_t x;
+	float y;
+} auto_node;
+
+class AudioVolumeFilter : public AudioFilter
 {
 	public:
 		AudioVolumeFilter( AudioClipBase* clip );
 		~AudioVolumeFilter();
 		void onDraw( Rect& rect );
-		DragHandler* onMouseDown();
+		DragHandler* onMouseDown( Rect& rect, int x, int y, bool shift );
 		int fillBuffer( float* input_output, unsigned long frames, int64_t position );
+		void writeXML( TiXmlElement* xml_node );
+		void readXML( TiXmlElement* xml_node );
 		//void writeXML( xml_node );
 		//void readXML( xml_node );
 		//void setParams();
 		//void getParams();
 		void reset();
-		void trimA( int64_t trim );
-		void trimB( int64_t trim );
+		int64_t trimA( int64_t trim );
+		int64_t trimB( int64_t trim );
+		const char* name() { return "Audio Volume Filter"; }
 	private:
 		float getEnvelope( int64_t position );
 		auto_node* m_automationPoints;

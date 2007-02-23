@@ -61,20 +61,18 @@ void AudioClipBase::reset()
 }
 int64_t AudioClipBase::trimA( int64_t trim )
 {
-	trim = Clip::trimA( trim );
 	for ( filter_stack* node = m_filters; node; node = node->next ) {
 		node->filter->trimA( trim );
 	}
-	return trim;
+	return Clip::trimA( trim );
 }
 
 int64_t AudioClipBase::trimB( int64_t trim )
 {
-	trim = Clip::trimB( trim );
 	for ( filter_stack* node = m_filters; node; node = node->next ) {
 		node->filter->trimB( trim );
 	}
-	return trim;
+	return Clip::trimB( trim );
 }
 
 AudioFilter* AudioClipBase::appendFilter( FilterFactory* factory )
@@ -126,6 +124,19 @@ int AudioClipBase::fillBuffer( float* output, unsigned long frames, int64_t posi
 		node = node->next;
 	}
 	return result;
+}
+DragHandler* AudioClipBase::onMouseDown( Rect& rect, int x, int y, bool shift )
+{
+	DragHandler* h;
+	filter_stack* node = m_filters;
+	while ( node ) {
+		h = node->filter->onMouseDown( rect, x, y, shift );
+		if ( h ) {
+			return h;
+		}
+		node = node->next;
+	}
+	return 0;
 }
 int AudioClipBase::fillBufferRaw( float* output, unsigned long frames, int64_t position )
 {

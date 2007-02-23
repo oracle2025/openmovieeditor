@@ -20,17 +20,38 @@
 #include <cstring>
 
 #include <FL/Fl.H>
+#include <FL/fl_draw.H>
 
 #include "SpecialClipsBrowser.H"
+
+#include "source.xpm"
+#include "audio.xpm"
+#include "video.xpm"
 
 namespace nle
 {
 	
 SpecialClipsBrowser::SpecialClipsBrowser( int x, int y, int w, int h, const char *l )
-	: Fl_Browser( x, y, w, h, l )
+	: Fl_Browser_( x, y, w, h, l )
 {
+	m_last = m_items = 0;
+	m_item_selected = 0;
 }
+SpecialClipsBrowser::~SpecialClipsBrowser()
+{
+	clear();
+}
+void SpecialClipsBrowser::clear()
+{
+	while ( m_items ) {
+		plugin_item* f = m_items;
+		m_items = m_items->next;
+		delete f;
+	}
+	m_last = 0;
+	m_item_selected = 0;
 
+}
 int SpecialClipsBrowser::handle( int event )
 {
 	if ( event == FL_DRAG ) {
@@ -38,7 +59,62 @@ int SpecialClipsBrowser::handle( int event )
 		Fl::dnd();
 		return 1;
 	}
-	return Fl_Browser::handle( event );
+	return Fl_Browser_::handle( event );
+}
+void SpecialClipsBrowser::add( const char* s, plugin_type type )
+{
+	plugin_item* f = new plugin_item;
+	f->value = s;
+	f->type = type;
+	f->next = 0;
+	f->prev = m_last;
+	if ( m_items ) {
+		m_last->next = f;
+		m_last = f;
+	} else {
+		m_last = m_items = f;
+	}
+}
+void SpecialClipsBrowser::item_draw( void* p, int x, int y, int /*w*/, int h ) const
+{
+	plugin_item* f = (plugin_item*)p;
+	fl_font( FL_HELVETICA, 14 );
+	fl_color( FL_FOREGROUND_COLOR );
+	switch ( f->type ) {
+		case PL_VIDEO_SRC: 
+			fl_draw_pixmap( source_xpm, x + 2, y + h - 16, FL_BACKGROUND2_COLOR );
+			break;
+		case PL_AUDIO_FILTER:
+			fl_draw_pixmap( audio_xpm, x + 2, y + h - 16, FL_BACKGROUND2_COLOR );
+			break;
+		case PL_VIDEO_EFFECT:
+			fl_draw_pixmap( video_xpm, x + 2, y + h - 16, FL_BACKGROUND2_COLOR );
+			break;
+	}
+	fl_draw( f->value.c_str(), x + 20, y + h - fl_descent() );
+}
+void* SpecialClipsBrowser::item_first() const
+{
+	return m_items;
+}
+int SpecialClipsBrowser::item_height( void* ) const
+{
+	fl_font( FL_HELVETICA, 14 );
+	return fl_height();
+}
+void* SpecialClipsBrowser::item_next( void* p ) const
+{
+	plugin_item* f = (plugin_item*)p;
+	return f->next;
+}
+void* SpecialClipsBrowser::item_prev( void* p ) const
+{
+	plugin_item* f = (plugin_item*)p;
+	return f->prev;
+}
+int SpecialClipsBrowser::item_width( void* ) const
+{
+	return 20;
 }
 
 } /* namespace nle */
