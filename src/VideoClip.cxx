@@ -113,16 +113,7 @@ frame_struct* VideoClip::getRawFrame( int64_t position, int64_t &position_in_fil
 		return NULL;
 	int64_t s_pos = position - m_position + m_trimA;
 	position_in_file = s_pos;
-	if ( !m_freezeFrame ) {
-		m_frame = m_videoFile->getFrame( s_pos );
-	} else {
-		if ( m_lastFrame == m_trimA ) {
-			return m_frame;
-		} else {
-			m_lastFrame = m_trimA;
-			m_frame = m_videoFile->getFrame( m_trimA );
-		}
-	}
+	m_frame = m_videoFile->getFrame( s_pos );
 	return m_frame;
 }
 int64_t VideoClip::fileLength()

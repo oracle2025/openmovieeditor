@@ -72,7 +72,6 @@ VideoEffectClip::VideoEffectClip()
 	m_video_scaler = 0;
 	m_frame_src = 0;
 	m_frame_dst = 0;
-	m_freezeFrame = 0;
 }
 void VideoEffectClip::setEffects( ClipData* data )
 {
