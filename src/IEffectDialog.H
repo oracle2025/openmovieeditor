@@ -1,6 +1,6 @@
-/* FilterBase.H
+/* IVideoEffect.H
  *
- *  Copyright (C) 2007 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,35 +17,19 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _FILTER_BASE_
-#define _FILTER_BASE_
-
-#include <stdint.h>
-
-class TiXmlElement;
+#ifndef _I_EFFECT_DIALOG_H_
+#define _I_EFFECT_DIALOG_H_
 
 namespace nle
 {
 
-class DragHandler;
-class IEffectDialog;
-
-class FilterBase
+class IEffectDialog
 {
 	public:
-		virtual ~FilterBase() {}
-		virtual void reset() {}
-		virtual int64_t trimA( int64_t trim ) { return trim; }
-		virtual int64_t trimB( int64_t trim ) { return trim; }
-		virtual void onDraw() {}
-		virtual DragHandler* onMouseDown() { return 0; }
-		virtual const char* name() = 0;
-		virtual void writeXML( TiXmlElement* ) {}
-		virtual void readXML( TiXmlElement* ) {}
-		virtual bool hasDialog() { return false; }
-		virtual IEffectDialog* dialog() { return 0; }
+		virtual ~IEffectDialog() {}
+		virtual void show() = 0;
 };
-	
+
 } /* namespace nle */
 
-#endif /* _FILTER_BASE_ */
+#endif /* _I_EFFECT_DIALOG_H_ */

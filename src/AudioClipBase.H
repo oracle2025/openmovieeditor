@@ -44,7 +44,6 @@ typedef struct _filter_stack {
 } auto_node;
 */
 class IAudioFile;
-class EnvelopeClip;
 /*
  * This is the base class for both, Audio and Video Clips,
  * because Video Clips can handle Audio as well, since most

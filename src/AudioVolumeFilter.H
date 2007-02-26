@@ -46,8 +46,6 @@ class AudioVolumeFilter : public AudioFilter
 		int fillBuffer( float* input_output, unsigned long frames, int64_t position );
 		void writeXML( TiXmlElement* xml_node );
 		void readXML( TiXmlElement* xml_node );
-		//void writeXML( xml_node );
-		//void readXML( xml_node );
 		//void setParams();
 		//void getParams();
 		void reset();

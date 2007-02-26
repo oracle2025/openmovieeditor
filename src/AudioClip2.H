@@ -1,4 +1,4 @@
-/* FilterBase.H
+/*  AudioClip.H
  *
  *  Copyright (C) 2007 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,35 +17,40 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _FILTER_BASE_
-#define _FILTER_BASE_
+#ifndef _AUDIO_CLIP_H_
+#define _AUDIO_CLIP_H_
 
-#include <stdint.h>
-
-class TiXmlElement;
+#include "FilterClip.H"
 
 namespace nle
 {
 
-class DragHandler;
-class IEffectDialog;
+class IAudioFile;
 
-class FilterBase
+class AudioClip : public FilterClip
 {
 	public:
-		virtual ~FilterBase() {}
-		virtual void reset() {}
-		virtual int64_t trimA( int64_t trim ) { return trim; }
-		virtual int64_t trimB( int64_t trim ) { return trim; }
-		virtual void onDraw() {}
-		virtual DragHandler* onMouseDown() { return 0; }
-		virtual const char* name() = 0;
-		virtual void writeXML( TiXmlElement* ) {}
-		virtual void readXML( TiXmlElement* ) {}
-		virtual bool hasDialog() { return false; }
-		virtual IEffectDialog* dialog() { return 0; }
+		AudioClip( Track* track, int64_t position, IAudioFile* af = 0, int id = -1 );
+		virtual ~AudioClip();
+		int fillBufferRaw( float* output, unsigned long frames, int64_t position );
+		int fillBuffer( float* output, unsigned long frames, int64_t position );
+		virtual void reset();
+		using Clip::trimA;
+		using Clip::trimB;
+		int64_t trimA( int64_t trim );
+		int64_t trimB( int64_t trim );
+		
+		DragHandler* onMouseDown( Rect& rect, int x, int y, bool shift );
+
+		virtual int64_t audioTrimA();
+		virtual int64_t audioTrimB();
+		int64_t audioLength();
+	protected:
+		IAudioFile* m_audioFile;
+	private:
+		int64_t m_lastSamplePosition;
 };
 	
 } /* namespace nle */
 
-#endif /* _FILTER_BASE_ */
+#endif /* _AUDIO_CLIP_H_ */

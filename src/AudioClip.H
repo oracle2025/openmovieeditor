@@ -36,9 +36,6 @@ class AudioClip : public AudioClipBase
 		~AudioClip();
 		int64_t length();
 		string filename();
-/*		auto_node* getAutoPoints();
-		void setAutoPoints( auto_node* a );
-		bool has_automation() { return true; }*/
 		int type() { return CLIP_TYPE_AUDIO; }
 		inline IClipArtist* getArtist() { return m_artist; }
 		using AudioClipBase::trimA;
@@ -55,7 +52,6 @@ class AudioClip : public AudioClipBase
 		int64_t audioPosition();
 	private:
 		IClipArtist* m_artist;
-		EnvelopeClip* m_envelopeClip;
 };
 
 

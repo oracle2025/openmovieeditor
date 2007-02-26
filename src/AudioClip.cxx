@@ -35,28 +35,12 @@ AudioClip::AudioClip( Track *track, int64_t position, IAudioFile* af, int64_t tr
 	m_trimB = trimB;
 	g_wavArtist->add( af );
 	m_artist = new AudioClipArtist( this );
-//	m_envelopeClip = new EnvelopeClip( this );
 }
 AudioClip::~AudioClip()
 {
 	delete m_artist;
 	g_wavArtist->remove( m_audioFile->filename() );
-/*	if ( m_envelopeClip ) {
-		delete m_envelopeClip;
-	}*/
 }
-/*
-auto_node* AudioClip::getAutoPoints()
-{
-	assert( m_envelopeClip );
-	return m_envelopeClip->getAutoPoints();
-}
-void AudioClip::setAutoPoints( auto_node* a )
-{
-	assert( m_envelopeClip );
-	m_envelopeClip->setAutoPoints( a );
-}
-*/
 int64_t AudioClip::length()
 {
 	return audioLength();
@@ -85,7 +69,6 @@ int64_t AudioClip::trimA( int64_t trim )
 	if ( length() - trim <= 0 || trim == 0 ) {
 		return 0;
 	}
-	//m_envelopeClip->trimA( trim );
 	AudioClipBase::trimA( trim );
 	return trim;
 }
@@ -97,22 +80,16 @@ int64_t AudioClip::trimB( int64_t trim )
 	if ( length() - trim <= 0 ) {
 		return 0;
 	}
-	//m_envelopeClip->trimB( trim );
 	AudioClipBase::trimB( trim );
 	return trim;
 }
 void AudioClip::reset()
 {
 	AudioClipBase::reset();
-	//m_envelopeClip->reset();
 }
 int AudioClip::fillBuffer( float* output, unsigned long frames, int64_t position )
 {
-	/*if ( m_automations ) {
-		return m_envelopeClip->fillBuffer( output, frames, position );
-	} else {*/
-		return AudioClipBase::fillBuffer( output, frames, position );
-//	}
+	return AudioClipBase::fillBuffer( output, frames, position );
 }
 int64_t AudioClip::fileLength()
 {
