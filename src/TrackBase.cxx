@@ -18,7 +18,7 @@
  */
 
 #include "TrackBase.H"
-#include "AudioClipBase.H"
+#include "AudioClip.H"
 #include "globals.H"
 
 namespace nle
@@ -46,7 +46,7 @@ int TrackBase::fillBuffer( float* output, unsigned long frames, int64_t position
 	}
 	while( written < frames && m_current ) {
 		/* TODO: Use dynamic_cast instead if CLIP_TYPE_* */
-		inc = ( dynamic_cast<AudioClipBase*>(m_current->clip) )->fillBuffer( incBuffer,
+		inc = ( dynamic_cast<AudioClip*>(m_current->clip) )->fillBuffer( incBuffer,
 				 frames - written, position + written
 				);
 		written += inc;

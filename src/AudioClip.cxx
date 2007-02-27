@@ -1,6 +1,6 @@
 /*  AudioClip.cxx
  *
- *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2007 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,49 +17,94 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <sl.h>
-
 #include "AudioClip.H"
 #include "IAudioFile.H"
 #include "WavArtist.H"
 #include "AudioClipArtist.H"
-//#include "EnvelopeClip.H"
+#include "AudioFilter.H"
+
 
 namespace nle
 {
-
 AudioClip::AudioClip( Track *track, int64_t position, IAudioFile* af, int64_t trimA, int64_t trimB, int id )
-	: AudioClipBase( track, position, af, id )
+	: FilterClip( track, position, id )
 {
+	m_audioFile = af;
 	m_trimA = trimA;
 	m_trimB = trimB;
 	g_wavArtist->add( af );
 	m_artist = new AudioClipArtist( this );
 }
+
+AudioClip::AudioClip( Track* track, int64_t position, IAudioFile* af, int id )
+	: FilterClip( track, position, id )
+{
+	m_audioFile = af;
+	m_artist = 0;
+}
 AudioClip::~AudioClip()
 {
-	delete m_artist;
-	g_wavArtist->remove( m_audioFile->filename() );
+	if ( m_audioFile ) {
+		delete m_audioFile;
+		m_audioFile = 0;
+	}
 }
-int64_t AudioClip::length()
+int AudioClip::fillBufferRaw( float* output, unsigned long frames, int64_t position )
 {
-	return audioLength();
+/*	if ( m_mute ) {
+		return 0;
+	}*/
+	int64_t frames_written = 0;
+	int64_t currentPosition = audioPosition();
+	int64_t aLength = audioLength();
+	int64_t trimA = audioTrimA();
+	int64_t frames64 = frames;
+	if ( !m_audioFile ) {
+		return 0;
+	}
+	if ( currentPosition + aLength < position ) { return 0; }
+	if ( currentPosition > position ) {
+		int64_t empty_frames = ( currentPosition - position )
+				< frames64 ? ( currentPosition - position ) : frames64;
+		for ( unsigned long i = 0; i < frames64 * 2; i++ ) {
+			//TODO eingentlich sollten nur empty_frames geschrieben werden
+			output[i] = 0.0;
+		}
+		frames_written += empty_frames;
+		if ( empty_frames == frames64 ) {
+			return frames_written;
+		}
+	}
+	if ( m_lastSamplePosition + frames64 != position ) {
+		m_audioFile->seek( position + frames_written - currentPosition + trimA );
+	}
+	m_lastSamplePosition = position;
+	return frames_written + m_audioFile->fillBuffer(
+			&output[frames_written], frames64 - frames_written
+			);
+
 }
-string AudioClip::filename()
+int AudioClip::fillBuffer( float* output, unsigned long frames, int64_t position )
 {
-	return audioFilename();
+	int result = fillBufferRaw( output, frames, position );
+	filter_stack* node = m_filters;
+	AudioFilter* filter;
+	while ( node ) {
+		filter = dynamic_cast<AudioFilter*>( node->filter );
+		if ( filter ) {
+			filter->fillBuffer( output, frames, position );
+		}
+		node = node->next;
+	}
+	return result;
 }
-int64_t AudioClip::audioTrimA()
+void AudioClip::reset()
 {
-	return m_trimA;
-}
-int64_t AudioClip::audioTrimB()
-{
-	return m_trimB;
-}
-int64_t AudioClip::audioPosition()
-{
-	return position();
+	if ( m_audioFile ) {
+		m_audioFile->seek( audioTrimA() );
+	}
+	m_lastSamplePosition = 0;
+	FilterClip::reset();
 }
 int64_t AudioClip::trimA( int64_t trim )
 {
@@ -69,31 +114,75 @@ int64_t AudioClip::trimA( int64_t trim )
 	if ( length() - trim <= 0 || trim == 0 ) {
 		return 0;
 	}
-	AudioClipBase::trimA( trim );
-	return trim;
+	for ( filter_stack* node = m_filters; node; node = node->next ) {
+		node->filter->trimA( trim );
+	}
+	return Clip::trimA( trim );
 }
 int64_t AudioClip::trimB( int64_t trim )
 {
 	if ( trim + m_trimB < 0 ) {
 		trim = -m_trimB;
 	}
-	if ( length() - trim <= 0 ) {
+	if  ( length() - trim <= 0 ) {
 		return 0;
 	}
-	AudioClipBase::trimB( trim );
-	return trim;
+	for ( filter_stack* node = m_filters; node; node = node->next ) {
+		node->filter->trimB( trim );
+	}
+	return Clip::trimB( trim );
 }
-void AudioClip::reset()
+int64_t AudioClip::audioPosition()
 {
-	AudioClipBase::reset();
+	return position();
 }
-int AudioClip::fillBuffer( float* output, unsigned long frames, int64_t position )
+
+DragHandler* AudioClip::onMouseDown( Rect& rect, int x, int y, bool shift )
 {
-	return AudioClipBase::fillBuffer( output, frames, position );
+	DragHandler* h;
+	filter_stack* node = m_filters;
+	AudioFilter* filter;
+	while ( node ) {
+		filter = dynamic_cast<AudioFilter*>( node->filter );
+		if ( filter ) {
+			h = filter->onMouseDown( rect, x, y, shift );
+			if ( h ) {
+				return h;
+			}
+		}
+		node = node->next;
+	}
+	return 0;
+}
+
+int64_t AudioClip::audioTrimA()
+{
+	return m_trimA;
+}
+int64_t AudioClip::audioTrimB()
+{
+	return m_trimB;
+}
+int64_t AudioClip::audioLength()
+{
+	if ( !m_audioFile ) {
+		return 0;
+	}
+	return m_audioFile->length() - ( audioTrimA() + audioTrimB() );
+}
+int64_t AudioClip::length()
+{
+	return audioLength();
 }
 int64_t AudioClip::fileLength()
 {
 	return m_audioFile->length();
 }
+string AudioClip::filename()
+{
+	return m_audioFile->filename();
+}
 
+
+	
 } /* namespace nle */

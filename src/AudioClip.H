@@ -1,6 +1,6 @@
 /*  AudioClip.H
  *
- *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2007 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,41 +20,51 @@
 #ifndef _AUDIO_CLIP_H_
 #define _AUDIO_CLIP_H_
 
-#include "AudioClipBase.H"
-
+#include "FilterClip.H"
+#include "Rect.H"
 #include "global_includes.H"
 
 namespace nle
 {
 
+class IAudioFile;
+class DragHandler;
 class IClipArtist;
-class EnvelopeClip;
-class AudioClip : public AudioClipBase
+
+class AudioClip : public FilterClip
 {
 	public:
-		AudioClip( Track *track, int64_t position, IAudioFile* af, int64_t trimA = 0, int64_t trimB = 0, int id = -1 );
-		~AudioClip();
-		int64_t length();
-		string filename();
-		int type() { return CLIP_TYPE_AUDIO; }
-		inline IClipArtist* getArtist() { return m_artist; }
-		using AudioClipBase::trimA;
-		using AudioClipBase::trimB;
+		AudioClip( Track* track, int64_t position, IAudioFile* af = 0, int64_t trimA = 0, int64_t trimB = 0, int id = -1 );
+		AudioClip( Track* track, int64_t position, IAudioFile* af = 0, int id = -1 );
+		virtual ~AudioClip();
+		int fillBufferRaw( float* output, unsigned long frames, int64_t position );
+		int fillBuffer( float* output, unsigned long frames, int64_t position );
+		virtual void reset();
+		using Clip::trimA;
+		using Clip::trimB;
 		int64_t trimA( int64_t trim );
 		int64_t trimB( int64_t trim );
-		int fillBuffer( float* output, unsigned long frames, int64_t position );
-		void reset();
+		
+		DragHandler* onMouseDown( Rect& rect, int x, int y, bool shift );
+
+		virtual int64_t audioTrimA();
+		virtual int64_t audioTrimB();
+		int64_t audioLength();
+		int64_t audioPosition();
+
+		int64_t length();
+		string filename();
 		int64_t fileLength();
+		int type() { return CLIP_TYPE_AUDIO; }
+		IClipArtist* getArtist() { return m_artist; }
 		ClipData* getClipData() { return 0; }
 	protected:
-		int64_t audioTrimA();
-		int64_t audioTrimB();
-		int64_t audioPosition();
+		IAudioFile* m_audioFile;
 	private:
+		int64_t m_lastSamplePosition;
 		IClipArtist* m_artist;
 };
-
-
+	
 } /* namespace nle */
 
 #endif /* _AUDIO_CLIP_H_ */

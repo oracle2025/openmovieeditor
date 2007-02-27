@@ -124,7 +124,7 @@ int Project::write( string filename, string name )
 			snprintf( buffer, sizeof(buffer), "%lld", cn->clip->trimB() );
 			clip->SetAttribute( "trimB", buffer );
 			//TODO: Save Filter Params
-			if ( AudioClipBase* ac = dynamic_cast<AudioClipBase*>(cn->clip) ) {
+			if ( AudioClip* ac = dynamic_cast<AudioClip*>(cn->clip) ) {
 				filter_stack* filters;
 				for ( filters = ac->getFilters(); filters; filters = filters->next ) {
 					TiXmlElement* filter_xml = new TiXmlElement( "filter" );
@@ -133,7 +133,7 @@ int Project::write( string filename, string name )
 					filters->filter->writeXML( filter_xml );
 				}
 			}
-/*			if ( AudioClipBase* ac = dynamic_cast<AudioClipBase*>(cn->clip) ) {
+/*			if ( AudioClip* ac = dynamic_cast<AudioClip*>(cn->clip) ) {
 				auto_node* q = ac->getAutoPoints();
 				for ( ; q; q = q->next ) {
 					automation = new TiXmlElement( "automation" );
@@ -552,7 +552,7 @@ int Project::read( string filename )
 			for ( ; filterXml; filterXml = filterXml->NextSiblingElement( "filter" ) ) {
 				FilterFactory* ff = g_audioVolumeFilterFactory;
 				//TODO: Find the filter factory
-				AudioFilter* filter = ac->appendFilter( ff );
+				AudioFilter* filter = dynamic_cast<AudioFilter*>( ac->appendFilter( ff ) );
 				filter->readXML( filterXml );
 			}
 			//read and process Automations

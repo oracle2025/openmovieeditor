@@ -43,7 +43,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	TrackBase.cxx\
 	AudioTrack.cxx\
 	AudioClip.cxx\
-	AudioClipBase.cxx\
 	AudioFileSnd.cxx\
 	AudioFileQT.cxx\
 	PortAudioPlaybackCore.cxx\
@@ -57,7 +56,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	ImageClip.H\
 	strlcpy.c\
 	strlcpy.h\
-	AudioClipBase.H\
 	FilmStrip.H\
 	IVideoFile.H\
 	RenderDialog.H\
@@ -224,7 +222,9 @@ openmovieeditor_SOURCES = nle.cxx\
 	AudioVolumeFilterFactory.cxx\
 	AudioVolumeFilterFactory.H\
 	AutomationDragHandler.H\
-	AutomationDragHandler.cxx
+	AutomationDragHandler.cxx\
+	FilterClip.cxx\
+	FilterClip.H
 #	ShiftAutomationDragHandler.H\
 #	ShiftAutomationDragHandler.cxx\
 #	AutomationMoveCommand.H\

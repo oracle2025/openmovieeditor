@@ -28,7 +28,7 @@ namespace nle
 {
 
 class DragHandler;
-class AudioClipBase;
+class AudioClip;
 
 typedef struct _auto_node {
 	struct _auto_node *next;
@@ -39,7 +39,7 @@ typedef struct _auto_node {
 class AudioVolumeFilter : public AudioFilter
 {
 	public:
-		AudioVolumeFilter( AudioClipBase* clip );
+		AudioVolumeFilter( AudioClip* clip );
 		~AudioVolumeFilter();
 		void onDraw( Rect& rect );
 		DragHandler* onMouseDown( Rect& rect, int x, int y, bool shift );
@@ -56,7 +56,7 @@ class AudioVolumeFilter : public AudioFilter
 		float getEnvelope( int64_t position );
 		auto_node* m_automationPoints;
 		auto_node* m_autoCache;
-		AudioClipBase* m_audioClip;
+		AudioClip* m_audioClip;
 };
 
 } /* namespace nle */

@@ -33,7 +33,7 @@
 namespace nle
 {
 VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A, int64_t B, int id, ClipData* data )
-	: AudioClipBase( track, position, 0, id ), VideoEffectClip()
+	: AudioClip( track, position, 0, id ), VideoEffectClip()
 {
 	m_trimA = A;
 	m_trimB = B;
@@ -104,7 +104,7 @@ int64_t VideoClip::audioPosition()
 }
 void VideoClip::reset()
 {
-	AudioClipBase::reset();
+	AudioClip::reset();
 	m_lastFrame = -1;
 }
 frame_struct* VideoClip::getRawFrame( int64_t position, int64_t &position_in_file )
@@ -128,7 +128,6 @@ int64_t VideoClip::trimA( int64_t trim )
 	if ( length() - trim <= 0 || trim == 0 ) {
 		return 0;
 	}
-//	if ( m_envelopeClip ) { m_envelopeClip->trimA( trim * 48000 / NLE_TIME_BASE ); }
 	return Clip::trimA( trim );
 }
 int64_t VideoClip::trimB( int64_t trim )
@@ -139,12 +138,7 @@ int64_t VideoClip::trimB( int64_t trim )
 	if ( length() - trim <= 0 ) {
 		return 0;
 	}
-//	if ( m_envelopeClip ) { m_envelopeClip->trimB( trim * 48000 / NLE_TIME_BASE ); }
 	return Clip::trimB( trim );
-}
-int VideoClip::fillBuffer( float* output, unsigned long frames, int64_t position )
-{
-	return AudioClipBase::fillBuffer( output, frames, position );
 }
 
 } /* namespace nle */

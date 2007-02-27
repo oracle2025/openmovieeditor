@@ -320,8 +320,8 @@ int VideoTrack::fillBuffer( float* output, unsigned long frames, int64_t positio
 		m_currentAudioFadeOver = m_currentAudioFadeOver->next;
 	}
 	if ( m_currentAudioFadeOver && position > fade_over_start( m_currentAudioFadeOver ) * 1.6 ) {
-		AudioClipBase* ac1 = dynamic_cast<AudioClipBase*>(m_currentAudioFadeOver->clipA);
-		AudioClipBase* ac2 = dynamic_cast<AudioClipBase*>(m_currentAudioFadeOver->clipB);
+		AudioClip* ac1 = dynamic_cast<AudioClip*>(m_currentAudioFadeOver->clipA);
+		AudioClip* ac2 = dynamic_cast<AudioClip*>(m_currentAudioFadeOver->clipB);
 		for ( int i = (frames * 2) - 1; i >= 0; i-- ) {
 			incBuffer[i] = 0.0;
 			buf[i] = 0.0;
@@ -338,7 +338,7 @@ int VideoTrack::fillBuffer( float* output, unsigned long frames, int64_t positio
 		written = frames;
 	} else {
 		while( written < frames && m_current ) {
-			inc = (dynamic_cast<AudioClipBase*>(m_current->clip))->fillBuffer( incBuffer,
+			inc = (dynamic_cast<AudioClip*>(m_current->clip))->fillBuffer( incBuffer,
 					 frames - written, position + written
 					);
 			written += inc;

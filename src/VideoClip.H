@@ -22,7 +22,8 @@
 
 #include <stdint.h>
 
-#include "AudioClipBase.H"
+#include "global_includes.H"
+#include "AudioClip.H"
 #include "frame_struct.h"
 #include "VideoEffectClip.H"
 namespace nle
@@ -30,7 +31,7 @@ namespace nle
 class IVideoFile;
 class FilmStrip;
 class IClipArtist;
-class VideoClip : public AudioClipBase, public VideoEffectClip
+class VideoClip : public AudioClip, public VideoEffectClip
 {
 	public:
 		VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A = 0, int64_t B = 0, int id = -1, ClipData* data = 0 );
@@ -56,7 +57,7 @@ class VideoClip : public AudioClipBase, public VideoEffectClip
 		using Clip::trimB;
 		int64_t trimA( int64_t trim );
 		int64_t trimB( int64_t trim );
-		int fillBuffer( float* output, unsigned long frames, int64_t position );
+		bool m_mute;
 	protected:
 		int64_t audioTrimA();
 		int64_t audioTrimB();
@@ -76,7 +77,6 @@ class VideoClip : public AudioClipBase, public VideoEffectClip
 		int m_aspectWidth;
 		float m_aspectRatio;
 		int m_analogBlank;
-		EnvelopeClip* m_envelopeClip;
 };
 
 } /* namespace nle */

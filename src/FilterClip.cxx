@@ -19,11 +19,13 @@
 
 #include "sl/sl.h"
 #include "FilterClip.H"
+#include "FilterBase.H"
+#include "FilterFactory.H"
 
 namespace nle
 {
 
-FilterClip::FilterClip( Track* track, int64_t position, int id = -1 );
+FilterClip::FilterClip( Track* track, int64_t position, int id )
 	: Clip( track, position, id )
 {
 	m_filters = 0;
@@ -54,7 +56,7 @@ void FilterClip::pushFilter( FilterFactory* factory )
 	m_filters = (filter_stack*)sl_push( m_filters, n );
 	
 }
-FilterBase* FilterClip::appendFilter( FitlerFactory* factory )
+FilterBase* FilterClip::appendFilter( FilterFactory* factory )
 {
 	FilterBase* filter = factory->get( this );
 	assert(filter);

@@ -24,7 +24,7 @@
 #include "globals.H"
 #include "global_includes.H"
 #include "TimelineView.H"
-#include "AudioClipBase.H"
+#include "AudioClip.H"
 #include "timeline/Track.H"
 //#include "AutomationMoveCommand.H"
 //#include "AutomationAddCommand.H"
@@ -39,7 +39,7 @@ namespace nle
 static int g_x_off;
 static int g_y_off;
 
-bool inside_node( auto_node* n, Rect& r, AudioClipBase* clip, int _x, int _y, bool first = false, bool last = false )
+bool inside_node( auto_node* n, Rect& r, AudioClip* clip, int _x, int _y, bool first = false, bool last = false )
 {
 	if ( first ) {
 		_x = _x - 5;
@@ -55,7 +55,7 @@ bool inside_node( auto_node* n, Rect& r, AudioClipBase* clip, int _x, int _y, bo
 	Rect node( x, y, w, h );
 	return node.inside( _x, _y );
 }
-void screen_to_node( int64_t& x, float& y, int in_x, int in_y, auto_node* n, auto_node* n_before, Rect& r, AudioClipBase* clip, bool first = false, bool last = false )
+void screen_to_node( int64_t& x, float& y, int in_x, int in_y, auto_node* n, auto_node* n_before, Rect& r, AudioClip* clip, bool first = false, bool last = false )
 {
 	if ( in_x < r.x ) { in_x = r.x; }
 	if ( in_x > r.x + r.w - 10 ) { in_x = r.x + r.w - 10; }
@@ -79,7 +79,7 @@ void screen_to_node( int64_t& x, float& y, int in_x, int in_y, auto_node* n, aut
 	}
 }
 
-AutomationDragHandler::AutomationDragHandler( AudioClipBase* clip, const Rect& rect, struct _auto_node* nodes, int x_off, int y_off )
+AutomationDragHandler::AutomationDragHandler( AudioClip* clip, const Rect& rect, struct _auto_node* nodes, int x_off, int y_off )
 	: DragHandler( g_timelineView, clip ), m_x_off( x_off ), m_y_off( y_off )
 {
 	m_dragging = false;

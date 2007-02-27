@@ -298,7 +298,7 @@ int TimelineView::handle( int event )
 					}
 					return 1;
 				}
-				AudioClipBase* audioClip = dynamic_cast<AudioClipBase*>(cl);
+				AudioClip* audioClip = dynamic_cast<AudioClip*>(cl);
 				if ( cl && g_ui->automationsMode() == 1 && audioClip ) {
 					Rect r = get_clip_rect( cl, true );
 					m_dragHandler = audioClip->onMouseDown( r, _x, _y, FL_SHIFT & Fl::event_state() );
@@ -977,7 +977,7 @@ void TimelineView::addEffect( FilterFactory* effectFactory )
 	}
 	VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>( m_selectedClips->clip );
 	if ( !vc ) {
-		AudioClipBase* ac = dynamic_cast<AudioClipBase*>( m_selectedClips->clip );
+		AudioClip* ac = dynamic_cast<AudioClip*>( m_selectedClips->clip );
 		if ( !ac ) {
 			return;
 		}

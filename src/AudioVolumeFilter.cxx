@@ -23,7 +23,7 @@
 
 #include "AudioVolumeFilter.H"
 #include "TimelineView.H"
-#include "AudioClipBase.H"
+#include "AudioClip.H"
 #include "timeline/Track.H"
 #include "ShiftAutomationDragHandler.H"
 #include "AutomationDragHandler.H"
@@ -31,7 +31,7 @@
 namespace nle
 {
 
-AudioVolumeFilter::AudioVolumeFilter( AudioClipBase* clip )
+AudioVolumeFilter::AudioVolumeFilter( AudioClip* clip )
 {
 	m_audioClip = clip;
 	m_automationPoints = 0;

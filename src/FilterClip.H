@@ -20,22 +20,25 @@
 #ifndef _FILTER_CLIP_H_
 #define _FILTER_CLIP_H_
 
-#include "timelineClip.H"
+#include "timeline/Clip.H"
 
 namespace nle
 {
-	
+
+class FilterBase;
+class FilterFactory;
+
 typedef struct _filter_stack {
 	struct _filter_stack* next;
 	FilterBase* filter;
 } filter_stack;
 
-class FilterClip
+class FilterClip : public Clip
 {
 	public:
 		virtual ~FilterClip();
 		void pushFilter( FilterFactory* factory );
-		FilterBase* appendFilter( FitlerFactory* factory );
+		FilterBase* appendFilter( FilterFactory* factory );
 		void moveFilterUp( int num );
 		void moveFilterDown( int num );
 		void removeFilter( int num );

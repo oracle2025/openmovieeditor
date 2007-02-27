@@ -19,7 +19,7 @@
 
 #include "AudioVolumeFilterFactory.H"
 #include "AudioVolumeFilter.H"
-#include "AudioClipBase.H"
+#include "AudioClip.H"
 
 namespace nle
 {
@@ -32,7 +32,7 @@ AudioVolumeFilterFactory::AudioVolumeFilterFactory()
 
 FilterBase* AudioVolumeFilterFactory::get( Clip* clip )
 {
-	AudioClipBase* ac = dynamic_cast<AudioClipBase*>( clip );
+	AudioClip* ac = dynamic_cast<AudioClip*>( clip );
 	if ( !ac ) {
 		return 0;
 	}

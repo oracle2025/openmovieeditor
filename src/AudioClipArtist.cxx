@@ -21,7 +21,7 @@
 #include <FL/filename.H>
 
 #include "AudioClipArtist.H"
-#include "AudioClipBase.H"
+#include "AudioClip.H"
 #include "WavArtist.H"
 #include "TimelineView.H"
 #include "timeline/Track.H"
@@ -30,7 +30,7 @@
 namespace nle
 {
 
-AudioClipArtist::AudioClipArtist( AudioClipBase* clip )
+AudioClipArtist::AudioClipArtist( AudioClip* clip )
 	: m_clip( clip )
 {
 }
@@ -60,8 +60,12 @@ void AudioClipArtist::render( Rect& rect, int64_t start, int64_t stop )
 	fl_draw( fl_filename_name( m_clip->filename().c_str() ), _x + 5, rect.y + rect.h - 5 );
 	fl_pop_clip();
 	filter_stack* n = m_clip->getFilters();
+	AudioFilter* filter;
 	for ( ; n; n = n->next ) {
-		n->filter->onDraw(rect);
+		filter = dynamic_cast<AudioFilter*>( n->filter );
+		if ( filter ) {
+			filter->onDraw(rect);
+		}
 	}
 }
 
