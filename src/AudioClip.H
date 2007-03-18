@@ -50,7 +50,7 @@ class AudioClip : public FilterClip
 		virtual int64_t audioTrimA();
 		virtual int64_t audioTrimB();
 		int64_t audioLength();
-		int64_t audioPosition();
+		virtual int64_t audioPosition();
 
 		int64_t length();
 		string filename();

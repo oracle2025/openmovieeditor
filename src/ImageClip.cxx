@@ -30,7 +30,7 @@ namespace nle
 
 
 ImageClip::ImageClip( Track* track, int64_t position, string filename, int64_t length, int id, ClipData* data )
-	: Clip( track, position, id ), m_filename( filename )
+	: FilterClip( track, position, id ), VideoEffectClip( this ), m_filename( filename )
 {
 	m_ok = false;
 	m_artist = 0;

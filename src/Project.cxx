@@ -163,53 +163,55 @@ int Project::write( string filename, string name )
 					clip->SetAttribute( "font", tc->font() );
 					clip->SetAttribute( "color", tc->color() );
 				}
+				FilterClip* vclip = dynamic_cast<FilterClip*>(cn->clip);
+				if ( vclip ) {
+					for ( filter_stack* p = vclip->getFilters(); p; p = p->next ) {
+						//TODO: Store Effects Settings
+						TiXmlElement* effect = new TiXmlElement( "effect" );
+						TiXmlElement* parameter;
+						clip->LinkEndChild( effect );
+						effect->SetAttribute( "name", p->filter->name() );
+						Frei0rEffect* fe = dynamic_cast<Frei0rEffect*>( p->filter );
+						if ( !fe ) {
+							continue;
+						}
+						f0r_plugin_info_t* finfo;
+						f0r_param_info_t pinfo;
+						finfo = fe->getPluginInfo();
+						for ( int i = 0; i < finfo->num_params; i++ ) {
+							fe->getParamInfo( &pinfo, i );
+							parameter = new TiXmlElement( "parameter" );
+							effect->LinkEndChild( parameter );
+							parameter->SetAttribute( "name", pinfo.name );
+							switch ( pinfo.type ) {
+								case F0R_PARAM_DOUBLE: //Seems to be always between 0.0 and 1.0
+									{
+										f0r_param_double dvalue;
+										fe->getValue( &dvalue, i );
+										parameter->SetDoubleAttribute( "value", (double)dvalue );
+										break;
+									}
+								case F0R_PARAM_BOOL:
+									{
+										f0r_param_bool bvalue;
+										fe->getValue( &bvalue, i );
+										parameter->SetAttribute( "value", (int)bvalue );
+										break;
+									}
+								case F0R_PARAM_COLOR:
+									break;
+								case F0R_PARAM_POSITION:
+									{
+										f0r_param_position_t pos;
+										fe->getValue( &pos, i );
+										parameter->SetDoubleAttribute( "x", pos.x );
+										parameter->SetDoubleAttribute( "y", pos.y );
+										break;
+									}
+								default:
+									break;
 
-				for ( effect_stack* p = vc->getEffects(); p; p = p->next ) {
-					//TODO: Store Effects Settings
-					TiXmlElement* effect = new TiXmlElement( "effect" );
-					TiXmlElement* parameter;
-					clip->LinkEndChild( effect );
-					effect->SetAttribute( "name", p->effect->name() );
-					Frei0rEffect* fe = dynamic_cast<Frei0rEffect*>( p->effect );
-					if ( !fe ) {
-						continue;
-					}
-					f0r_plugin_info_t* finfo;
-					f0r_param_info_t pinfo;
-					finfo = fe->getPluginInfo();
-					for ( int i = 0; i < finfo->num_params; i++ ) {
-						fe->getParamInfo( &pinfo, i );
-						parameter = new TiXmlElement( "parameter" );
-						effect->LinkEndChild( parameter );
-						parameter->SetAttribute( "name", pinfo.name );
-						switch ( pinfo.type ) {
-							case F0R_PARAM_DOUBLE: //Seems to be always between 0.0 and 1.0
-								{
-									f0r_param_double dvalue;
-									fe->getValue( &dvalue, i );
-									parameter->SetDoubleAttribute( "value", (double)dvalue );
-									break;
-								}
-							case F0R_PARAM_BOOL:
-								{
-									f0r_param_bool bvalue;
-									fe->getValue( &bvalue, i );
-									parameter->SetAttribute( "value", (int)bvalue );
-									break;
-								}
-							case F0R_PARAM_COLOR:
-								break;
-							case F0R_PARAM_POSITION:
-								{
-									f0r_param_position_t pos;
-									fe->getValue( &pos, i );
-									parameter->SetDoubleAttribute( "x", pos.x );
-									parameter->SetDoubleAttribute( "y", pos.y );
-									break;
-								}
-							default:
-								break;
-							
+							}
 						}
 					}
 				}

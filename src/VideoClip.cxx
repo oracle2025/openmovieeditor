@@ -33,7 +33,7 @@
 namespace nle
 {
 VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A, int64_t B, int id, ClipData* data )
-	: AudioClip( track, position, 0, id ), VideoEffectClip()
+	: AudioClip( track, position, 0, id ), VideoEffectClip( this )
 {
 	m_trimA = A;
 	m_trimB = B;
@@ -92,6 +92,7 @@ int64_t VideoClip::audioTrimA()
 {
 	return m_trimA * 48000 / NLE_TIME_BASE;
 }
+
 int64_t VideoClip::audioTrimB()
 {
 	int64_t r = m_trimB * 48000 / NLE_TIME_BASE;

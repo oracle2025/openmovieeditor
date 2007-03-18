@@ -20,7 +20,7 @@
 #ifndef _IMAGE_CLIP_H_
 #define _IMAGE_CLIP_H_
 
-#include "timeline/Clip.H"
+#include "FilterClip.H"
 #include "IVideoReader.H"
 #include "global_includes.H"
 #include "VideoEffectClip.H"
@@ -29,7 +29,7 @@ class Fl_Shared_Image;
 namespace nle
 {
 
-class ImageClip : public Clip, public VideoEffectClip
+class ImageClip : public FilterClip, public VideoEffectClip
 {
 	public:
 		ImageClip( Track* track, int64_t position, string filename, int64_t length = -1, int id = -1, ClipData* data = 0 );

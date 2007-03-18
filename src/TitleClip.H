@@ -21,7 +21,7 @@
 #define _TITLE_CLIP_H_
 
 #include <FL/x.H>
-#include "timeline/Clip.H"
+#include "FilterClip.H"
 #include "IVideoReader.H"
 #include "global_includes.H"
 #include "VideoEffectClip.H"
@@ -30,7 +30,7 @@ class Fl_Image;
 namespace nle
 {
 
-class TitleClip : public Clip, public VideoEffectClip
+class TitleClip : public FilterClip, public VideoEffectClip
 {
 	public:
 		TitleClip( Track* track, int64_t position, int64_t length = -1, int id = -1, ClipData* data = 0 );

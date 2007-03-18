@@ -863,20 +863,19 @@ void TimelineView::updateEffectDisplay()
 	updateTitlesDisplay();
 	g_ui->effect_browser->clear();
 	if ( !m_selectedClips || m_selectedClips->next ) {
-		//g_ui->m_effectMenu->deactivate();
+		g_ui->m_effectMenu->deactivate();
 		return;
 	}
-	VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>( m_selectedClips->clip );
+	FilterClip* vc = dynamic_cast<FilterClip*>( m_selectedClips->clip );
 	if ( !vc ) {
-		// Auskommentiert um auch für Audio Clips zu funktionieren
-		//g_ui->m_effectMenu->deactivate();
+		g_ui->m_effectMenu->deactivate();
 		return;
 	}
 	g_ui->m_effectMenu->activate();
 	// Liste füllen
-	effect_stack* es = vc->getEffects();
+	filter_stack* es = vc->getFilters();
 	while ( es ) {
-		g_ui->effect_browser->add( es->effect->name(), es->effect );
+		g_ui->effect_browser->add( es->filter->name(), es->filter );
 		es = es->next;
 	}
 }
@@ -1019,7 +1018,7 @@ void TimelineView::editEffect()
 	if ( m_selectedClips->next ) {
 		return;
 	}
-	VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>( m_selectedClips->clip );
+	FilterClip* vc = dynamic_cast<FilterClip*>( m_selectedClips->clip );
 	if ( !vc ) {
 		return;
 	}
@@ -1027,14 +1026,14 @@ void TimelineView::editEffect()
 	if ( c == 0 ) {
 		return;
 	}
-	effect_stack* es = vc->getEffects();
+	filter_stack* es = vc->getFilters();
 	for ( int i = 1; i < c && es ; i++ ) {
 		es = es->next;
 	}
 	if ( !es ) {
 		return;
 	}
-	IVideoEffect* fe = es->effect;
+	FilterBase* fe = es->filter;
 	IEffectDialog* dialog = fe->dialog();
 	dialog->show();
 

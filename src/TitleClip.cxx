@@ -50,7 +50,7 @@ class TitleClipData : public ClipData
 
 
 TitleClip::TitleClip( Track* track, int64_t position, int64_t length, int id, ClipData* data )
-	: Clip( track, position, id )
+	: FilterClip( track, position, id ), VideoEffectClip( this )
 {
 	m_ok = false;
 	m_artist = 0;

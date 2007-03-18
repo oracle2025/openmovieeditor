@@ -54,10 +54,33 @@ void SpecialClipsBrowser::clear()
 }
 int SpecialClipsBrowser::handle( int event )
 {
-	if ( event == FL_DRAG ) {
-		Fl::copy( "TitleClip", strlen("TitleClip") + 1, 0 );
-		Fl::dnd();
-		return 1;
+	switch ( event ) {
+		case FL_PUSH:
+			m_item_selected = (plugin_item*)find_item( Fl::event_y() );
+			if ( m_item_selected ) {
+				redraw_line( m_item_selected );
+			}
+			return 1;
+		case FL_RELEASE:
+			if ( m_item_selected ) {
+				redraw_line( m_item_selected );
+				m_item_selected = 0;
+			}
+			return 1;
+		case FL_FOCUS:
+			return 1;
+		case FL_DRAG:
+			if ( m_item_selected ) {
+				Fl::copy( "TitleClip", strlen("TitleClip") + 1, 0 );
+				// "src:TitleClip"
+				// "effect:frei0r:Name"
+				// "effect:builtin:Name"
+				// "filter:builtin:Name"
+				Fl::dnd();
+				redraw_line( m_item_selected );
+				m_item_selected = 0;
+			}
+			return 1;
 	}
 	return Fl_Browser_::handle( event );
 }
@@ -75,20 +98,25 @@ void SpecialClipsBrowser::add( const char* s, plugin_type type )
 		m_last = m_items = f;
 	}
 }
-void SpecialClipsBrowser::item_draw( void* p, int x, int y, int /*w*/, int h ) const
+void SpecialClipsBrowser::item_draw( void* p, int x, int y, int w, int h ) const
 {
 	plugin_item* f = (plugin_item*)p;
+	Fl_Color bg_color = FL_BACKGROUND2_COLOR;
+	if ( m_item_selected == f ) {
+		bg_color = FL_SELECTION_COLOR;
+		fl_draw_box( FL_FLAT_BOX, x, y, w, h, FL_SELECTION_COLOR );
+	}
 	fl_font( FL_HELVETICA, 14 );
 	fl_color( FL_FOREGROUND_COLOR );
 	switch ( f->type ) {
 		case PL_VIDEO_SRC: 
-			fl_draw_pixmap( source_xpm, x + 2, y + h - 16, FL_BACKGROUND2_COLOR );
+			fl_draw_pixmap( source_xpm, x + 2, y + h - 16, bg_color );
 			break;
 		case PL_AUDIO_FILTER:
-			fl_draw_pixmap( audio_xpm, x + 2, y + h - 16, FL_BACKGROUND2_COLOR );
+			fl_draw_pixmap( audio_xpm, x + 2, y + h - 16, bg_color );
 			break;
 		case PL_VIDEO_EFFECT:
-			fl_draw_pixmap( video_xpm, x + 2, y + h - 16, FL_BACKGROUND2_COLOR );
+			fl_draw_pixmap( video_xpm, x + 2, y + h - 16, bg_color );
 			break;
 	}
 	fl_draw( f->value.c_str(), x + 20, y + h - fl_descent() );

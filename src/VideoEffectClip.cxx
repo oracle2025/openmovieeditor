@@ -64,19 +64,21 @@ class EffectClipData : public ClipData
 		int effect_count;
 };
 
-VideoEffectClip::VideoEffectClip()
+VideoEffectClip::VideoEffectClip( FilterClip* filterClip )
 {
+	m_filterClip = filterClip;
 	m_render_strategy = RENDER_DEFAULT;
-	m_effects = 0;
+	//m_effects = 0;
 	m_crop = m_fit = m_stretch = false;
 	m_default = true;
 	m_video_scaler = 0;
 	m_frame_src = 0;
 	m_frame_dst = 0;
 }
-void VideoEffectClip::setEffects( ClipData* data )
+void VideoEffectClip::setEffects( ClipData* )
 {
-	EffectClipData* edata = dynamic_cast<EffectClipData*>(data);
+	return;
+/*	EffectClipData* edata = dynamic_cast<EffectClipData*>(data);
 	if ( edata ) {
 		FilterFactory* ef;
 		for ( int i = 0; i < edata->effect_count; i++ ) {
@@ -102,15 +104,15 @@ void VideoEffectClip::setEffects( ClipData* data )
 			}
 			
 		}
-	}
+	}*/
 }
 VideoEffectClip::~VideoEffectClip()
 {
-	effect_stack* node;
+/*	effect_stack* node;
 	while ( ( node = (effect_stack*)sl_pop( &m_effects ) ) ) {
 		delete node->effect;
 		delete node;
-	}
+	}*/
 	unPrepareFormat();
 }
 frame_struct* VideoEffectClip::getFrame( int64_t position )
@@ -120,10 +122,13 @@ frame_struct* VideoEffectClip::getFrame( int64_t position )
 	if ( !f ) {
 		return 0;
 	}
-	effect_stack *node = m_effects;
+	filter_stack *node = m_filterClip->getFilters();
+	IVideoEffect* effect;
 	while ( node ) {
-		f = node->effect->getFrame( f, position_in_file );
+		effect = dynamic_cast<IVideoEffect*>( node->filter );
 		node = node->next;
+		if ( !effect ) { continue; }
+		f = effect->getFrame( f, position_in_file );
 	}
 	// TODO: Copy pixel aspect and analog_blank
 	f->aspect = aspectRatio();
@@ -134,7 +139,8 @@ frame_struct* VideoEffectClip::getFrame( int64_t position )
 }
 IVideoEffect* VideoEffectClip::appendEffect( FilterFactory* factory )
 {
-	FilterBase* fb;
+	return dynamic_cast<IVideoEffect*>( m_filterClip->appendFilter( factory ) );
+/*	FilterBase* fb;
 	VideoClip* c1;
 	ImageClip* c2;
 	TitleClip* c3;
@@ -157,11 +163,12 @@ IVideoEffect* VideoEffectClip::appendEffect( FilterFactory* factory )
 	n->next = 0;
 	n->effect = e;
 	m_effects = (effect_stack*)sl_unshift( m_effects, n );
-	return e;
+	return e;*/
 }
 void VideoEffectClip::pushEffect( FilterFactory* factory )
 {
-	FilterBase* fb;
+	m_filterClip->pushFilter( factory );
+/*	FilterBase* fb;
 	VideoClip* c1;
 	ImageClip* c2;
 	TitleClip* c3;
@@ -182,8 +189,9 @@ void VideoEffectClip::pushEffect( FilterFactory* factory )
 	effect_stack* n = new effect_stack;
 	n->next = 0;
 	n->effect = e;
-	m_effects = (effect_stack*)sl_push( m_effects, n );
+	m_effects = (effect_stack*)sl_push( m_effects, n );*/
 }
+/*
 static effect_stack* sl_swap( effect_stack* root )
 {
 	effect_stack* q = root;
@@ -195,10 +203,11 @@ static effect_stack* sl_swap( effect_stack* root )
 	q->next = r->next;
 	r->next = q;
 	return r;
-}
+}*/
 void VideoEffectClip::moveEffectUp( int num )
 {
-	if ( !m_effects || num <= 1 ) {
+	m_filterClip->moveFilterUp( num );
+/*	if ( !m_effects || num <= 1 ) {
 		return;
 	}
 	if ( num == 2 ) {
@@ -209,11 +218,12 @@ void VideoEffectClip::moveEffectUp( int num )
 	for ( int i = 3; i < num; i++ ) {
 		p = p->next;
 	}
-	p->next = sl_swap( p->next );
+	p->next = sl_swap( p->next );*/
 }
 void VideoEffectClip::moveEffectDown( int num )
 {
-	if ( !m_effects ) {
+	m_filterClip->moveFilterDown( num );
+/*	if ( !m_effects ) {
 		return;
 	}
 	if ( num == 1 ) {
@@ -224,9 +234,9 @@ void VideoEffectClip::moveEffectDown( int num )
 	for ( int i = 2; i < num; i++ ) {
 		p = p->next;
 	}
-	p->next = sl_swap( p->next );
+	p->next = sl_swap( p->next );*/
 }
-static int remove_effect_helper( void*, void* data )
+/*static int remove_effect_helper( void*, void* data )
 {
 	int* num = (int*)data;
 	if ( *num ) {
@@ -234,15 +244,16 @@ static int remove_effect_helper( void*, void* data )
 		return 0;
 	}
 	return 1;
-}
+}*/
 void VideoEffectClip::removeEffect( int num )
 {
-	int count = num - 1;
+	m_filterClip->removeFilter( num );
+/*	int count = num - 1;
 	effect_stack* node = (effect_stack*)sl_remove( &m_effects, remove_effect_helper, &count );
 	if ( node ) {
 		delete node->effect;
 		delete node;
-	}
+	}*/
 }
 //void VideoEffectClip::prepareFormat( int ww, int hh, int aspect_w, int aspect_h, float aspect, int analog_blank )
 void VideoEffectClip::prepareFormat( int ww, int hh, int , int , float aspect, int analog_blank )
@@ -258,7 +269,7 @@ void VideoEffectClip::prepareFormat( int ww, int hh, int , int , float aspect, i
 	gavl_pixelformat_t colorspace = GAVL_RGBA_32;
 	m_bits = 4;
 	if ( dynamic_cast<VideoClip*>(this) ) {
-		if ( m_effects ) {
+		if ( m_filterClip->getFilters() ) { //TODO has Video Effects?
 			colorspace = GAVL_RGBA_32;
 			m_bits = 4;
 		} else {
@@ -269,7 +280,7 @@ void VideoEffectClip::prepareFormat( int ww, int hh, int , int , float aspect, i
 		colorspace = GAVL_RGBA_32;
 		m_bits = 4;
 	} else if ( ImageClip* ic = dynamic_cast<ImageClip*>(this) ) {
-		if ( m_effects || ic->getFirstFrame()->has_alpha_channel ) {
+		if ( m_filterClip->getFilters() || ic->getFirstFrame()->has_alpha_channel ) {
 			colorspace = GAVL_RGBA_32;
 			m_bits = 4;
 		} else {
@@ -384,8 +395,10 @@ frame_struct* VideoEffectClip::getFormattedFrame( frame_struct* tmp_frame, int64
 	
 ClipData* VideoEffectClip::vec_getClipData()
 {
+	return 0;
+	/*
 	int effect_count = 0;
-	effect_stack *node = m_effects;
+	filter_stack *node = m_filterClip->getFilters();
 	while ( node ) {
 		effect_count++;
 		node = node->next;
@@ -396,11 +409,17 @@ ClipData* VideoEffectClip::vec_getClipData()
 	EffectClipData* data = new EffectClipData;
 	data->effects = new struct effect_data[effect_count];
 	data->effect_count = effect_count;
-	node = m_effects;
+	node = m_filterClip->getFilters();
 	int i = 0;
 	while ( node ) {
-		data->effects[i].name = node->effect->name();
-		Frei0rEffect* fe = dynamic_cast<Frei0rEffect*>( node->effect );
+		IVideoEffect* effect = dynamic_cast<IVideoEffect*>(node->filter);
+		node = node->next;
+		if ( !effect ) {
+			i++;
+			continue;
+		}
+		data->effects[i].name = effect->name();
+		Frei0rEffect* fe = dynamic_cast<Frei0rEffect*>( effect );
 		f0r_plugin_info_t* finfo;
 		f0r_param_info_t pinfo;
 		finfo = fe->getPluginInfo();
@@ -440,9 +459,9 @@ ClipData* VideoEffectClip::vec_getClipData()
 
 		
 		i++;
-		node = node->next;
 	}
 	return data;
+	*/
 }
 
 

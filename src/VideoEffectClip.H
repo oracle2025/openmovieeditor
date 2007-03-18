@@ -33,11 +33,13 @@ namespace nle
 class FilterFactory;
 class IVideoEffect;
 class ClipData;
+class FilterClip;
 
-typedef struct _effect_stack {
+/*typedef struct _effect_stack {
 	struct _effect_stack* next;
 	IVideoEffect* effect;
 } effect_stack;
+*/
 
 class VideoEffectClip : public IVideoReader
 {
@@ -50,7 +52,7 @@ class VideoEffectClip : public IVideoReader
 		void moveEffectUp( int num );
 		void moveEffectDown( int num );
 		void removeEffect( int num );
-		effect_stack* getEffects() { return m_effects; }
+//		effect_stack* getEffects() { return m_effects; }
 		virtual int w() = 0;
 		virtual int h() = 0;
 		virtual int aspectHeight() = 0;
@@ -70,7 +72,7 @@ class VideoEffectClip : public IVideoReader
 		void def( bool v ) { if ( v ) { m_fit = m_crop = m_stretch = !(m_default = true); m_render_strategy = RENDER_DEFAULT;} }
 	protected:
 		void setEffects( ClipData* data = 0 );
-		VideoEffectClip();
+		VideoEffectClip( FilterClip* filterClip );
 		bool m_crop;
 		bool m_fit;
 		bool m_stretch;
@@ -78,11 +80,12 @@ class VideoEffectClip : public IVideoReader
 		render_strategy_t m_render_strategy;
 		ClipData* vec_getClipData();
 	private:
-		effect_stack* m_effects;
+//		effect_stack* m_effects;
 		gavl_video_scaler_t *m_video_scaler;
 		gavl_video_frame_t* m_frame_src;
 		gavl_video_frame_t* m_frame_dst;
 		int m_bits;
+		FilterClip* m_filterClip;
 };
 
 } /* namespace nle */
