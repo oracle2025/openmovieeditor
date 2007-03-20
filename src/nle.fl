@@ -2,8 +2,7 @@
 version 1.0107 
 header_name {.h} 
 code_name {.cxx}
-class NleUI {open
-} {
+class NleUI {} {
   Function {NleUI()} {open
   } {
     Fl_Window mainWindow {
@@ -15,7 +14,7 @@ if ( Fl::event()==FL_CLOSE ) {
 	m_videoView->stop();
 	nle::g_loadSaveManager->shutdown();
 }} open
-      xywh {449 361 700 600} type Double resizable size_range {450 380 0 0} visible
+      xywh {617 360 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
         label {Black Borders}
@@ -646,8 +645,7 @@ g_black_borders = false;
 special_clips->add("Titles", nle::PL_VIDEO_SRC );
 special_clips->add("Volume Automations", nle::PL_AUDIO_FILTER );
 special_clips->add("Freeze Frame", nle::PL_VIDEO_EFFECT );
-special_clips->add("Crop/Fit/Stretch", nle::PL_VIDEO_EFFECT );} {selected
-    }
+special_clips->add("Crop/Fit/Stretch", nle::PL_VIDEO_EFFECT );} {}
   }
   Function {~NleUI()} {} {
     code {delete mainWindow;} {}
@@ -746,14 +744,15 @@ g_backButton = backButton;} {}
 decl {Flmm_Scalebar* g_scrollBar;} {public
 } 
 
-class EncodeDialog {} {
+class EncodeDialog {open
+} {
   Function {EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecParameters* codecParams )} {open
   } {
     Fl_Window encodeDialog {
       label Render open
-      private xywh {549 378 485 400} type Double hide
+      private xywh {549 378 485 400} type Double
       code0 {\#include "IVideoReader.H"}
-      code1 {\#include "IAudioReader.H"} modal
+      code1 {\#include "IAudioReader.H"} modal visible
     } {
       Fl_Return_Button {} {
         label Encode
@@ -796,8 +795,8 @@ o->window()->hide();}
         xywh {5 35 475 320}
       } {
         Fl_Group {} {
-          label Simple open
-          xywh {5 60 475 295}
+          label Simple
+          xywh {5 60 475 295} hide
         } {
           Fl_Box {} {
             label Format
@@ -881,7 +880,7 @@ o->window()->hide();}
         }
         Fl_Group {} {
           label Extended open
-          xywh {5 60 475 295} hide
+          xywh {5 60 475 295}
         } {
           Fl_Choice audio_codec_menu {
             label {Audio Codec}
@@ -914,6 +913,22 @@ m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
             MenuItem {} {
               label {25 (PAL)}
               xywh {5 5 100 20}
+            }
+            MenuItem {} {
+              label {29.97 (NTSC)}
+              xywh {0 0 100 20}
+            }
+            MenuItem {} {
+              label 24
+              xywh {0 0 100 20}
+            }
+            MenuItem {} {
+              label 15
+              xywh {0 0 100 20}
+            }
+            MenuItem {} {
+              label 30 selected
+              xywh {0 0 100 20}
             }
           }
           Fl_Choice frame_size_choice {

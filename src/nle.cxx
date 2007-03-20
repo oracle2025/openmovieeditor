@@ -1342,6 +1342,10 @@ Fl_Menu_Item EncodeDialog::menu_Samplerate1[] = {
 
 Fl_Menu_Item EncodeDialog::menu_Framerate1[] = {
  {"25 (PAL)", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"29.97 (NTSC)", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"24", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"15", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"30", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0}
 };
 
@@ -1411,6 +1415,7 @@ EncodeDialog::EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecPa
     }
     { Fl_Tabs* o = new Fl_Tabs(5, 35, 475, 320);
       { Fl_Group* o = new Fl_Group(5, 60, 475, 295, "Simple");
+        o->hide();
         { Fl_Box* o = new Fl_Box(15, 130, 190, 215, "Format");
           o->box(FL_ENGRAVED_FRAME);
           o->labelfont(1);
@@ -1454,7 +1459,6 @@ EncodeDialog::EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecPa
         o->end();
       }
       { Fl_Group* o = new Fl_Group(5, 60, 475, 295, "Extended");
-        o->hide();
         { Fl_Choice* o = audio_codec_menu = new Fl_Choice(145, 250, 205, 25, "Audio Codec");
           o->down_box(FL_BORDER_BOX);
           o->callback((Fl_Callback*)cb_audio_codec_menu);

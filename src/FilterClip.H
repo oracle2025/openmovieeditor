@@ -31,6 +31,10 @@ class FilterFactory;
 typedef struct _filter_stack {
 	struct _filter_stack* next;
 	FilterBase* filter;
+	/* AudioFilter* afilter;
+	 * VideoFilter* vfilter;
+	 * to avoid a dynamic_cast in thight loops
+	 */
 } filter_stack;
 
 class FilterClip : public Clip
