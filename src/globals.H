@@ -24,6 +24,7 @@
 
 //#define NLE_TIME_BASE 30000
 #define NLE_TIME_BASE 35280000
+#define PREF_FILE_ADD "-devel"
 
 #include <lqt.h>
 

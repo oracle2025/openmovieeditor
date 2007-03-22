@@ -39,7 +39,7 @@ Prefs::Prefs()
 		return;
 	}
 	preferences_filename += getenv( "HOME" );
-	preferences_filename += "/.openme.prefs";
+	preferences_filename += ("/.openme.prefs" PREF_FILE_ADD);
 	g_preferences = this;
 	m_browserFolder = getenv( "HOME" );
 	m_mediaFolder = getenv( "HOME" );

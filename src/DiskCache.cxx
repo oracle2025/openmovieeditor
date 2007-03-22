@@ -39,8 +39,8 @@ DiskCache::DiskCache( string filename, string type )
 	struct stat statbuf2;
 	char buffer[BUFFER_LEN];
 	findpath( filename.c_str(), buffer, BUFFER_LEN );
-	string cachepath = string(g_homefolder) + "/.openme/cache" + buffer;
-	m_cachefile = string(g_homefolder) + "/.openme/cache" + filename + "." + type;
+	string cachepath = string(g_homefolder) + ("/.openme/cache" PREF_FILE_ADD)+ buffer;
+	m_cachefile = string(g_homefolder) + ("/.openme/cache" PREF_FILE_ADD) + filename + "." + type;
 	m_file = fopen( m_cachefile.c_str(), "r" );
 	m_size = -1;
 	m_dirty = false;
