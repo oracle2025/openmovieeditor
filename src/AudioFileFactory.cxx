@@ -47,7 +47,7 @@ IAudioFile* AudioFileFactory::get( string filename )
 		af = 0;
 	}
 #endif /* AVCODEC */
-	if ( af && af->samplerate() == 44100 ) {
+	if ( af && af->samplerate() != 48000 ) {
 		af = new Resampler( af );
 	}
 	return af;

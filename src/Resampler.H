@@ -42,6 +42,7 @@ class Resampler : public IAudioFile
 		IAudioFile* m_audiofile;
 	private:
 		int m_samplerate;
+		int m_srcSamplerate;
 		SRC_STATE* m_state;
 		int m_error;
 };
