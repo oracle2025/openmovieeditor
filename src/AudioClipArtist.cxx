@@ -30,8 +30,8 @@
 namespace nle
 {
 
-AudioClipArtist::AudioClipArtist( AudioClip* clip )
-	: m_clip( clip )
+AudioClipArtist::AudioClipArtist( AudioClip* clip, bool renderFilters )
+	: m_clip( clip ), m_renderFilters( renderFilters )
 {
 }
 AudioClipArtist::~AudioClipArtist()
@@ -59,12 +59,14 @@ void AudioClipArtist::render( Rect& rect, int64_t start, int64_t stop )
 	fl_color( FL_WHITE );
 	fl_draw( fl_filename_name( m_clip->filename().c_str() ), _x + 5, rect.y + rect.h - 5 );
 	fl_pop_clip();
-	filter_stack* n = m_clip->getFilters();
-	AudioFilter* filter;
-	for ( ; n; n = n->next ) {
-		filter = dynamic_cast<AudioFilter*>( n->filter );
-		if ( filter ) {
-			filter->onDraw(rect);
+	if ( m_renderFilters ) {
+		filter_stack* n = m_clip->getFilters();
+		AudioFilter* filter;
+		for ( ; n; n = n->next ) {
+			filter = dynamic_cast<AudioFilter*>( n->filter );
+			if ( filter ) {
+				filter->onDraw(rect);
+			}
 		}
 	}
 }

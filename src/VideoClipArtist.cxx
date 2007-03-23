@@ -32,6 +32,7 @@
 #include "mute.xpm"
 #include "SwitchBoard.H"
 #include "AudioClipArtist.H"
+#include "FilterBase.H"
 
 namespace nle
 {
@@ -41,7 +42,7 @@ VideoClipArtist::VideoClipArtist( VideoClip* clip )
 {
 	m_audioClipArtist = 0;
 	if ( m_clip->hasAudio() ) {
-		m_audioClipArtist = new AudioClipArtist( m_clip );
+		m_audioClipArtist = new AudioClipArtist( m_clip, false );
 	}
 }
 VideoClipArtist::~VideoClipArtist()
@@ -88,15 +89,20 @@ void VideoClipArtist::render( Rect& rect_in, int64_t start, int64_t stop )
 	
 	fl_pop_clip();
 	
+	fl_push_clip( rect_in.x, rect_in.y, rect_in.w, rect_in.h );		
 	if ( rect_in.h > 30 && m_audioClipArtist && !m_clip->m_mute ) {
 		rect.y += 35;
 		rect.h = rect_in.h - 35;
 		m_audioClipArtist->render( rect, llrint( start * 48000 / NLE_TIME_BASE ), llrint( stop * 48000 / NLE_TIME_BASE ) );
-		fl_push_clip( rect_in.x, rect_in.y, rect_in.w, rect_in.h );		
 		fl_color( FL_WHITE );
 		fl_rectf( rect_in.x, rect_in.y + 30, rect_in.w, 5 );
-		fl_pop_clip();
 	}
+	filter_stack* n = m_clip->getFilters();
+	for ( ; n; n = n->next ) {
+		n->filter->onDraw(rect_in);
+	}
+	fl_pop_clip();
+
 }
 
 } /* namespace nle */

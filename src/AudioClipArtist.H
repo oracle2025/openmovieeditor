@@ -32,11 +32,12 @@ class AudioClip;
 class AudioClipArtist : public IClipArtist
 {
 	public:
-		AudioClipArtist( AudioClip* clip );
+		AudioClipArtist( AudioClip* clip, bool renderFilters = true );
 		~AudioClipArtist();
 		void render( Rect& rect, int64_t start, int64_t stop );
 	private:
 		AudioClip* m_clip;
+		bool m_renderFilters;
 };
 
 } /* namespace nle */

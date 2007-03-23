@@ -21,6 +21,7 @@
 #define _FILTER_BASE_
 
 #include <stdint.h>
+#include "Rect.H"
 
 class TiXmlElement;
 
@@ -37,7 +38,7 @@ class FilterBase
 		virtual void reset() {}
 		virtual int64_t trimA( int64_t trim ) { return trim; }
 		virtual int64_t trimB( int64_t trim ) { return trim; }
-		virtual void onDraw() {}
+		virtual void onDraw( Rect& ) {}
 		virtual DragHandler* onMouseDown() { return 0; }
 		virtual const char* name() = 0;
 		virtual void writeXML( TiXmlElement* ) {}

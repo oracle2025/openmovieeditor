@@ -35,7 +35,7 @@ class AudioFilter : public FilterBase
 {
 	public:
 		virtual ~AudioFilter() {}
-		virtual void onDraw( Rect& rect ) = 0;
+		//virtual void onDraw( Rect& rect ) = 0;
 		virtual DragHandler* onMouseDown( Rect& rect, int x, int y, bool shift ) = 0;
 		virtual int fillBuffer( float* input_output, unsigned long frames, int64_t position ) = 0;
 		virtual void writeXML( TiXmlElement* xml_node ) = 0;
