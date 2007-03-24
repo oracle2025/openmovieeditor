@@ -72,6 +72,7 @@ int SpecialClipsBrowser::handle( int event )
 		case FL_DRAG:
 			if ( m_item_selected ) {
 				Fl::copy( "TitleClip", strlen("TitleClip") + 1, 0 );
+				// Fl::copy( m_item_selected->identifier, strlen(m_item_selected->identifier) + 1, 0 )
 				// "src:TitleClip"
 				// "effect:frei0r:Name"
 				// "effect:builtin:Name"
@@ -84,11 +85,12 @@ int SpecialClipsBrowser::handle( int event )
 	}
 	return Fl_Browser_::handle( event );
 }
-void SpecialClipsBrowser::add( const char* s, plugin_type type )
+void SpecialClipsBrowser::add( const char* s, plugin_type type, const char* identifier )
 {
 	plugin_item* f = new plugin_item;
 	f->value = s;
 	f->type = type;
+	f->identifier = identifier;
 	f->next = 0;
 	f->prev = m_last;
 	if ( m_items ) {

@@ -37,6 +37,7 @@ typedef struct plugin_item_ {
 	struct plugin_item_* prev;
 	string value;
 	plugin_type type;
+	string identifier;
 } plugin_item;
 
 
@@ -46,7 +47,7 @@ class SpecialClipsBrowser : public Fl_Browser_
 		SpecialClipsBrowser( int x, int y, int w, int h, const char *l = 0 );
 		~SpecialClipsBrowser();
 		int handle( int event );
-		void add( const char* s, plugin_type type );
+		void add( const char* s, plugin_type type, const char* identifier );
 
 	protected:
 		void item_draw( void* p, int x, int y, int w, int h ) const;
