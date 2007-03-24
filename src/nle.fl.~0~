@@ -2,8 +2,7 @@
 version 1.0107 
 header_name {.h} 
 code_name {.cxx}
-class NleUI {open
-} {
+class NleUI {} {
   Function {NleUI()} {open
   } {
     Fl_Window mainWindow {
@@ -15,7 +14,7 @@ if ( Fl::event()==FL_CLOSE ) {
 	m_videoView->stop();
 	nle::g_loadSaveManager->shutdown();
 }} open
-      xywh {449 361 700 600} type Double resizable size_range {450 380 0 0} visible
+      xywh {617 360 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
         label {Black Borders}
@@ -566,8 +565,8 @@ m_timelineView->zoom( zoom );}
               xywh {40 345 660 25}
             } {
               Fl_Button {} {
-                callback {g_snap = o->value();} selected
-                tooltip Snapping image {/home/oracle/src/openme-developers/icons/snap.xpm} xywh {40 345 25 25} type Toggle value 1
+                callback {g_snap = o->value();}
+                tooltip Snapping image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/snap.xpm} xywh {40 345 25 25} type Toggle value 1
               }
               Fl_Box {} {
                 label Ruler
@@ -597,10 +596,10 @@ m_timelineView->zoom( zoom );}
             xywh {0 345 40 255} labelsize 12
           } {
             Fl_Button positioningButton {
-              tooltip {Positioning (S)} image {/home/oracle/src/openme-developers/icons/tool_positioning.xpm} xywh {0 370 40 40} type Radio shortcut 0x73 value 1 align 16
+              tooltip {Positioning (S)} image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/tool_positioning.xpm} xywh {0 370 40 40} type Radio shortcut 0x73 value 1 align 16
             }
             Fl_Button automationsButton {
-              tooltip {Automations (A)} image {/home/oracle/src/openme-developers/icons/tool_automations.xpm} xywh {0 410 40 40} type Radio shortcut 0x61 align 18
+              tooltip {Automations (A)} image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/tool_automations.xpm} xywh {0 410 40 40} type Radio shortcut 0x61 align 18
             }
             Fl_Box {} {
               xywh {0 490 40 70} box THIN_UP_BOX resizable
@@ -610,10 +609,10 @@ m_timelineView->zoom( zoom );}
               xywh {0 345 40 25} box UP_BOX labelsize 12
             }
             Fl_Box trashCan {
-              private tooltip Trash image {/home/oracle/src/openme-developers/icons/trash_big.xpm} xywh {0 560 40 40} box UP_BOX
+              private tooltip Trash image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/trash_big.xpm} xywh {0 560 40 40} box UP_BOX
             }
             Fl_Button razorButton {
-              tooltip {Split (R)} image {/home/oracle/src/openme-developers/icons/razor.xpm} xywh {0 450 40 40} type Radio shortcut 0x72 align 18
+              tooltip {Split (R)} image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/razor.xpm} xywh {0 450 40 40} type Radio shortcut 0x72 align 18
             }
           }
         }
@@ -646,8 +645,7 @@ g_black_borders = false;
 special_clips->add("Titles", nle::PL_VIDEO_SRC );
 special_clips->add("Volume Automations", nle::PL_AUDIO_FILTER );
 special_clips->add("Freeze Frame", nle::PL_VIDEO_EFFECT );
-special_clips->add("Crop/Fit/Stretch", nle::PL_VIDEO_EFFECT );} {selected
-    }
+special_clips->add("Crop/Fit/Stretch", nle::PL_VIDEO_EFFECT );} {}
   }
   Function {~NleUI()} {} {
     code {delete mainWindow;} {}
@@ -1172,16 +1170,15 @@ if ( m_audio ) {
   }
 } 
 
-class AboutDialog {open
-} {
+class AboutDialog {} {
   Function {AboutDialog()} {open
   } {
     Fl_Window aboutDialog {
       label {About Dialog} open
-      xywh {683 364 340 370} type Double modal visible
+      xywh {1243 364 340 370} type Double hide modal
     } {
       Fl_Box {} {
-        image {/home/oracle/src/openme-developers/icons/logo.xpm} xywh {0 0 340 155}
+        image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/logo.xpm} xywh {0 0 340 155}
       }
       Fl_Box {} {
         label {Open Movie Editor}
