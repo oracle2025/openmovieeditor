@@ -102,8 +102,11 @@ int TimelineView::handle( int event )
 				char *fn,*filename=strdup(Fl::event_text());
 				int i=strlen(filename);
 				while (i>0 && (iscntrl(filename[i]) || isspace(filename[i])) ) filename[i--]=0;
-				if (!strncmp(filename,"file://",7)) fn=&(filename[7]); 
-				else fn=filename;
+				if (!strncmp(filename,"file://",7)) {
+					fn=&(filename[7]); 
+				} else {
+					fn=filename;
+				}
 				if (t && !fl_filename_isdir(fn)) {
 					int64_t rp = get_real_position( _x, t->stretchFactor() );
 					
