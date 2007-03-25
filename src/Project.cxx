@@ -133,15 +133,6 @@ int Project::write( string filename, string name )
 					filters->filter->writeXML( filter_xml );
 				}
 			}
-/*			if ( AudioClip* ac = dynamic_cast<AudioClip*>(cn->clip) ) {
-				auto_node* q = ac->getAutoPoints();
-				for ( ; q; q = q->next ) {
-					automation = new TiXmlElement( "automation" );
-					clip->LinkEndChild( automation );
-					automation->SetAttribute( "x", q->x );
-					automation->SetDoubleAttribute( "y", q->y );
-				}
-			}*/
 			if ( VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>(cn->clip) ) {
 				if ( vc->def() ) {
 					clip->SetAttribute( "render", "default" );
@@ -274,15 +265,7 @@ int Project::read( string filename )
 			if ( ! ( position_str = j->Attribute( "length" ) ) )
 				continue;
 			length = atoll( position_str );
-			/*
-			if ( ! j->Attribute( "trimA", &trimA ) )
-				continue;
-			if ( ! j->Attribute( "trimB", &trimB ) )
-				continue;
-			if ( ! j->Attribute( "length", &length ) ) {
-				length = -1;
-			}
-			*/
+			
 			strlcpy( filename, j->Attribute( "filename" ), sizeof(filename) );
 			if ( ! filename ) //TODO is this correct?
 				continue;
@@ -402,33 +385,6 @@ int Project::read( string filename )
 						FilterBase* filter = c->appendFilter( ff );
 						filter->readXML( filterXml );
 					}
-					/*if ( c->has_automation() ) {
-						//read and process Automations
-						TiXmlElement* automation = TiXmlHandle( j ).FirstChildElement( "automation" ).Element();
-						auto_node* autonode = c->getAutoPoints();
-						int x;
-						double y;
-						bool fff = false;
-						for ( ; automation; automation = automation->NextSiblingElement( "automation" ) ) {
-							if ( fff ) {
-								if ( !autonode->next ) {
-									autonode->next = new auto_node;
-									autonode->next->next = 0;
-									autonode->next->x = autonode->x + 1;
-									autonode->next->y = 1.0;
-								}
-								autonode = autonode->next;
-							} else {
-								fff = true;
-							}
-							if ( ! automation->Attribute( "x", &x ) )
-								continue;
-							if ( ! automation->Attribute( "y", &y ) )
-								continue;
-							autonode->x = x;
-							autonode->y = y;
-						}
-					}*/
 					g_timeline->addClip( trackId, c );
 				} else {
 					ImageClip* ic = new ImageClip( tr, position, filename, length - trimA - trimB, -1 );
@@ -537,13 +493,7 @@ int Project::read( string filename )
 			length = atoll( position_str );
 
 			
-			/*if ( ! j->Attribute( "trimA", &trimA ) )
-				continue;
-			if ( ! j->Attribute( "trimB", &trimB ) )
-				continue;
-			if ( ! j->Attribute( "length", &length ) ) {
-				length = -1;
-			}*/
+			
 			strlcpy( filename, j->Attribute( "filename" ), sizeof(filename) );
 			if ( ! filename )
 				continue;
@@ -564,31 +514,6 @@ int Project::read( string filename )
 				AudioFilter* filter = dynamic_cast<AudioFilter*>( ac->appendFilter( ff ) );
 				filter->readXML( filterXml );
 			}
-			//read and process Automations
-			/*TiXmlElement* automation = TiXmlHandle( j ).FirstChildElement( "automation" ).Element();
-			auto_node* autonode = ac->getAutoPoints();
-			int x;
-			double y;
-			bool fff = false;
-			for ( ; automation; automation = automation->NextSiblingElement( "automation" ) ) {
-				if ( fff ) {
-					if ( !autonode->next ) {
-						autonode->next = new auto_node;
-						autonode->next->next = 0;
-						autonode->next->x = autonode->x + 1;
-						autonode->next->y = 1.0;
-					}
-					autonode = autonode->next;
-				} else {
-					fff = true;
-				}
-				if ( ! automation->Attribute( "x", &x ) )
-					continue;
-				if ( ! automation->Attribute( "y", &y ) )
-					continue;
-				autonode->x = x;
-				autonode->y = y;
-			}*/
 			g_timeline->addClip( trackId, clip );
 		}
 	}
