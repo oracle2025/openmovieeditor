@@ -155,9 +155,10 @@ int Project::write( string filename, string name )
 					clip->SetAttribute( "color", tc->color() );
 				}
 				FilterClip* vclip = dynamic_cast<FilterClip*>(cn->clip);
+		// TODO: Fix the following frei0r saving code by implementing
+		// TODO: writeXML in the plugin
 				if ( vclip ) {
 					for ( filter_stack* p = vclip->getFilters(); p; p = p->next ) {
-						//TODO: Store Effects Settings
 						TiXmlElement* effect = new TiXmlElement( "effect" );
 						TiXmlElement* parameter;
 						clip->LinkEndChild( effect );
@@ -305,7 +306,9 @@ int Project::read( string filename )
 					FilterFactory* ef = g_frei0rFactory->get( effectXml->Attribute( "name" ) );
 					if ( ef ) {
 						Frei0rEffect* effectObj = dynamic_cast<Frei0rEffect*>( c->appendEffect( ef ) );
-						TiXmlElement* parameterXml = TiXmlHandle( effectXml ).FirstChildElement( "parameter" ).Element();
+						effectObj->readXML( effectXml );
+						
+/*						TiXmlElement* parameterXml = TiXmlHandle( effectXml ).FirstChildElement( "parameter" ).Element();
 						for ( ; parameterXml; parameterXml = parameterXml->NextSiblingElement( "parameter" ) ) {
 							string paramName = parameterXml->Attribute( "name" );
 							f0r_plugin_info_t* finfo = effectObj->getPluginInfo();
@@ -332,7 +335,7 @@ int Project::read( string filename )
 									break;
 								}
 							}
-						}
+						}*/
 					}
 				}
 				g_timeline->addClip( trackId, c );
@@ -348,6 +351,8 @@ int Project::read( string filename )
 						FilterFactory* ef = g_frei0rFactory->get( effectXml->Attribute( "name" ) );
 						if ( ef ) {
 							Frei0rEffect* effectObj = dynamic_cast<Frei0rEffect*>( c->appendEffect( ef ) );
+							effectObj->readXML( effectXml );
+							/*
 							TiXmlElement* parameterXml = TiXmlHandle( effectXml ).FirstChildElement( "parameter" ).Element();
 							for ( ; parameterXml; parameterXml = parameterXml->NextSiblingElement( "parameter" ) ) {
 								string paramName = parameterXml->Attribute( "name" );
@@ -375,7 +380,7 @@ int Project::read( string filename )
 										break;
 									}
 								}
-							}
+							}*/
 						}
 					}
 					TiXmlElement* filterXml = TiXmlHandle( j ).FirstChildElement( "filter" ).Element();
@@ -404,6 +409,8 @@ int Project::read( string filename )
 							FilterFactory* ef = g_frei0rFactory->get( effectXml->Attribute( "name" ) );
 							if ( ef ) {
 								Frei0rEffect* effectObj = dynamic_cast<Frei0rEffect*>( ic->appendEffect( ef ) );
+								effectObj->readXML( effectXml );
+								/*
 								TiXmlElement* parameterXml = TiXmlHandle( effectXml ).FirstChildElement( "parameter" ).Element();
 								for ( ; parameterXml; parameterXml = parameterXml->NextSiblingElement( "parameter" ) ) {
 									string paramName = parameterXml->Attribute( "name" );
@@ -432,6 +439,7 @@ int Project::read( string filename )
 										}
 									}
 								}
+								*/
 							}
 						}
 

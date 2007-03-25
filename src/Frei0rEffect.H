@@ -29,6 +29,7 @@ typedef void (*f0r_update_f)(f0r_instance_t, double, const uint32_t*, uint32_t*)
 typedef void (*f0r_get_param_info_f)(f0r_param_info_t *info, int param_index);
 typedef void (*f0r_set_param_value_f)(f0r_instance_t instance, f0r_param_t param, int param_index);
 typedef void (*f0r_get_param_value_f)(f0r_instance_t instance, f0r_param_t param, int param_index);  
+
 namespace nle
 {
 
@@ -48,6 +49,8 @@ class Frei0rEffect : public IVideoEffect
 		int numParams();
 		IEffectDialog* m_dialog;
 		IEffectDialog* dialog();
+		void writeXML( TiXmlElement* );
+		void readXML( TiXmlElement* );
 	private:
 		f0r_instance_t m_instance;
 		unsigned char *m_tmpFrame;

@@ -1018,7 +1018,8 @@ void TimelineView::addEffect( FilterFactory* effectFactory )
 	g_videoView->redraw();
 	IEffectDialog* dialog = fe->dialog();
 	//TODO: VideoEffects: move Stylus to start of clip if it is not inside the clip.
-	if ( dialog ) {
+	IVideoEffect* ive = dynamic_cast<IVideoEffect*>(fe);
+	if ( ive && ive->numParams() && dialog ) {
 		dialog->show();
 	}
 }

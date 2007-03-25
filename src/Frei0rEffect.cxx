@@ -18,6 +18,7 @@
  */
 
 #include <dlfcn.h>
+#include <tinyxml.h>
 
 #include "frei0r.h"
 #include "Frei0rEffect.H"
@@ -119,6 +120,87 @@ IEffectDialog* Frei0rEffect::dialog()
 		m_dialog = new Frei0rDialog( this );
 	}
 	return m_dialog;
+}
+void Frei0rEffect::writeXML( TiXmlElement* xml_node )
+{
+	TiXmlElement* effect = new TiXmlElement( "effect" );
+	TiXmlElement* parameter;
+	xml_node->LinkEndChild( effect );
+	effect->SetAttribute( "name", name() );
+	f0r_plugin_info_t* finfo;
+	f0r_param_info_t pinfo;
+	finfo = getPluginInfo();
+	for ( int i = 0; i < finfo->num_params; i++ ) {
+		getParamInfo( &pinfo, i );
+		parameter = new TiXmlElement( "parameter" );
+		effect->LinkEndChild( parameter );
+		parameter->SetAttribute( "name", pinfo.name );
+		switch ( pinfo.type ) {
+			case F0R_PARAM_DOUBLE: //Seems to be always between 0.0 and 1.0
+				{
+					f0r_param_double dvalue;
+					getValue( &dvalue, i );
+					parameter->SetDoubleAttribute( "value", (double)dvalue );
+					break;
+				}
+			case F0R_PARAM_BOOL:
+				{
+					f0r_param_bool bvalue;
+					getValue( &bvalue, i );
+					parameter->SetAttribute( "value", (int)bvalue );
+					break;
+				}
+			case F0R_PARAM_COLOR:
+				break;
+			case F0R_PARAM_POSITION:
+				{
+					f0r_param_position_t pos;
+					getValue( &pos, i );
+					parameter->SetDoubleAttribute( "x", pos.x );
+					parameter->SetDoubleAttribute( "y", pos.y );
+					break;
+				}
+			default:
+				break;
+
+		}
+	}
+
+
+
+}
+void Frei0rEffect::readXML( TiXmlElement* xml_node )
+{
+	
+//	Frei0rEffect* effectObj = dynamic_cast<Frei0rEffect*>( c->appendEffect( ef ) );
+	TiXmlElement* parameterXml = TiXmlHandle( xml_node ).FirstChildElement( "parameter" ).Element();
+	for ( ; parameterXml; parameterXml = parameterXml->NextSiblingElement( "parameter" ) ) {
+		string paramName = parameterXml->Attribute( "name" );
+		f0r_plugin_info_t* finfo = getPluginInfo();
+		f0r_param_info_t pinfo;
+		for ( int i = 0; i < finfo->num_params; i++ ) {
+			getParamInfo( &pinfo, i );
+			if ( paramName == pinfo.name ) {
+				switch ( pinfo.type ) {
+					case F0R_PARAM_DOUBLE:
+						{
+							double dval;
+							f0r_param_double dvalue;
+							parameterXml->Attribute( "value", &dval );
+							dvalue = dval;
+							setValue( &dvalue, i );
+							break;
+						}
+					case F0R_PARAM_BOOL:
+						{
+							//int bval;
+							break;
+						}
+				}
+				break;
+			}
+		}
+	}
 }
 
 } /* namespace nle */

@@ -815,7 +815,6 @@ NleUI::NleUI() {
               o->end();
             }
             { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Video Effects");
-              o->hide();
               { nle::FltkEffectMenu* o = m_effectMenu = new nle::FltkEffectMenu(5, 80, 355, 25, "Add Video Effect");
                 o->box(FL_UP_BOX);
                 o->color(FL_BACKGROUND_COLOR);
@@ -888,6 +887,7 @@ NleUI::NleUI() {
               o->end();
             }
             { Fl_Group* o = titles_tab = new Fl_Group(0, 75, 365, 230, "Titles");
+              o->hide();
               o->deactivate();
               { Fl_Input* o = titles_text = new Fl_Input(205, 80, 155, 220);
                 o->type(4);
@@ -1167,7 +1167,9 @@ int NleUI::automationsMode() {
 }
 
 void NleUI::setEffectButtons() {
-  nle::IVideoEffect* e = (nle::IVideoEffect*)effect_browser->data( effect_browser->value() );
+  nle::FilterBase* f = (nle::FilterBase*)effect_browser->data( effect_browser->value() );
+nle::IVideoEffect* e = dynamic_cast<nle::IVideoEffect*>(f);
+if (!e) return;
 if ( e && e->numParams() ) {
 	m_edit_effect->activate();
 } else {

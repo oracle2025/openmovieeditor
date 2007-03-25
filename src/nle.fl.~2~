@@ -329,7 +329,7 @@ fb->load_rel();}
               }
               Fl_Group {} {
                 label {Video Effects} open
-                xywh {0 75 365 230}
+                xywh {0 75 365 230} hide
               } {
                 Fl_Menu_Button m_effectMenu {
                   label {Add Video Effect} open
@@ -388,7 +388,7 @@ fb->load_rel();}
               }
               Fl_Group titles_tab {
                 label Titles open
-                private xywh {0 75 365 230} hide deactivate
+                private xywh {0 75 365 230} deactivate
               } {
                 Fl_Input titles_text {
                   callback {m_timelineView->titles_text( o->value() );}
@@ -662,11 +662,8 @@ special_clips->add("Crop/Fit/Stretch", nle::PL_VIDEO_EFFECT );} {selected
 	return 2;
 }} {}
   }
-  Function {setEffectButtons()} {open
-  } {
-    code {nle::FilterBase* f = (nle::FilterBase*)effect_browser->data( effect_browser->value() );
-nle::IVideoEffect* e = dynamic_cast<nle::IVideoEffect*>(f);
-if (!e) return;
+  Function {setEffectButtons()} {} {
+    code {nle::IVideoEffect* e = (nle::IVideoEffect*)effect_browser->data( effect_browser->value() );
 if ( e && e->numParams() ) {
 	m_edit_effect->activate();
 } else {
@@ -687,8 +684,7 @@ if ( effect_browser->value() == 0 ) {
 	m_remove_effect->deactivate();
 } else {
 	m_remove_effect->activate();
-}} {selected
-    }
+}} {}
   }
   Function {deactivate_titles()} {} {
     code {titles_tab->deactivate();} {}
