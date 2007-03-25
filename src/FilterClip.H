@@ -41,7 +41,7 @@ class FilterClip : public Clip
 {
 	public:
 		virtual ~FilterClip();
-		void pushFilter( FilterFactory* factory );
+		FilterBase* pushFilter( FilterFactory* factory );
 		FilterBase* appendFilter( FilterFactory* factory );
 		void moveFilterUp( int num );
 		void moveFilterDown( int num );

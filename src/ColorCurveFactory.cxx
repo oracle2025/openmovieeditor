@@ -26,9 +26,11 @@
 
 namespace nle
 {
+ColorCurveFactory* g_colorCurveFactory;
 
 ColorCurveFactory::ColorCurveFactory()
 {
+	g_colorCurveFactory = this;
 }
 ColorCurveFactory::~ColorCurveFactory()
 {

@@ -566,7 +566,7 @@ m_timelineView->zoom( zoom );}
               xywh {40 345 660 25}
             } {
               Fl_Button {} {
-                callback {g_snap = o->value();}
+                callback {g_snap = o->value();} selected
                 tooltip Snapping image {/home/oracle/src/openme-developers/icons/snap.xpm} xywh {40 345 25 25} type Toggle value 1
               }
               Fl_Box {} {

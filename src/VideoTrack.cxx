@@ -60,7 +60,7 @@ void VideoTrack::sort()
 }
 void VideoTrack::addFile( int64_t position, string filename, int64_t trimA, int64_t trimB, int mute, int id, int64_t length, ClipData* data )
 {
-	if ( filename == "TitleClip" ) {
+	if ( filename == "src:builtin:TitleClip" ) {
 		TitleClip* c = new TitleClip( this, position, length - trimA - trimB, id, data );
 		addClip( c );
 		return;

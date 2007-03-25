@@ -395,6 +395,13 @@ int Project::read( string filename )
 							}
 						}
 					}
+					TiXmlElement* filterXml = TiXmlHandle( j ).FirstChildElement( "filter" ).Element();
+					for ( ; filterXml; filterXml = filterXml->NextSiblingElement( "filter" ) ) {
+						FilterFactory* ff = g_audioVolumeFilterFactory;
+						//TODO: Find the filter factory
+						FilterBase* filter = c->appendFilter( ff );
+						filter->readXML( filterXml );
+					}
 					/*if ( c->has_automation() ) {
 						//read and process Automations
 						TiXmlElement* automation = TiXmlHandle( j ).FirstChildElement( "automation" ).Element();

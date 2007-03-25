@@ -47,7 +47,7 @@ class VideoEffectClip : public IVideoReader
 		~VideoEffectClip();
 		frame_struct* getFrame( int64_t position );
 		virtual frame_struct* getRawFrame( int64_t position, int64_t &position_in_file ) = 0;
-		void pushEffect( FilterFactory* factory );
+		IVideoEffect* pushEffect( FilterFactory* factory );
 		IVideoEffect* appendEffect( FilterFactory* factory );
 		void moveEffectUp( int num );
 		void moveEffectDown( int num );

@@ -1,6 +1,6 @@
 /*  TimelineView.cxx
  *
- *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2005-2007 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -57,6 +57,8 @@
 #include "PasteSelectionCommand.H"
 #include "TitleClip.H"
 //#include "HistogramView.H"
+#include "AudioVolumeFilterFactory.H" //TODO: Remove these two includes
+#include "ColorCurveFactory.H"
 
 #include "audio.xpm"
 #include "video.xpm"
@@ -89,7 +91,7 @@ TimelineView::~TimelineView()
 #define MENU_ITEM_INIT 0, 0, 0, 0, 0, 0, 0, 0
 int TimelineView::handle( int event )
 {
-  Clip* cl;
+	Clip* cl;
 	if ( g_playbackCore->active() ) {
 		return Fl_Widget::handle( event );
 	}
@@ -102,6 +104,30 @@ int TimelineView::handle( int event )
 				char *fn,*filename=strdup(Fl::event_text());
 				int i=strlen(filename);
 				while (i>0 && (iscntrl(filename[i]) || isspace(filename[i])) ) filename[i--]=0;
+				if ( !strncmp( filename, "filter:", 7 ) ) {
+					cl = get_clip( _x, _y );
+					if ( cl ) {
+						if ( !strncmp( filename, "filter:builtin:VolumeAutomations", strlen("filter:builtin:VolumeAutomations") + 1 ) ) {
+							clear_selection();
+							toggle_selection( cl );
+							addEffect( g_audioVolumeFilterFactory );
+							//TODO: Display Dialog
+						}
+					}
+					free(filename);
+					return 1;
+				} else if ( !strncmp( filename, "effect:", 7 ) ) {
+					cl = get_clip( _x, _y );
+					if ( cl ) {
+						if ( !strncmp( filename, "effect:builtin:ColorCurves", strlen("effect:builtin:ColorCurves") + 1 ) ) {
+							clear_selection();
+							toggle_selection( cl );
+							addEffect( g_colorCurveFactory );
+						}
+					}
+					free(filename);
+					return 1;
+				}
 				if (!strncmp(filename,"file://",7)) {
 					fn=&(filename[7]); 
 				} else {
@@ -968,8 +994,12 @@ void TimelineView::moveEffectUp()
 	g_ui->setEffectButtons();
 	g_videoView->redraw();
 }
+
+static FilterFactory* findFilterFactory( const char* name )
+{
+}
+
 void TimelineView::addEffect( FilterFactory* effectFactory )
-	//TODO: make it generic for any 
 {
 	if ( !m_selectedClips ) {
 		return;
@@ -977,20 +1007,20 @@ void TimelineView::addEffect( FilterFactory* effectFactory )
 	if ( m_selectedClips->next ) {
 		return;
 	}
-	VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>( m_selectedClips->clip );
-	if ( !vc ) {
-		AudioClip* ac = dynamic_cast<AudioClip*>( m_selectedClips->clip );
-		if ( !ac ) {
-			return;
-		}
-		ac->pushFilter( effectFactory );
-		redraw();
+	FilterClip* fc = dynamic_cast<FilterClip*>( m_selectedClips->clip );
+	if ( !fc ) {
 		return;
 	}
-	vc->pushEffect( effectFactory );
+	FilterBase* fe = fc->pushFilter( effectFactory );
+	assert(fe);
 	updateEffectDisplay();
 	g_ui->setEffectButtons();
 	g_videoView->redraw();
+	IEffectDialog* dialog = fe->dialog();
+	//TODO: VideoEffects: move Stylus to start of clip if it is not inside the clip.
+	if ( dialog ) {
+		dialog->show();
+	}
 }
 void TimelineView::removeEffect()
 {

@@ -1147,8 +1147,9 @@ g_16_9 = false;
 g_black_borders = false;
 special_clips->add("Titles", nle::PL_VIDEO_SRC, "src:builtin:TitleClip" );
 special_clips->add("Volume Automations", nle::PL_AUDIO_FILTER, "filter:builtin:VolumeAutomations" );
-special_clips->add("Freeze Frame", nle::PL_VIDEO_EFFECT, "" );
-special_clips->add("Crop/Fit/Stretch", nle::PL_VIDEO_EFFECT, "" );
+special_clips->add("Color Curves", nle::PL_VIDEO_EFFECT, "effect:builtin:ColorCurves" );
+//special_clips->add("Freeze Frame", nle::PL_VIDEO_EFFECT, "" );
+//special_clips->add("Crop/Fit/Stretch", nle::PL_VIDEO_EFFECT, "" );
 }
 
 NleUI::~NleUI() {

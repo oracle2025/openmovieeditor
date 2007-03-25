@@ -45,7 +45,7 @@ void FilterClip::reset()
 	}
 }
 //TODO: Either push or append should be removed
-void FilterClip::pushFilter( FilterFactory* factory )
+FilterBase* FilterClip::pushFilter( FilterFactory* factory )
 {
 	//TODO change FilterFactory to FilterClip
 	FilterBase* filter = factory->get( this );
@@ -54,7 +54,7 @@ void FilterClip::pushFilter( FilterFactory* factory )
 	n->next = 0;
 	n->filter = filter;
 	m_filters = (filter_stack*)sl_push( m_filters, n );
-	
+	return filter;
 }
 FilterBase* FilterClip::appendFilter( FilterFactory* factory )
 {

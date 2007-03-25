@@ -165,9 +165,9 @@ IVideoEffect* VideoEffectClip::appendEffect( FilterFactory* factory )
 	m_effects = (effect_stack*)sl_unshift( m_effects, n );
 	return e;*/
 }
-void VideoEffectClip::pushEffect( FilterFactory* factory )
+IVideoEffect* VideoEffectClip::pushEffect( FilterFactory* factory )
 {
-	m_filterClip->pushFilter( factory );
+	return dynamic_cast<IVideoEffect*>(m_filterClip->pushFilter( factory ));
 /*	FilterBase* fb;
 	VideoClip* c1;
 	ImageClip* c2;
