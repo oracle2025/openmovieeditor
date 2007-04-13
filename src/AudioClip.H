@@ -30,6 +30,7 @@ namespace nle
 class IAudioFile;
 class DragHandler;
 class IClipArtist;
+class ThreadedAudioReader;
 
 class AudioClip : public FilterClip
 {
@@ -60,6 +61,7 @@ class AudioClip : public FilterClip
 		ClipData* getClipData() { return 0; }
 	protected:
 		IAudioFile* m_audioFile;
+		ThreadedAudioReader* m_threadedReader;
 	private:
 		int64_t m_lastSamplePosition;
 		IClipArtist* m_artist;

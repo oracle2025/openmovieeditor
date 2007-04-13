@@ -224,7 +224,9 @@ openmovieeditor_SOURCES = nle.cxx\
 	AutomationDragHandler.H\
 	AutomationDragHandler.cxx\
 	FilterClip.cxx\
-	FilterClip.H
+	FilterClip.H\
+	ThreadedAudioReader.H\
+	ThreadedAudioReader.cxx
 #	ShiftAutomationDragHandler.H\
 #	ShiftAutomationDragHandler.cxx\
 #	AutomationMoveCommand.H\

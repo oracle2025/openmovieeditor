@@ -995,9 +995,11 @@ void TimelineView::moveEffectUp()
 	g_videoView->redraw();
 }
 
+/*
 static FilterFactory* findFilterFactory( const char* name )
 {
 }
+*/
 
 void TimelineView::addEffect( FilterFactory* effectFactory )
 {

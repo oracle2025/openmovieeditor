@@ -22,6 +22,7 @@
 #include "WavArtist.H"
 #include "AudioClipArtist.H"
 #include "AudioFilter.H"
+#include "ThreadedAudioReader.H"
 
 
 namespace nle
@@ -29,24 +30,36 @@ namespace nle
 AudioClip::AudioClip( Track *track, int64_t position, IAudioFile* af, int64_t trimA, int64_t trimB, int id )
 	: FilterClip( track, position, id )
 {
+	m_threadedReader = 0;
 	m_audioFile = af;
 	m_trimA = trimA;
 	m_trimB = trimB;
 	g_wavArtist->add( af );
 	m_artist = new AudioClipArtist( this );
+	if ( m_audioFile ) {
+		m_threadedReader = new ThreadedAudioReader( m_audioFile );
+	}
 }
 
 AudioClip::AudioClip( Track* track, int64_t position, IAudioFile* af, int id )
 	: FilterClip( track, position, id )
 {
+	m_threadedReader = 0;
 	m_audioFile = af;
 	m_artist = 0;
+	if ( m_audioFile ) {
+		m_threadedReader = new ThreadedAudioReader( m_audioFile );
+	}
 }
 AudioClip::~AudioClip()
 {
 	if ( m_audioFile ) {
 		delete m_audioFile;
 		m_audioFile = 0;
+	}
+	if ( m_threadedReader ) {
+		delete m_threadedReader;
+		m_threadedReader = 0;
 	}
 }
 int AudioClip::fillBufferRaw( float* output, unsigned long frames, int64_t position )
@@ -59,7 +72,7 @@ int AudioClip::fillBufferRaw( float* output, unsigned long frames, int64_t posit
 	int64_t aLength = audioLength();
 	int64_t trimA = audioTrimA();
 	int64_t frames64 = frames;
-	if ( !m_audioFile ) {
+	if ( !m_threadedReader ) {
 		return 0;
 	}
 	if ( currentPosition + aLength < position ) { return 0; }
@@ -76,10 +89,10 @@ int AudioClip::fillBufferRaw( float* output, unsigned long frames, int64_t posit
 		}
 	}
 	if ( m_lastSamplePosition + frames64 != position ) {
-		m_audioFile->seek( position + frames_written - currentPosition + trimA );
+		m_threadedReader->seek( position + frames_written - currentPosition + trimA );
 	}
 	m_lastSamplePosition = position;
-	return frames_written + m_audioFile->fillBuffer(
+	return frames_written + m_threadedReader->fillBuffer(
 			&output[frames_written], frames64 - frames_written
 			);
 
@@ -100,8 +113,8 @@ int AudioClip::fillBuffer( float* output, unsigned long frames, int64_t position
 }
 void AudioClip::reset()
 {
-	if ( m_audioFile ) {
-		m_audioFile->seek( audioTrimA() );
+	if ( m_threadedReader ) {
+		m_threadedReader->seek( audioTrimA() );
 	}
 	m_lastSamplePosition = 0;
 	FilterClip::reset();

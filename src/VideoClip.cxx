@@ -29,6 +29,7 @@
 #include "IAudioFile.H"
 #include "helper.H"
 #include "WavArtist.H"
+#include "ThreadedAudioReader.H"
 
 namespace nle
 {
@@ -53,6 +54,7 @@ VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A,
 	setEffects( data );
 	if ( m_audioFile ) {
 		g_wavArtist->add( m_audioFile );
+		m_threadedReader = new ThreadedAudioReader( m_audioFile );
 	}
 }
 int VideoClip::w()
