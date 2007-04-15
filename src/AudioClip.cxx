@@ -64,9 +64,9 @@ AudioClip::~AudioClip()
 }
 int AudioClip::fillBufferRaw( float* output, unsigned long frames, int64_t position )
 {
-/*	if ( m_mute ) {
+	if ( m_mute ) {
 		return 0;
-	}*/
+	}
 	int64_t frames_written = 0;
 	int64_t currentPosition = audioPosition();
 	int64_t aLength = audioLength();

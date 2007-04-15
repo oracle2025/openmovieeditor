@@ -51,8 +51,8 @@
 #include "FltkEffectMenu.H"
 #include "Frei0rFactory.H"
 #include "ColorCurveFactory.H"
-#include "TestFilterFactory.H"
 #include "AudioVolumeFilterFactory.H"
+#include "MainFilterFactory.H"
 
 namespace nle 
 {
@@ -82,14 +82,17 @@ int main( int argc, char** argv )
 	nle::WavArtist wavArtist;
 	NleUI nui;
 	nle::g_ui = &nui;
+	nle::MainFilterFactory fFactory;
 	nle::Frei0rFactory effectFactory( nui.m_effectMenu );
+	//fFactory.add( "abc", &effectFactory ); // <--so net
+	
 	nle::ColorCurveFactory colorCurveFactory;
 	nui.m_effectMenu->addEffect( &colorCurveFactory );
-	nle::TestFilterFactory testFilterFactory;
-	nui.m_effectMenu->addEffect( &testFilterFactory );
+	fFactory.add( "effect:builtin:ColorCurves", &colorCurveFactory );
+	
 	nle::AudioVolumeFilterFactory audioVolumeFilterFactory;
 	nui.m_effectMenu->addEffect( &audioVolumeFilterFactory );
-
+	fFactory.add( "filter:builtin:VolumeAutomations", &audioVolumeFilterFactory );
 	
 	nle::IPlaybackCore* playbackCore = new nle::JackPlaybackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
 	if ( !playbackCore->ok() ) {
@@ -99,8 +102,6 @@ int main( int argc, char** argv )
 	} else {
 		nui.jack();
 	}
-	//nle::PortAudioPlaybackCore playbackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
-	//nle::PlaybackCore playbackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
 	nle::LoadSaveManager lsm( nui.projectChoice, nui.projectNameInput );
 	nle::FilmStripFactory filmStripFactory;
 	nle::DocManager docManager;

@@ -40,7 +40,6 @@ class Frei0rFactory
 	public:
 		Frei0rFactory( IEffectMenu* menu );
 		~Frei0rFactory();
-		void list();
 		FilterFactory* get( string name );
 	private:
 		void enumerate( string folder, IEffectMenu* menu );

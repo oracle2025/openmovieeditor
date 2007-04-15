@@ -59,6 +59,7 @@ class AudioClip : public FilterClip
 		int type() { return CLIP_TYPE_AUDIO; }
 		IClipArtist* getArtist() { return m_artist; }
 		ClipData* getClipData() { return 0; }
+		bool m_mute;
 	protected:
 		IAudioFile* m_audioFile;
 		ThreadedAudioReader* m_threadedReader;

@@ -46,6 +46,7 @@ class FilterClip : public Clip
 		void moveFilterUp( int num );
 		void moveFilterDown( int num );
 		void removeFilter( int num );
+		void popFilter();
 		filter_stack* getFilters() { return m_filters; }
 		virtual void reset();
 	protected:

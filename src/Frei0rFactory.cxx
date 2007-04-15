@@ -27,6 +27,7 @@
 #include "Frei0rFactory.H"
 #include "Frei0rFactoryPlugin.H"
 #include "IEffectMenu.H"
+#include "MainFilterFactory.H"
 
 #define FREI0R_DIR_1 "/usr/lib/frei0r-1/"
 #define FREI0R_DIR_2 "/usr/local/lib/frei0r-1/"
@@ -114,16 +115,15 @@ void Frei0rFactory::enumerate( string folder, IEffectMenu* menu )
 				e->next = 0;
 				e->effect = effect;
 				m_effects = (effect_node*)sl_push( m_effects, e );
+				string identifier = "effect:frei0r:";
+				identifier += effect->name();
+				g_mainFilterFactory->add( identifier.c_str(), effect );
 			} else {
 				delete effect;
 			}
 		}
 		
 	}
-}
-
-void Frei0rFactory::list()
-{
 }
 
 FilterFactory* Frei0rFactory::get( string name )

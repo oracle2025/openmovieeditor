@@ -57,7 +57,6 @@ class VideoClip : public AudioClip, public VideoEffectClip
 		using Clip::trimB;
 		int64_t trimA( int64_t trim );
 		int64_t trimB( int64_t trim );
-		bool m_mute;
 	protected:
 		int64_t audioTrimA();
 		int64_t audioTrimB();

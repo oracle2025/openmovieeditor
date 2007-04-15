@@ -214,9 +214,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	FilterBase.H\
 	FilterFactory.H\
 	AudioFilter.H\
-	TestFilter.H\
-	TestFilter.cxx\
-	TestFilterFactory.H\
 	AudioVolumeFilter.cxx\
 	AudioVolumeFilter.H\
 	AudioVolumeFilterFactory.cxx\
@@ -226,7 +223,11 @@ openmovieeditor_SOURCES = nle.cxx\
 	FilterClip.cxx\
 	FilterClip.H\
 	ThreadedAudioReader.H\
-	ThreadedAudioReader.cxx
+	ThreadedAudioReader.cxx\
+	MainFilterFactory.cxx\
+	MainFilterFactory.H\
+	FilterAddCommand.H\
+	FilterAddCommand.cxx
 #	ShiftAutomationDragHandler.H\
 #	ShiftAutomationDragHandler.cxx\
 #	AutomationMoveCommand.H\
@@ -239,5 +240,8 @@ openmovieeditor_SOURCES = nle.cxx\
 #	AutomationRemoveCommand.cxx\
 #	EnvelopeClip.cxx\
 #	EnvelopeClip.H
+#	TestFilter.H\
+#	TestFilter.cxx\
+#	TestFilterFactory.H
 
 

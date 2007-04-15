@@ -1,4 +1,4 @@
-/* FilterBase.H
+/*  FilterAddCommand.H
  *
  *  Copyright (C) 2007 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,37 +17,32 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _FILTER_BASE_
-#define _FILTER_BASE_
+#ifndef _FILTER_ADD_COMMAND_H_
+#define _FILTER_ADD_COMMAND_H_
 
-#include <stdint.h>
-#include "Rect.H"
-
-class TiXmlElement;
+#include "global_includes.H"
+#include "Command.H"
 
 namespace nle
 {
 
-class DragHandler;
-class IEffectDialog;
+class FilterClip;
 
-class FilterBase
+class FilterAddCommand : public Command
 {
 	public:
-		virtual ~FilterBase() {}
-		virtual void reset() {}
-		virtual int64_t trimA( int64_t trim ) { return trim; }
-		virtual int64_t trimB( int64_t trim ) { return trim; }
-		virtual void onDraw( Rect& ) {}
-		virtual DragHandler* onMouseDown() { return 0; }
-		virtual const char* name() = 0;
-		virtual void writeXML( TiXmlElement* ) {}
-		virtual void readXML( TiXmlElement* ) {}
-		virtual bool hasDialog() { return false; }
-		virtual IEffectDialog* dialog() { return 0; }
-//		virtual const char* identifier() = 0;
-};
+		FilterAddCommand( FilterClip* clip, const char* identifier );
+		~FilterAddCommand();
+		void doo();
+		void undo();
+	private:
+		int m_clip;
+		int m_track;
+		int m_filterNr;
+		string m_identifier;
 	
+};
+
 } /* namespace nle */
 
-#endif /* _FILTER_BASE_ */
+#endif /* _FILTER_ADD_COMMAND_H_ */

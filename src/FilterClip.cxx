@@ -133,6 +133,14 @@ void FilterClip::removeFilter( int num )
 	}
 
 }
+void FilterClip::popFilter()
+{
+	filter_stack* node = (filter_stack*)sl_shift( &m_filters );
+	if ( node ) {
+		delete node->filter;
+		delete node;
+	}
+}
 	
 } /* namespace nle */
 

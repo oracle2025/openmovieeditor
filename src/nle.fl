@@ -332,7 +332,7 @@ fb->load_rel();}
                 xywh {0 75 365 230}
               } {
                 Fl_Menu_Button m_effectMenu {
-                  label {Add Video Effect} open
+                  label {Add Video Effect} open selected
                   xywh {5 80 355 25} deactivate
                   code0 {\#include "FltkEffectMenu.H"}
                   class {nle::FltkEffectMenu}
@@ -597,10 +597,10 @@ m_timelineView->zoom( zoom );}
             xywh {0 345 40 255} labelsize 12
           } {
             Fl_Button positioningButton {
-              tooltip {Positioning (S)} image {/home/oracle/src/openme-developers/icons/tool_positioning.xpm} xywh {0 370 40 40} type Radio shortcut 0x73 value 1 align 16
+              tooltip {Positioning (S)} image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/tool_positioning.xpm} xywh {0 370 40 40} type Radio shortcut 0x73 value 1 align 16
             }
             Fl_Button automationsButton {
-              tooltip {Automations (A)} image {/home/oracle/src/openme-developers/icons/tool_automations.xpm} xywh {0 410 40 40} type Radio shortcut 0x61 align 18
+              tooltip {Automations (A)} image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/tool_automations.xpm} xywh {0 410 40 40} type Radio shortcut 0x61 align 18
             }
             Fl_Box {} {
               xywh {0 490 40 70} box THIN_UP_BOX resizable
@@ -610,10 +610,10 @@ m_timelineView->zoom( zoom );}
               xywh {0 345 40 25} box UP_BOX labelsize 12
             }
             Fl_Box trashCan {
-              private tooltip Trash image {/home/oracle/src/openme-developers/icons/trash_big.xpm} xywh {0 560 40 40} box UP_BOX
+              private tooltip Trash image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/trash_big.xpm} xywh {0 560 40 40} box UP_BOX
             }
             Fl_Button razorButton {
-              tooltip {Split (R)} image {/home/oracle/src/openme-developers/icons/razor.xpm} xywh {0 450 40 40} type Radio shortcut 0x72 align 18
+              tooltip {Split (R)} image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/razor.xpm} xywh {0 450 40 40} type Radio shortcut 0x72 align 18
             }
           }
         }
@@ -687,8 +687,7 @@ if ( effect_browser->value() == 0 ) {
 	m_remove_effect->deactivate();
 } else {
 	m_remove_effect->activate();
-}} {selected
-    }
+}} {}
   }
   Function {deactivate_titles()} {} {
     code {titles_tab->deactivate();} {}
@@ -756,7 +755,7 @@ class EncodeDialog {open
   } {
     Fl_Window encodeDialog {
       label Render open
-      private xywh {549 378 485 400} type Double
+      private xywh {576 470 485 400} type Double
       code0 {\#include "IVideoReader.H"}
       code1 {\#include "IAudioReader.H"} modal visible
     } {
@@ -933,7 +932,7 @@ m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
               xywh {0 0 100 20}
             }
             MenuItem {} {
-              label 30 selected
+              label 30
               xywh {0 0 100 20}
             }
           }
@@ -1185,7 +1184,7 @@ class AboutDialog {open
       xywh {683 364 340 370} type Double modal visible
     } {
       Fl_Box {} {
-        image {/home/oracle/src/openme-developers/icons/logo.xpm} xywh {0 0 340 155}
+        image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/logo.xpm} xywh {0 0 340 155}
       }
       Fl_Box {} {
         label {Open Movie Editor}

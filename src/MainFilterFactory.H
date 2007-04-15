@@ -1,4 +1,4 @@
-/* FilterBase.H
+/*  MainFilterFactory.H
  *
  *  Copyright (C) 2007 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,37 +17,37 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _FILTER_BASE_
-#define _FILTER_BASE_
+#ifndef _MAIN_FILTER_FACTORY_H_
+#define _MAIN_FILTER_FACTORY_H_
 
-#include <stdint.h>
-#include "Rect.H"
-
-class TiXmlElement;
+#include <string>
+using namespace std;
 
 namespace nle
 {
 
-class DragHandler;
-class IEffectDialog;
+class FilterFactory;
 
-class FilterBase
+typedef struct _filter_factory_node {
+	struct _filter_factory_node* next;
+	FilterFactory* factory;
+	string identifier;
+} filter_factory_node;
+
+class MainFilterFactory;
+extern MainFilterFactory* g_mainFilterFactory;
+
+class MainFilterFactory
 {
 	public:
-		virtual ~FilterBase() {}
-		virtual void reset() {}
-		virtual int64_t trimA( int64_t trim ) { return trim; }
-		virtual int64_t trimB( int64_t trim ) { return trim; }
-		virtual void onDraw( Rect& ) {}
-		virtual DragHandler* onMouseDown() { return 0; }
-		virtual const char* name() = 0;
-		virtual void writeXML( TiXmlElement* ) {}
-		virtual void readXML( TiXmlElement* ) {}
-		virtual bool hasDialog() { return false; }
-		virtual IEffectDialog* dialog() { return 0; }
-//		virtual const char* identifier() = 0;
+		MainFilterFactory();
+		~MainFilterFactory();
+		void add( const char* identifier, FilterFactory* factory );
+		FilterFactory* get( const char* identifier );
+	private:
+		filter_factory_node* m_factories;	
 };
 	
 } /* namespace nle */
 
-#endif /* _FILTER_BASE_ */
+#endif /* _MAIN_FILTER_FACTORY_H_ */
