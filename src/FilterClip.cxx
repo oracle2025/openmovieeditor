@@ -66,7 +66,26 @@ FilterBase* FilterClip::appendFilter( FilterFactory* factory )
 	m_filters = (filter_stack*)sl_unshift( m_filters, n );
 	return filter;
 }
-
+FilterBase* FilterClip::insertFilter( FilterFactory* factory, int position )
+{
+	FilterBase* filter = factory->get( this );
+	assert(filter);
+	filter_stack* n = new filter_stack;
+	n->next = 0;
+	n->filter = filter;
+	if ( position == 1 ) {
+		n->next = m_filters;
+		m_filters = n;
+	} else {
+		filter_stack* c = m_filters;
+		for ( int i = 2; i < position; i++ ) {
+			c = c->next;
+		}
+		n->next = c->next;
+		c->next = n;
+	}
+	return filter;
+}
 static filter_stack* sl_swap( filter_stack* root )
 {
 	filter_stack* q = root;
@@ -133,6 +152,17 @@ void FilterClip::removeFilter( int num )
 	}
 
 }
+FilterBase* FilterClip::getFilter( int num )
+{
+	filter_stack* node = m_filters;
+	for ( int i = 1; i < num; i++ ) {
+		assert( node );
+		node = node->next;
+	}
+	assert( node );
+	return node->filter;
+}
+
 void FilterClip::popFilter()
 {
 	filter_stack* node = (filter_stack*)sl_shift( &m_filters );

@@ -51,6 +51,9 @@ class Frei0rEffect : public IVideoEffect
 		IEffectDialog* dialog();
 		void writeXML( TiXmlElement* );
 		void readXML( TiXmlElement* );
+		FilterData* getFilterData();
+		void setFilterData( FilterData* );
+		const char* identifier();
 	private:
 		f0r_instance_t m_instance;
 		unsigned char *m_tmpFrame;

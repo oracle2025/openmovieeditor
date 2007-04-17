@@ -84,7 +84,6 @@ int main( int argc, char** argv )
 	nle::g_ui = &nui;
 	nle::MainFilterFactory fFactory;
 	nle::Frei0rFactory effectFactory( nui.m_effectMenu );
-	//fFactory.add( "abc", &effectFactory ); // <--so net
 	
 	nle::ColorCurveFactory colorCurveFactory;
 	nui.m_effectMenu->addEffect( &colorCurveFactory );

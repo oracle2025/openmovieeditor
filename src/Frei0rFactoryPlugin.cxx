@@ -93,5 +93,11 @@ const char* Frei0rFactoryPlugin::name()
 {
 	return m_info.name;
 }
+const char* Frei0rFactoryPlugin::identifier()
+{
+	string result = "effect:frei0r:";
+	result += name();
+	return result.c_str(); //TODO: this is not OK?
+}
 
 } /* namespace nle */

@@ -203,4 +203,18 @@ void Frei0rEffect::readXML( TiXmlElement* xml_node )
 	}
 }
 
+FilterData* Frei0rEffect::getFilterData()
+{
+	return 0;
+}
+void Frei0rEffect::setFilterData( FilterData* )
+{
+}
+const char* Frei0rEffect::identifier()
+{
+	string result = "effect:frei0r:";
+	result += name();
+	return result.c_str(); //TODO: this is not OK?
+}
+
 } /* namespace nle */

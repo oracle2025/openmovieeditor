@@ -37,6 +37,7 @@ class AudioVolumeFilterFactory : public FilterFactory
 		const char* name() { return "Audio Volume Automations"; }
 		FilterBase* get( Clip* clip );
 		~AudioVolumeFilterFactory() {}
+		const char* identifier() { return "filter:builtin:VolumeAutomations"; }
 };
 
 } /* namespace nle */

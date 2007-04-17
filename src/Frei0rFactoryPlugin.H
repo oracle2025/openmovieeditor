@@ -43,6 +43,7 @@ class Frei0rFactoryPlugin : public FilterFactory
 		//IVideoEffect* get( int w, int h );
 		bool ok() { return m_ok; }
 		const char* name();
+		const char* identifier();
 	private:
 		f0r_init_f            f0r_init;
 		f0r_deinit_f          f0r_deinit;

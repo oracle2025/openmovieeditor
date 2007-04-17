@@ -31,6 +31,7 @@ class FilterFactory
 {
 	public:
 		virtual const char* name() = 0;
+		virtual const char* identifier() = 0;
 		virtual FilterBase* get( Clip* clip ) = 0;
 		virtual ~FilterFactory() {}
 };

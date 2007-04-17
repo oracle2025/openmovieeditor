@@ -1002,13 +1002,17 @@ void TimelineView::addEffect( FilterFactory* effectFactory )
 	if ( !fc ) {
 		return;
 	}
-	FilterBase* fe = fc->pushFilter( effectFactory );
+	FilterAddCommand* cmd = new FilterAddCommand( fc, effectFactory->identifier() );
+	submit( cmd );
+	
+	FilterBase* fe = cmd->m_filter;
 	assert(fe);
 	updateEffectDisplay();
 	g_ui->setEffectButtons();
 	g_videoView->redraw();
 	IEffectDialog* dialog = fe->dialog();
 	//TODO: VideoEffects: move Stylus to start of clip if it is not inside the clip.
+
 	IVideoEffect* ive = dynamic_cast<IVideoEffect*>(fe);
 	if ( ive && ive->numParams() && dialog ) {
 		dialog->show();
@@ -1022,15 +1026,16 @@ void TimelineView::removeEffect()
 	if ( m_selectedClips->next ) {
 		return;
 	}
-	VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>( m_selectedClips->clip );
-	if ( !vc ) {
+	FilterClip* fc = dynamic_cast<FilterClip*>( m_selectedClips->clip );
+	if ( !fc ) {
 		return;
 	}
 	int c = g_ui->effect_browser->value();
 	if ( c == 0 ) {
 		return;
 	}
-	vc->removeEffect( c );
+	Command* cmd = new FilterRemoveCommand( fc, c );
+	submit( cmd );
 	updateEffectDisplay();
 	g_ui->setEffectButtons();
 	g_videoView->redraw();

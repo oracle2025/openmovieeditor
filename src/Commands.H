@@ -30,6 +30,7 @@
 #include "MoveSelectionCommand.H"
 #include "RemoveSelectionCommand.H"
 #include "FilterAddCommand.H"
+#include "FilterRemoveCommand.H"
 
 #endif /* _COMMANDS_H_ */
 

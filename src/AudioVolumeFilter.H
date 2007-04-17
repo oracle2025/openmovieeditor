@@ -52,6 +52,9 @@ class AudioVolumeFilter : public AudioFilter
 		int64_t trimA( int64_t trim );
 		int64_t trimB( int64_t trim );
 		const char* name() { return "Audio Volume Filter"; }
+		const char* identifier() { return "filter:builtin:VolumeAutomations"; }
+		FilterData* getFilterData() { return 0; }
+		void setFilterData( FilterData* ) {}
 	private:
 		float getEnvelope( int64_t position );
 		auto_node* m_automationPoints;

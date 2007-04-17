@@ -26,15 +26,17 @@
 namespace nle
 {
 
-class FilterClip;
+class Clip;
+class FilterBase;
 
 class FilterAddCommand : public Command
 {
 	public:
-		FilterAddCommand( FilterClip* clip, const char* identifier );
+		FilterAddCommand( Clip* clip, const char* identifier );
 		~FilterAddCommand();
 		void doo();
 		void undo();
+		FilterBase* m_filter;
 	private:
 		int m_clip;
 		int m_track;

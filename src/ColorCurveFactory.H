@@ -36,6 +36,7 @@ class ColorCurveFactory : public FilterFactory
 		~ColorCurveFactory();
 		FilterBase* get( Clip* clip );
 		const char* name();
+		const char* identifier() { return "effect:builtin:ColorCurves"; }
 };
 
 } /* namespace nle */

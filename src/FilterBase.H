@@ -31,6 +31,12 @@ namespace nle
 class DragHandler;
 class IEffectDialog;
 
+class FilterData
+{
+	public:
+		virtual ~FilterData() {}
+};
+
 class FilterBase
 {
 	public:
@@ -45,7 +51,9 @@ class FilterBase
 		virtual void readXML( TiXmlElement* ) {}
 		virtual bool hasDialog() { return false; }
 		virtual IEffectDialog* dialog() { return 0; }
-//		virtual const char* identifier() = 0;
+		virtual const char* identifier() = 0;
+		virtual FilterData* getFilterData() = 0;
+		virtual void setFilterData( FilterData* ) = 0;
 };
 	
 } /* namespace nle */

@@ -43,9 +43,11 @@ class FilterClip : public Clip
 		virtual ~FilterClip();
 		FilterBase* pushFilter( FilterFactory* factory );
 		FilterBase* appendFilter( FilterFactory* factory );
+		FilterBase* insertFilter( FilterFactory* factory, int position );
 		void moveFilterUp( int num );
 		void moveFilterDown( int num );
 		void removeFilter( int num );
+		FilterBase* getFilter( int num );
 		void popFilter();
 		filter_stack* getFilters() { return m_filters; }
 		virtual void reset();
