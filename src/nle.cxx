@@ -1169,8 +1169,7 @@ int NleUI::automationsMode() {
 void NleUI::setEffectButtons() {
   nle::FilterBase* f = (nle::FilterBase*)effect_browser->data( effect_browser->value() );
 nle::IVideoEffect* e = dynamic_cast<nle::IVideoEffect*>(f);
-if (!e) return;
-if ( e && e->numParams() ) {
+if ( ( e && e->numParams() ) || ( f && f->hasDialog() ) ) {
 	m_edit_effect->activate();
 } else {
 	m_edit_effect->deactivate();

@@ -332,7 +332,7 @@ fb->load_rel();}
                 xywh {0 75 365 230}
               } {
                 Fl_Menu_Button m_effectMenu {
-                  label {Add Video Effect} open selected
+                  label {Add Video Effect} open
                   xywh {5 80 355 25} deactivate
                   code0 {\#include "FltkEffectMenu.H"}
                   class {nle::FltkEffectMenu}
@@ -666,8 +666,7 @@ special_clips->add("Color Curves", nle::PL_VIDEO_EFFECT, "effect:builtin:ColorCu
   } {
     code {nle::FilterBase* f = (nle::FilterBase*)effect_browser->data( effect_browser->value() );
 nle::IVideoEffect* e = dynamic_cast<nle::IVideoEffect*>(f);
-if (!e) return;
-if ( e && e->numParams() ) {
+if ( ( e && e->numParams() ) || ( f && f->hasDialog() ) ) {
 	m_edit_effect->activate();
 } else {
 	m_edit_effect->deactivate();
@@ -687,7 +686,8 @@ if ( effect_browser->value() == 0 ) {
 	m_remove_effect->deactivate();
 } else {
 	m_remove_effect->activate();
-}} {}
+}} {selected
+    }
   }
   Function {deactivate_titles()} {} {
     code {titles_tab->deactivate();} {}

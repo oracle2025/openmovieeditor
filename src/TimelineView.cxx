@@ -109,31 +109,14 @@ int TimelineView::handle( int event )
 					FilterClip* fc = dynamic_cast<FilterClip*>(cl);
 					if ( fc ) {
 						clear_selection();
-						toggle_selection( fc );
 						Command* cmd = new FilterAddCommand( fc, filename );
 						submit( cmd );
-						
-						/*if ( !strncmp( filename, "filter:builtin:VolumeAutomations", strlen("filter:builtin:VolumeAutomations") + 1 ) ) {
-							clear_selection();
-							toggle_selection( cl );
-							addEffect( g_audioVolumeFilterFactory );
-							//TODO: Display Dialog
-						}*/
+						toggle_selection( fc );
+						//TODO: Display Dialog
 					}
 					free(filename);
 					return 1;
-				}/* else if ( !strncmp( filename, "effect:", 7 ) ) {
-					cl = get_clip( _x, _y );
-					if ( cl ) {
-						if ( !strncmp( filename, "effect:builtin:ColorCurves", strlen("effect:builtin:ColorCurves") + 1 ) ) {
-							clear_selection();
-							toggle_selection( cl );
-							addEffect( g_colorCurveFactory );
-						}
-					}
-					free(filename);
-					return 1;
-				}*/
+				}
 				if (!strncmp(filename,"file://",7)) {
 					fn=&(filename[7]); 
 				} else {
