@@ -3,47 +3,31 @@
 #include "ColorGrader2.h"
 
 void ColorGrader2::cb_editor_red_i(CurveEditor2*, void*) {
-  combine_curves();
+  m_dialog->read_values();
 }
 void ColorGrader2::cb_editor_red(CurveEditor2* o, void* v) {
   ((ColorGrader2*)(o->parent()))->cb_editor_red_i(o,v);
 }
 
 void ColorGrader2::cb_editor_green_i(CurveEditor2*, void*) {
-  combine_curves();
+  m_dialog->read_values();
 }
 void ColorGrader2::cb_editor_green(CurveEditor2* o, void* v) {
   ((ColorGrader2*)(o->parent()))->cb_editor_green_i(o,v);
 }
 
 void ColorGrader2::cb_editor_blue_i(CurveEditor2*, void*) {
-  combine_curves();
+  m_dialog->read_values();
 }
 void ColorGrader2::cb_editor_blue(CurveEditor2* o, void* v) {
   ((ColorGrader2*)(o->parent()))->cb_editor_blue_i(o,v);
 }
 
 void ColorGrader2::cb_editor_master_i(CurveEditor2*, void*) {
-  combine_curves();
+  m_dialog->read_values();
 }
 void ColorGrader2::cb_editor_master(CurveEditor2* o, void* v) {
   ((ColorGrader2*)(o->parent()))->cb_editor_master_i(o,v);
-}
-
-void ColorGrader2::cb_Bypass_i(Fl_Check_Button* o, void*) {
-  if ( o->value() ) {
-	for (int i=0; i<256; ++i) {
-		m_values_r[i] = i;
-		m_values_g[i] = i;
-		m_values_b[i] = i;
-	}
-	nle::g_videoView->redraw();
-} else {
-	combine_curves();
-};
-}
-void ColorGrader2::cb_Bypass(Fl_Check_Button* o, void* v) {
-  ((ColorGrader2*)(o->parent()))->cb_Bypass_i(o,v);
 }
 ColorGrader2::ColorGrader2(int X, int Y, int W, int H, const char *L)
   : Fl_Group(X, Y, W, H, L) {
@@ -99,26 +83,6 @@ o->align(FL_ALIGN_TOP_LEFT);
 }
 { Fl_Check_Button* o = new Fl_Check_Button(5, 170, 85, 25, "Bypass");
   o->down_box(FL_DOWN_BOX);
-  o->callback((Fl_Callback*)cb_Bypass);
 }
 end();
-}
-
-void ColorGrader2::combine_curves() {
-  unsigned char* red = editor_red->m_values;
-unsigned char* green = editor_green->m_values;
-unsigned char* blue = editor_blue->m_values;
-unsigned char* master = editor_master->m_values;
-
-unsigned char* out_r = m_values_r;
-unsigned char* out_g = m_values_g;
-unsigned char* out_b = m_values_b;
-
-
-for ( int i = 0; i < 256; i++ ) {
-	out_r[i] = master[red[i]];
-	out_g[i] = master[green[i]];
-	out_b[i] = master[blue[i]];
-}
-nle::g_videoView->redraw();
 }

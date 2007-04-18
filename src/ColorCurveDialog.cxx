@@ -36,18 +36,22 @@ static void closeCallback( Fl_Widget*, void* data ) {
 ColorCurveDialog::ColorCurveDialog( ColorCurveFilter* filter )
 	: m_filter( filter )
 {
+	struct color_curve_data* cd = &(filter->m_parameters);
 	m_dialog = new Fl_Double_Window( 605, 200 + 25 + 10, "Color Curves" );
 
 	//ColorGrader2* cg = new ColorGrader2( 0, 0, 430, 335 );
-	ColorGrader2* cg = new ColorGrader2( 0, 0, 605, 200 );
+	ColorGrader2* cg = m_cg = new ColorGrader2( 0, 0, 605, 200 );
+	cg->m_dialog = this;
 	cg->editor_red->lineColor( FL_RED );
 	cg->editor_green->lineColor( FL_GREEN );
 	cg->editor_blue->lineColor( FL_BLUE );
 	cg->editor_master->lineColor( FL_BLACK );
 
-	cg->m_values_r = filter->m_values_r;
-	cg->m_values_g = filter->m_values_g;
-	cg->m_values_b = filter->m_values_b;
+	cg->editor_red->set( cd->r.p1.x, cd->r.p1.y, cd->r.p2.x, cd->r.p2.y );
+	cg->editor_green->set( cd->g.p1.x, cd->g.p1.y, cd->g.p2.x, cd->g.p2.y );
+	cg->editor_blue->set( cd->b.p1.x, cd->b.p1.y, cd->b.p2.x, cd->b.p2.y );
+	cg->editor_master->set( cd->m.p1.x, cd->m.p1.y, cd->m.p2.x, cd->m.p2.y );
+	
 
 	{
 		Fl_Return_Button* o = new Fl_Return_Button( 5, 205, 595, 25, "Close" );
@@ -71,6 +75,18 @@ void ColorCurveDialog::show()
 int ColorCurveDialog::shown()
 {
 	return m_dialog->shown();
+}
+void ColorCurveDialog::read_values()
+{
+	struct color_curve_data* cd = &(m_filter->m_parameters);
+	m_cg->editor_red->get( cd->r.p1.x, cd->r.p1.y, cd->r.p2.x, cd->r.p2.y );
+	m_cg->editor_green->get( cd->g.p1.x, cd->g.p1.y, cd->g.p2.x, cd->g.p2.y );
+	m_cg->editor_blue->get( cd->b.p1.x, cd->b.p1.y, cd->b.p2.x, cd->b.p2.y );
+	m_cg->editor_master->get( cd->m.p1.x, cd->m.p1.y, cd->m.p2.x, cd->m.p2.y );
+	m_filter->calculate_values();
+	
+
+	g_videoView->redraw();
 }
 
 } /* namespace nle */

@@ -3,73 +3,41 @@ version 1.0107
 header_name {.h} 
 code_name {.cxx}
 widget_class ColorGrader2 {
-  label {Color Curves} open
+  label {Color Curves} open selected
   xywh {597 351 605 200} type Double align 5 visible
 } {
   Fl_Box editor_red {
     label Red
-    callback {combine_curves();}
+    callback {m_dialog->read_values();}
     xywh {5 20 145 145} box DOWN_BOX labelfont 1 labelcolor 1 align 5
     code0 {\#include "CurveEditor2.H"}
     code1 {\#include "globals.H"}
     code2 {\#include "VideoViewGL.H"}
+    code3 {\#include "ColorCurveDialog.H"}
     class CurveEditor2
   }
   Fl_Box editor_green {
     label Green
-    callback {combine_curves();}
+    callback {m_dialog->read_values();}
     xywh {155 20 145 145} box DOWN_BOX labelfont 1 labelcolor 2 align 5
     class CurveEditor2
   }
   Fl_Box editor_blue {
     label Blue
-    callback {combine_curves();}
+    callback {m_dialog->read_values();}
     xywh {305 20 145 145} box DOWN_BOX labelfont 1 labelcolor 4 align 5
     class CurveEditor2
   }
   Fl_Box editor_master {
     label Master
-    callback {combine_curves();}
+    callback {m_dialog->read_values();}
     xywh {455 20 145 145} box DOWN_BOX labelfont 1 align 5
     class CurveEditor2
   }
   Fl_Check_Button {} {
     label Bypass
-    callback {if ( o->value() ) {
-	for (int i=0; i<256; ++i) {
-		m_values_r[i] = i;
-		m_values_g[i] = i;
-		m_values_b[i] = i;
-	}
-	nle::g_videoView->redraw();
-} else {
-	combine_curves();
-}} selected
     xywh {5 170 85 25} down_box DOWN_BOX
   }
-  decl {unsigned char* m_values_r;} {public
-  }
-  decl {unsigned char* m_values_g;} {public
-  }
-  decl {unsigned char* m_values_b;} {public
-  }
-  Function {combine_curves()} {open
-  } {
-    code {unsigned char* red = editor_red->m_values;
-unsigned char* green = editor_green->m_values;
-unsigned char* blue = editor_blue->m_values;
-unsigned char* master = editor_master->m_values;
-
-unsigned char* out_r = m_values_r;
-unsigned char* out_g = m_values_g;
-unsigned char* out_b = m_values_b;
-
-
-for ( int i = 0; i < 256; i++ ) {
-	out_r[i] = master[red[i]];
-	out_g[i] = master[green[i]];
-	out_b[i] = master[blue[i]];
-}
-nle::g_videoView->redraw();} {}
+  decl {nle::ColorCurveDialog* m_dialog;} {public
   }
 } 

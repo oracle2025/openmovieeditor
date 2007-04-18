@@ -7,6 +7,7 @@
 #include "CurveEditor2.H"
 #include "globals.H"
 #include "VideoViewGL.H"
+#include "ColorCurveDialog.H"
 #include <FL/Fl_Check_Button.H>
 
 class ColorGrader2 : public Fl_Group {
@@ -31,12 +32,7 @@ public:
 private:
   void cb_editor_master_i(CurveEditor2*, void*);
   static void cb_editor_master(CurveEditor2*, void*);
-  void cb_Bypass_i(Fl_Check_Button*, void*);
-  static void cb_Bypass(Fl_Check_Button*, void*);
 public:
-  unsigned char* m_values_r;
-  unsigned char* m_values_g;
-  unsigned char* m_values_b;
-  void combine_curves();
+  nle::ColorCurveDialog* m_dialog;
 };
 #endif

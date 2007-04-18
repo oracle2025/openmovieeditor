@@ -24,6 +24,8 @@
 
 class Fl_Double_Window;
 
+class ColorGrader2;
+
 namespace nle
 {
 
@@ -36,9 +38,11 @@ class ColorCurveDialog : public IEffectDialog
 		~ColorCurveDialog();
 		void show();
 		int shown();
+		void read_values();
 	private:
 		Fl_Double_Window* m_dialog;
 		ColorCurveFilter* m_filter;
+		ColorGrader2* m_cg;
 };
 
 } /* namespace nle */

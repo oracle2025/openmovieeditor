@@ -212,4 +212,18 @@ int CurveEditor2::_h()
 {
 	return h() - 14;
 }
+void CurveEditor2::set( int x1, int y1, int x2, int y2 )
+{
+	m_points[0].x = x1;
+	m_points[0].y = y1;
+	m_points[1].x = x2;
+	m_points[1].y = y2;
+}
+void CurveEditor2::get( int &x1, int &y1, int &x2, int &y2 )
+{
+	x1 = m_points[0].x;
+	y1 = m_points[0].y;
+	x2 = m_points[1].x;
+	y2 = m_points[1].y;
+}
 

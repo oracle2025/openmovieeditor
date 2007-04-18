@@ -20,6 +20,8 @@ class CurveEditor2 : public Fl_Widget
 		void convert_to_display( int x, int y, int& out_x, int& out_y );
 		void lineColor( Fl_Color c ) { m_lineColor = c; }
 		unsigned char m_values[256];
+		void set( int x1, int y1, int x2, int y2 );
+		void get( int &x1, int &y1, int &x2, int &y2 );
 	private:
 		int _x();
 		int _y();

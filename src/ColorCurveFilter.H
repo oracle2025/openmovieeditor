@@ -25,6 +25,21 @@
 namespace nle
 {
 
+struct color_curve_p {
+	int x;
+	int y;
+};
+struct color_curve_desc {
+	struct color_curve_p p1;
+	struct color_curve_p p2;
+};
+struct color_curve_data {
+	struct color_curve_desc r;
+	struct color_curve_desc g;
+	struct color_curve_desc b;
+	struct color_curve_desc m;
+};
+
 class ColorCurveFilter : public IVideoEffect
 {
 	public:
@@ -42,7 +57,12 @@ class ColorCurveFilter : public IVideoEffect
 		const char* identifier() { return "effect:builtin:ColorCurves"; }
 		FilterData* getFilterData() { return 0; }
 		void setFilterData( FilterData* ) {}
+		struct color_curve_data m_parameters;
+		void calculate_values();
+		void writeXML( TiXmlElement* );
+		void readXML( TiXmlElement* );
 	private:
+		void calculate_values( unsigned char* value, struct color_curve_desc* desc );
 		unsigned char *m_frame;
 		unsigned char **m_rows;
 		frame_struct m_framestruct;

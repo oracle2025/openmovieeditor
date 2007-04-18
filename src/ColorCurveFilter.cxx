@@ -17,6 +17,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <tinyxml.h>
+
 #include "ColorCurveFilter.H"
 #include "ColorCurveDialog.H"
 
@@ -42,8 +44,18 @@ ColorCurveFilter::ColorCurveFilter( int w, int h )
 	m_framestruct.cacheable = false;
 	for ( unsigned int i = 0; i < 256; i++ ) {
 		m_values[i] = i;
+		m_values_r[i] = i;
+		m_values_g[i] = i;
+		m_values_b[i] = i;
 	}
 	m_dialog = 0;
+
+	m_parameters.r.p1.x = 0;
+	m_parameters.r.p1.y = 255;
+	m_parameters.r.p2.x = 255;
+	m_parameters.r.p2.y = 0;
+
+	m_parameters.g = m_parameters.b = m_parameters.m = m_parameters.r;
 }
 
 ColorCurveFilter::~ColorCurveFilter()
@@ -89,6 +101,97 @@ IEffectDialog* ColorCurveFilter::dialog()
 		m_dialog = new ColorCurveDialog( this );
 	}
 	return m_dialog;
+}
+void ColorCurveFilter::calculate_values( unsigned char* values, struct color_curve_desc* desc )
+{
+	for ( int i = 0; i < desc->p1.x && i < 256; i++ ) {
+		values[i] = 255 - desc->p1.y;
+	}
+	int A = desc->p2.x - desc->p1.x;
+	int B = desc->p1.y - desc->p2.y;
+	float C = (float)B / (float)A;
+	for ( int i = desc->p1.x; i < desc->p2.x && i < 256; i++ ) {
+		values[i] = 255 - desc->p1.y + (int)( (i-desc->p1.x) * C );
+	}
+	for ( int i = desc->p2.x; i < 256; i++ ) {
+		values[i] = 255 - desc->p2.y;
+	}
+}
+void ColorCurveFilter::calculate_values()
+{
+	unsigned char val_r[256];
+	unsigned char val_g[256];
+	unsigned char val_b[256];
+	unsigned char val_m[256];
+	
+	calculate_values( val_r, &(m_parameters.r) );
+	calculate_values( val_g, &(m_parameters.g) );
+	calculate_values( val_b, &(m_parameters.b) );
+	calculate_values( val_m, &(m_parameters.m) );
+	
+	unsigned char* red = val_r;
+	unsigned char* green = val_g;
+	unsigned char* blue = val_b;
+	unsigned char* master = val_m;
+
+	unsigned char* out_r = m_values_r;
+	unsigned char* out_g = m_values_g;
+	unsigned char* out_b = m_values_b;
+
+
+	for ( int i = 0; i < 256; i++ ) {
+		out_r[i] = master[red[i]];
+		out_g[i] = master[green[i]];
+		out_b[i] = master[blue[i]];
+	}
+
+
+}
+void ColorCurveFilter::writeXML( TiXmlElement* xml_node )
+{
+	xml_node->SetAttribute( "r_p1_x", m_parameters.r.p1.x );
+	xml_node->SetAttribute( "r_p1_y", m_parameters.r.p1.y );
+	xml_node->SetAttribute( "r_p2_x", m_parameters.r.p2.x );
+	xml_node->SetAttribute( "r_p2_y", m_parameters.r.p2.y );
+
+	xml_node->SetAttribute( "g_p1_x", m_parameters.g.p1.x );
+	xml_node->SetAttribute( "g_p1_y", m_parameters.g.p1.y );
+	xml_node->SetAttribute( "g_p2_x", m_parameters.g.p2.x );
+	xml_node->SetAttribute( "g_p2_y", m_parameters.g.p2.y );
+
+	xml_node->SetAttribute( "b_p1_x", m_parameters.b.p1.x );
+	xml_node->SetAttribute( "b_p1_y", m_parameters.b.p1.y );
+	xml_node->SetAttribute( "b_p2_x", m_parameters.b.p2.x );
+	xml_node->SetAttribute( "b_p2_y", m_parameters.b.p2.y );
+
+	xml_node->SetAttribute( "m_p1_x", m_parameters.m.p1.x );
+	xml_node->SetAttribute( "m_p1_y", m_parameters.m.p1.y );
+	xml_node->SetAttribute( "m_p2_x", m_parameters.m.p2.x );
+	xml_node->SetAttribute( "m_p2_y", m_parameters.m.p2.y );
+	
+}
+void ColorCurveFilter::readXML( TiXmlElement* xml_node )
+{
+	xml_node->Attribute( "r_p1_x", &m_parameters.r.p1.x );
+	xml_node->Attribute( "r_p1_y", &m_parameters.r.p1.y );
+	xml_node->Attribute( "r_p2_x", &m_parameters.r.p2.x );
+	xml_node->Attribute( "r_p2_y", &m_parameters.r.p2.y );
+
+	xml_node->Attribute( "g_p1_x", &m_parameters.g.p1.x );
+	xml_node->Attribute( "g_p1_y", &m_parameters.g.p1.y );
+	xml_node->Attribute( "g_p2_x", &m_parameters.g.p2.x );
+	xml_node->Attribute( "g_p2_y", &m_parameters.g.p2.y );
+
+	xml_node->Attribute( "b_p1_x", &m_parameters.b.p1.x );
+	xml_node->Attribute( "b_p1_y", &m_parameters.b.p1.y );
+	xml_node->Attribute( "b_p2_x", &m_parameters.b.p2.x );
+	xml_node->Attribute( "b_p2_y", &m_parameters.b.p2.y );
+
+	xml_node->Attribute( "m_p1_x", &m_parameters.m.p1.x );
+	xml_node->Attribute( "m_p1_y", &m_parameters.m.p1.y );
+	xml_node->Attribute( "m_p2_x", &m_parameters.m.p2.x );
+	xml_node->Attribute( "m_p2_y", &m_parameters.m.p2.y );
+	calculate_values();
 }
 
 } /* namespace nle */
