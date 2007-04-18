@@ -41,13 +41,14 @@
 #include "TimelineView.H"
 #include "ImageClip.H"
 #include "DummyClip.H"
-#include "IVideoEffect.H"
-#include "Frei0rEffect.H"
-#include "Frei0rFactory.H"
+//#include "IVideoEffect.H"
+//#include "Frei0rEffect.H"
+//#include "Frei0rFactory.H"
 #include "VideoFileFactory.H"
 #include "TitleClip.H"
-#include "AudioFilter.H"
-#include "AudioVolumeFilterFactory.H"
+//#include "AudioFilter.H"
+#include "MainFilterFactory.H"
+#include "FilterBase.H"
 
 namespace nle
 {
@@ -124,12 +125,13 @@ int Project::write( string filename, string name )
 			snprintf( buffer, sizeof(buffer), "%lld", cn->clip->trimB() );
 			clip->SetAttribute( "trimB", buffer );
 			//TODO: Save Filter Params
-			if ( AudioClip* ac = dynamic_cast<AudioClip*>(cn->clip) ) {
+			if ( FilterClip* fc = dynamic_cast<FilterClip*>(cn->clip) ) {
 				filter_stack* filters;
-				for ( filters = ac->getFilters(); filters; filters = filters->next ) {
+				for ( filters = fc->getFilters(); filters; filters = filters->next ) {
 					TiXmlElement* filter_xml = new TiXmlElement( "filter" );
 					clip->LinkEndChild( filter_xml );
 					filter_xml->SetAttribute( "name", filters->filter->name() );
+					filter_xml->SetAttribute( "identifier", filters->filter->identifier() );
 					filters->filter->writeXML( filter_xml );
 				}
 			}
@@ -154,59 +156,6 @@ int Project::write( string filename, string name )
 					clip->SetAttribute( "font", tc->font() );
 					clip->SetAttribute( "color", tc->color() );
 				}
-				FilterClip* vclip = dynamic_cast<FilterClip*>(cn->clip);
-		// TODO: Fix the following frei0r saving code by implementing
-		// TODO: writeXML in the plugin
-				if ( vclip ) {
-					for ( filter_stack* p = vclip->getFilters(); p; p = p->next ) {
-						TiXmlElement* effect = new TiXmlElement( "effect" );
-						TiXmlElement* parameter;
-						clip->LinkEndChild( effect );
-						effect->SetAttribute( "name", p->filter->name() );
-						Frei0rEffect* fe = dynamic_cast<Frei0rEffect*>( p->filter );
-						if ( !fe ) {
-							continue;
-						}
-						f0r_plugin_info_t* finfo;
-						f0r_param_info_t pinfo;
-						finfo = fe->getPluginInfo();
-						for ( int i = 0; i < finfo->num_params; i++ ) {
-							fe->getParamInfo( &pinfo, i );
-							parameter = new TiXmlElement( "parameter" );
-							effect->LinkEndChild( parameter );
-							parameter->SetAttribute( "name", pinfo.name );
-							switch ( pinfo.type ) {
-								case F0R_PARAM_DOUBLE: //Seems to be always between 0.0 and 1.0
-									{
-										f0r_param_double dvalue;
-										fe->getValue( &dvalue, i );
-										parameter->SetDoubleAttribute( "value", (double)dvalue );
-										break;
-									}
-								case F0R_PARAM_BOOL:
-									{
-										f0r_param_bool bvalue;
-										fe->getValue( &bvalue, i );
-										parameter->SetAttribute( "value", (int)bvalue );
-										break;
-									}
-								case F0R_PARAM_COLOR:
-									break;
-								case F0R_PARAM_POSITION:
-									{
-										f0r_param_position_t pos;
-										fe->getValue( &pos, i );
-										parameter->SetDoubleAttribute( "x", pos.x );
-										parameter->SetDoubleAttribute( "y", pos.y );
-										break;
-									}
-								default:
-									break;
-
-							}
-						}
-					}
-				}
 			}
 			cn = cn->next;
 		}
@@ -218,7 +167,6 @@ int Project::write( string filename, string name )
 	
 	return 1;
 }
-extern Frei0rFactory* g_frei0rFactory;
 int Project::read( string filename )
 {
 	TiXmlDocument doc( filename.c_str() );
@@ -227,7 +175,6 @@ int Project::read( string filename )
 	}
 	g_timeline->clear();
 	TiXmlHandle docH( &doc );
-	//TiXmlElement* video_tracks = docH.FirstChildElement( "open_movie_editor_project" ).FirstChildElement( "video_tracks" );
 	TiXmlElement* track = docH.FirstChild( "open_movie_editor_project" ).FirstChild( "video_tracks" ).FirstChild( "track" ).Element();
 	
 	int trackId = 0;
@@ -271,7 +218,6 @@ int Project::read( string filename )
 			if ( ! filename ) //TODO is this correct?
 				continue;
 			j->Attribute( "mute", &mute );
-//			g_timeline->addFile( trackId, position, filename, trimA, trimB, mute, -1, length );
 			VideoEffectClip* vec = 0;
 			if ( strcmp( filename, "TitleClip" ) == 0 ) {
 				TitleClip* c = new TitleClip( tr, position, length - trimA - trimB, -1 );
@@ -300,42 +246,13 @@ int Project::read( string filename )
 				if ( j->Attribute( "color", &color ) ) {
 					c->color( (Fl_Color)color );
 				}
-				TiXmlElement* effectXml = TiXmlHandle( j ).FirstChildElement( "effect" ).Element();
-				for( ; effectXml; effectXml = effectXml->NextSiblingElement( "effect" ) ) {
-					//addClip would propably be a better Idea
-					FilterFactory* ef = g_frei0rFactory->get( effectXml->Attribute( "name" ) );
+				TiXmlElement* effectXml = TiXmlHandle( j ).FirstChildElement( "filter" ).Element();
+				for( ; effectXml; effectXml = effectXml->NextSiblingElement( "filter" ) ) {
+					FilterFactory* ef = g_mainFilterFactory->get( effectXml->Attribute( "identifier" ) );
 					if ( ef ) {
-						Frei0rEffect* effectObj = dynamic_cast<Frei0rEffect*>( c->appendEffect( ef ) );
+						FilterBase* effectObj = c->appendFilter( ef );
 						effectObj->readXML( effectXml );
 						
-/*						TiXmlElement* parameterXml = TiXmlHandle( effectXml ).FirstChildElement( "parameter" ).Element();
-						for ( ; parameterXml; parameterXml = parameterXml->NextSiblingElement( "parameter" ) ) {
-							string paramName = parameterXml->Attribute( "name" );
-							f0r_plugin_info_t* finfo = effectObj->getPluginInfo();
-							f0r_param_info_t pinfo;
-							for ( int i = 0; i < finfo->num_params; i++ ) {
-								effectObj->getParamInfo( &pinfo, i );
-								if ( paramName == pinfo.name ) {
-									switch ( pinfo.type ) {
-										case F0R_PARAM_DOUBLE:
-											{
-												double dval;
-												f0r_param_double dvalue;
-												parameterXml->Attribute( "value", &dval );
-												dvalue = dval;
-												effectObj->setValue( &dvalue, i );
-												break;
-											}
-										case F0R_PARAM_BOOL:
-											{
-												//int bval;
-												break;
-											}
-									}
-									break;
-								}
-							}
-						}*/
 					}
 				}
 				g_timeline->addClip( trackId, c );
@@ -345,50 +262,13 @@ int Project::read( string filename )
 					VideoClip* c = new VideoClip( tr, position, vf, trimA, trimB, -1 );
 					vec = c;
 					c->m_mute = mute;
-					TiXmlElement* effectXml = TiXmlHandle( j ).FirstChildElement( "effect" ).Element();
-					for( ; effectXml; effectXml = effectXml->NextSiblingElement( "effect" ) ) {
-						//addClip would propably be a better Idea
-						FilterFactory* ef = g_frei0rFactory->get( effectXml->Attribute( "name" ) );
-						if ( ef ) {
-							Frei0rEffect* effectObj = dynamic_cast<Frei0rEffect*>( c->appendEffect( ef ) );
-							effectObj->readXML( effectXml );
-							/*
-							TiXmlElement* parameterXml = TiXmlHandle( effectXml ).FirstChildElement( "parameter" ).Element();
-							for ( ; parameterXml; parameterXml = parameterXml->NextSiblingElement( "parameter" ) ) {
-								string paramName = parameterXml->Attribute( "name" );
-								f0r_plugin_info_t* finfo = effectObj->getPluginInfo();
-								f0r_param_info_t pinfo;
-								for ( int i = 0; i < finfo->num_params; i++ ) {
-									effectObj->getParamInfo( &pinfo, i );
-									if ( paramName == pinfo.name ) {
-										switch ( pinfo.type ) {
-											case F0R_PARAM_DOUBLE:
-												{
-													double dval;
-													f0r_param_double dvalue;
-													parameterXml->Attribute( "value", &dval );
-													dvalue = dval;
-													effectObj->setValue( &dvalue, i );
-													break;
-												}
-											case F0R_PARAM_BOOL:
-												{
-													//int bval;
-													break;
-												}
-										}
-										break;
-									}
-								}
-							}*/
-						}
-					}
 					TiXmlElement* filterXml = TiXmlHandle( j ).FirstChildElement( "filter" ).Element();
 					for ( ; filterXml; filterXml = filterXml->NextSiblingElement( "filter" ) ) {
-						FilterFactory* ff = g_audioVolumeFilterFactory;
-						//TODO: Find the filter factory
-						FilterBase* filter = c->appendFilter( ff );
-						filter->readXML( filterXml );
+						FilterFactory* ff = g_mainFilterFactory->get( filterXml->Attribute( "identifier" ) );//g_audioVolumeFilterFactory;
+						if ( ff ) {
+							FilterBase* filter = c->appendFilter( ff );
+							filter->readXML( filterXml );
+						}
 					}
 					g_timeline->addClip( trackId, c );
 				} else {
@@ -403,43 +283,12 @@ int Project::read( string filename )
 					} else {
 
 						//TODO: This is copy and paste
-						TiXmlElement* effectXml = TiXmlHandle( j ).FirstChildElement( "effect" ).Element();
-						for( ; effectXml; effectXml = effectXml->NextSiblingElement( "effect" ) ) {
-							//addClip would propably be a better Idea
-							FilterFactory* ef = g_frei0rFactory->get( effectXml->Attribute( "name" ) );
+						TiXmlElement* effectXml = TiXmlHandle( j ).FirstChildElement( "filter" ).Element();
+						for( ; effectXml; effectXml = effectXml->NextSiblingElement( "filter" ) ) {
+							FilterFactory* ef = g_mainFilterFactory->get( effectXml->Attribute( "identifier" ) );
 							if ( ef ) {
-								Frei0rEffect* effectObj = dynamic_cast<Frei0rEffect*>( ic->appendEffect( ef ) );
+								FilterBase* effectObj = ic->appendFilter( ef );
 								effectObj->readXML( effectXml );
-								/*
-								TiXmlElement* parameterXml = TiXmlHandle( effectXml ).FirstChildElement( "parameter" ).Element();
-								for ( ; parameterXml; parameterXml = parameterXml->NextSiblingElement( "parameter" ) ) {
-									string paramName = parameterXml->Attribute( "name" );
-									f0r_plugin_info_t* finfo = effectObj->getPluginInfo();
-									f0r_param_info_t pinfo;
-									for ( int i = 0; i < finfo->num_params; i++ ) {
-										effectObj->getParamInfo( &pinfo, i );
-										if ( paramName == pinfo.name ) {
-											switch ( pinfo.type ) {
-												case F0R_PARAM_DOUBLE:
-													{
-														double dval;
-														f0r_param_double dvalue;
-														parameterXml->Attribute( "value", &dval );
-														dvalue = dval;
-														effectObj->setValue( &dvalue, i );
-														break;
-													}
-												case F0R_PARAM_BOOL:
-													{
-														//int bval;
-														break;
-													}
-											}
-											break;
-										}
-									}
-								}
-								*/
 							}
 						}
 
@@ -517,10 +366,11 @@ int Project::read( string filename )
 
 			TiXmlElement* filterXml = TiXmlHandle( j ).FirstChildElement( "filter" ).Element();
 			for ( ; filterXml; filterXml = filterXml->NextSiblingElement( "filter" ) ) {
-				FilterFactory* ff = g_audioVolumeFilterFactory;
-				//TODO: Find the filter factory
-				AudioFilter* filter = dynamic_cast<AudioFilter*>( ac->appendFilter( ff ) );
-				filter->readXML( filterXml );
+				FilterFactory* ff = g_mainFilterFactory->get( filterXml->Attribute( "identifier" ) );
+				if ( ff ) {
+					FilterBase* filter = ac->appendFilter( ff );
+					filter->readXML( filterXml );
+				}
 			}
 			g_timeline->addClip( trackId, clip );
 		}

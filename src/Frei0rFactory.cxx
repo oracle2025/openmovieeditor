@@ -28,6 +28,8 @@
 #include "Frei0rFactoryPlugin.H"
 #include "IEffectMenu.H"
 #include "MainFilterFactory.H"
+#include "globals.H"
+#include "nle.h"
 
 #define FREI0R_DIR_1 "/usr/lib/frei0r-1/"
 #define FREI0R_DIR_2 "/usr/local/lib/frei0r-1/"
@@ -118,6 +120,7 @@ void Frei0rFactory::enumerate( string folder, IEffectMenu* menu )
 				string identifier = "effect:frei0r:";
 				identifier += effect->name();
 				g_mainFilterFactory->add( identifier.c_str(), effect );
+				g_ui->special_clips->add( effect->name(), PL_VIDEO_EFFECT, identifier.c_str() );
 			} else {
 				delete effect;
 			}

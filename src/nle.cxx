@@ -814,8 +814,9 @@ NleUI::NleUI() {
               }
               o->end();
             }
-            { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Video Effects");
-              { nle::FltkEffectMenu* o = m_effectMenu = new nle::FltkEffectMenu(5, 80, 355, 25, "Add Video Effect");
+            { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Clip Inspector");
+              o->hide();
+              { nle::FltkEffectMenu* o = m_effectMenu = new nle::FltkEffectMenu(5, 80, 355, 25, "Add Effect");
                 o->box(FL_UP_BOX);
                 o->color(FL_BACKGROUND_COLOR);
                 o->selection_color(FL_SELECTION_COLOR);
@@ -870,8 +871,7 @@ NleUI::NleUI() {
               }
               o->end();
             }
-            { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Special Clips");
-              o->hide();
+            { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Filters & Effects");
               { nle::SpecialClipsBrowser* o = special_clips = new nle::SpecialClipsBrowser(5, 80, 355, 220);
                 o->box(FL_NO_BOX);
                 o->color(FL_BACKGROUND2_COLOR);
@@ -1145,9 +1145,6 @@ scroll_area->type(0);
 g_v_scrollbar = vScrollBar;
 g_16_9 = false;
 g_black_borders = false;
-special_clips->add("Titles", nle::PL_VIDEO_SRC, "src:builtin:TitleClip" );
-special_clips->add("Volume Automations", nle::PL_AUDIO_FILTER, "filter:builtin:VolumeAutomations" );
-special_clips->add("Color Curves", nle::PL_VIDEO_EFFECT, "effect:builtin:ColorCurves" );
 //special_clips->add("Freeze Frame", nle::PL_VIDEO_EFFECT, "" );
 //special_clips->add("Crop/Fit/Stretch", nle::PL_VIDEO_EFFECT, "" );
 }

@@ -123,10 +123,10 @@ IEffectDialog* Frei0rEffect::dialog()
 }
 void Frei0rEffect::writeXML( TiXmlElement* xml_node )
 {
-	TiXmlElement* effect = new TiXmlElement( "effect" );
 	TiXmlElement* parameter;
+	TiXmlElement* effect = xml_node;/*new TiXmlElement( "effect" );
 	xml_node->LinkEndChild( effect );
-	effect->SetAttribute( "name", name() );
+	effect->SetAttribute( "name", name() );*/
 	f0r_plugin_info_t* finfo;
 	f0r_param_info_t pinfo;
 	finfo = getPluginInfo();

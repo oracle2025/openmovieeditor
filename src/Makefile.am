@@ -201,16 +201,12 @@ openmovieeditor_SOURCES = nle.cxx\
 	ColorCurveFactory.H\
 	ColorCurveFilter.cxx\
 	ColorCurveFilter.H\
-	CurveEditor.cxx\
-	CurveEditor.H\
+	CurveEditor2.cxx\
+	CurveEditor2.H\
 	ColorCurveDialog.cxx\
 	ColorCurveDialog.H\
-	CurveViewRGB.cxx\
-	CurveViewRGB.H\
-	ColorWheel.H\
-	ColorWheel.cxx\
-	ColorGrader.h\
-	ColorGrader.cxx\
+	ColorGrader2.h\
+	ColorGrader2.cxx\
 	FilterBase.H\
 	FilterFactory.H\
 	AudioFilter.H\
@@ -245,5 +241,9 @@ openmovieeditor_SOURCES = nle.cxx\
 #	TestFilter.H\
 #	TestFilter.cxx\
 #	TestFilterFactory.H
+#	CurveViewRGB.cxx\
+#	CurveViewRGB.H\
+#	ColorWheel.H\
+#	ColorWheel.cxx
 
 

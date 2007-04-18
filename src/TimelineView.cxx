@@ -111,6 +111,7 @@ int TimelineView::handle( int event )
 						clear_selection();
 						Command* cmd = new FilterAddCommand( fc, filename );
 						submit( cmd );
+						g_videoView->redraw();
 						toggle_selection( fc );
 						//TODO: Display Dialog
 					}

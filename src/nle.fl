@@ -328,11 +328,11 @@ fb->load_rel();}
                 } {}
               }
               Fl_Group {} {
-                label {Video Effects} open
-                xywh {0 75 365 230}
+                label {Clip Inspector}
+                xywh {0 75 365 230} hide
               } {
                 Fl_Menu_Button m_effectMenu {
-                  label {Add Video Effect} open
+                  label {Add Effect} open
                   xywh {5 80 355 25} deactivate
                   code0 {\#include "FltkEffectMenu.H"}
                   class {nle::FltkEffectMenu}
@@ -377,8 +377,8 @@ fb->load_rel();}
                 }
               }
               Fl_Group {} {
-                label {Special Clips}
-                xywh {0 75 365 230} hide
+                label {Filters & Effects}
+                xywh {0 75 365 230}
               } {
                 Fl_Browser special_clips {
                   xywh {5 80 355 220} resizable
@@ -387,7 +387,7 @@ fb->load_rel();}
                 }
               }
               Fl_Group titles_tab {
-                label Titles open
+                label Titles
                 private xywh {0 75 365 230} hide deactivate
               } {
                 Fl_Input titles_text {
@@ -567,7 +567,7 @@ m_timelineView->zoom( zoom );}
             } {
               Fl_Button {} {
                 callback {g_snap = o->value();}
-                tooltip Snapping image {/home/oracle/src/openme-developers/icons/snap.xpm} xywh {40 345 25 25} type Toggle value 1
+                tooltip Snapping image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/snap.xpm} xywh {40 345 25 25} type Toggle value 1
               }
               Fl_Box {} {
                 label Ruler
@@ -643,11 +643,9 @@ scroll_area->type(0);
 g_v_scrollbar = vScrollBar;
 g_16_9 = false;
 g_black_borders = false;
-special_clips->add("Titles", nle::PL_VIDEO_SRC, "src:builtin:TitleClip" );
-special_clips->add("Volume Automations", nle::PL_AUDIO_FILTER, "filter:builtin:VolumeAutomations" );
-special_clips->add("Color Curves", nle::PL_VIDEO_EFFECT, "effect:builtin:ColorCurves" );
 //special_clips->add("Freeze Frame", nle::PL_VIDEO_EFFECT, "" );
-//special_clips->add("Crop/Fit/Stretch", nle::PL_VIDEO_EFFECT, "" );} {}
+//special_clips->add("Crop/Fit/Stretch", nle::PL_VIDEO_EFFECT, "" );} {selected
+    }
   }
   Function {~NleUI()} {} {
     code {delete mainWindow;} {}
@@ -686,8 +684,7 @@ if ( effect_browser->value() == 0 ) {
 	m_remove_effect->deactivate();
 } else {
 	m_remove_effect->activate();
-}} {selected
-    }
+}} {}
   }
   Function {deactivate_titles()} {} {
     code {titles_tab->deactivate();} {}
