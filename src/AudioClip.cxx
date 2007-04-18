@@ -30,20 +30,28 @@ namespace nle
 AudioClip::AudioClip( Track *track, int64_t position, IAudioFile* af, int64_t trimA, int64_t trimB, int id )
 	: FilterClip( track, position, id )
 {
+	m_mute = false;
 	m_threadedReader = 0;
 	m_audioFile = af;
 	m_trimA = trimA;
 	m_trimB = trimB;
-	g_wavArtist->add( af );
-	m_artist = new AudioClipArtist( this );
-	if ( m_audioFile ) {
-		m_threadedReader = new ThreadedAudioReader( m_audioFile );
+
+	if ( true ) { // Playback mode
+		g_wavArtist->add( af );
+		m_artist = new AudioClipArtist( this );
+		if ( m_audioFile ) {
+			m_threadedReader = new ThreadedAudioReader( m_audioFile );
+		}
+	} else { // Render mode
+		m_threadedReader = 0;
+		m_artist = 0;
 	}
 }
 
 AudioClip::AudioClip( Track* track, int64_t position, IAudioFile* af, int id )
 	: FilterClip( track, position, id )
 {
+	m_mute = false;
 	m_threadedReader = 0;
 	m_audioFile = af;
 	m_artist = 0;
@@ -53,6 +61,11 @@ AudioClip::AudioClip( Track* track, int64_t position, IAudioFile* af, int id )
 }
 AudioClip::~AudioClip()
 {
+	if ( m_artist ) {
+		g_wavArtist->remove( m_audioFile->filename() );
+		delete m_artist;
+		m_artist = 0;
+	}
 	if ( m_audioFile ) {
 		delete m_audioFile;
 		m_audioFile = 0;
@@ -61,6 +74,7 @@ AudioClip::~AudioClip()
 		delete m_threadedReader;
 		m_threadedReader = 0;
 	}
+	
 }
 int AudioClip::fillBufferRaw( float* output, unsigned long frames, int64_t position )
 {

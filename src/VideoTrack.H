@@ -23,7 +23,7 @@
 #include "TrackBase.H"
 #include "frame_struct.h"
 #include "global_includes.H"
-#include "globals.H"
+#include "timebase.H"
 
 namespace nle
 {

@@ -43,18 +43,25 @@ VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A,
 	m_frame = 0;
 	m_lastFrame = -1;
 
-	m_filmStrip = g_filmStripFactory->get( vf );
 	
 	m_audioFile = AudioFileFactory::get( m_videoFile->filename() );
 	CLEAR_ERRORS();
-	m_artist = new VideoClipArtist( this );
 
 
 	guess_aspect( w(), h(), &m_aspectHeight, &m_aspectWidth, &m_aspectRatio, &m_analogBlank, 0, 0 );
 	setEffects( data );
-	if ( m_audioFile ) {
-		g_wavArtist->add( m_audioFile );
-		m_threadedReader = new ThreadedAudioReader( m_audioFile );
+
+	if ( true ) { // Playback mode
+		m_filmStrip = g_filmStripFactory->get( vf );
+		m_artist = new VideoClipArtist( this );
+		if ( m_audioFile ) {
+			g_wavArtist->add( m_audioFile );
+			//m_threadedReader is not initialized in AudioClip::AudioClip
+			m_threadedReader = new ThreadedAudioReader( m_audioFile );
+		}
+	} else { // Render mode
+		m_filmStrip = 0;
+		m_artist = 0;
 	}
 }
 int VideoClip::w()
@@ -73,9 +80,14 @@ VideoClip::~VideoClip()
 {
 	if ( m_audioFile ) {
 		g_wavArtist->remove( m_audioFile->filename() );
+		// m_audioFile is deleted in AudioClip
 	}
-	delete m_artist;
-	g_filmStripFactory->remove( m_filmStrip );
+	if ( m_artist ) {
+		delete m_artist;
+		m_artist = 0;
+		g_filmStripFactory->remove( m_filmStrip );
+		m_filmStrip = 0;
+	}
 	delete m_videoFile;
 }
 string VideoClip::filename()

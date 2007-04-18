@@ -99,6 +99,7 @@ void Renderer::go( IProgressListener* l )
 	if ( l ) {
 		l->start();
 	}
+	//TODO:  Make a copy of the timeline?
 	g_timeline->seek( 0 );
 	g_timeline->sort();
 	

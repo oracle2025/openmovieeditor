@@ -21,7 +21,6 @@
 #define _AUDIO_TRACK_H_
 
 #include "TrackBase.H"
-#include "globals.H"
 #include "global_includes.H"
 
 namespace nle

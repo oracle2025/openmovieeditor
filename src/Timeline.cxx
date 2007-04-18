@@ -26,6 +26,7 @@
 #include "VideoClip.H"
 #include "timeline/Track.H"
 #include "render_helper.H"
+#include "globals.H"
 
 namespace nle
 {

@@ -22,8 +22,7 @@
 
 #define STR_LEN 512
 
-//#define NLE_TIME_BASE 30000
-#define NLE_TIME_BASE 35280000
+#include "timebase.H"
 #define PREF_FILE_ADD "-devel"
 
 #include <lqt.h>
