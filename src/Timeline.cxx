@@ -25,7 +25,6 @@
 #include "AudioTrack.H"
 #include "VideoClip.H"
 #include "timeline/Track.H"
-#include "SwitchBoard.H"
 #include "render_helper.H"
 
 namespace nle
