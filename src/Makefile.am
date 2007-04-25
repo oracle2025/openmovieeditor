@@ -107,8 +107,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	VideoFileFfmpeg.H\
 	VideoFileFactory.cxx\
 	VideoFileFactory.H\
-	NoDropInput.H\
-	NoDropInput.cxx\
 	IdleHandler.cxx\
 	IdleHandler.H\
 	FilmStripFactory.H\
@@ -187,7 +185,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	PasteSelectionCommand.H\
 	PasteCommand.cxx\
 	PasteCommand.H\
-	IDeleteMe.H\
 	SpecialClipsBrowser.H\
 	SpecialClipsBrowser.cxx\
 	TitleClip.cxx\
