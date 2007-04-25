@@ -235,9 +235,6 @@ openmovieeditor_SOURCES = nle.cxx\
 #	AutomationRemoveCommand.cxx\
 #	EnvelopeClip.cxx\
 #	EnvelopeClip.H
-#	TestFilter.H\
-#	TestFilter.cxx\
-#	TestFilterFactory.H
 #	CurveViewRGB.cxx\
 #	CurveViewRGB.H\
 #	ColorWheel.H\
