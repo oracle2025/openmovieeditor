@@ -378,7 +378,7 @@ fb->load_rel();}
               }
               Fl_Group {} {
                 label {Filters & Effects}
-                xywh {0 75 365 230}
+                xywh {0 75 365 230} hide
               } {
                 Fl_Browser special_clips {
                   xywh {5 80 355 220} resizable
@@ -387,14 +387,14 @@ fb->load_rel();}
                 }
               }
               Fl_Group titles_tab {
-                label Titles
-                private xywh {0 75 365 230} hide deactivate
+                label Titles open
+                private xywh {0 75 365 230} deactivate
               } {
                 Fl_Input titles_text {
                   callback {m_timelineView->titles_text( o->value() );}
                   xywh {205 80 155 220} type Multiline resizable
                 }
-                Fl_Group {} {
+                Fl_Group {} {open
                   xywh {5 80 195 220} box ENGRAVED_FRAME
                 } {
                   Fl_Value_Input {} {
@@ -442,8 +442,61 @@ dlg.callback( font_dialog_callback, &dlg );
 while ( dlg.shown() ) {
 	Fl::wait();
 }}
-                    xywh {95 85 100 20} labelsize 12
+                    xywh {95 85 100 20} labelsize 12 hide
                     code0 {\#include "fl_font_browser.h"}
+                  }
+                  Fl_Choice font_choice {
+                    label Font open selected
+                    xywh {95 85 100 20} down_box BORDER_BOX labelsize 12
+                  } {
+                    MenuItem {} {
+                      label Helvetica
+                      xywh {0 0 100 20}
+                    }
+                    MenuItem {} {
+                      label {Helvetica bold}
+                      xywh {0 0 100 20}
+                    }
+                    MenuItem {} {
+                      label {Helvetica italic}
+                      xywh {0 0 100 20}
+                    }
+                    MenuItem {} {
+                      label {Helvetica bold italic}
+                      xywh {0 0 100 20}
+                    }
+                    MenuItem {} {
+                      label Courier
+                      xywh {0 0 100 20}
+                    }
+                    MenuItem {} {
+                      label {Courier bold}
+                      xywh {0 0 100 20}
+                    }
+                    MenuItem {} {
+                      label {Courier italic}
+                      xywh {0 0 100 20}
+                    }
+                    MenuItem {} {
+                      label {Courier bold italic}
+                      xywh {0 0 100 20}
+                    }
+                    MenuItem {} {
+                      label Times
+                      xywh {0 0 100 20}
+                    }
+                    MenuItem {} {
+                      label {Times bold}
+                      xywh {0 0 100 20}
+                    }
+                    MenuItem {} {
+                      label {Times italic}
+                      xywh {0 0 100 20}
+                    }
+                    MenuItem {} {
+                      label {Times bold italic}
+                      xywh {0 0 100 20}
+                    }
                   }
                 }
               }
@@ -644,8 +697,7 @@ g_v_scrollbar = vScrollBar;
 g_16_9 = false;
 g_black_borders = false;
 //special_clips->add("Freeze Frame", nle::PL_VIDEO_EFFECT, "" );
-//special_clips->add("Crop/Fit/Stretch", nle::PL_VIDEO_EFFECT, "" );} {selected
-    }
+//special_clips->add("Crop/Fit/Stretch", nle::PL_VIDEO_EFFECT, "" );} {}
   }
   Function {~NleUI()} {} {
     code {delete mainWindow;} {}

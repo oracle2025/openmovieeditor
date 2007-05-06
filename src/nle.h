@@ -32,6 +32,7 @@
 #include <FL/Fl_Slider.H>
 #include <FL/Fl_Box.H>
 #include "fl_font_browser.h"
+#include <FL/Fl_Choice.H>
 #include "Flmm_Scalebar.H"
 #include "globals.H"
 using namespace std;
@@ -39,7 +40,6 @@ using namespace std;
 #include <FL/Fl_Scrollbar.H>
 #include "TimelineScroll.H"
 #include "TimelineView.H"
-#include <FL/Fl_Choice.H>
 
 class NleUI {
 public:
@@ -180,6 +180,8 @@ private:
   void cb_Font_i(Fl_Button*, void*);
   static void cb_Font(Fl_Button*, void*);
 public:
+  Fl_Choice *font_choice;
+  static Fl_Menu_Item menu_font_choice[];
   Fl_Button *playButton;
 private:
   void cb_playButton_i(Fl_Button*, void*);

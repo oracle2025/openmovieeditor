@@ -406,6 +406,22 @@ void NleUI::cb_Font(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_Font_i(o,v);
 }
 
+Fl_Menu_Item NleUI::menu_font_choice[] = {
+ {"Helvetica", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Helvetica bold", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Helvetica italic", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Helvetica bold italic", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Courier", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Courier bold", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Courier italic", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Courier bold italic", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Times", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Times bold", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Times italic", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Times bold italic", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {0,0,0,0,0,0,0,0,0}
+};
+
 void NleUI::cb_playButton_i(Fl_Button* o, void*) {
   if ( strcmp( o->label(), "@>" ) == 0 ) {
 	o->label( "@square" );
@@ -872,6 +888,7 @@ NleUI::NleUI() {
               o->end();
             }
             { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Filters & Effects");
+              o->hide();
               { nle::SpecialClipsBrowser* o = special_clips = new nle::SpecialClipsBrowser(5, 80, 355, 220);
                 o->box(FL_NO_BOX);
                 o->color(FL_BACKGROUND2_COLOR);
@@ -887,7 +904,6 @@ NleUI::NleUI() {
               o->end();
             }
             { Fl_Group* o = titles_tab = new Fl_Group(0, 75, 365, 230, "Titles");
-              o->hide();
               o->deactivate();
               { Fl_Input* o = titles_text = new Fl_Input(205, 80, 155, 220);
                 o->type(4);
@@ -936,6 +952,12 @@ NleUI::NleUI() {
                 { Fl_Button* o = new Fl_Button(95, 85, 100, 20, "Font...");
                 o->labelsize(12);
                 o->callback((Fl_Callback*)cb_Font);
+                o->hide();
+                }
+                { Fl_Choice* o = font_choice = new Fl_Choice(95, 85, 100, 20, "Font");
+                o->down_box(FL_BORDER_BOX);
+                o->labelsize(12);
+                o->menu(menu_font_choice);
                 }
                 o->end();
               }
