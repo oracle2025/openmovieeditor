@@ -44,7 +44,7 @@ AudioFileFfmpeg::AudioFileFfmpeg( string filename )
 		return;
 	}
 	m_audioStream = -1;
-	for ( int i = 0; i < m_formatContext->nb_streams; i++ ) {
+	for ( unsigned int i = 0; i < m_formatContext->nb_streams; i++ ) {
 		if ( m_formatContext->streams[i]->codec->codec_type == CODEC_TYPE_AUDIO ) {
 			m_audioStream = i;
 			break;

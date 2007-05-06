@@ -48,7 +48,7 @@ VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 		return;
 	}
 	m_videoStream = -1;
-	for ( int i = 0; i < m_formatContext->nb_streams; i++ ) {
+	for ( unsigned int i = 0; i < m_formatContext->nb_streams; i++ ) {
 		if ( m_formatContext->streams[i]->codec->codec_type == CODEC_TYPE_VIDEO ) {
 			m_videoStream = i;
 			break;
