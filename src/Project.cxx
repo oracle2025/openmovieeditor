@@ -181,7 +181,7 @@ int Project::read( string filename )
 	TiXmlHandle docH( &doc );
 
 	const char* versions[] = { "0.0.20061221","0.0.20061219", "0.0.20061128", "0.0.20061121", "0.0.20060901", "0.0.20060630", 0 };
-	TiXmlText *name = docH.FirstChild( "open_movie_editor_project" ).FirstChild( "name" ).FirstChild().Text();
+	TiXmlText *name = docH.FirstChild( "open_movie_editor_project" ).FirstChild( "version" ).FirstChild().Text();
 	if ( name ) {
 		const char* cname = name->Value();
 		for ( int i = 0; versions[i]; i++ ) {
