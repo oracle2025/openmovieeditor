@@ -36,6 +36,7 @@ class Project : public IProject
 		static void write_project();
 		static void read_project();
 	private:
+		int read_20061221_and_earlier( string filename );
 };
 
 } /* namespace nle */
