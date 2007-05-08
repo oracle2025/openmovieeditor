@@ -197,8 +197,8 @@ int Project::read( string filename )
 	int trackId = 0;
 	
 	for ( ; track; track = track->NextSiblingElement( "track" ) ) {
-		trackId = getTrackId();
-		VideoTrack *tr = new VideoTrack( trackId );
+		trackId = g_timeline->getTrackId();
+		VideoTrack *tr = new VideoTrack( g_timeline, trackId );
 		g_timeline->addTrack( tr );
 		const char* name = track->Attribute( "name" );
 		if ( name ) {
@@ -333,8 +333,8 @@ int Project::read( string filename )
 	}
 	track = docH.FirstChild( "open_movie_editor_project" ).FirstChild( "audio_tracks" ).FirstChild( "track" ).Element();
 	for ( ; track; track = track->NextSiblingElement( "track" ) ) {
-		trackId = getTrackId();
-		Track *tr = new AudioTrack( trackId );
+		trackId = g_timeline->getTrackId();
+		Track *tr = new AudioTrack( g_timeline, trackId );
 		g_timeline->addTrack( tr );
 		const char* name = track->Attribute( "name" );
 		if ( name ) {
@@ -413,8 +413,8 @@ int Project::read_20061221_and_earlier( string filename )
 	int trackId = 0;
 	
 	for ( ; track; track = track->NextSiblingElement( "track" ) ) {
-		trackId = getTrackId();
-		VideoTrack *tr = new VideoTrack( trackId );
+		trackId = g_timeline->getTrackId();
+		VideoTrack *tr = new VideoTrack( g_timeline, trackId );
 		g_timeline->addTrack( tr );
 		const char* name = track->Attribute( "name" );
 		if ( name ) {
@@ -624,8 +624,8 @@ int Project::read_20061221_and_earlier( string filename )
 	}
 	track = docH.FirstChild( "open_movie_editor_project" ).FirstChild( "audio_tracks" ).FirstChild( "track" ).Element();
 	for ( ; track; track = track->NextSiblingElement( "track" ) ) {
-		trackId = getTrackId();
-		Track *tr = new AudioTrack( trackId );
+		trackId = g_timeline->getTrackId();
+		Track *tr = new AudioTrack( g_timeline, trackId );
 		g_timeline->addTrack( tr );
 		const char* name = track->Attribute( "name" );
 		if ( name ) {

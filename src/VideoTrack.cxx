@@ -34,7 +34,7 @@
 namespace nle
 {
 
-VideoTrack::VideoTrack( int num, string name )
+VideoTrack::VideoTrack( ClipIdProvider* idProvider, int num, string name )
 	: TrackBase( num, name )
 {
 	m_vidCurrent = 0;
@@ -42,6 +42,7 @@ VideoTrack::VideoTrack( int num, string name )
 	m_currentAudioFadeOver = 0;
 	m_preparedFrame1.RGB = 0;
 	m_preparedFrame2.RGB = 0;
+	m_idProvider = idProvider;
 }
 VideoTrack::~VideoTrack()
 {

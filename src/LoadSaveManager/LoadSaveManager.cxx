@@ -220,13 +220,13 @@ void LoadSaveManager::newProject()
 	{
 		VideoTrack *vt;
 		AudioTrack *at;
-		vt = new VideoTrack( 0 );
+		vt = new VideoTrack( g_timeline, 0 );
 		g_timeline->addTrack( vt );
-		vt = new VideoTrack( 1 );
+		vt = new VideoTrack( g_timeline, 1 );
 		g_timeline->addTrack( vt );
-		at = new AudioTrack( 2 );
+		at = new AudioTrack( g_timeline, 2 );
 		g_timeline->addTrack( at );
-		at = new AudioTrack( 3 );
+		at = new AudioTrack( g_timeline, 3 );
 		g_timeline->addTrack( at );
 	}
 	m_currentName = nodups( m_currentName );

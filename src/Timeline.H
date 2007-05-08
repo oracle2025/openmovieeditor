@@ -59,13 +59,15 @@ class Timeline : public TimelineBase, public IAudioReader, public IVideoReader
 		bool changed() { return m_changed; }
 		void changing() { m_changed = true; }
 		void saving() { m_changed = false; }
+		int getTrackId();
+		void clear();
 	private:
 		int64_t m_soundLength;
 		bool m_changed;
+		int m_trackId;
 };
 
 extern Timeline* g_timeline;
-int getTrackId();
 	
 } /* namespace nle */
 

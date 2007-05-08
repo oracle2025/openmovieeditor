@@ -71,7 +71,6 @@ int main( int argc, char** argv )
 #ifdef AVCODEC
 	av_register_all();
 #endif	
-	nle::g_clipId = 1;
 	fl_register_images();
 	nle::g_SEEKING = false;
 	srand( time( 0 ) );

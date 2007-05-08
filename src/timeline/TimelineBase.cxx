@@ -34,12 +34,20 @@ namespace nle
 TimelineBase::TimelineBase()
 {
 	m_allTracks = 0;
+	m_clipId = 1;
 }
 TimelineBase::~TimelineBase()
 {
 	clear();
 }
-extern int g_trackId;
+int TimelineBase::getClipId() { return m_clipId++; }
+void TimelineBase::updateClipId( int id )
+{
+	if ( id >= m_clipId ) {
+		m_clipId = id + 1;
+	}	
+}
+
 void TimelineBase::clear()
 {
 	track_node* node;
@@ -47,7 +55,6 @@ void TimelineBase::clear()
 		delete node->track;
 		delete node;
 	}
-	g_trackId = 0;
 }
 
 static int sort_track_helper( void* p, void* )

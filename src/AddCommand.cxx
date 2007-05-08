@@ -30,7 +30,7 @@ AddCommand::AddCommand( string filename, Track* target, int64_t position )
 	: Command()
 {
 	m_track = target->num();
-	m_clipNr = getClipId();
+	m_clipNr = g_timeline->getClipId();
 	m_position = position;
 	m_filename = filename;
 }

@@ -24,6 +24,7 @@
 
 using namespace std;
 
+#include "ClipIdProvider.H"
 #include <stdint.h>
 #include <sl.h>
 
@@ -42,7 +43,7 @@ enum Track_Types {
 	TRACK_TYPE_AUDIO = 1
 };
 
-class Track
+class Track : public ClipIdProvider
 {
 	public:
 		virtual ~Track();

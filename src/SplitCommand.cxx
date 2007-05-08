@@ -34,7 +34,7 @@ SplitCommand::SplitCommand( Clip* clip, int64_t position )
 	m_automationPoints = 0;
 	m_track = clip->track()->num();
 	m_clipNr1 = clip->id();
-	m_clipNr2 = getClipId();
+	m_clipNr2 = g_timeline->getClipId();
 	m_position = position;
 	m_length = clip->length();
 	m_audioClip = 0;

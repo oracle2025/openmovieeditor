@@ -20,8 +20,9 @@
 #ifndef _TIMELINE_BASE_H_
 #define _TIMELINE_BASE_H_
 
-#include <string>
+#include "ClipIdProvider.H"
 
+#include <string>
 #include <stdint.h>
 
 namespace nle
@@ -36,7 +37,7 @@ typedef struct _track_list_node {
 	Track *track;
 } track_node;
 
-class TimelineBase
+class TimelineBase : public ClipIdProvider
 {
 	public:
 		// constructors and destructors
@@ -53,14 +54,17 @@ class TimelineBase
 		Clip* find( int track, int64_t position );
 		int64_t length();
 		inline track_node* getTracks() { return m_allTracks; }
-		void clear();
+		virtual void clear();
 		void trackUp( Track* track );
 		void trackDown( Track* track );
 		Track* getTrack( int track );
 		Clip* getClip( int track, int clip );
+		int getClipId();
+		void updateClipId( int id );
 	protected:
 		// member variable declerations
 		track_node* m_allTracks;
+		int m_clipId;
 };
 	
 } /* namespace nle */

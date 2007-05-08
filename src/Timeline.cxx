@@ -33,21 +33,20 @@ namespace nle
 
 Timeline* g_timeline = 0;
 
-int g_trackId = 0;
-int getTrackId() { return g_trackId++; }
 
 Timeline::Timeline()
 	: TimelineBase()
 {
+	m_trackId = 0;
 	VideoTrack *vt;
 	AudioTrack *at;
-	vt = new VideoTrack( getTrackId() );
+	vt = new VideoTrack( this, getTrackId() );
 	addTrack( vt );
-	vt = new VideoTrack( getTrackId() );
+	vt = new VideoTrack( this, getTrackId() );
 	addTrack( vt );
-	at = new AudioTrack( getTrackId() );
+	at = new AudioTrack( this, getTrackId() );
 	addTrack( at );
-	at = new AudioTrack( getTrackId() );
+	at = new AudioTrack( this, getTrackId() );
 	addTrack( at );
 	m_playPosition = 0;
 	m_samplePosition = 0;
@@ -62,6 +61,7 @@ Timeline::~Timeline()
 {
 	g_timeline = NULL;
 }
+int Timeline::getTrackId() { return m_trackId++; }
 void reset_helper( Track* track ) { track->sort(); }
 static int video_length_helper( void* p, void* data )
 {
@@ -320,6 +320,11 @@ void Timeline::unPrepareFormat()
 		}
 		current->unPrepareFormat();
 	}
+}
+void Timeline::clear()
+{
+	TimelineBase::clear();
+	m_trackId = 0;
 }
 
 

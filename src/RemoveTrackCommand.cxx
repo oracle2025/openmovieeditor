@@ -73,10 +73,10 @@ void RemoveTrackCommand::undo()
 	Track* track = 0;
 	switch ( m_type ) {
 		case TRACK_TYPE_VIDEO:
-			track = new VideoTrack( m_track );
+			track = new VideoTrack( g_timeline, m_track );
 			break;
 		case TRACK_TYPE_AUDIO:
-			track = new AudioTrack( m_track );
+			track = new AudioTrack( g_timeline, m_track );
 			break;
 	}
 	if ( track ) {

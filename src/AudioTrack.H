@@ -32,7 +32,7 @@ class AudioTrack : public TrackBase
 {
 	public:
 		// constructors and destructors
-		AudioTrack( int num, string name = "Audio" );
+		AudioTrack( ClipIdProvider* idProvider, int num, string name = "Audio" );
 		~AudioTrack();
 
 		// method declerations
@@ -41,6 +41,10 @@ class AudioTrack : public TrackBase
 		void sort();
 		float stretchFactor() { return ( 48000.0 ); }
 		int64_t soundLength();
+		int getClipId() { return m_idProvider->getClipId(); }
+		void updateClipId( int id ) { m_idProvider->updateClipId( id ); }
+	private:
+		ClipIdProvider* m_idProvider;
 };
 	
 } /* namespace nle */

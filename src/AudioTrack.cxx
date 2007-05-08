@@ -27,9 +27,10 @@
 namespace nle
 {
 
-AudioTrack::AudioTrack( int num, string name )
+AudioTrack::AudioTrack( ClipIdProvider* idProvider, int num, string name )
 	: TrackBase( num, name )
 {
+	m_idProvider = idProvider;
 }
 AudioTrack::~AudioTrack()
 {

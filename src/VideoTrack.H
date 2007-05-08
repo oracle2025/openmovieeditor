@@ -46,7 +46,7 @@ class VideoClip;
 class VideoTrack : public TrackBase
 {
 	public:
-		VideoTrack( int num, string name = "Video" );
+		VideoTrack( ClipIdProvider* idProvider, int num, string name = "Video" );
 		virtual ~VideoTrack();
 
 		void addFile( int64_t position, string filename, int64_t trimA = 0, int64_t trimB = 0, int mute = 0, int id = -1, int64_t length = -1, ClipData* data = 0 );
@@ -61,6 +61,8 @@ class VideoTrack : public TrackBase
 		void reconsiderFadeOver();
 		void removeClip( Clip* clip );
 		int fillBuffer( float* output, unsigned long frames, int64_t position ); //Needed for Crossfade handling
+		int getClipId() { return m_idProvider->getClipId(); }
+		void updateClipId( int id ) { m_idProvider->updateClipId( id ); }
 	private:
 		int64_t m_playPosition;
 		clip_node* m_vidCurrent;
@@ -68,6 +70,7 @@ class VideoTrack : public TrackBase
 		fade_over* m_currentAudioFadeOver;
 		frame_struct m_preparedFrame1;
 		frame_struct m_preparedFrame2;
+		ClipIdProvider* m_idProvider;
 };
 	
 } /* namespace nle */

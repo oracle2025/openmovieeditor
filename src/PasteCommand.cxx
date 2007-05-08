@@ -37,7 +37,7 @@ PasteCommand::PasteCommand( Clip* clip )
 	m_automationsCount = 0;
 	m_automationPoints = 0;
 	m_track = clip->track()->num();
-	m_clip = getClipId();
+	m_clip = g_timeline->getClipId();
 	m_filename = clip->filename();
 	m_trimA = clip->trimA();
 	m_trimB = clip->trimB();
@@ -72,7 +72,7 @@ PasteCommand::PasteCommand( PasteCommand* command )
 {
 	m_automationPoints = 0;
 	m_track = command->m_track;
-	m_clip = getClipId();
+	m_clip = g_timeline->getClipId();
 	m_filename = command->m_filename;
 	m_trimA = command->m_trimA;
 	m_trimB = command->m_trimB;

@@ -59,7 +59,6 @@ extern NleUI* g_ui;
 extern bool g_SEEKING;
 extern bool g_PREVENT_OFFSCREEN_CRASH;
 
-extern int g_clipId;
 extern char* g_homefolder;
 
 } /* namespace nle */
