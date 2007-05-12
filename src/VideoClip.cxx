@@ -83,7 +83,7 @@ VideoClip::~VideoClip()
 	if ( m_artist ) {
 		delete m_artist;
 		m_artist = 0;
-		g_wavArtist->remove( m_audioFile->filename() );
+		g_wavArtist->remove( m_videoFile->filename() );
 		g_filmStripFactory->remove( m_filmStrip );
 		m_filmStrip = 0;
 	}
