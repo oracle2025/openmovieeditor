@@ -61,11 +61,13 @@ class ColorCurveFilter : public IVideoEffect
 		void calculate_values();
 		void writeXML( TiXmlElement* );
 		void readXML( TiXmlElement* );
+		void bypass( bool b ) { m_bypass = b; }
 	private:
 		void calculate_values( unsigned char* value, struct color_curve_desc* desc );
 		unsigned char *m_frame;
 		unsigned char **m_rows;
 		frame_struct m_framestruct;
+		bool m_bypass;
 };
 
 	

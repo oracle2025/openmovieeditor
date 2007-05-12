@@ -56,6 +56,7 @@ ColorCurveFilter::ColorCurveFilter( int w, int h )
 	m_parameters.r.p2.y = 0;
 
 	m_parameters.g = m_parameters.b = m_parameters.m = m_parameters.r;
+	m_bypass = false;
 }
 
 ColorCurveFilter::~ColorCurveFilter()
@@ -68,6 +69,9 @@ ColorCurveFilter::~ColorCurveFilter()
 }
 frame_struct* ColorCurveFilter::getFrame( frame_struct* frame, int64_t )
 {
+	if ( m_bypass ) {
+		return frame;
+	}
 	unsigned int len = m_framestruct.w * m_framestruct.h;
 	unsigned char* dst = m_frame;
 	unsigned char* src = frame->RGB;

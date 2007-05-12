@@ -84,6 +84,7 @@ void ColorCurveDialog::read_values()
 	m_cg->editor_blue->get( cd->b.p1.x, cd->b.p1.y, cd->b.p2.x, cd->b.p2.y );
 	m_cg->editor_master->get( cd->m.p1.x, cd->m.p1.y, cd->m.p2.x, cd->m.p2.y );
 	m_filter->calculate_values();
+	m_filter->bypass( m_cg->bypass_check->value() );
 	
 
 	g_videoView->redraw();

@@ -33,6 +33,11 @@ private:
   void cb_editor_master_i(CurveEditor2*, void*);
   static void cb_editor_master(CurveEditor2*, void*);
 public:
+  Fl_Check_Button *bypass_check;
+private:
+  void cb_bypass_check_i(Fl_Check_Button*, void*);
+  static void cb_bypass_check(Fl_Check_Button*, void*);
+public:
   nle::ColorCurveDialog* m_dialog;
 };
 #endif

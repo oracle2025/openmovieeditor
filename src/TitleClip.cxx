@@ -98,6 +98,7 @@ void TitleClip::init()
 	if ( ( m_image && !m_dirty ) || g_PREVENT_OFFSCREEN_CRASH ) {
 		return;
 	}
+	g_ui->mainWindow->make_current();
 	if ( !m_offscreen ) {
 		m_offscreen = fl_create_offscreen(768, 576);
 	}
@@ -106,8 +107,6 @@ void TitleClip::init()
 	strcpy( text, m_text.c_str() );
 	
 	
-//	uchar* pixels;
-//	uchar* alpha;
 	fl_begin_offscreen(m_offscreen);
 	fl_draw_box(FL_FLAT_BOX, 0, 0, 768, 576, FL_DARK3);
 	fl_font(m_font, m_size);

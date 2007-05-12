@@ -29,6 +29,13 @@ void ColorGrader2::cb_editor_master_i(CurveEditor2*, void*) {
 void ColorGrader2::cb_editor_master(CurveEditor2* o, void* v) {
   ((ColorGrader2*)(o->parent()))->cb_editor_master_i(o,v);
 }
+
+void ColorGrader2::cb_bypass_check_i(Fl_Check_Button*, void*) {
+  m_dialog->read_values();
+}
+void ColorGrader2::cb_bypass_check(Fl_Check_Button* o, void* v) {
+  ((ColorGrader2*)(o->parent()))->cb_bypass_check_i(o,v);
+}
 ColorGrader2::ColorGrader2(int X, int Y, int W, int H, const char *L)
   : Fl_Group(X, Y, W, H, L) {
   ColorGrader2 *o = this;
@@ -81,8 +88,9 @@ o->align(FL_ALIGN_TOP_LEFT);
   o->align(FL_ALIGN_TOP_LEFT);
   o->when(FL_WHEN_RELEASE);
 }
-{ Fl_Check_Button* o = new Fl_Check_Button(5, 170, 85, 25, "Bypass");
+{ Fl_Check_Button* o = bypass_check = new Fl_Check_Button(5, 170, 85, 25, "Bypass");
   o->down_box(FL_DOWN_BOX);
+  o->callback((Fl_Callback*)cb_bypass_check);
 }
 end();
 }
