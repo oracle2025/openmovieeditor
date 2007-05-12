@@ -88,7 +88,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	TimelineView.H\
 	events.H\
 	IAudioReader.H\
-	Project.H\
 	TrackBase.H\
 	Rect.H\
 	TrimDragHandler.H\
