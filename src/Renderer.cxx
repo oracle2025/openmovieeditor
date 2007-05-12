@@ -75,7 +75,6 @@ Renderer::Renderer( string filename, render_frame_size* format, int framerate, i
 	
 	temp_filename += ("/.openme/temp" PREF_FILE_ADD);
 	temp_filename += buffer;
-	cout << temp_filename << endl;
 	g_timeline->write( temp_filename, "" );
 
 	p_timeline->read( temp_filename );
@@ -126,7 +125,6 @@ void Renderer::go( IProgressListener* l )
 	//Use Write project to tmp file
 	
 
-cout << "RENDER START" << endl;	
 	
 	p_timeline->seek( 0 );
 	p_timeline->sort();

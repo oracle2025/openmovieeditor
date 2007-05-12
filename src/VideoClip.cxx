@@ -54,6 +54,7 @@ VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A,
 	if ( track->render_mode() ) { // Render mode
 		m_filmStrip = 0;
 		m_artist = 0;
+		m_audioReader = m_audioFile;
 	} else { // Playback mode
 		m_filmStrip = g_filmStripFactory->get( vf );
 		m_artist = new VideoClipArtist( this );
@@ -79,13 +80,10 @@ bool VideoClip::hasAudio()
 }
 VideoClip::~VideoClip()
 {
-	if ( m_audioFile ) {
-		g_wavArtist->remove( m_audioFile->filename() );
-		// m_audioFile is deleted in AudioClip
-	}
 	if ( m_artist ) {
 		delete m_artist;
 		m_artist = 0;
+		g_wavArtist->remove( m_audioFile->filename() );
 		g_filmStripFactory->remove( m_filmStrip );
 		m_filmStrip = 0;
 	}

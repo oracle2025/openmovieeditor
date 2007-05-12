@@ -69,7 +69,7 @@ int ThreadedAudioReader::fillBuffer( float* output, unsigned long frames )
 {
 	int bytes_read;
 	unsigned int frames_read;
-	bool fileDone;
+	bool fileDone = false;
 	bytes_read = jack_ringbuffer_read( m_ringBuffer, (char*)output, frames * sizeof(float) * 2 );
 	frames_read = bytes_read / 2 / sizeof(float);
 	if ( pthread_mutex_trylock( &m_readMutex ) != EBUSY ) {
