@@ -84,6 +84,7 @@ class TitleClip : public FilterClip, public VideoEffectClip
 		unsigned char* m_alpha;
 		Fl_Offscreen m_offscreen;
 		Fl_Color m_color;
+		bool m_render_mode;
 };
 
 } /* namespace nle */

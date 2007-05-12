@@ -36,7 +36,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	Ruler.cxx\
 	Rect.cxx\
 	Prefs.cxx\
-	Project.cxx\
 	MoveDragHandler.cxx\
 	TrimDragHandler.cxx\
 	VideoFileQT.cxx\
@@ -91,7 +90,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	IAudioReader.H\
 	Project.H\
 	TrackBase.H\
-	IProject.H\
 	Rect.H\
 	TrimDragHandler.H\
 	IClipArtist.H\

@@ -24,6 +24,7 @@
 #include "ImageClipArtist.H"
 #include "helper.H"
 #include "globals.H"
+#include "timeline/Track.H"
 
 namespace nle
 {
@@ -66,7 +67,10 @@ ImageClip::ImageClip( Track* track, int64_t position, string filename, int64_t l
 	//m_frame.RGB = new (unsigned char)[m_frame.w * m_frame.h * 4];
 	char** d = (char**)m_image->data();
 	m_frame.RGB = (unsigned char *)d[0];
-	m_artist = new ImageClipArtist( m_image );
+	
+	if ( !track->render_mode() ) {
+		m_artist = new ImageClipArtist( m_image );
+	}
 	
 	unsigned long gcd_wh = gcd( m_frame.w, m_frame.h );
 	m_aspectHeight = m_frame.h / gcd_wh; 

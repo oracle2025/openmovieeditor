@@ -18,7 +18,6 @@
  */
 
 #include <cassert>
-//#include <FL/Fl_Shared_Image.H>
 #include <FL/Fl_Image.H>
 #include <FL/fl_draw.H>
 
@@ -27,6 +26,7 @@
 #include "ImageClipArtist.H"
 #include "globals.H"
 #include "nle.h"
+#include "timeline/Track.H"
 
 namespace nle
 {
@@ -55,7 +55,7 @@ TitleClip::TitleClip( Track* track, int64_t position, int64_t length, int id, Cl
 	m_ok = false;
 	m_artist = 0;
 	m_image = 0;
-
+	m_render_mode = track->render_mode();
 	
 	m_dirty = false;
 
@@ -178,12 +178,14 @@ void TitleClip::init()
 	//free(pixels);
 	char** d = (char**)m_image->data();
 	m_frame.RGB = (unsigned char *)d[0];
-	if ( m_artist ) {
-		ImageClipArtist* ica = dynamic_cast<ImageClipArtist*>(m_artist);
-		assert( ica );
-		ica->image( m_image );
-	} else {
-		m_artist = new ImageClipArtist( m_image );
+	if ( !m_render_mode ) {
+		if ( m_artist ) {
+			ImageClipArtist* ica = dynamic_cast<ImageClipArtist*>(m_artist);
+			assert( ica );
+			ica->image( m_image );
+		} else {
+			m_artist = new ImageClipArtist( m_image );
+		}
 	}
 	delete [] text;
 }

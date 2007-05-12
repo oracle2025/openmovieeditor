@@ -21,6 +21,7 @@
 #define _TIMELINE_H_
 
 #include <stdint.h>
+#include "global_includes.H"
 
 #include "timeline/TimelineBase.H"
 #include "frame_struct.h"
@@ -61,10 +62,16 @@ class Timeline : public TimelineBase, public IAudioReader, public IVideoReader
 		void saving() { m_changed = false; }
 		int getTrackId();
 		void clear();
+		int write( string filename, string name );
+		int read( string filename );
+		bool render_mode() { return m_render_mode; }
+		void render_mode( bool b ) { m_render_mode = b; }
 	private:
+		int read_20061221_and_earlier( string filename );
 		int64_t m_soundLength;
 		bool m_changed;
 		int m_trackId;
+		bool m_render_mode;
 };
 
 extern Timeline* g_timeline;

@@ -23,6 +23,7 @@
 #include "AudioClipArtist.H"
 #include "AudioFilter.H"
 #include "ThreadedAudioReader.H"
+#include "timeline/Track.H"
 
 
 namespace nle
@@ -35,16 +36,18 @@ AudioClip::AudioClip( Track *track, int64_t position, IAudioFile* af, int64_t tr
 	m_audioFile = af;
 	m_trimA = trimA;
 	m_trimB = trimB;
-
-	if ( true ) { // Playback mode
+	m_audioReader = 0;
+	if ( track->render_mode() ) {  // Render mode
+		m_threadedReader = 0;
+		m_audioReader = m_audioFile;
+		m_artist = 0;
+	} else { // Playback mode
 		g_wavArtist->add( af );
 		m_artist = new AudioClipArtist( this );
 		if ( m_audioFile ) {
 			m_threadedReader = new ThreadedAudioReader( m_audioFile );
+			m_audioReader = m_threadedReader;
 		}
-	} else { // Render mode
-		m_threadedReader = 0;
-		m_artist = 0;
 	}
 }
 
@@ -55,12 +58,20 @@ AudioClip::AudioClip( Track* track, int64_t position, IAudioFile* af, int id )
 	m_threadedReader = 0;
 	m_audioFile = af;
 	m_artist = 0;
+	m_audioReader = 0;
 	if ( m_audioFile ) {
-		m_threadedReader = new ThreadedAudioReader( m_audioFile );
+		if ( track->render_mode() ) {
+			m_threadedReader = 0;
+			m_audioReader = m_audioFile;
+		} else {
+			m_threadedReader = new ThreadedAudioReader( m_audioFile );
+			m_audioReader = m_threadedReader;
+		}
 	}
 }
 AudioClip::~AudioClip()
 {
+	m_audioReader = 0;
 	if ( m_artist ) {
 		g_wavArtist->remove( m_audioFile->filename() );
 		delete m_artist;
@@ -86,7 +97,7 @@ int AudioClip::fillBufferRaw( float* output, unsigned long frames, int64_t posit
 	int64_t aLength = audioLength();
 	int64_t trimA = audioTrimA();
 	int64_t frames64 = frames;
-	if ( !m_threadedReader ) {
+	if ( !m_audioReader ) {
 		return 0;
 	}
 	if ( currentPosition + aLength < position ) { return 0; }
@@ -103,10 +114,10 @@ int AudioClip::fillBufferRaw( float* output, unsigned long frames, int64_t posit
 		}
 	}
 	if ( m_lastSamplePosition + frames64 != position ) {
-		m_threadedReader->seek( position + frames_written - currentPosition + trimA );
+		m_audioReader->sampleseek( 0, position + frames_written - currentPosition + trimA );
 	}
 	m_lastSamplePosition = position;
-	return frames_written + m_threadedReader->fillBuffer(
+	return frames_written + m_audioReader->fillBuffer(
 			&output[frames_written], frames64 - frames_written
 			);
 

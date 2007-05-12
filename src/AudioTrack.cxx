@@ -35,6 +35,10 @@ AudioTrack::AudioTrack( ClipIdProvider* idProvider, int num, string name )
 AudioTrack::~AudioTrack()
 {
 }
+bool AudioTrack::render_mode()
+{
+	return m_idProvider->render_mode();
+}
 void AudioTrack::addFile( int64_t position, string filename, int64_t trimA, int64_t trimB, int, int id, int64_t, ClipData* )
 {
 	IAudioFile *af = AudioFileFactory::get( filename );

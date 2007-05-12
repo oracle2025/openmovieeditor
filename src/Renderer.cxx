@@ -46,6 +46,7 @@ static quicktime_t *qt;
 
 Renderer::Renderer( string filename, render_frame_size* format, int framerate, int samplerate, CodecParameters* params )
 {
+	p_timeline = 0;
 	char buffer[1024];
 	m_w = format->w;
 	m_h = format->h;
@@ -62,7 +63,24 @@ Renderer::Renderer( string filename, render_frame_size* format, int framerate, i
 	params->set( qt, m_w, m_h );
 
 	lqt_set_cmodel( qt, 0, BC_RGB888 );
-	g_timeline->prepareFormat( m_w, m_h, format->aspect_w, format->aspect_h, format->aspect, format->analog_blank );
+	
+	Timeline* x = g_timeline;
+	p_timeline = new Timeline();
+	g_timeline = x;
+
+	p_timeline->render_mode( true );
+	string temp_filename;
+	strcpy( buffer,"OME_RENDER_XXXXXX" );
+	temp_filename = string(g_homefolder);
+	
+	temp_filename += ("/.openme/temp" PREF_FILE_ADD);
+	temp_filename += buffer;
+	cout << temp_filename << endl;
+	g_timeline->write( temp_filename, "" );
+
+	p_timeline->read( temp_filename );
+	
+	p_timeline->prepareFormat( m_w, m_h, format->aspect_w, format->aspect_h, format->aspect, format->analog_blank );
 
 	return;
 	//===================== THE FOLLOWING CODE IS NOT EXECUTED =====================
@@ -86,7 +104,12 @@ Renderer::~Renderer()
 {
 	if (qt)
 		quicktime_close( qt );
-	g_timeline->unPrepareFormat();
+	p_timeline->unPrepareFormat();
+	if ( p_timeline ) {
+		Timeline* x = g_timeline;
+		delete p_timeline;
+		g_timeline = x;
+	}
 }
 
 //#define AUDIO_BUFFER_SIZE 480
@@ -100,11 +123,13 @@ void Renderer::go( IProgressListener* l )
 		l->start();
 	}
 	//TODO:  Make a copy of the timeline?
+	//Use Write project to tmp file
 	
+
+cout << "RENDER START" << endl;	
 	
-	
-	g_timeline->seek( 0 );
-	g_timeline->sort();
+	p_timeline->seek( 0 );
+	p_timeline->sort();
 	
 	int res;
 	float buffer[AUDIO_BUFFER_SIZE*2];
@@ -112,7 +137,7 @@ void Renderer::go( IProgressListener* l )
 	float right_buffer[AUDIO_BUFFER_SIZE];
 	float *buffer_p[2] = { left_buffer, right_buffer };
 
-	int64_t length = g_timeline->length() * (int)g_fps ;
+	int64_t length = p_timeline->length() * (int)g_fps ;
 	int64_t current_frame = 0;
 
 	frame_struct enc_frame;
@@ -135,8 +160,8 @@ void Renderer::go( IProgressListener* l )
 	bool run = true;
 	int frames_to_write;
 	do {
-		res = g_timeline->fillBuffer( buffer, AUDIO_BUFFER_SIZE );
-		g_timeline->sampleseek( 0, AUDIO_BUFFER_SIZE );
+		res = p_timeline->fillBuffer( buffer, AUDIO_BUFFER_SIZE );
+		p_timeline->sampleseek( 0, AUDIO_BUFFER_SIZE );
 		for ( int i = 0; i < res; i++ ) {
 			left_buffer[i] = buffer[i*2];
 			right_buffer[i] = buffer[i*2+1];
@@ -144,7 +169,7 @@ void Renderer::go( IProgressListener* l )
 		lqt_encode_audio_track( qt, 0, buffer_p, res, 0 );
 		frames_to_write = res / 1920;
 		for ( int i = 0; i < frames_to_write; i++ ) {
-			g_timeline->getBlendedFrame( &enc_frame );
+			p_timeline->getBlendedFrame( &enc_frame );
 			quicktime_encode_video( qt, enc_frame.rows, 0 );
 			current_frame++;
 			if ( l ) {
@@ -154,7 +179,6 @@ void Renderer::go( IProgressListener* l )
 				}
 			}
 		}
-		
 	} while ( res == AUDIO_BUFFER_SIZE && run );
 	
 	delete [] enc_frame.RGB;

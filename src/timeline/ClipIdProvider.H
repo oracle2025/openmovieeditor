@@ -30,6 +30,7 @@ class ClipIdProvider
 		virtual int getClipId() = 0;
 		virtual void updateClipId( int ) = 0;
 		virtual ~ClipIdProvider() {}
+		virtual bool render_mode() = 0;
 };
 	
 } /* namespace nle */

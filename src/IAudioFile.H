@@ -21,12 +21,12 @@
 #define _I_AUDIO_FILE_H_
 
 #include <stdint.h>
-
+#include "IAudioReader.H"
 
 namespace nle
 {
 
-class IAudioFile
+class IAudioFile : public IAudioReader
 {
 	public:
 		virtual ~IAudioFile() {}
@@ -34,6 +34,7 @@ class IAudioFile
 		inline int64_t length() { return m_length; }              // TODO: Change to TIME_BASE
 			// <= number of floats: 2 * length (left, right)
 		virtual void seek( int64_t sample ) = 0;                  // TODO: Change to TIME_BASE
+		void sampleseek( int, int64_t position ) { seek( position ); }
 		virtual int fillBuffer( float* output, unsigned long frames ) = 0;
 			//sizof(output) = frames * 2
 			//File Format: 48000 stereo interleaved

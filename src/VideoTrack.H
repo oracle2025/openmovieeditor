@@ -63,6 +63,7 @@ class VideoTrack : public TrackBase
 		int fillBuffer( float* output, unsigned long frames, int64_t position ); //Needed for Crossfade handling
 		int getClipId() { return m_idProvider->getClipId(); }
 		void updateClipId( int id ) { m_idProvider->updateClipId( id ); }
+		bool render_mode();
 	private:
 		int64_t m_playPosition;
 		clip_node* m_vidCurrent;

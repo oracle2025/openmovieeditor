@@ -51,6 +51,10 @@ VideoTrack::~VideoTrack()
 		delete node;
 	}
 }
+bool VideoTrack::render_mode()
+{
+	return m_idProvider->render_mode();
+}
 void VideoTrack::sort()
 {
 	Track::sort();

@@ -19,19 +19,21 @@
 
 #include <pthread.h>
 #include <jack/ringbuffer.h>
+#include "IAudioReader.H"
 
 namespace nle
 {
 
 class IAudioFile;
 	
-class ThreadedAudioReader
+class ThreadedAudioReader : public IAudioReader
 {
 	public:
 		ThreadedAudioReader( IAudioFile* );
 		~ThreadedAudioReader();
 		int fillBuffer( float* output, unsigned long frames );
 		void seek( int64_t sample );
+		void sampleseek( int, int64_t position ) { seek( position ); }
 		void run();
 	private:
 		bool m_running;

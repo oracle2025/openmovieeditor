@@ -42,7 +42,7 @@ VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A,
 	m_videoFile = vf;
 	m_frame = 0;
 	m_lastFrame = -1;
-
+	m_audioReader = 0;
 	
 	m_audioFile = AudioFileFactory::get( m_videoFile->filename() );
 	CLEAR_ERRORS();
@@ -51,17 +51,18 @@ VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A,
 	guess_aspect( w(), h(), &m_aspectHeight, &m_aspectWidth, &m_aspectRatio, &m_analogBlank, 0, 0 );
 	setEffects( data );
 
-	if ( true ) { // Playback mode
+	if ( track->render_mode() ) { // Render mode
+		m_filmStrip = 0;
+		m_artist = 0;
+	} else { // Playback mode
 		m_filmStrip = g_filmStripFactory->get( vf );
 		m_artist = new VideoClipArtist( this );
 		if ( m_audioFile ) {
 			g_wavArtist->add( m_audioFile );
 			//m_threadedReader is not initialized in AudioClip::AudioClip
 			m_threadedReader = new ThreadedAudioReader( m_audioFile );
+			m_audioReader = m_threadedReader;
 		}
-	} else { // Render mode
-		m_filmStrip = 0;
-		m_artist = 0;
 	}
 }
 int VideoClip::w()

@@ -32,6 +32,7 @@ namespace nle
 {
 class Clip;
 class ClipData;
+class ClipIdProvider;
 
 typedef struct clip_node_ {
 	struct clip_node_ *next;
@@ -57,7 +58,7 @@ class Track : public ClipIdProvider
 		virtual void removeClip( Clip* clip );
 		Clip* find( int64_t position );
 		int64_t length(); // <= normalized to stretch factor, therefore not accurate
-
+		virtual bool render_mode() = 0;
 
 	//	void remove( Clip* clip );
 		inline int num() { return m_num; }

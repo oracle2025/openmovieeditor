@@ -26,6 +26,7 @@
 #include "AudioClip.H"
 #include "frame_struct.h"
 #include "VideoEffectClip.H"
+#include "timeline/Track.H"
 namespace nle
 {
 class IVideoFile;

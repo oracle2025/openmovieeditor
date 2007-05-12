@@ -31,6 +31,7 @@ class IAudioFile;
 class DragHandler;
 class IClipArtist;
 class ThreadedAudioReader;
+class IAudioReader;
 
 class AudioClip : public FilterClip
 {
@@ -63,6 +64,7 @@ class AudioClip : public FilterClip
 	protected:
 		IAudioFile* m_audioFile;
 		ThreadedAudioReader* m_threadedReader;
+		IAudioReader* m_audioReader;
 	private:
 		int64_t m_lastSamplePosition;
 		IClipArtist* m_artist;

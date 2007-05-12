@@ -37,7 +37,6 @@
 #include "VideoTrack.H"
 #include "AudioTrack.H"
 #include "globals.H"
-#include "Project.H"
 #include "SaveAsDialog.H"
 #include "TimelineView.H"
 
@@ -163,7 +162,7 @@ void LoadSaveManager::startup()
 		item = m_projectChoice->find_item( m_currentName.c_str() );
 		if ( item ) {
 			m_currentFilename = (char*)item->user_data();
-			g_project->read( m_video_projects + "/" + m_currentFilename );
+			g_timeline->read( m_video_projects + "/" + m_currentFilename );
 		} else {
 			m_currentName = nodups("New Project");
 			m_currentFilename = name_to_filename( m_currentName );
@@ -171,15 +170,6 @@ void LoadSaveManager::startup()
 		}
 	}
 	
-/*	m_currentFilename = g_preferences->lastProject();
-	if ( m_currentFilename == "" ) {
-		m_currentFilename = "default.vproj";
-		m_currentName = nodups("New Project");
-		m_projectChoice->add( m_currentName.c_str(), 0, 0, strdup( m_currentFilename.c_str() ) );
-	} else {
-		g_project->read( m_video_projects + "/" + m_currentFilename );
-		m_currentName = name_from_projectfile( m_video_projects + "/" + m_currentFilename );
-	}*/
 	/* vv  Put this in a function */
 	m_projectInput->label( m_currentName.c_str() );
 	const Fl_Menu_Item* item;
@@ -190,7 +180,7 @@ void LoadSaveManager::startup()
 }
 void LoadSaveManager::shutdown()
 {
-	g_project->write( m_video_projects + "/" + m_currentFilename, m_currentName );
+	g_timeline->write( m_video_projects + "/" + m_currentFilename, m_currentName );
 	g_preferences->lastProject( m_currentName );
 	// free all strings from m_projectChoice;
 	Fl_Menu_Item* item = (Fl_Menu_Item*)m_projectChoice->menu();
@@ -209,11 +199,11 @@ void LoadSaveManager::shutdown()
 }
 void LoadSaveManager::save()
 {
-	g_project->write( m_video_projects + "/" + m_currentFilename, m_currentName );
+	g_timeline->write( m_video_projects + "/" + m_currentFilename, m_currentName );
 }
 void LoadSaveManager::newProject()
 {
-	g_project->write( m_video_projects + "/" + m_currentFilename, m_currentName );
+	g_timeline->write( m_video_projects + "/" + m_currentFilename, m_currentName );
 	m_currentName = "New Project";
 	m_currentFilename = name_to_filename( m_currentName );
 	g_timeline->clear();
@@ -243,7 +233,7 @@ void LoadSaveManager::newProject()
 }
 void LoadSaveManager::saveAs()
 {
-	g_project->write( m_video_projects + "/" + m_currentFilename, m_currentName );
+	g_timeline->write( m_video_projects + "/" + m_currentFilename, m_currentName );
 	SaveAsDialog dlg;
 	dlg.show();
 	while ( dlg.shown() ) {
@@ -252,7 +242,7 @@ void LoadSaveManager::saveAs()
 	if ( dlg.ok() ) {
 		m_currentFilename = name_to_filename( dlg.projectName() );
 		m_currentName = dlg.projectName();
-		g_project->write( m_video_projects + "/" + m_currentFilename, m_currentName );
+		g_timeline->write( m_video_projects + "/" + m_currentFilename, m_currentName );
 		char* cname = strdup( m_currentFilename.c_str() );
 		m_projectChoice->add( m_currentName.c_str(), 0, 0, cname );
 		m_projectInput->label( m_currentName.c_str() );
@@ -279,10 +269,10 @@ void LoadSaveManager::name( string v )
 void LoadSaveManager::load( string v )
 {
 	g_timelineView->clear_selection();
-	g_project->write( m_video_projects + "/" + m_currentFilename, m_currentName );
+	g_timeline->write( m_video_projects + "/" + m_currentFilename, m_currentName );
 	m_currentFilename = v;
 	m_currentName = m_projectChoice->mvalue()->text;
-	g_project->read( m_video_projects + "/" + m_currentFilename );
+	g_timeline->read( m_video_projects + "/" + m_currentFilename );
 	const Fl_Menu_Item* item;
 	m_projectInput->label( m_currentName.c_str() );
 	item = m_projectChoice->find_item( m_currentName.c_str() );

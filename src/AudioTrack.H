@@ -43,6 +43,7 @@ class AudioTrack : public TrackBase
 		int64_t soundLength();
 		int getClipId() { return m_idProvider->getClipId(); }
 		void updateClipId( int id ) { m_idProvider->updateClipId( id ); }
+		bool render_mode();
 	private:
 		ClipIdProvider* m_idProvider;
 };

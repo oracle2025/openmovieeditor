@@ -35,14 +35,12 @@
 #include "nle.h"
 #include "Prefs.H"
 #include "WavArtist.H"
-#include "Project.H"
 #include "PortAudioPlaybackCore.H"
 #include "JackPlaybackCore.H"
 #include "globals.H"
 #include "Timeline.H"
 #include "VideoViewGL.H"
 #include "LoadSaveManager/LoadSaveManager.H"
-#include "Project.H"
 #include "ErrorDialog/FltkErrorHandler.H"
 #include "FilmStripFactory.H"
 #include "DocManager.H"
@@ -53,7 +51,7 @@
 #include "ColorCurveFactory.H"
 #include "AudioVolumeFilterFactory.H"
 #include "MainFilterFactory.H"
-
+#include <stdlib.h>
 namespace nle 
 {
 	bool g_PREVENT_OFFSCREEN_CRASH;
@@ -66,6 +64,7 @@ namespace nle
 
 int main( int argc, char** argv )
 {
+	
 	nle::g_PREVENT_OFFSCREEN_CRASH = true;
 	nle::g_homefolder = getenv( "HOME" );
 #ifdef AVCODEC
@@ -75,7 +74,6 @@ int main( int argc, char** argv )
 	nle::g_SEEKING = false;
 	srand( time( 0 ) );
 	nle::FltkErrorHandler e;
-	nle::Project project;
 	nle::Timeline timeline;
 	nle::Prefs preferences;
 	nle::WavArtist wavArtist;

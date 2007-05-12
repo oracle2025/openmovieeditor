@@ -44,6 +44,7 @@ namespace nle
 
 class IProgressListener;
 class CodecParameters;
+class Timeline;
 
 
 class Renderer
@@ -59,6 +60,7 @@ class Renderer
 		int m_h;
 		int m_framerate;
 		int m_samplerate;
+		Timeline* p_timeline;
 };
 
 } /* namespace nle */
