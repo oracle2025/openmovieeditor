@@ -419,7 +419,6 @@ int Timeline::write( string filename, string name )
 			clip->SetAttribute( "trimA", buffer );
 			snprintf( buffer, sizeof(buffer), "%lld", cn->clip->trimB() );
 			clip->SetAttribute( "trimB", buffer );
-			//TODO: Save Filter Params
 			if ( FilterClip* fc = dynamic_cast<FilterClip*>(cn->clip) ) {
 				filter_stack* filters;
 				for ( filters = fc->getFilters(); filters; filters = filters->next ) {

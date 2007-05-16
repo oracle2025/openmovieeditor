@@ -65,6 +65,7 @@ class VideoTrack : public TrackBase
 		void updateClipId( int id ) { m_idProvider->updateClipId( id ); }
 		bool render_mode();
 	private:
+		int64_t m_totalAudioLength;
 		int64_t m_playPosition;
 		clip_node* m_vidCurrent;
 		fade_over* m_fade_overs;
