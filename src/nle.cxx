@@ -406,7 +406,15 @@ void NleUI::cb_Font(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_Font_i(o,v);
 }
 
-Fl_Menu_Item NleUI::menu_font_choice[] = {
+void NleUI::cb_titles_font_i(Fl_Choice* o, void*) {
+  m_timelineView->titles_font( o->value() );
+m_timelineView->titles_text( titles_text->value() );
+}
+void NleUI::cb_titles_font(Fl_Choice* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_titles_font_i(o,v);
+}
+
+Fl_Menu_Item NleUI::menu_titles_font[] = {
  {"Helvetica", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Helvetica bold", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Helvetica italic", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
@@ -954,10 +962,11 @@ NleUI::NleUI() {
                 o->callback((Fl_Callback*)cb_Font);
                 o->hide();
                 }
-                { Fl_Choice* o = font_choice = new Fl_Choice(95, 85, 100, 20, "Font");
+                { Fl_Choice* o = titles_font = new Fl_Choice(95, 85, 100, 20, "Font");
                 o->down_box(FL_BORDER_BOX);
                 o->labelsize(12);
-                o->menu(menu_font_choice);
+                o->callback((Fl_Callback*)cb_titles_font);
+                o->menu(menu_titles_font);
                 }
                 o->end();
               }
@@ -1217,6 +1226,7 @@ void NleUI::deactivate_titles() {
 
 void NleUI::activate_titles(int font, int size, const char* text, float x, float y, Fl_Color color ) {
   titleFont = (Fl_Font)font;
+titles_font->value( font );
 titles_size->value( size );
 titles_x->value( x );
 titles_y->value( y );

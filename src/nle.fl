@@ -14,8 +14,8 @@ mainWindow->hide();
 if ( Fl::event()==FL_CLOSE ) {
 	m_videoView->stop();
 	nle::g_loadSaveManager->shutdown();
-}} open
-      xywh {617 360 700 600} type Double resizable size_range {450 380 0 0} visible
+}}
+      xywh {727 328 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
         label {Black Borders}
@@ -445,8 +445,10 @@ while ( dlg.shown() ) {
                     xywh {95 85 100 20} labelsize 12 hide
                     code0 {\#include "fl_font_browser.h"}
                   }
-                  Fl_Choice font_choice {
-                    label Font open selected
+                  Fl_Choice titles_font {
+                    label Font
+                    callback {m_timelineView->titles_font( o->value() );
+m_timelineView->titles_text( titles_text->value() );} open
                     xywh {95 85 100 20} down_box BORDER_BOX labelsize 12
                   } {
                     MenuItem {} {
@@ -744,13 +746,15 @@ if ( effect_browser->value() == 0 ) {
   Function {activate_titles(int font, int size, const char* text, float x, float y, Fl_Color color )} {open
   } {
     code {titleFont = (Fl_Font)font;
+titles_font->value( font );
 titles_size->value( size );
 titles_x->value( x );
 titles_y->value( y );
 titles_text->value( text );
 titles_tab->activate();
 titles_color->color( color );
-tab_view->value( titles_tab );} {}
+tab_view->value( titles_tab );} {selected
+    }
   }
   Function {portaudio()} {} {
     code {playButton->hide();
@@ -798,8 +802,7 @@ g_backButton = backButton;} {}
 decl {Flmm_Scalebar* g_scrollBar;} {public
 } 
 
-class EncodeDialog {open
-} {
+class EncodeDialog {} {
   Function {EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecParameters* codecParams )} {open
   } {
     Fl_Window encodeDialog {
@@ -1224,8 +1227,7 @@ if ( m_audio ) {
   }
 } 
 
-class AboutDialog {open
-} {
+class AboutDialog {} {
   Function {AboutDialog()} {open
   } {
     Fl_Window aboutDialog {

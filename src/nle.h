@@ -180,8 +180,12 @@ private:
   void cb_Font_i(Fl_Button*, void*);
   static void cb_Font(Fl_Button*, void*);
 public:
-  Fl_Choice *font_choice;
-  static Fl_Menu_Item menu_font_choice[];
+  Fl_Choice *titles_font;
+private:
+  void cb_titles_font_i(Fl_Choice*, void*);
+  static void cb_titles_font(Fl_Choice*, void*);
+  static Fl_Menu_Item menu_titles_font[];
+public:
   Fl_Button *playButton;
 private:
   void cb_playButton_i(Fl_Button*, void*);
