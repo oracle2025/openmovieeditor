@@ -158,7 +158,7 @@ int64_t Track::length()
 {
 	int64_t max = 0;
 	sl_map( m_clips, clip_length_helper, &max );
-	return (int64_t)( max / stretchFactor() );
+	return (int64_t)( max );
 }
 
 	

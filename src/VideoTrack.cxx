@@ -62,7 +62,7 @@ void VideoTrack::sort()
 	m_vidCurrent = m_clips;
 	m_playPosition = 0;
 	m_currentAudioFadeOver = m_fade_overs;
-	m_totalAudioLength = length() * 48000; //TODO: Highly inaccurate
+	m_totalAudioLength = length() * 48000 / NLE_TIME_BASE; //TODO: Highly inaccurate
 }
 void VideoTrack::addFile( int64_t position, string filename, int64_t trimA, int64_t trimB, int mute, int id, int64_t length, ClipData* data )
 {
@@ -77,6 +77,7 @@ void VideoTrack::addFile( int64_t position, string filename, int64_t trimA, int6
 		VideoClip* c = new VideoClip( this, position, vf, trimA, trimB, id, data );
 		c->m_mute = mute;
 		addClip( c );
+		cout << "VideoC" << endl;
 		return;
 	} else {
 		ImageClip* ic = new ImageClip( this, position, filename, length - trimA - trimB, id, data );

@@ -20,12 +20,16 @@
 #include "VideoFileQT.H"
 #include "VideoFileFfmpeg.H"
 #include "VideoFileFactory.H"
-
+#include <FL/filename.H>
 namespace nle
 {
 
 IVideoFile* VideoFileFactory::get( string filename )
 {
+	const char* ext = fl_filename_ext( filename.c_str() );
+	if ( strcmp( ext, ".jpg" ) == 0 || strcmp( ext, ".png" ) == 0 || strcmp( ext, ".jpeg" ) == 0 ) {
+		return 0;
+	}
 	IVideoFile* vf = new VideoFileQT( filename );
 	if ( vf->ok() ) {
 		return vf;

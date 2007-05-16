@@ -81,7 +81,6 @@ void TimelineBase::addFile( int track, int64_t position, std::string filename, i
 {
 	Track *t = getTrack( track );
 	if ( t ) {
-		cout << "TimelineBase::addFile" << endl;
 		t->addFile( position, filename, trimA, trimB, mute, id, length, data );
 	} else {
 		cerr << "No such track" << endl;
@@ -195,7 +194,7 @@ static int track_length_helper( void* p, void* data )
 	int64_t l;
 	int64_t* max = (int64_t*)data;
 	track_node* node = (track_node*)p;
-	l = node->track->length();
+	l = (int64_t)(node->track->length() / node->track->stretchFactor());
 	if ( l > *max ) {
 		*max = l;
 	}
