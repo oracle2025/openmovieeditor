@@ -31,7 +31,7 @@ namespace nle
 MoveSelectionCommand::MoveSelectionCommand( Clip* clip, Track* track, int64_t position, clip_node* m_selectedClips )
 {
 	m_subCmdList = 0;
-	int64_t diff = (int64_t)( ( position - clip->position() ) / clip->track()->stretchFactor() );
+	float diff = ( ( position - clip->position() ) / clip->track()->stretchFactor() );
 	for ( clip_node* n = m_selectedClips; n; n = n->next ) {
 		Track* tr = track ? track : n->clip->track();
 		command_node* c = new command_node;

@@ -77,7 +77,6 @@ void VideoTrack::addFile( int64_t position, string filename, int64_t trimA, int6
 		VideoClip* c = new VideoClip( this, position, vf, trimA, trimB, id, data );
 		c->m_mute = mute;
 		addClip( c );
-		cout << "VideoC" << endl;
 		return;
 	} else {
 		ImageClip* ic = new ImageClip( this, position, filename, length - trimA - trimB, id, data );
