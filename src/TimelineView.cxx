@@ -770,7 +770,7 @@ void TimelineView::select_all_after_cursor()
 	clear_selection();
 	for ( track_node* o = g_timeline->getTracks(); o; o = o->next ) {
 		for ( clip_node* c = o->track->getClips(); c; c = c->next ) {
-			if ( c->clip->position() / c->clip->track()->stretchFactor() >= m_stylusPosition ) {
+			if ( c->clip->position() / c->clip->track()->stretchFactor() * NLE_TIME_BASE >= m_stylusPosition ) {
 				clip_node* n = new clip_node;
 				n->next = 0;
 				n->clip = c->clip;
