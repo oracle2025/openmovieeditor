@@ -77,12 +77,13 @@ void Frei0rFactory::enumerate( string folder, IEffectMenu* menu )
 	if ( n <= 0 ) {
 		return;
 	}
-	while( 0 < n-- ) {
+	for ( int i = 0; i < n; i++ ) {
 		p = new dir_node;
 		p->next = 0;
-		p->name = string( folder ) + list[n]->d_name;
+		p->name = string( folder ) + list[i]->d_name;
 		folders = (dir_node*)sl_push( folders, p );
 	}
+	//here is some memory leaking, because n is decremented
 	for ( int i = n; i > 0; ) { // This is some bad ass hacking style from the fltk manual ;)
 		free( (void*)( list[--i] ) );
 	}
