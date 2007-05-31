@@ -22,8 +22,10 @@
 
 #ifdef AVCODEC
 
+extern "C" {
 #include <ffmpeg/avcodec.h>
 #include <ffmpeg/avformat.h>
+}
 
 #include "global_includes.H"
 #include "IVideoFile.H"

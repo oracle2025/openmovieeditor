@@ -29,7 +29,9 @@
 #include <lqt.h>
 
 #ifdef AVCODEC
+extern "C" {
   #include <ffmpeg/avformat.h>
+}
 #endif
 
 #include "nle.h"
