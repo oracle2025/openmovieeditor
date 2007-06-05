@@ -16,6 +16,7 @@ libtimeline_a_SOURCES = \
   Track.cxx             \
 	Clip.H                \
   TimelineBase.H        \
+	ClipIdProvider.H      \
   Track.H
 	
 

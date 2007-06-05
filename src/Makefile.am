@@ -219,8 +219,7 @@ openmovieeditor_SOURCES = nle.cxx\
 	FilterAddCommand.H\
 	FilterAddCommand.cxx\
 	FilterRemoveCommand.H\
-	FilterRemoveCommand.cxx\
-	ClipIdProvider.H
+	FilterRemoveCommand.cxx
 #	ShiftAutomationDragHandler.H\
 #	ShiftAutomationDragHandler.cxx\
 #	AutomationMoveCommand.H\
