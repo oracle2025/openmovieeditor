@@ -36,6 +36,9 @@ EncodeDialog dlg( 0, 0, &cp );
 dlg.show();
 while (dlg.shown())
   Fl::wait();
+  
+//Abfrage File Exists  
+
 
 if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 	ProgressDialog pDlg( "Rendering Project" );
@@ -55,6 +58,7 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 		nle::g_preferences->lastVideoCodec( dlg.video_codec_menu->value() );
 		nle::g_preferences->lastAudioCodec( dlg.audio_codec_menu->value() );
 		nle::g_preferences->lastFramesize( dlg.frame_size_choice->value() );
+		nle::g_preferences->lastFramerate( dlg.frame_rate_choice->value() );
 		nle::g_preferences->lastRenderFilename( dlg.export_filename->value() );
 	
 		ren.go( &pDlg );
@@ -1301,6 +1305,15 @@ if ( audio_codec_menu->value() < 0 || video_codec_menu->value() < 0 ) {
 	return;
 }
 
+struct stat statbuf;
+int r = stat( export_filename->value(), &statbuf );
+if ( r == 0 ) {
+	r = fl_choice( "File exists, replace?\nWill be overwritten.", "&Cancel", "&Replace", 0 );
+	if ( r == 0 ) {
+		return;
+	}
+}
+
 //nle::renderMovie();
 go = true;
 o->window()->hide();
@@ -1315,40 +1328,6 @@ o->window()->hide();
 }
 void EncodeDialog::cb_Cancel(Fl_Button* o, void* v) {
   ((EncodeDialog*)(o->parent()->user_data()))->cb_Cancel_i(o,v);
-}
-
-Fl_Menu_Item EncodeDialog::menu_Framerate[] = {
- {"25 (PAL)", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {0,0,0,0,0,0,0,0,0}
-};
-
-Fl_Menu_Item EncodeDialog::menu_Framesize[] = {
- {"720x576", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"768x576", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {0,0,0,0,0,0,0,0,0}
-};
-
-Fl_Menu_Item EncodeDialog::menu_Samplerate[] = {
- {"48000", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {0,0,0,0,0,0,0,0,0}
-};
-
-Fl_Menu_Item EncodeDialog::menu_Quality[] = {
- {"Best (1024 KBit)", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {0,0,0,0,0,0,0,0,0}
-};
-
-Fl_Menu_Item EncodeDialog::menu_Aspect[] = {
- {"4:3", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"16:9", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {0,0,0,0,0,0,0,0,0}
-};
-
-void EncodeDialog::cb_File_i(Fl_Button*, void*) {
-  export_filename_simple->value( fl_file_chooser( "Set Export Filename", 0, 0 ) );
-}
-void EncodeDialog::cb_File(Fl_Button* o, void* v) {
-  ((EncodeDialog*)(o->parent()->parent()->parent()->user_data()))->cb_File_i(o,v);
 }
 
 void EncodeDialog::cb_audio_codec_menu_i(Fl_Choice* o, void*) {
@@ -1367,7 +1346,7 @@ void EncodeDialog::cb_video_codec_menu(Fl_Choice* o, void* v) {
   ((EncodeDialog*)(o->parent()->parent()->parent()->user_data()))->cb_video_codec_menu_i(o,v);
 }
 
-Fl_Menu_Item EncodeDialog::menu_Samplerate1[] = {
+Fl_Menu_Item EncodeDialog::menu_Samplerate[] = {
  {"48000", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0}
 };
@@ -1423,11 +1402,11 @@ void EncodeDialog::cb_video_options(Fl_Button* o, void* v) {
   ((EncodeDialog*)(o->parent()->parent()->parent()->user_data()))->cb_video_options_i(o,v);
 }
 
-void EncodeDialog::cb_File1_i(Fl_Button*, void*) {
+void EncodeDialog::cb_File_i(Fl_Button*, void*) {
   export_filename->value( fl_file_chooser( "Set Export Filename", 0, 0 ) );
 }
-void EncodeDialog::cb_File1(Fl_Button* o, void* v) {
-  ((EncodeDialog*)(o->parent()->parent()->parent()->user_data()))->cb_File1_i(o,v);
+void EncodeDialog::cb_File(Fl_Button* o, void* v) {
+  ((EncodeDialog*)(o->parent()->parent()->parent()->user_data()))->cb_File_i(o,v);
 }
 
 EncodeDialog::EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecParameters* codecParams ) {
@@ -1447,50 +1426,6 @@ EncodeDialog::EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecPa
       o->labelsize(16);
     }
     { Fl_Tabs* o = new Fl_Tabs(5, 35, 475, 320);
-      { Fl_Group* o = new Fl_Group(5, 60, 475, 295, "Simple");
-        o->hide();
-        { Fl_Box* o = new Fl_Box(15, 130, 190, 215, "Format");
-          o->box(FL_ENGRAVED_FRAME);
-          o->labelfont(1);
-          o->align(FL_ALIGN_TOP_LEFT);
-        }
-        new Fl_Browser(25, 140, 170, 195);
-        { Fl_Box* o = new Fl_Box(210, 130, 255, 135, "Video");
-          o->box(FL_ENGRAVED_FRAME);
-          o->labelfont(1);
-          o->align(FL_ALIGN_TOP_LEFT);
-        }
-        { Fl_Box* o = new Fl_Box(210, 285, 255, 60, "Audio");
-          o->box(FL_ENGRAVED_FRAME);
-          o->labelfont(1);
-          o->align(FL_ALIGN_TOP_LEFT);
-        }
-        { Fl_Choice* o = new Fl_Choice(300, 140, 155, 25, "Framerate");
-          o->down_box(FL_BORDER_BOX);
-          o->menu(menu_Framerate);
-        }
-        { Fl_Choice* o = new Fl_Choice(300, 170, 155, 25, "Framesize");
-          o->down_box(FL_BORDER_BOX);
-          o->menu(menu_Framesize);
-        }
-        { Fl_Choice* o = new Fl_Choice(300, 295, 155, 25, "Samplerate");
-          o->down_box(FL_BORDER_BOX);
-          o->menu(menu_Samplerate);
-        }
-        { Fl_Choice* o = new Fl_Choice(300, 230, 155, 25, "Quality");
-          o->down_box(FL_BORDER_BOX);
-          o->menu(menu_Quality);
-        }
-        { Fl_Choice* o = new Fl_Choice(300, 200, 155, 25, "Aspect");
-          o->down_box(FL_BORDER_BOX);
-          o->menu(menu_Aspect);
-        }
-        export_filename_simple = new Fl_File_Input(145, 70, 205, 35, "Filename");
-        { Fl_Button* o = new Fl_Button(355, 80, 75, 25, "File...");
-          o->callback((Fl_Callback*)cb_File);
-        }
-        o->end();
-      }
       { Fl_Group* o = new Fl_Group(5, 60, 475, 295, "Extended");
         { Fl_Choice* o = audio_codec_menu = new Fl_Choice(145, 250, 205, 25, "Audio Codec");
           o->down_box(FL_BORDER_BOX);
@@ -1502,7 +1437,7 @@ EncodeDialog::EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecPa
         }
         { Fl_Choice* o = new Fl_Choice(145, 280, 205, 25, "Samplerate");
           o->down_box(FL_BORDER_BOX);
-          o->menu(menu_Samplerate1);
+          o->menu(menu_Samplerate);
         }
         { Fl_Choice* o = frame_rate_choice = new Fl_Choice(145, 160, 205, 25, "Framerate");
           o->down_box(FL_BORDER_BOX);
@@ -1530,7 +1465,7 @@ EncodeDialog::EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecPa
         }
         export_filename = new Fl_File_Input(145, 70, 205, 35, "Filename");
         { Fl_Button* o = new Fl_Button(355, 80, 75, 25, "File...");
-          o->callback((Fl_Callback*)cb_File1);
+          o->callback((Fl_Callback*)cb_File);
         }
         o->end();
       }
@@ -1551,6 +1486,7 @@ nle::setVideoCodecMenu( video_codec_menu );
 video_codec_menu->value( nle::g_preferences->lastVideoCodec() );
 audio_codec_menu->value( nle::g_preferences->lastAudioCodec() );
 frame_size_choice->value( nle::g_preferences->lastFramesize() );
+frame_rate_choice->value( nle::g_preferences->lastFramerate() );
 export_filename->value( nle::g_preferences->lastRenderFilename().c_str() );
 
 video_codec = video_codec_menu->menu()[video_codec_menu->value()].user_data();
@@ -6586,3 +6522,88 @@ nle::g_timelineView->titles_color( dlg->box_Example->GetFontColor() );
 dlg->hide();
 }
 Fl_Font titleFont;
+
+Fl_Menu_Item menu_Framerate[] = {
+ {"25 (PAL)", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {0,0,0,0,0,0,0,0,0}
+};
+
+Fl_Menu_Item menu_Framesize[] = {
+ {"720x576", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"768x576", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {0,0,0,0,0,0,0,0,0}
+};
+
+Fl_Menu_Item menu_Samplerate1[] = {
+ {"48000", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {0,0,0,0,0,0,0,0,0}
+};
+
+Fl_Menu_Item menu_Quality[] = {
+ {"Best (1024 KBit)", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {0,0,0,0,0,0,0,0,0}
+};
+
+Fl_Menu_Item menu_Aspect[] = {
+ {"4:3", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"16:9", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {0,0,0,0,0,0,0,0,0}
+};
+
+Fl_File_Input *export_filename_simple=(Fl_File_Input *)0;
+
+static void cb_File1(Fl_Button*, void*) {
+  export_filename_simple->value( fl_file_chooser( "Set Export Filename", 0, 0 ) );
+}
+
+Fl_Double_Window* encoder_2_dlg() {
+  Fl_Double_Window* w;
+  { Fl_Double_Window* o = new Fl_Double_Window(475, 315);
+    w = o;
+    { Fl_Group* o = new Fl_Group(0, 20, 475, 295, "Simple");
+      { Fl_Box* o = new Fl_Box(10, 90, 190, 215, "Format");
+        o->box(FL_ENGRAVED_FRAME);
+        o->labelfont(1);
+        o->align(FL_ALIGN_TOP_LEFT);
+      }
+      new Fl_Browser(20, 100, 170, 195);
+      { Fl_Box* o = new Fl_Box(205, 90, 255, 135, "Video");
+        o->box(FL_ENGRAVED_FRAME);
+        o->labelfont(1);
+        o->align(FL_ALIGN_TOP_LEFT);
+      }
+      { Fl_Box* o = new Fl_Box(205, 245, 255, 60, "Audio");
+        o->box(FL_ENGRAVED_FRAME);
+        o->labelfont(1);
+        o->align(FL_ALIGN_TOP_LEFT);
+      }
+      { Fl_Choice* o = new Fl_Choice(295, 100, 155, 25, "Framerate");
+        o->down_box(FL_BORDER_BOX);
+        o->menu(menu_Framerate);
+      }
+      { Fl_Choice* o = new Fl_Choice(295, 130, 155, 25, "Framesize");
+        o->down_box(FL_BORDER_BOX);
+        o->menu(menu_Framesize);
+      }
+      { Fl_Choice* o = new Fl_Choice(295, 255, 155, 25, "Samplerate");
+        o->down_box(FL_BORDER_BOX);
+        o->menu(menu_Samplerate1);
+      }
+      { Fl_Choice* o = new Fl_Choice(295, 190, 155, 25, "Quality");
+        o->down_box(FL_BORDER_BOX);
+        o->menu(menu_Quality);
+      }
+      { Fl_Choice* o = new Fl_Choice(295, 160, 155, 25, "Aspect");
+        o->down_box(FL_BORDER_BOX);
+        o->menu(menu_Aspect);
+      }
+      export_filename_simple = new Fl_File_Input(140, 30, 205, 35, "Filename");
+      { Fl_Button* o = new Fl_Button(350, 40, 75, 25, "File...");
+        o->callback((Fl_Callback*)cb_File1);
+      }
+      o->end();
+    }
+    o->end();
+  }
+  return w;
+}

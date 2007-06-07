@@ -36,6 +36,7 @@ class FilterAddCommand : public Command
 		~FilterAddCommand();
 		void doo();
 		void undo();
+		bool error();
 		FilterBase* m_filter;
 	private:
 		int m_clip;

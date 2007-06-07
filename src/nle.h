@@ -286,11 +286,13 @@ extern Flmm_Scalebar* g_scrollBar;
 #include "IVideoReader.H"
 #include "IAudioReader.H"
 #include <FL/Fl_Return_Button.H>
-#include <FL/Fl_Browser.H>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <iostream>
 #include <FL/Fl_File_Input.H>
 #include <stdlib.h>
 #include <FL/Fl_File_Chooser.H>
-#include <iostream>
 
 class EncodeDialog {
 public:
@@ -301,16 +303,6 @@ private:
   static void cb_Encode(Fl_Return_Button*, void*);
   void cb_Cancel_i(Fl_Button*, void*);
   static void cb_Cancel(Fl_Button*, void*);
-  static Fl_Menu_Item menu_Framerate[];
-  static Fl_Menu_Item menu_Framesize[];
-  static Fl_Menu_Item menu_Samplerate[];
-  static Fl_Menu_Item menu_Quality[];
-  static Fl_Menu_Item menu_Aspect[];
-public:
-  Fl_File_Input *export_filename_simple;
-private:
-  void cb_File_i(Fl_Button*, void*);
-  static void cb_File(Fl_Button*, void*);
 public:
   Fl_Choice *audio_codec_menu;
 private:
@@ -321,7 +313,7 @@ public:
 private:
   void cb_video_codec_menu_i(Fl_Choice*, void*);
   static void cb_video_codec_menu(Fl_Choice*, void*);
-  static Fl_Menu_Item menu_Samplerate1[];
+  static Fl_Menu_Item menu_Samplerate[];
 public:
   Fl_Choice *frame_rate_choice;
   static Fl_Menu_Item menu_frame_rate_choice[];
@@ -337,8 +329,8 @@ private:
 public:
   Fl_File_Input *export_filename;
 private:
-  void cb_File1_i(Fl_Button*, void*);
-  static void cb_File1(Fl_Button*, void*);
+  void cb_File_i(Fl_Button*, void*);
+  static void cb_File(Fl_Button*, void*);
 public:
   void show();
   int shown();
@@ -426,4 +418,12 @@ extern bool g_16_9;
 extern bool g_black_borders;
 void font_dialog_callback( Fl_Widget*, void* v );
 extern Fl_Font titleFont;
+#include <FL/Fl_Browser.H>
+extern Fl_File_Input *export_filename_simple;
+Fl_Double_Window* encoder_2_dlg();
+extern Fl_Menu_Item menu_Framerate[];
+extern Fl_Menu_Item menu_Framesize[];
+extern Fl_Menu_Item menu_Samplerate1[];
+extern Fl_Menu_Item menu_Quality[];
+extern Fl_Menu_Item menu_Aspect[];
 #endif

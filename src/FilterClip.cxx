@@ -50,7 +50,9 @@ FilterBase* FilterClip::pushFilter( FilterFactory* factory )
 {
 	//TODO change FilterFactory to FilterClip
 	FilterBase* filter = factory->get( this );
-	assert(filter);
+	if ( !filter ) {
+		return 0;
+	}
 	filter_stack* n = new filter_stack;
 	n->next = 0;
 	n->filter = filter;
@@ -60,7 +62,9 @@ FilterBase* FilterClip::pushFilter( FilterFactory* factory )
 FilterBase* FilterClip::appendFilter( FilterFactory* factory )
 {
 	FilterBase* filter = factory->get( this );
-	assert(filter);
+	if ( !filter ) {
+		return 0;
+	}
 	filter_stack* n = new filter_stack;
 	n->next = 0;
 	n->filter = filter;
@@ -70,7 +74,9 @@ FilterBase* FilterClip::appendFilter( FilterFactory* factory )
 FilterBase* FilterClip::insertFilter( FilterFactory* factory, int position )
 {
 	FilterBase* filter = factory->get( this );
-	assert(filter);
+	if ( !filter ) {
+		return 0;
+	}
 	filter_stack* n = new filter_stack;
 	n->next = 0;
 	n->filter = filter;

@@ -50,6 +50,11 @@ void FilterAddCommand::doo()
 	assert( f );
 	m_filter = c->pushFilter( f );
 }
+bool FilterAddCommand::error()
+{
+	return ( m_filter == 0 );
+}
+
 void FilterAddCommand::undo()
 {
 	Track* t = g_timeline->getTrack( m_track );

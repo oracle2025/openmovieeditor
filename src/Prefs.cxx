@@ -47,6 +47,7 @@ Prefs::Prefs()
 	m_lastVideoCodec = 0;
 	m_lastAudioCodec = 0;
 	m_lastFramesize = 0;
+	m_lastFramerate = 0;
 	TiXmlDocument doc( preferences_filename.c_str() );
 	if ( !doc.LoadFile() ) {
 		return;
@@ -83,6 +84,10 @@ Prefs::Prefs()
 	j = docH.FirstChildElement( "lastFramesize" ).Element();
 	if ( j ) {
 		j->Attribute( "value", &m_lastFramesize );
+	}
+	j = docH.FirstChildElement( "lastFramerate" ).Element();
+	if ( j ) {
+		j->Attribute( "value", &m_lastFramerate );
 	}
 
 }
@@ -130,6 +135,9 @@ Prefs::~Prefs()
 	item = new TiXmlElement( "lastFramesize" );
 	doc.LinkEndChild( item );
 	item->SetAttribute( "value", m_lastFramesize );
+	item = new TiXmlElement( "lastFramerate" );
+	doc.LinkEndChild( item );
+	item->SetAttribute( "value", m_lastFramerate );
 
 	doc.SaveFile();
 }

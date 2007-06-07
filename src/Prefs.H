@@ -46,6 +46,8 @@ class Prefs
 		string lastRenderFilename() { return m_lastRenderFilename; }
 		void lastFramesize( int fs ) { m_lastFramesize = fs; }
 		int lastFramesize() { return m_lastFramesize; }
+		void lastFramerate( int fr ) { m_lastFramerate = fr; }
+		int lastFramerate() { return m_lastFramerate; }
 	private:
 		string m_mediaFolder;
 		string m_browserFolder;
@@ -54,6 +56,7 @@ class Prefs
 		int m_lastVideoCodec;
 		int m_lastAudioCodec;
 		int m_lastFramesize;
+		int m_lastFramerate;
 		
 };
 extern Prefs* g_preferences;
