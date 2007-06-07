@@ -346,12 +346,12 @@ void stretch_format(
 {
 	src_rect_x = src_blank;
 	src_rect_y = 0;
-	src_rect_w = src_w;// - 2 * src_blank;
+	src_rect_w = src_w - 2 * src_blank;
 	src_rect_h = src_h;
 
 	dst_rect_x = dst_blank;
 	dst_rect_y = 0;
-	dst_rect_w = dst_w - 2 * dst_blank + 2 * src_blank;
+	dst_rect_w = dst_w - 2 * dst_blank;
 	dst_rect_h = dst_h;
 
 }
