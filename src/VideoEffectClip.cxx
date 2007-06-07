@@ -317,6 +317,8 @@ void VideoEffectClip::prepareFormat( int ww, int hh, int , int , float aspect, i
 		crop_format( w(), h(), aspectRatio(), analogBlank(), ww, hh, aspect, analog_blank,
 				src_rect.x, src_rect.y, src_rect.w, src_rect.h,
 				dst_rect.x, dst_rect.y, dst_rect.w, dst_rect.h );
+		//cout << "1src_rect: " << src_rect.x <<" "<< src_rect.y <<" "<< src_rect.w <<" "<< src_rect.h << endl; 
+		//cout << "1dst_rect: " << dst_rect.x <<" "<< dst_rect.y <<" "<< dst_rect.w <<" "<< dst_rect.h << endl; 
 		gavl_video_options_set_rectangles( options, &src_rect, &dst_rect );
 	} else if ( m_render_strategy == RENDER_FIT ) {
 		gavl_rectangle_f_t src_rect;
@@ -324,6 +326,8 @@ void VideoEffectClip::prepareFormat( int ww, int hh, int , int , float aspect, i
 		fit_format( w(), h(), aspectRatio(), analogBlank(), ww, hh, aspect, analog_blank,
 				src_rect.x, src_rect.y, src_rect.w, src_rect.h,
 				dst_rect.x, dst_rect.y, dst_rect.w, dst_rect.h );
+		//cout << "2src_rect: " << src_rect.x <<" "<< src_rect.y <<" "<< src_rect.w <<" "<< src_rect.h << endl; 
+		//cout << "2dst_rect: " << dst_rect.x <<" "<< dst_rect.y <<" "<< dst_rect.w <<" "<< dst_rect.h << endl; 
 		gavl_video_options_set_rectangles( options, &src_rect, &dst_rect );
 	} else if ( analogBlank() != analog_blank ) {
 		gavl_rectangle_f_t src_rect;
@@ -331,6 +335,8 @@ void VideoEffectClip::prepareFormat( int ww, int hh, int , int , float aspect, i
 		stretch_format( w(), h(), aspectRatio(), analogBlank(), ww, hh, aspect, analog_blank,
 				src_rect.x, src_rect.y, src_rect.w, src_rect.h,
 				dst_rect.x, dst_rect.y, dst_rect.w, dst_rect.h );
+		//cout << "3src_rect: " << src_rect.x <<" "<< src_rect.y <<" "<< src_rect.w <<" "<< src_rect.h << endl; 
+		//cout << "3dst_rect: " << dst_rect.x <<" "<< dst_rect.y <<" "<< dst_rect.w <<" "<< dst_rect.h << endl; 
 		gavl_video_options_set_rectangles( options, &src_rect, &dst_rect );
 	}
 	

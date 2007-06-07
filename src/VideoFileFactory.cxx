@@ -27,7 +27,7 @@ namespace nle
 IVideoFile* VideoFileFactory::get( string filename )
 {
 	const char* ext = fl_filename_ext( filename.c_str() );
-	if ( strcmp( ext, ".jpg" ) == 0 || strcmp( ext, ".png" ) == 0 || strcmp( ext, ".jpeg" ) == 0 ) {
+	if ( strcmp( ext, ".JPEG" ) == 0 ||strcmp( ext, ".JPG" ) == 0 ||strcmp( ext, ".jpg" ) == 0 || strcmp( ext, ".png" ) == 0 || strcmp( ext, ".jpeg" ) == 0 ) {
 		return 0;
 	}
 	IVideoFile* vf = new VideoFileQT( filename );
