@@ -4,8 +4,7 @@ header_name {.h}
 code_name {.cxx}
 class NleUI {open
 } {
-  Function {NleUI()} {open
-  } {
+  Function {NleUI()} {} {
     Fl_Window mainWindow {
       label {Open Movie Editor}
       callback {if (Fl::event()==FL_SHORTCUT && Fl::event_key()==FL_Escape) 
@@ -14,7 +13,7 @@ mainWindow->hide();
 if ( Fl::event()==FL_CLOSE ) {
 	m_videoView->stop();
 	nle::g_loadSaveManager->shutdown();
-}}
+}} open
       xywh {727 328 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
@@ -47,7 +46,8 @@ while (dlg.shown())
 if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 	ProgressDialog pDlg( "Rendering Project" );
 	render_frame_size* fs = (render_frame_size*)dlg.frameSize();
-	nle::Renderer ren( dlg.export_filename->value(), fs, 25, 48000, &cp );
+	render_fps_chunks* fps = (render_fps_chunks*)dlg.frameRate();
+	nle::Renderer ren( dlg.export_filename->value(), fs, fps, 48000, &cp );
 
 	/* stop playback before starting to render... */
 	g_playButton->label( "@>" );
@@ -71,7 +71,7 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 //	while ( pDlg.progressDialog->shown() )
 //		Fl::wait();
 //	pDlg.progressDialog->hide();
-}}
+}} selected
             xywh {5 5 100 20} divider
             code0 {\#include "ProgressDialog/ProgressDialog.h"}
             code1 {\#include "Renderer.H"}
@@ -753,8 +753,7 @@ titles_y->value( y );
 titles_text->value( text );
 titles_tab->activate();
 titles_color->color( color );
-tab_view->value( titles_tab );} {selected
-    }
+tab_view->value( titles_tab );} {}
   }
   Function {portaudio()} {} {
     code {playButton->hide();
@@ -802,12 +801,13 @@ g_backButton = backButton;} {}
 decl {Flmm_Scalebar* g_scrollBar;} {public
 } 
 
-class EncodeDialog {} {
+class EncodeDialog {open
+} {
   Function {EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecParameters* codecParams )} {open
   } {
     Fl_Window encodeDialog {
       label Render open
-      private xywh {576 470 485 400} type Double
+      private xywh {522 299 485 400} type Double
       code0 {\#include "IVideoReader.H"}
       code1 {\#include "IAudioReader.H"} modal visible
     } {
@@ -963,28 +963,38 @@ m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
               xywh {5 5 100 20}
             }
           }
-          Fl_Choice {} {
+          Fl_Choice frame_rate_choice {
             label Framerate open
             xywh {145 160 205 25} down_box BORDER_BOX
           } {
             MenuItem {} {
               label {25 (PAL)}
+              user_data {&fps25x48000}
               xywh {5 5 100 20}
             }
             MenuItem {} {
               label {29.97 (NTSC)}
+              user_data {&fps29_97x48000}
               xywh {0 0 100 20}
             }
             MenuItem {} {
               label 24
+              user_data {&fps24x48000}
               xywh {0 0 100 20}
             }
             MenuItem {} {
               label 15
+              user_data {&fps15x48000}
               xywh {0 0 100 20}
             }
             MenuItem {} {
-              label 30
+              label 50
+              user_data {&fps50x48000}
+              xywh {0 0 100 20}
+            }
+            MenuItem {} {
+              label 60
+              user_data {&fps60x48000}
               xywh {0 0 100 20}
             }
           }
@@ -1105,6 +1115,10 @@ encodeDialog->show();} {}
   Function {frameSize()} {open return_type {void*}
   } {
     code {return frame_size_choice->mvalue()->user_data();} {}
+  }
+  Function {frameRate()} {open return_type {void*}
+  } {
+    code {return frame_rate_choice->mvalue()->user_data();} {}
   }
 } 
 

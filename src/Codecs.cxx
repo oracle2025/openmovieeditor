@@ -316,10 +316,10 @@ lqt_parameter_value_t CodecParameters::getAudioParameter( const char* key )
 	assert( p );
 	return p->value;
 }
-void CodecParameters::set( quicktime_t* qt, int w, int h )
+void CodecParameters::set( quicktime_t* qt, int w, int h, render_fps_chunks* framerate )
 {
 	lqt_add_audio_track( qt, 2, 48000, 16, m_currentAudioCodec->codecInfo );
-	lqt_add_video_track( qt, w, h, 1200, 30000, m_currentVideoCodec->codecInfo ); // 30000 / 1200 == 25
+	lqt_add_video_track( qt, w, h, framerate->frame_duration, framerate->timescale, m_currentVideoCodec->codecInfo ); // 30000 / 1200 == 25
 	int pixel_w;
 	int pixel_h;
 	guess_aspect( w, h, 0, 0, 0, 0, &pixel_w, &pixel_h );

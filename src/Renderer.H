@@ -33,6 +33,22 @@ typedef struct
 	int analog_blank;
 } render_frame_size;
 
+typedef struct
+{
+	int frame_duration;
+	int timescale;
+	int audio_frames_per_chunk;
+	int video_frames_per_chunk;
+} render_fps_chunks;
+
+
+extern render_fps_chunks fps25x48000;
+extern render_fps_chunks fps29_97x48000;
+extern render_fps_chunks fps24x48000;
+extern render_fps_chunks fps15x48000;
+extern render_fps_chunks fps50x48000;
+extern render_fps_chunks fps60x48000;
+
 extern render_frame_size fs720x576;
 extern render_frame_size fs768x576;
 extern render_frame_size fs384x288;
@@ -50,7 +66,7 @@ class Timeline;
 class Renderer
 {
 	public:
-		Renderer( string filename, render_frame_size* format, int framerate, int samplerate, CodecParameters* params = 0 );
+		Renderer( string filename, render_frame_size* format, render_fps_chunks* framerate, int samplerate, CodecParameters* params = 0 );
 		~Renderer();
 		void go( IProgressListener* l = 0 );
 		bool ok();
@@ -58,9 +74,9 @@ class Renderer
 		string m_filename;
 		int m_w;
 		int m_h;
-		int m_framerate;
 		int m_samplerate;
 		Timeline* p_timeline;
+		render_fps_chunks m_fps;
 };
 
 } /* namespace nle */

@@ -82,7 +82,7 @@ class CodecParameters
 		void setAudioParameter( const char* key, ParameterValue& value );
 		lqt_parameter_value_t getVideoParameter( const char* key );
 		lqt_parameter_value_t getAudioParameter( const char* key );
-		void set( quicktime_t* qt, int w, int h );
+		void set( quicktime_t* qt, int w, int h, render_fps_chunks* framerate );
 	private:
 		codec_node* m_audioCodecs;
 		codec_node* m_videoCodecs;

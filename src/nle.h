@@ -322,8 +322,9 @@ private:
   void cb_video_codec_menu_i(Fl_Choice*, void*);
   static void cb_video_codec_menu(Fl_Choice*, void*);
   static Fl_Menu_Item menu_Samplerate1[];
-  static Fl_Menu_Item menu_Framerate1[];
 public:
+  Fl_Choice *frame_rate_choice;
+  static Fl_Menu_Item menu_frame_rate_choice[];
   Fl_Choice *frame_size_choice;
   static Fl_Menu_Item menu_frame_size_choice[];
 private:
@@ -351,6 +352,7 @@ private:
   nle::CodecParameters* m_codecParams;
 public:
   void* frameSize();
+  void* frameRate();
 };
 
 class ChangesDialog {

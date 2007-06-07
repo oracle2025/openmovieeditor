@@ -40,7 +40,8 @@ while (dlg.shown())
 if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 	ProgressDialog pDlg( "Rendering Project" );
 	render_frame_size* fs = (render_frame_size*)dlg.frameSize();
-	nle::Renderer ren( dlg.export_filename->value(), fs, 25, 48000, &cp );
+	render_fps_chunks* fps = (render_fps_chunks*)dlg.frameRate();
+	nle::Renderer ren( dlg.export_filename->value(), fs, fps, 48000, &cp );
 
 	/* stop playback before starting to render... */
 	g_playButton->label( "@>" );
@@ -1371,12 +1372,13 @@ Fl_Menu_Item EncodeDialog::menu_Samplerate1[] = {
  {0,0,0,0,0,0,0,0,0}
 };
 
-Fl_Menu_Item EncodeDialog::menu_Framerate1[] = {
- {"25 (PAL)", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"29.97 (NTSC)", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"24", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"15", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"30", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+Fl_Menu_Item EncodeDialog::menu_frame_rate_choice[] = {
+ {"25 (PAL)", 0,  0, (void*)(&fps25x48000), 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"29.97 (NTSC)", 0,  0, (void*)(&fps29_97x48000), 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"24", 0,  0, (void*)(&fps24x48000), 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"15", 0,  0, (void*)(&fps15x48000), 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"50", 0,  0, (void*)(&fps50x48000), 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"60", 0,  0, (void*)(&fps60x48000), 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0}
 };
 
@@ -1502,9 +1504,9 @@ EncodeDialog::EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecPa
           o->down_box(FL_BORDER_BOX);
           o->menu(menu_Samplerate1);
         }
-        { Fl_Choice* o = new Fl_Choice(145, 160, 205, 25, "Framerate");
+        { Fl_Choice* o = frame_rate_choice = new Fl_Choice(145, 160, 205, 25, "Framerate");
           o->down_box(FL_BORDER_BOX);
-          o->menu(menu_Framerate1);
+          o->menu(menu_frame_rate_choice);
         }
         { Fl_Choice* o = frame_size_choice = new Fl_Choice(145, 190, 205, 25, "Framesize");
           o->down_box(FL_BORDER_BOX);
@@ -1569,6 +1571,10 @@ EncodeDialog::~EncodeDialog() {
 
 void* EncodeDialog::frameSize() {
   return frame_size_choice->mvalue()->user_data();
+}
+
+void* EncodeDialog::frameRate() {
+  return frame_rate_choice->mvalue()->user_data();
 }
 
 ChangesDialog::ChangesDialog() {

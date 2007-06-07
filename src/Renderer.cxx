@@ -37,20 +37,32 @@ render_frame_size fs384x288 = { 384, 288, 4, 3, ( 4.0 / 3.0 ), 0 };
 render_frame_size fs640x480 = { 640, 480, 4, 3, ( 4.0 / 3.0 ), 0 };
 render_frame_size fs320x240 = { 320, 240, 4, 3, ( 4.0 / 3.0 ), 0 };
 
+render_fps_chunks fps25x48000 =    { 1200, 30000, 19200, 10 };
+render_fps_chunks fps29_97x48000 = { 1001, 30000, 16016, 10 };
+render_fps_chunks fps24x48000 =    { 1250, 30000, 20000, 10 };
+render_fps_chunks fps15x48000 =    { 2000, 30000, 32000, 10 };
+render_fps_chunks fps50x48000 =    { 600,  30000, 19200, 20 };
+render_fps_chunks fps60x48000 =    { 500,  30000, 16000, 20 };
+
+/*
+	int frame_duration;
+	int timescale;
+	int audio_frames_per_chunk;
+	int video_frames_per_chunk;
+*/
 namespace nle
 {
 
 static quicktime_t *qt;
 
 
-
-Renderer::Renderer( string filename, render_frame_size* format, int framerate, int samplerate, CodecParameters* params )
+Renderer::Renderer( string filename, render_frame_size* format, render_fps_chunks* framerate, int samplerate, CodecParameters* params )
 {
 	p_timeline = 0;
 	char buffer[1024];
 	m_w = format->w;
 	m_h = format->h;
-	m_framerate = framerate;
+	m_fps = *framerate;
 	m_samplerate = samplerate;
 	m_filename = filename;
 	strlcpy( buffer, m_filename.c_str(), sizeof(buffer) );
@@ -60,7 +72,7 @@ Renderer::Renderer( string filename, render_frame_size* format, int framerate, i
 		return;
 	}
 
-	params->set( qt, m_w, m_h );
+	params->set( qt, m_w, m_h, &m_fps );
 
 	lqt_set_cmodel( qt, 0, BC_RGB888 );
 	
@@ -82,19 +94,6 @@ Renderer::Renderer( string filename, render_frame_size* format, int framerate, i
 	p_timeline->prepareFormat( m_w, m_h, format->aspect_w, format->aspect_h, format->aspect, format->analog_blank );
 
 	return;
-	//===================== THE FOLLOWING CODE IS NOT EXECUTED =====================
-
-	
-	lqt_codec_info_t **codecs = lqt_query_registry( 1, 0, 1, 0 );
-	lqt_codec_info_t *codec = codecs[7];
-	lqt_add_audio_track( qt, 2, 48000, 16, codec );
-	lqt_destroy_codec_info( codecs );
-	codecs = lqt_query_registry( 0, 1, 1, 0 );
-	codec = codecs[22];
-	lqt_add_video_track( qt, m_w, m_h, 1200, 30000, codec ); // Was bedeuted 1001 zum Teufel? => 30000 / 1001 == 29.97
-	                                                         // 30000 / 1200 == 25
-	lqt_destroy_codec_info( codecs );
-	lqt_set_cmodel( qt, 0, BC_RGB888 );
 }
 bool Renderer::ok() {
 	return qt;
@@ -112,9 +111,11 @@ Renderer::~Renderer()
 }
 
 //#define AUDIO_BUFFER_SIZE 480
-#define AUDIO_BUFFER_SIZE 23040
+//#define AUDIO_BUFFER_SIZE 23040
+#define AUDIO_BUFFER_SIZE 32000
 void Renderer::go( IProgressListener* l )
 {
+	
 	if ( !qt ) {
 		return;
 	}
@@ -135,7 +136,7 @@ void Renderer::go( IProgressListener* l )
 	float right_buffer[AUDIO_BUFFER_SIZE];
 	float *buffer_p[2] = { left_buffer, right_buffer };
 
-	int64_t length = p_timeline->length() * (int)g_fps ;
+	int64_t length = (int64_t)( p_timeline->length() * ( (float)m_fps.timescale / (float)m_fps.frame_duration  ) );
 	int64_t current_frame = 0;
 
 	frame_struct enc_frame;
@@ -155,19 +156,21 @@ void Renderer::go( IProgressListener* l )
  * 12 * 1920 = 23040
  * This is the chunk of audio that will be written between 12 Frames
  */
+	int64_t position = 0;
+	int64_t frame_length = 35280000 / m_fps.timescale * m_fps.frame_duration;
 	bool run = true;
 	int frames_to_write;
 	do {
-		res = p_timeline->fillBuffer( buffer, AUDIO_BUFFER_SIZE );
-		p_timeline->sampleseek( 0, AUDIO_BUFFER_SIZE );
+		res = p_timeline->fillBuffer( buffer, m_fps.audio_frames_per_chunk );
+		p_timeline->sampleseek( 0, m_fps.audio_frames_per_chunk );
 		for ( int i = 0; i < res; i++ ) {
 			left_buffer[i] = buffer[i*2];
 			right_buffer[i] = buffer[i*2+1];
 		}
 		lqt_encode_audio_track( qt, 0, buffer_p, res, 0 );
-		frames_to_write = res / 1920;
-		for ( int i = 0; i < frames_to_write; i++ ) {
-			p_timeline->getBlendedFrame( &enc_frame );
+		for ( int i = 0; i < m_fps.video_frames_per_chunk; i++ ) {
+			p_timeline->getBlendedFrame( position, &enc_frame );
+			position += frame_length;
 			quicktime_encode_video( qt, enc_frame.rows, 0 );
 			current_frame++;
 			if ( l ) {
@@ -177,7 +180,7 @@ void Renderer::go( IProgressListener* l )
 				}
 			}
 		}
-	} while ( res == AUDIO_BUFFER_SIZE && run );
+	} while ( res == m_fps.audio_frames_per_chunk && run );
 	
 	delete [] enc_frame.RGB;
 	delete [] enc_frame.rows;
