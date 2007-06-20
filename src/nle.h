@@ -18,18 +18,18 @@
 #include <FL/Fl_Tile.H>
 #include <FL/Fl_Group.H>
 #include "VideoViewGL.H"
+#include <FL/Fl_Slider.H>
+#include <FL/Fl_Button.H>
 #include <FL/Fl_Tabs.H>
 #include "FileBrowser.H"
 #include "MediaPanel.H"
 #include "FltkEffectMenu.H"
 #include "IVideoEffect.H"
-#include <FL/Fl_Button.H>
 #include "SpecialClipsBrowser.H"
 #include <FL/Fl_Input.H>
 #include <FL/Fl_Value_Input.H>
 #include <math.h>
 #include <FL/fl_show_colormap.H>
-#include <FL/Fl_Slider.H>
 #include <FL/Fl_Box.H>
 #include "fl_font_browser.h"
 #include <FL/Fl_Choice.H>
@@ -118,10 +118,17 @@ private:
   static void cb_About(Fl_Menu_*, void*);
 public:
   nle::VideoViewGL *m_videoView;
+  Fl_Slider *zoom_slider;
+private:
+  void cb_zoom_slider_i(Fl_Slider*, void*);
+  static void cb_zoom_slider(Fl_Slider*, void*);
+  void cb__i(Fl_Button*, void*);
+  static void cb_(Fl_Button*, void*);
+public:
   Fl_Tabs *tab_view;
 private:
-  void cb__i(nle::FileBrowser*, void*);
-  static void cb_(nle::FileBrowser*, void*);
+  void cb_1_i(nle::FileBrowser*, void*);
+  static void cb_1(nle::FileBrowser*, void*);
 public:
   nle::FltkEffectMenu *m_effectMenu;
   Fl_Hold_Browser *effect_browser;
@@ -245,8 +252,8 @@ public:
 private:
   void cb_projectNameInput_i(Fl_Button*, void*);
   static void cb_projectNameInput(Fl_Button*, void*);
-  void cb_1_i(Fl_Button*, void*);
-  static void cb_1(Fl_Button*, void*);
+  void cb_2_i(Fl_Button*, void*);
+  static void cb_2(Fl_Button*, void*);
 public:
   Fl_Scrollbar *vScrollBar;
 private:

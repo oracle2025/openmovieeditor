@@ -299,12 +299,29 @@ while (dlg.shown())
           } {
             Fl_Box m_videoView {
               label VideoView
-              xywh {365 25 335 320} box DOWN_BOX labelcolor 32 resizable
+              xywh {365 25 310 320} box DOWN_BOX labelcolor 32 resizable
               code0 {\#include "VideoViewGL.H"}
               class {nle::VideoViewGL}
             }
+            Fl_Group {} {open
+              xywh {675 25 25 320}
+            } {
+              Fl_Slider zoom_slider {
+                callback {m_videoView->zoom( o->value() );
+m_videoView->invalidate();
+m_videoView->redraw();}
+                tooltip Zoom xywh {675 25 25 295} type {Vert Knob} minimum -1 resizable
+              }
+              Fl_Button {} {
+                callback {zoom_slider->value( 0 );
+m_videoView->zoom( 0 );
+m_videoView->invalidate();
+m_videoView->redraw();} selected
+                tooltip {Reset Zoom} xywh {675 320 25 25}
+              }
+            }
           }
-          Fl_Group {} {open
+          Fl_Group {} {
             xywh {0 25 365 320}
           } {
             Fl_Tabs tab_view {open
@@ -604,13 +621,13 @@ if ( name ) {
                 xywh {0 25 25 25} labelfont 1 align 8
                 code0 {\#include "LoadSaveManager/LoadSaveManager.H"}
               }
-              Fl_Box {} {selected
+              Fl_Box {} {
                 xywh {25 25 340 25} hide resizable
               }
             }
           }
         }
-        Fl_Group {} {open
+        Fl_Group {} {
           xywh {0 345 700 255}
         } {
           Fl_Group {} {open

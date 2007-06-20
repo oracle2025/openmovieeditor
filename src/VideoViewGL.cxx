@@ -54,6 +54,7 @@ VideoViewGL::VideoViewGL( int x, int y, int w, int h, const char *l )
 	: Fl_Gl_Window( x, y, w, h, l )
 {
 	g_videoView = this;
+	m_zoom = 0.0;
 	m_seekPosition = 0;
 	reset_cache();
 }
@@ -392,8 +393,24 @@ void VideoViewGL::draw()
 {
 	if (g_backseek) { reset_cache(); g_backseek=false; }
 	if ( !valid() ) {
+		float glo1, glo2;
+		if ( m_zoom < 0.0 ) {
+			glo1 = 10.0 * m_zoom;
+			glo2 = 10.0 - 10.0 * m_zoom;
+			/*
+			0.0:
+				0.0;
+				10.0;
+			-1.0:
+				-10.0
+				20.0;
+			*/
+		} else {
+			glo1 = 0.0 + m_zoom * 5.0; // -> 5.0
+			glo2 = 10.0 - m_zoom * 5.0; // -> 5.0
+		}
 		glLoadIdentity(); glViewport( 0, 0, w(), h() ); // glViewport( _x, _y, _w, _h );
-		glOrtho( 0, 10, 10, 0, -20000, 10000 ); glEnable( GL_BLEND );
+		glOrtho( glo1, glo2, glo2, glo1, -20000, 10000 ); glEnable( GL_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glEnable (GL_TEXTURE_2D);
 	}
@@ -468,6 +485,8 @@ void VideoViewGL::draw()
 				fx = (glw - fw) / 2.0;
 				fy = 0.0;
 			}
+			
+			
 			float ix = 0.0;
 			float iy = 0.0;
 			float iw = 1.0;
@@ -488,24 +507,40 @@ void VideoViewGL::draw()
 			float scalex = (float)fs[i]->scale_x / (float)INT_FLOAT_SCALE;
 			float scaley = (float)fs[i]->scale_y / (float)INT_FLOAT_SCALE;
 
+			float tiltx_modifier = 1.0;
+			float tilty_modifier = 1.0;
 			if ( scalex < 0.0 ) {
 				scalex += 1.0; // 0.0 -> 1.0
 			} else {
 				scalex = 1.0 + scalex;
+				tiltx_modifier *= scalex;
 			}
 			if ( scaley < 0.0 ) {
 				scaley += 1.0; // 0.0 -> 1.0
 			} else {
 				scaley = 1.0 + scaley;
+				tilty_modifier *= scaley;
 			}
+
 			
-			float vertex_x = fx + ix * fw * scalex + tiltx * fw;
-			float vertex_y = fy + iy * fh * scaley + tilty * fh;
+			if ( fs[i]->render_strategy == RENDER_FIT ) {
+				if ( aspect_image > aspect_frame ) { //Banner
+					fy += ( fh - (fw / ( aspect_image / aspect_window )) ) / 2.0;
+					tilty_modifier *= fh / (fw / ( aspect_image / aspect_window ));
+					fh = fw / ( aspect_image / aspect_window );
+				} else { //Skyscraper
+					fx += ( fw - (fh * ( aspect_image / aspect_window )) ) / 2.0;
+					tiltx_modifier *= fw / (fh * ( aspect_image / aspect_window ));
+					fw = fh * ( aspect_image / aspect_window );
+				}
+			}
+			float vertex_x = fx + ix * fw * scalex + tiltx * fw * tiltx_modifier;
+			float vertex_y = fy + iy * fh * scaley + tilty * fh * tilty_modifier;
 			float vertex_w = fw * iw * scalex;
 			float vertex_h = fh * ih * scaley;
 
-			float border_x = fx + tiltx * fw;
-			float border_y = fy + tilty * fh;
+			float border_x = fx + tiltx * fw * tiltx_modifier;
+			float border_y = fy + tilty * fh * tilty_modifier;
 			float border_w = fw * scalex;
 			float border_h = fh * scaley;
 

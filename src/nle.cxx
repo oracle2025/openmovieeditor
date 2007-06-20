@@ -313,12 +313,31 @@ Fl_Menu_Item* NleUI::paste_item = NleUI::menu_Black + 11;
 Fl_Menu_Item* NleUI::delete_item = NleUI::menu_Black + 12;
 Fl_Menu_Item* NleUI::jackMenu = NleUI::menu_Black + 28;
 
-void NleUI::cb__i(nle::FileBrowser* o, void*) {
+void NleUI::cb_zoom_slider_i(Fl_Slider* o, void*) {
+  m_videoView->zoom( o->value() );
+m_videoView->invalidate();
+m_videoView->redraw();
+}
+void NleUI::cb_zoom_slider(Fl_Slider* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_zoom_slider_i(o,v);
+}
+
+void NleUI::cb__i(Fl_Button*, void*) {
+  zoom_slider->value( 0 );
+m_videoView->zoom( 0 );
+m_videoView->invalidate();
+m_videoView->redraw();
+}
+void NleUI::cb_(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb__i(o,v);
+}
+
+void NleUI::cb_1_i(nle::FileBrowser* o, void*) {
   nle::FileBrowser* fb = (nle::FileBrowser*)o;
 fb->load_rel();
 }
-void NleUI::cb_(nle::FileBrowser* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb__i(o,v);
+void NleUI::cb_1(nle::FileBrowser* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_1_i(o,v);
 }
 
 void NleUI::cb_effect_browser_i(Fl_Hold_Browser*, void*) {
@@ -551,11 +570,11 @@ void NleUI::cb_projectNameInput(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_projectNameInput_i(o,v);
 }
 
-void NleUI::cb_1_i(Fl_Button* o, void*) {
+void NleUI::cb_2_i(Fl_Button* o, void*) {
   g_snap = o->value();
 }
-void NleUI::cb_1(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_1_i(o,v);
+void NleUI::cb_2(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_2_i(o,v);
 }
 
 #include <FL/Fl_Pixmap.H>
@@ -790,7 +809,7 @@ NleUI::NleUI() {
     { Fl_Tile* o = new Fl_Tile(0, 25, 700, 575);
       { Fl_Tile* o = new Fl_Tile(0, 25, 700, 320);
         { Fl_Group* o = new Fl_Group(365, 25, 335, 320);
-          { nle::VideoViewGL* o = m_videoView = new nle::VideoViewGL(365, 25, 335, 320, "VideoView");
+          { nle::VideoViewGL* o = m_videoView = new nle::VideoViewGL(365, 25, 310, 320, "VideoView");
             o->box(FL_DOWN_BOX);
             o->color(FL_BACKGROUND_COLOR);
             o->selection_color(FL_BACKGROUND_COLOR);
@@ -801,6 +820,20 @@ NleUI::NleUI() {
             o->align(FL_ALIGN_CENTER);
             o->when(FL_WHEN_RELEASE);
             Fl_Group::current()->resizable(o);
+          }
+          { Fl_Group* o = new Fl_Group(675, 25, 25, 320);
+            { Fl_Slider* o = zoom_slider = new Fl_Slider(675, 25, 25, 295);
+              o->tooltip("Zoom");
+              o->type(4);
+              o->minimum(-1);
+              o->callback((Fl_Callback*)cb_zoom_slider);
+              Fl_Group::current()->resizable(o);
+            }
+            { Fl_Button* o = new Fl_Button(675, 320, 25, 25);
+              o->tooltip("Reset Zoom");
+              o->callback((Fl_Callback*)cb_);
+            }
+            o->end();
           }
           o->end();
         }
@@ -818,7 +851,7 @@ NleUI::NleUI() {
                 o->labelfont(0);
                 o->labelsize(14);
                 o->labelcolor(FL_FOREGROUND_COLOR);
-                o->callback((Fl_Callback*)cb_);
+                o->callback((Fl_Callback*)cb_1);
                 o->align(FL_ALIGN_BOTTOM);
                 o->when(FL_WHEN_RELEASE_ALWAYS);
                 Fl_Group::current()->resizable(o);
@@ -1054,7 +1087,7 @@ NleUI::NleUI() {
               o->type(1);
               o->value(1);
               o->image(image_snap);
-              o->callback((Fl_Callback*)cb_1);
+              o->callback((Fl_Callback*)cb_2);
             }
             { nle::Ruler* o = new nle::Ruler(65, 345, 635, 25, "Ruler");
               o->box(FL_UP_BOX);
