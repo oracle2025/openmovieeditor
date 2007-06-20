@@ -221,7 +221,15 @@ openmovieeditor_SOURCES = nle.cxx\
 	FilterRemoveCommand.H\
 	FilterRemoveCommand.cxx\
 	timebase.H\
-	ShiftAutomationDragHandler.H
+	ShiftAutomationDragHandler.H\
+	ScaleCropTiltFilter.cxx\
+	ScaleCropTiltFilterFactory.cxx\
+	ScaleCropTiltFilterFactory.H\
+	ScaleCropTiltFilter.H\
+	ScaleCropTiltDialog.H\
+	ScaleCropTiltDialog.cxx\
+	int_float_scale.H
+
 #	ShiftAutomationDragHandler.cxx\
 #	AutomationMoveCommand.H\
 #	AutomationMoveCommand.cxx\

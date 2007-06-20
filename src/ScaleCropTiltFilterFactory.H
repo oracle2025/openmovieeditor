@@ -1,6 +1,6 @@
-/*  VideoViewGL.H
+/* ScaleCropTiltFilterFactory.H
  *
- *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2007 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,41 +17,26 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _VIDEO_VIEW_GL_H_
-#define _VIDEO_VIEW_GL_H_
+#ifndef _SCALE_CROP_TILT_FILTER_FACTORY_H_
+#define _SCALE_CROP_TILT_FILTER_FACTORY_H_
 
-#include <FL/Fl.H>
-#include <FL/Fl_Gl_Window.H>
-
-#include "IVideoWriter.H"
-#include "frame_struct.h"
+#include "FilterFactory.H"
 
 namespace nle
 {
 
-class Timeline;
+class Clip;
 
-class VideoViewGL : public Fl_Gl_Window, public IVideoWriter
+class ScaleCropTiltFilterFactory : public FilterFactory
 {
 	public:
-		VideoViewGL( int x, int y, int w, int h, const char *l = 0 );
-		~VideoViewGL();
-		void draw();
-		void pushFrameStack( frame_struct** fs, bool move_cursor = true );
-		void pushFrame( frame_struct* fs, bool move_cursor = true );
-		void nextFrame( int64_t frame );
-		void seek( int64_t position );
-		void play();
-		void pause();
-		void stop();
-	private:
-		int64_t m_seekPosition;
-		void drawVideoBorder();
+		ScaleCropTiltFilterFactory();
+		~ScaleCropTiltFilterFactory();
+		FilterBase* get( Clip* clip );
+		const char* name();
+		const char* identifier() { return "effect:builtin:ScaleCropTilt"; }
 };
-
-extern VideoViewGL* g_videoView;
 
 } /* namespace nle */
 
-
-#endif /* _VIDEO_VIEW_GL_H_ */
+#endif /* _SCALE_CROP_TILT_FILTER_FACTORY_H_ */

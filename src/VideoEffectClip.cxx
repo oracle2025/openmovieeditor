@@ -122,6 +122,14 @@ frame_struct* VideoEffectClip::getFrame( int64_t position )
 	if ( !f ) {
 		return 0;
 	}
+	f->tilt_x = 0;
+	f->tilt_y = 0;
+	f->scale_x = 0;
+	f->scale_y = 0;
+	f->crop_left = 0;
+	f->crop_right = 0;
+	f->crop_top = 0;
+	f->crop_bottom = 0;
 	filter_stack *node = m_filterClip->getFilters();
 	IVideoEffect* effect;
 	while ( node ) {

@@ -33,13 +33,13 @@
 #include <FL/Fl_Box.H>
 #include "fl_font_browser.h"
 #include <FL/Fl_Choice.H>
-#include "Flmm_Scalebar.H"
-#include "globals.H"
-using namespace std;
 #include "Ruler.H"
 #include <FL/Fl_Scrollbar.H>
 #include "TimelineScroll.H"
 #include "TimelineView.H"
+#include "Flmm_Scalebar.H"
+#include "globals.H"
+using namespace std;
 
 class NleUI {
 public:
@@ -245,9 +245,6 @@ public:
 private:
   void cb_pa_forwardButton_i(Fl_Button*, void*);
   static void cb_pa_forwardButton(Fl_Button*, void*);
-  Flmm_Scalebar *scaleBar;
-  void cb_scaleBar_i(Flmm_Scalebar*, void*);
-  static void cb_scaleBar(Flmm_Scalebar*, void*);
   void cb_1_i(Fl_Button*, void*);
   static void cb_1(Fl_Button*, void*);
 public:
@@ -262,6 +259,11 @@ private:
   static void cb_scroll_area(nle::TimelineScroll*, void*);
 public:
   nle::TimelineView *m_timelineView;
+private:
+  Flmm_Scalebar *scaleBar;
+  void cb_scaleBar_i(Flmm_Scalebar*, void*);
+  static void cb_scaleBar(Flmm_Scalebar*, void*);
+public:
   Fl_Button *positioningButton;
   Fl_Button *automationsButton;
 private:
@@ -331,6 +333,7 @@ public:
 private:
   void cb_File_i(Fl_Button*, void*);
   static void cb_File(Fl_Button*, void*);
+  static Fl_Menu_Item menu_Interlacing[];
 public:
   void show();
   int shown();

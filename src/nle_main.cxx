@@ -51,6 +51,7 @@ extern "C" {
 #include "FltkEffectMenu.H"
 #include "Frei0rFactory.H"
 #include "ColorCurveFactory.H"
+#include "ScaleCropTiltFilterFactory.H"
 #include "AudioVolumeFilterFactory.H"
 #include "MainFilterFactory.H"
 #include <stdlib.h>
@@ -84,6 +85,8 @@ int main( int argc, char** argv )
 	nui.special_clips->add("Titles", nle::PL_VIDEO_SRC, "src:builtin:TitleClip" );
 	nui.special_clips->add("Volume Automations", nle::PL_AUDIO_FILTER, "filter:builtin:VolumeAutomations" );
 	nui.special_clips->add("Color Curves", nle::PL_VIDEO_EFFECT, "effect:builtin:ColorCurves" );
+	nle::ScaleCropTiltFilterFactory SCTFilterFactory;
+	nui.special_clips->add(SCTFilterFactory.name(), nle::PL_VIDEO_EFFECT, SCTFilterFactory.identifier() );
 
 	nle::MainFilterFactory fFactory;
 	nle::Frei0rFactory effectFactory( nui.m_effectMenu );
@@ -91,6 +94,9 @@ int main( int argc, char** argv )
 	nle::ColorCurveFactory colorCurveFactory;
 	nui.m_effectMenu->addEffect( &colorCurveFactory );
 	fFactory.add( "effect:builtin:ColorCurves", &colorCurveFactory );
+
+	nui.m_effectMenu->addEffect( &SCTFilterFactory );
+	fFactory.add( SCTFilterFactory.identifier(), &SCTFilterFactory );
 	
 	nle::AudioVolumeFilterFactory audioVolumeFilterFactory;
 	nui.m_effectMenu->addEffect( &audioVolumeFilterFactory );

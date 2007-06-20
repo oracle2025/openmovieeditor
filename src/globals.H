@@ -23,7 +23,7 @@
 #define STR_LEN 512
 
 #include "timebase.H"
-#define PREF_FILE_ADD "-devel"
+#define PREF_FILE_ADD ""
 
 #include <lqt.h>
 

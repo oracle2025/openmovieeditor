@@ -27,6 +27,7 @@
 #include "Timeline.H"
 #include "events.H"
 #include "render_helper.H"
+#include "int_float_scale.H"
 
 extern bool g_16_9;
 namespace nle
@@ -442,6 +443,104 @@ void VideoViewGL::draw()
 
 				//glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGB, GL_UNSIGNED_BYTE, fs[i]->RGB );
 			}
+
+			float glw = 10.0;
+			float glh = 10.0;
+			float ww = w();
+			float wh = h();
+			float aspect_frame = ( 4.0 / 3.0 );
+			float aspect_window = ww / wh;
+			float aspect_image = fs[i]->aspect;
+
+			float tw = fs[i]->w / TEXTURE_WIDTH;
+			float th = fs[i]->h / TEXTURE_HEIGHT;
+
+			float fx, fy, fw, fh;
+
+			if ( (aspect_frame/aspect_window) > 1.0 ) {
+				fw = glw;
+				fh = glh / (aspect_frame/aspect_window);
+				fx = 0.0;
+				fy = (glh - fh) / 2.0;
+			} else {
+				fw = glw * (aspect_frame/aspect_window);
+				fh = glh;
+				fx = (glw - fw) / 2.0;
+				fy = 0.0;
+			}
+			float ix = 0.0;
+			float iy = 0.0;
+			float iw = 1.0;
+			float ih = 1.0;
+			float ct = (float)fs[i]->crop_top / (float)INT_FLOAT_SCALE;
+			float cb = (float)fs[i]->crop_bottom / (float)INT_FLOAT_SCALE;
+			float cl = (float)fs[i]->crop_left / (float)INT_FLOAT_SCALE;
+			float cr = (float)fs[i]->crop_right / (float)INT_FLOAT_SCALE;
+
+			ix += cl;
+			iy += ct;
+			iw -= (cl + cr);
+			ih -= (ct + cb);
+
+			float tiltx = (float)fs[i]->tilt_x / (float)INT_FLOAT_SCALE;
+			float tilty = (float)fs[i]->tilt_y / (float)INT_FLOAT_SCALE;
+
+			float scalex = (float)fs[i]->scale_x / (float)INT_FLOAT_SCALE;
+			float scaley = (float)fs[i]->scale_y / (float)INT_FLOAT_SCALE;
+
+			if ( scalex < 0.0 ) {
+				scalex += 1.0; // 0.0 -> 1.0
+			} else {
+				scalex = 1.0 + scalex;
+			}
+			if ( scaley < 0.0 ) {
+				scaley += 1.0; // 0.0 -> 1.0
+			} else {
+				scaley = 1.0 + scaley;
+			}
+			
+			float vertex_x = fx + ix * fw * scalex + tiltx * fw;
+			float vertex_y = fy + iy * fh * scaley + tilty * fh;
+			float vertex_w = fw * iw * scalex;
+			float vertex_h = fh * ih * scaley;
+
+			float border_x = fx + tiltx * fw;
+			float border_y = fy + tilty * fh;
+			float border_w = fw * scalex;
+			float border_h = fh * scaley;
+
+			float tex_x = cl * tw;
+			float tex_y = ct * th;
+			float tex_w = iw * tw;
+			float tex_h = ih * th;
+
+			glColor4f( 1.0f, 1.0f, 1.0f, fs[i]->alpha );
+			
+			glBegin (GL_QUADS);
+				glTexCoord2f ( tex_x, tex_y );
+				glVertex3f   ( vertex_x, vertex_y, 0.0 );
+				glTexCoord2f ( tex_x + tex_w, tex_y );
+				glVertex3f   ( vertex_x + vertex_w, vertex_y, 0.0 );
+				glTexCoord2f ( tex_x + tex_w, tex_y + tex_h );
+				glVertex3f   ( vertex_x + vertex_w, vertex_y + vertex_h, 0.0 );
+				glTexCoord2f ( tex_x, tex_y + tex_h );
+				glVertex3f   ( vertex_x, vertex_y + vertex_h, 0.0 );
+			glEnd ();
+
+			glDisable (GL_TEXTURE_2D);
+			glLineWidth(3);
+			glBegin (GL_LINE_LOOP);
+			glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
+
+				glVertex3f ( border_x, border_y, 0.0 );
+				glVertex3f ( border_x + border_w, border_y, 0.0 );
+				glVertex3f ( border_x + border_w, border_y + border_h, 0.0 );
+				glVertex3f ( border_x, border_y + border_h, 0.0 );
+
+			glEnd();
+			glEnable (GL_TEXTURE_2D);
+#if 0
+			
 			float gl_x, gl_y, gl_w, gl_h;
 			{
 				if ( fs[i]->render_strategy == RENDER_FIT ) {
@@ -560,16 +659,18 @@ void VideoViewGL::draw()
 			float ww = ( fs[i]->w - 2 * fs[i]->analog_blank ) / TEXTURE_WIDTH;
 			float xx = ( fs[i]->analog_blank ) / TEXTURE_WIDTH;
 			float hh = fs[i]->h / TEXTURE_HEIGHT;
-			glBegin (GL_QUADS);
+					glBegin (GL_QUADS);
 				glTexCoord2f (  xx,      0.0 );
-				glVertex3f   (  gl_x,      gl_y, 0.0 );
+				glVertex3f   (  gl_x + fs[i]->tilt_x,      gl_y + fs[i]->tilt_y, 0.0 );
 				glTexCoord2f (  xx + ww,  0.0 );  // (fs->w / 512.0)
-				glVertex3f   ( gl_x + gl_w,      gl_y, 0.0 );
+				glVertex3f   ( gl_x + gl_w + fs[i]->tilt_x,      gl_y + fs[i]->tilt_y, 0.0 );
 				glTexCoord2f (  xx + ww,  hh ); // (368.0 / 512.0) (240.0 / 512.0)
-				glVertex3f   ( gl_x + gl_w,     gl_y + gl_h, 0.0 );
+				glVertex3f   ( gl_x + gl_w + fs[i]->tilt_x,     gl_y + gl_h + fs[i]->tilt_y, 0.0 );
 				glTexCoord2f (  xx,      hh ); // (fs->h / 512.0)
-				glVertex3f   (  gl_x,     gl_y + gl_h, 0.0 );
+				glVertex3f   (  gl_x + fs[i]->tilt_x,     gl_y + gl_h + fs[i]->tilt_y, 0.0 );
 			glEnd ();
+
+#endif
 		}
 	}
 	g_PREVENT_OFFSCREEN_CRASH = false;
@@ -577,43 +678,6 @@ void VideoViewGL::draw()
 	drawVideoBorder( 768, 576  );
 	drawVideoBorder( 1024, 576  );*/
 	drawVideoBorder();
-#if 0 
-	float gl_x, gl_y, gl_w, gl_h;
-	{
-		float f_v = ( (float)fs->w / (float)fs->h );
-		float f_w = ( (float)w() / (float)h() );
-		float f_g = f_v / f_w;
-		if ( f_g > 1.0 ) {
-			gl_h = 10.0 / f_g;
-			gl_w = 10.0;
-		} else {
-			gl_h = 10.0;
-			gl_w = f_g * 10.0;
-		}
-		gl_x = ( 10.0 - gl_w ) / 2;
-		gl_y = ( 10.0 - gl_h ) / 2;
-		w_buf = fs->w;
-		h_buf = fs->h;
-		ww_buf = w();
-		wh_buf = h();
-
-	}
-
-	
-
-	float ww = fs->w / TEXTURE_WIDTH;
-	float hh = fs->h / TEXTURE_HEIGHT;
-	glBegin (GL_QUADS);
-		glTexCoord2f (  0.0,      0.0 );
-		glVertex3f   (  gl_x,      gl_y, 0.0 );
-		glTexCoord2f (  ww,  0.0 );  // (fs->w / 512.0)
-		glVertex3f   ( gl_x + gl_w,      gl_y, 0.0 );
-		glTexCoord2f (  ww,  hh ); // (368.0 / 512.0) (240.0 / 512.0)
-		glVertex3f   ( gl_x + gl_w,     gl_y + gl_h, 0.0 );
-		glTexCoord2f (  0.0,      hh ); // (fs->h / 512.0)
-		glVertex3f   (  gl_x,     gl_y + gl_h, 0.0 );
-	glEnd ();
-#endif
 }
 
 void VideoViewGL::seek( int64_t position )

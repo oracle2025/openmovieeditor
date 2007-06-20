@@ -93,6 +93,16 @@ VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 	m_framestruct.alpha = 1.0;
 	m_framestruct.has_alpha_channel = false;
 	m_framestruct.cacheable = false;
+	m_framestruct.interlace_mode = 0;
+	m_framestruct.first_field = true;
+	m_framestruct.scale_x = 0;
+	m_framestruct.scale_y = 0;
+	m_framestruct.crop_left = 0;
+	m_framestruct.crop_right = 0;
+	m_framestruct.crop_top = 0;
+	m_framestruct.crop_bottom = 0;
+	m_framestruct.tilt_x = 0;
+	m_framestruct.tilt_y = 0;
 	m_filename = filename;
 
 

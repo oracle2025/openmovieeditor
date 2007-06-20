@@ -56,6 +56,16 @@ ImageClip::ImageClip( Track* track, int64_t position, string filename, int64_t l
 	m_frame.h = m_image->h();
 	m_frame.alpha = 1.0;
 	m_frame.cacheable = true;
+	m_frame.interlace_mode = 0;
+	m_frame.first_field = true;
+	m_frame.scale_x = 0;
+	m_frame.scale_y = 0;
+	m_frame.crop_left = 0;
+	m_frame.crop_right = 0;
+	m_frame.crop_top = 0;
+	m_frame.crop_bottom = 0;
+	m_frame.tilt_x = 0;
+	m_frame.tilt_y = 0;
 	if ( m_image->d() == 4 ) {
 		m_frame.has_alpha_channel = true;
 	} else if ( m_image->d() == 3 ) {

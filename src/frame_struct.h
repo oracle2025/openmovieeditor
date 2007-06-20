@@ -47,6 +47,16 @@ typedef struct
 	int pixel_w;
 	int pixel_h;
 	int analog_blank; // Should be 10 pixels for 720x576
+	int interlace_mode;
+	bool first_field; // should be true if first field is to be displayed
+	int scale_x;
+	int scale_y;
+	int crop_left;
+	int crop_right;
+	int crop_top;
+	int crop_bottom;
+	int tilt_x;
+	int tilt_y;
 } frame_struct;
 
 } /* namespace nle */

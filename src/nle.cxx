@@ -551,18 +551,6 @@ void NleUI::cb_pa_forwardButton(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_pa_forwardButton_i(o,v);
 }
 
-void NleUI::cb_scaleBar_i(Flmm_Scalebar* o, void*) {
-  Flmm_Scalebar *sb = (Flmm_Scalebar *)o;
-float width = sb->w();
-float slider_size = sb->slider_size_i();
-float zoom = width / slider_size;
-m_timelineView->scroll( (int64_t)sb->value() );
-m_timelineView->zoom( zoom );
-}
-void NleUI::cb_scaleBar(Flmm_Scalebar* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_scaleBar_i(o,v);
-}
-
 void NleUI::cb_1_i(Fl_Button* o, void*) {
   g_snap = o->value();
 }
@@ -608,6 +596,18 @@ void NleUI::cb_scroll_area_i(nle::TimelineScroll*, void*) {
 }
 void NleUI::cb_scroll_area(nle::TimelineScroll* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_scroll_area_i(o,v);
+}
+
+void NleUI::cb_scaleBar_i(Flmm_Scalebar* o, void*) {
+  Flmm_Scalebar *sb = (Flmm_Scalebar *)o;
+float width = sb->w();
+float slider_size = sb->slider_size_i();
+float zoom = width / slider_size;
+m_timelineView->scroll( (int64_t)sb->value() );
+m_timelineView->zoom( zoom );
+}
+void NleUI::cb_scaleBar(Flmm_Scalebar* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_scaleBar_i(o,v);
 }
 
 static const char *idata_tool_positioning[] = {
@@ -1041,21 +1041,6 @@ NleUI::NleUI() {
       }
       { Fl_Group* o = new Fl_Group(0, 345, 700, 255);
         { Fl_Group* o = new Fl_Group(40, 345, 660, 255);
-          { Flmm_Scalebar* o = scaleBar = new Flmm_Scalebar(40, 580, 640, 20);
-            o->type(1);
-            o->box(FL_FLAT_BOX);
-            o->color(FL_DARK2);
-            o->selection_color(FL_BACKGROUND_COLOR);
-            o->labeltype(FL_NORMAL_LABEL);
-            o->labelfont(0);
-            o->labelsize(14);
-            o->labelcolor(FL_FOREGROUND_COLOR);
-            o->maximum(1024);
-            o->slider_size(0.40404);
-            o->callback((Fl_Callback*)cb_scaleBar);
-            o->align(FL_ALIGN_BOTTOM);
-            o->when(FL_WHEN_CHANGED);
-          }
           { Fl_Group* o = new Fl_Group(40, 345, 660, 25);
             { Fl_Button* o = new Fl_Button(40, 345, 25, 25);
               o->tooltip("Snapping");
@@ -1105,9 +1090,33 @@ NleUI::NleUI() {
               o->align(FL_ALIGN_TOP);
               o->when(FL_WHEN_RELEASE);
               o->end();
+              Fl_Group::current()->resizable(o);
             }
             o->end();
             Fl_Group::current()->resizable(o);
+          }
+          { Fl_Group* o = new Fl_Group(40, 580, 640, 20);
+            { Flmm_Scalebar* o = scaleBar = new Flmm_Scalebar(155, 580, 525, 20);
+              o->type(1);
+              o->box(FL_FLAT_BOX);
+              o->color(FL_DARK2);
+              o->selection_color(FL_BACKGROUND_COLOR);
+              o->labeltype(FL_NORMAL_LABEL);
+              o->labelfont(0);
+              o->labelsize(14);
+              o->labelcolor(FL_FOREGROUND_COLOR);
+              o->maximum(1024);
+              o->slider_size(0.40404);
+              o->callback((Fl_Callback*)cb_scaleBar);
+              o->align(FL_ALIGN_BOTTOM);
+              o->when(FL_WHEN_CHANGED);
+              Fl_Group::current()->resizable(o);
+            }
+            { Fl_Slider* o = new Fl_Slider(40, 580, 115, 20);
+              o->tooltip("Zoom");
+              o->type(5);
+            }
+            o->end();
           }
           o->end();
           Fl_Group::current()->resizable(o);
@@ -1409,6 +1418,13 @@ void EncodeDialog::cb_File(Fl_Button* o, void* v) {
   ((EncodeDialog*)(o->parent()->parent()->parent()->user_data()))->cb_File_i(o,v);
 }
 
+Fl_Menu_Item EncodeDialog::menu_Interlacing[] = {
+ {"None", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Top field first", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"bottom field first", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {0,0,0,0,0,0,0,0,0}
+};
+
 EncodeDialog::EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecParameters* codecParams ) {
   Fl_Double_Window* w;
   { Fl_Double_Window* o = encodeDialog = new Fl_Double_Window(485, 400, "Render");
@@ -1427,7 +1443,7 @@ EncodeDialog::EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecPa
     }
     { Fl_Tabs* o = new Fl_Tabs(5, 35, 475, 320);
       { Fl_Group* o = new Fl_Group(5, 60, 475, 295, "Extended");
-        { Fl_Choice* o = audio_codec_menu = new Fl_Choice(145, 250, 205, 25, "Audio Codec");
+        { Fl_Choice* o = audio_codec_menu = new Fl_Choice(145, 280, 205, 25, "Audio Codec");
           o->down_box(FL_BORDER_BOX);
           o->callback((Fl_Callback*)cb_audio_codec_menu);
         }
@@ -1435,7 +1451,7 @@ EncodeDialog::EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecPa
           o->down_box(FL_BORDER_BOX);
           o->callback((Fl_Callback*)cb_video_codec_menu);
         }
-        { Fl_Choice* o = new Fl_Choice(145, 280, 205, 25, "Samplerate");
+        { Fl_Choice* o = new Fl_Choice(145, 310, 205, 25, "Samplerate");
           o->down_box(FL_BORDER_BOX);
           o->menu(menu_Samplerate);
         }
@@ -1447,18 +1463,18 @@ EncodeDialog::EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecPa
           o->down_box(FL_BORDER_BOX);
           o->menu(menu_frame_size_choice);
         }
-        { Fl_Button* o = audio_options = new Fl_Button(355, 250, 75, 25, "Options...");
+        { Fl_Button* o = audio_options = new Fl_Button(355, 280, 75, 25, "Options...");
           o->callback((Fl_Callback*)cb_audio_options);
         }
         { Fl_Button* o = video_options = new Fl_Button(355, 130, 75, 25, "Options...");
           o->callback((Fl_Callback*)cb_video_options);
         }
-        { Fl_Box* o = new Fl_Box(35, 125, 415, 95, "Video");
+        { Fl_Box* o = new Fl_Box(35, 125, 415, 125, "Video");
           o->box(FL_ENGRAVED_FRAME);
           o->labelfont(1);
           o->align(FL_ALIGN_TOP_LEFT);
         }
-        { Fl_Box* o = new Fl_Box(35, 245, 415, 65, "Audio");
+        { Fl_Box* o = new Fl_Box(35, 275, 415, 65, "Audio");
           o->box(FL_ENGRAVED_FRAME);
           o->labelfont(1);
           o->align(FL_ALIGN_TOP_LEFT);
@@ -1466,6 +1482,10 @@ EncodeDialog::EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecPa
         export_filename = new Fl_File_Input(145, 70, 205, 35, "Filename");
         { Fl_Button* o = new Fl_Button(355, 80, 75, 25, "File...");
           o->callback((Fl_Callback*)cb_File);
+        }
+        { Fl_Choice* o = new Fl_Choice(145, 220, 205, 25, "Interlacing");
+          o->down_box(FL_BORDER_BOX);
+          o->menu(menu_Interlacing);
         }
         o->end();
       }

@@ -4,7 +4,8 @@ header_name {.h}
 code_name {.cxx}
 class NleUI {open
 } {
-  Function {NleUI()} {} {
+  Function {NleUI()} {open
+  } {
     Fl_Window mainWindow {
       label {Open Movie Editor}
       callback {if (Fl::event()==FL_SHORTCUT && Fl::event_key()==FL_Escape) 
@@ -14,7 +15,7 @@ if ( Fl::event()==FL_CLOSE ) {
 	m_videoView->stop();
 	nle::g_loadSaveManager->shutdown();
 }} open
-      xywh {727 328 700 600} type Double resizable size_range {450 380 0 0} visible
+      xywh {558 47 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
         label {Black Borders}
@@ -608,19 +609,6 @@ if ( name ) {
           Fl_Group {} {open
             xywh {40 345 660 255} resizable
           } {
-            Fl_Scrollbar scaleBar {
-              callback {Flmm_Scalebar *sb = (Flmm_Scalebar *)o;
-float width = sb->w();
-float slider_size = sb->slider_size_i();
-float zoom = width / slider_size;
-m_timelineView->scroll( (int64_t)sb->value() );
-m_timelineView->zoom( zoom );}
-              private xywh {40 580 640 20} type Horizontal maximum 1024 slider_size 0.40404
-              code0 {\#include "Flmm_Scalebar.H"}
-              code1 {\#include "globals.H"}
-              code2 {using namespace std;}
-              class Flmm_Scalebar
-            }
             Fl_Group {} {
               xywh {40 345 660 25}
             } {
@@ -640,16 +628,36 @@ m_timelineView->zoom( zoom );}
               xywh {680 370 20 210} maximum 50 slider_size 0.40404
             }
             Fl_Scroll scroll_area {
-              callback {cout << "scrollarea" << endl;} open
+              callback {cout << "scrollarea" << endl;} open selected
               xywh {40 370 640 210} when 1 resizable
               code0 {\#include "TimelineScroll.H"}
               class {nle::TimelineScroll}
             } {
               Fl_Group m_timelineView {
-                xywh {40 370 640 210}
+                xywh {40 370 640 210} resizable
                 code0 {\#include "TimelineView.H"}
                 class {nle::TimelineView}
               } {}
+            }
+            Fl_Group {} {open
+              xywh {40 580 640 20}
+            } {
+              Fl_Scrollbar scaleBar {
+                callback {Flmm_Scalebar *sb = (Flmm_Scalebar *)o;
+float width = sb->w();
+float slider_size = sb->slider_size_i();
+float zoom = width / slider_size;
+m_timelineView->scroll( (int64_t)sb->value() );
+m_timelineView->zoom( zoom );}
+                private xywh {155 580 525 20} type Horizontal maximum 1024 slider_size 0.40404 resizable
+                code0 {\#include "Flmm_Scalebar.H"}
+                code1 {\#include "globals.H"}
+                code2 {using namespace std;}
+                class Flmm_Scalebar
+              }
+              Fl_Slider {} {
+                tooltip Zoom xywh {40 580 115 20} type {Horz Knob}
+              }
             }
           }
           Fl_Group {} {open
@@ -811,7 +819,7 @@ class EncodeDialog {open
   } {
     Fl_Window encodeDialog {
       label Render open
-      private xywh {522 299 485 400} type Double
+      private xywh {335 200 485 400} type Double
       code0 {\#include "IVideoReader.H"}
       code1 {\#include "IAudioReader.H"} modal visible
     } {
@@ -848,7 +856,7 @@ if ( r == 0 ) {
 
 //nle::renderMovie();
 go = true;
-o->window()->hide();} selected
+o->window()->hide();}
         xywh {250 365 200 25} hotspot
         code0 {\#include <sys/types.h>}
         code1 {\#include <sys/stat.h>}
@@ -875,7 +883,7 @@ o->window()->hide();}
             label {Audio Codec}
             callback {audio_codec = o->menu()[o->value()].user_data();
 m_codecParams->setAudioCodec( (lqt_codec_info_t*)audio_codec );} open
-            xywh {145 250 205 25} down_box BORDER_BOX
+            xywh {145 280 205 25} down_box BORDER_BOX
             code0 {\#include "Codecs.H"}
             code1 {\#include <iostream>}
             code2 {using namespace std;}
@@ -888,7 +896,7 @@ m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
           } {}
           Fl_Choice {} {
             label Samplerate open
-            xywh {145 280 205 25} down_box BORDER_BOX
+            xywh {145 310 205 25} down_box BORDER_BOX
           } {
             MenuItem {} {
               label 48000
@@ -972,7 +980,7 @@ m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
 	while (dlg.codecOptions->shown())
 		Fl::wait();
 }}
-            private xywh {355 250 75 25}
+            private xywh {355 280 75 25}
           }
           Fl_Button video_options {
             label {Options...}
@@ -990,11 +998,11 @@ m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
           }
           Fl_Box {} {
             label Video
-            xywh {35 125 415 95} box ENGRAVED_FRAME labelfont 1 align 5
+            xywh {35 125 415 125} box ENGRAVED_FRAME labelfont 1 align 5
           }
           Fl_Box {} {
             label Audio
-            xywh {35 245 415 65} box ENGRAVED_FRAME labelfont 1 align 5
+            xywh {35 275 415 65} box ENGRAVED_FRAME labelfont 1 align 5
           }
           Fl_File_Input export_filename {
             label Filename
@@ -1006,6 +1014,23 @@ m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
             xywh {355 80 75 25}
             code0 {\#include <stdlib.h>}
             code1 {\#include <FL/Fl_File_Chooser.H>}
+          }
+          Fl_Choice {} {
+            label Interlacing open
+            xywh {145 220 205 25} down_box BORDER_BOX
+          } {
+            MenuItem {} {
+              label None
+              xywh {0 0 100 20}
+            }
+            MenuItem {} {
+              label {Top field first}
+              xywh {0 0 100 20}
+            }
+            MenuItem {} {
+              label {bottom field first}
+              xywh {0 0 100 20}
+            }
           }
         }
       }
@@ -1179,7 +1204,7 @@ class AboutDialog {} {
   } {
     Fl_Window aboutDialog {
       label {About Dialog} open
-      xywh {683 364 340 370} type Double modal visible
+      xywh {372 286 340 370} type Double modal visible
     } {
       Fl_Box {} {
         image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/logo.xpm} xywh {0 0 340 155}
