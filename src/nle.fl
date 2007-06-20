@@ -15,7 +15,7 @@ if ( Fl::event()==FL_CLOSE ) {
 	m_videoView->stop();
 	nle::g_loadSaveManager->shutdown();
 }} open
-      xywh {558 47 700 600} type Double resizable size_range {450 380 0 0} visible
+      xywh {729 222 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
         label {Black Borders}
@@ -392,7 +392,7 @@ fb->load_rel();}
                 }
               }
               Fl_Group titles_tab {
-                label Titles open
+                label Titles
                 private xywh {0 75 365 230} deactivate
               } {
                 Fl_Input titles_text {
@@ -547,16 +547,6 @@ m_timelineView->titles_text( titles_text->value() );} open
               callback {nle::g_ruler->skipForward();}
               tooltip {Skip Frame forward} xywh {255 305 55 40}
             }
-            Fl_Button projectNameInput {
-              label {Project Name}
-              callback {const char* name = fl_input( "Please enter the project name.", projectNameInput->label() );
-if ( name ) {
-	projectNameInput->label( name );
-	nle::g_loadSaveManager->name( name );
-}}
-              xywh {0 25 365 25} labelfont 1 align 20
-              code0 {\#include "LoadSaveManager/LoadSaveManager.H"}
-            }
             Fl_Button pauseButton {
               label {@||}
               callback {m_videoView->pause();}
@@ -601,6 +591,23 @@ if ( name ) {
               callback {nle::g_ruler->skipForward();}
               tooltip {Skip Frame forward} xywh {235 305 65 40} hide
             }
+            Fl_Group {} {open
+              xywh {0 25 365 25}
+            } {
+              Fl_Button projectNameInput {
+                label {Project Name}
+                callback {const char* name = fl_input( "Please enter the project name.", projectNameInput->label() );
+if ( name ) {
+	projectNameInput->label( name );
+	nle::g_loadSaveManager->name( name );
+}}
+                xywh {0 25 25 25} labelfont 1 align 8
+                code0 {\#include "LoadSaveManager/LoadSaveManager.H"}
+              }
+              Fl_Box {} {selected
+                xywh {25 25 340 25} hide resizable
+              }
+            }
           }
         }
         Fl_Group {} {open
@@ -628,7 +635,7 @@ if ( name ) {
               xywh {680 370 20 210} maximum 50 slider_size 0.40404
             }
             Fl_Scroll scroll_area {
-              callback {cout << "scrollarea" << endl;} open selected
+              callback {cout << "scrollarea" << endl;} open
               xywh {40 370 640 210} when 1 resizable
               code0 {\#include "TimelineScroll.H"}
               class {nle::TimelineScroll}

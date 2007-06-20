@@ -211,11 +211,6 @@ private:
   void cb_forwardButton_i(Fl_Button*, void*);
   static void cb_forwardButton(Fl_Button*, void*);
 public:
-  Fl_Button *projectNameInput;
-private:
-  void cb_projectNameInput_i(Fl_Button*, void*);
-  static void cb_projectNameInput(Fl_Button*, void*);
-public:
   Fl_Button *pauseButton;
 private:
   void cb_pauseButton_i(Fl_Button*, void*);
@@ -245,6 +240,11 @@ public:
 private:
   void cb_pa_forwardButton_i(Fl_Button*, void*);
   static void cb_pa_forwardButton(Fl_Button*, void*);
+public:
+  Fl_Button *projectNameInput;
+private:
+  void cb_projectNameInput_i(Fl_Button*, void*);
+  static void cb_projectNameInput(Fl_Button*, void*);
   void cb_1_i(Fl_Button*, void*);
   static void cb_1(Fl_Button*, void*);
 public:

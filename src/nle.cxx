@@ -484,17 +484,6 @@ void NleUI::cb_forwardButton(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_forwardButton_i(o,v);
 }
 
-void NleUI::cb_projectNameInput_i(Fl_Button*, void*) {
-  const char* name = fl_input( "Please enter the project name.", projectNameInput->label() );
-if ( name ) {
-	projectNameInput->label( name );
-	nle::g_loadSaveManager->name( name );
-};
-}
-void NleUI::cb_projectNameInput(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_projectNameInput_i(o,v);
-}
-
 void NleUI::cb_pauseButton_i(Fl_Button*, void*) {
   m_videoView->pause();
 }
@@ -549,6 +538,17 @@ void NleUI::cb_pa_forwardButton_i(Fl_Button*, void*) {
 }
 void NleUI::cb_pa_forwardButton(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_pa_forwardButton_i(o,v);
+}
+
+void NleUI::cb_projectNameInput_i(Fl_Button*, void*) {
+  const char* name = fl_input( "Please enter the project name.", projectNameInput->label() );
+if ( name ) {
+	projectNameInput->label( name );
+	nle::g_loadSaveManager->name( name );
+};
+}
+void NleUI::cb_projectNameInput(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_projectNameInput_i(o,v);
 }
 
 void NleUI::cb_1_i(Fl_Button* o, void*) {
@@ -1001,11 +1001,6 @@ NleUI::NleUI() {
             o->tooltip("Skip Frame forward");
             o->callback((Fl_Callback*)cb_forwardButton);
           }
-          { Fl_Button* o = projectNameInput = new Fl_Button(0, 25, 365, 25, "Project Name");
-            o->labelfont(1);
-            o->callback((Fl_Callback*)cb_projectNameInput);
-            o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
-          }
           { Fl_Button* o = pauseButton = new Fl_Button(200, 305, 55, 40, "@||");
             o->callback((Fl_Callback*)cb_pauseButton);
           }
@@ -1034,6 +1029,18 @@ NleUI::NleUI() {
             o->tooltip("Skip Frame forward");
             o->callback((Fl_Callback*)cb_pa_forwardButton);
             o->hide();
+          }
+          { Fl_Group* o = new Fl_Group(0, 25, 365, 25);
+            { Fl_Button* o = projectNameInput = new Fl_Button(0, 25, 25, 25, "Project Name");
+              o->labelfont(1);
+              o->callback((Fl_Callback*)cb_projectNameInput);
+              o->align(FL_ALIGN_RIGHT);
+            }
+            { Fl_Box* o = new Fl_Box(25, 25, 340, 25);
+              o->hide();
+              Fl_Group::current()->resizable(o);
+            }
+            o->end();
           }
           o->end();
         }
