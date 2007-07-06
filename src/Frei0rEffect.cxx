@@ -58,6 +58,15 @@ Frei0rEffect::Frei0rEffect( f0r_plugin_info_t* info, void* handle, int w, int h 
 	m_framestruct.alpha = 1.0;
 	m_framestruct.has_alpha_channel = true;
 	m_framestruct.cacheable = false;
+	m_framestruct.tilt_x = 0;
+	m_framestruct.tilt_y = 0;
+	m_framestruct.scale_x = 1.0;
+	m_framestruct.scale_y = 1.0;
+	m_framestruct.crop_left = 0;
+	m_framestruct.crop_right = 0;
+	m_framestruct.crop_top = 0;
+	m_framestruct.crop_bottom = 0;
+
 }
 Frei0rEffect::~Frei0rEffect()
 {

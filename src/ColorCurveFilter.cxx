@@ -42,6 +42,14 @@ ColorCurveFilter::ColorCurveFilter( int w, int h )
 	m_framestruct.alpha = 1.0;
 	m_framestruct.has_alpha_channel = true;
 	m_framestruct.cacheable = false;
+	m_framestruct.tilt_x = 0;
+	m_framestruct.tilt_y = 0;
+	m_framestruct.scale_x = 1.0;
+	m_framestruct.scale_y = 1.0;
+	m_framestruct.crop_left = 0;
+	m_framestruct.crop_right = 0;
+	m_framestruct.crop_top = 0;
+	m_framestruct.crop_bottom = 0;
 	for ( unsigned int i = 0; i < 256; i++ ) {
 		m_values[i] = i;
 		m_values_r[i] = i;
