@@ -37,6 +37,9 @@ ScaleCropTiltFilter::ScaleCropTiltFilter()
 }
 ScaleCropTiltFilter::~ScaleCropTiltFilter()
 {
+	if ( m_dialog ) {
+		delete m_dialog;
+	}
 }
 
 frame_struct* ScaleCropTiltFilter::getFrame( frame_struct* frame, int64_t )

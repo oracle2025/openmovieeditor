@@ -124,8 +124,8 @@ frame_struct* VideoEffectClip::getFrame( int64_t position )
 	}
 	f->tilt_x = 0;
 	f->tilt_y = 0;
-	f->scale_x = 0;
-	f->scale_y = 0;
+	f->scale_x = 1.0;
+	f->scale_y = 1.0;
 	f->crop_left = 0;
 	f->crop_right = 0;
 	f->crop_top = 0;

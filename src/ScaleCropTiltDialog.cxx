@@ -186,7 +186,8 @@ ScaleCropTiltDialog::ScaleCropTiltDialog( nle::ScaleCropTiltFilter* filter ) {
 }
 
 ScaleCropTiltDialog::~ScaleCropTiltDialog() {
-  m_dialog->hide();
+  m_filter->m_dialog = 0;
+m_dialog->hide();
 delete m_dialog;
 }
 

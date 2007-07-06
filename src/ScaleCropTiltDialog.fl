@@ -14,7 +14,7 @@ class ScaleCropTiltDialog {open : {public nle::IEffectDialog}
   } {
     Fl_Window m_dialog {
       label {Scale Crop Tilt} open
-      xywh {41 452 420 290} type Double visible
+      xywh {369 310 420 290} type Double visible
     } {
       Fl_Box {} {
         label Scale
@@ -98,7 +98,7 @@ if ( crop_y_lock->value() ) {
 	crop_top->value( o->value() );
 	m_filter->m_crop_top = (int)INT_FLOAT_SCALE*o->value();
 }
-nle::g_videoView->redraw();} selected
+nle::g_videoView->redraw();}
         xywh {210 155 175 25} type {Horz Knob} align 4 minimum 1 maximum 0
       }
       Fl_Slider tilt_x {
@@ -134,8 +134,10 @@ nle::g_videoView->redraw();}
   }
   Function {~ScaleCropTiltDialog()} {open
   } {
-    code {m_dialog->hide();
-delete m_dialog;} {}
+    code {m_filter->m_dialog = 0;
+m_dialog->hide();
+delete m_dialog;} {selected
+    }
   }
   Function {show()} {open return_type void
   } {
