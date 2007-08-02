@@ -22,7 +22,7 @@
 #include "WavArtist.H"
 #include "AudioClipArtist.H"
 #include "AudioFilter.H"
-#include "ThreadedAudioReader.H"
+#include "ThreadedAudioFile.H"
 #include "timeline/Track.H"
 
 
@@ -32,22 +32,18 @@ AudioClip::AudioClip( Track *track, int64_t position, IAudioFile* af, int64_t tr
 	: FilterClip( track, position, id )
 {
 	m_mute = false;
-	m_threadedReader = 0;
 	m_audioFile = af;
 	m_trimA = trimA;
 	m_trimB = trimB;
 	m_audioReader = 0;
 	if ( track->render_mode() ) {  // Render mode
-		m_threadedReader = 0;
 		m_audioReader = m_audioFile;
 		m_artist = 0;
 	} else { // Playback mode
 		g_wavArtist->add( af );
 		m_artist = new AudioClipArtist( this );
 		if ( m_audioFile ) {
-			//FIXME: Debugging:
-			/*m_threadedReader = new ThreadedAudioReader( m_audioFile );
-			m_audioReader = m_threadedReader;*/
+			m_audioFile = new ThreadedAudioFile( m_audioFile );
 			m_audioReader = m_audioFile;
 		}
 	}
@@ -57,17 +53,15 @@ AudioClip::AudioClip( Track* track, int64_t position, IAudioFile* af, int id )
 	: FilterClip( track, position, id )
 {
 	m_mute = false;
-	m_threadedReader = 0;
 	m_audioFile = af;
 	m_artist = 0;
 	m_audioReader = 0;
 	if ( m_audioFile ) {
 		if ( track->render_mode() ) {
-			m_threadedReader = 0;
 			m_audioReader = m_audioFile;
 		} else {
-			m_threadedReader = new ThreadedAudioReader( m_audioFile );
-			m_audioReader = m_threadedReader;
+			m_audioFile = new ThreadedAudioFile( m_audioFile );
+			m_audioReader = m_audioFile;
 		}
 	}
 }
@@ -83,11 +77,6 @@ AudioClip::~AudioClip()
 		delete m_audioFile;
 		m_audioFile = 0;
 	}
-	if ( m_threadedReader ) {
-		delete m_threadedReader;
-		m_threadedReader = 0;
-	}
-	
 }
 int AudioClip::fillBufferRaw( float* output, unsigned long frames, int64_t position )
 {
@@ -140,8 +129,8 @@ int AudioClip::fillBuffer( float* output, unsigned long frames, int64_t position
 }
 void AudioClip::reset()
 {
-	if ( m_threadedReader ) {
-		m_threadedReader->seek( audioTrimA() );
+	if ( m_audioFile ) {
+		m_audioFile->seek( audioTrimA() );
 	}
 	m_lastSamplePosition = 0;
 	FilterClip::reset();

@@ -1,4 +1,4 @@
-/*  ThreadedAudioReader.H
+/*  ThreadedAudioFile.H
  *
  *  Copyright (C) 2007 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -19,18 +19,18 @@
 
 #include <pthread.h>
 #include <jack/ringbuffer.h>
-#include "IAudioReader.H"
+#include "IAudioFile.H"
 
 namespace nle
 {
 
 class IAudioFile;
 	
-class ThreadedAudioReader : public IAudioReader
+class ThreadedAudioFile : public IAudioFile
 {
 	public:
-		ThreadedAudioReader( IAudioFile* );
-		~ThreadedAudioReader();
+		ThreadedAudioFile( IAudioFile* );
+		~ThreadedAudioFile();
 		int fillBuffer( float* output, unsigned long frames );
 		void seek( int64_t sample );
 		void sampleseek( int, int64_t position ) { seek( position ); }
@@ -41,8 +41,6 @@ class ThreadedAudioReader : public IAudioReader
 		pthread_cond_t m_readCondition;
 		pthread_t m_thread;
 		jack_ringbuffer_t* m_ringBuffer;
-		IAudioFile* m_file;
-		float* m_buffer;
 		bool m_fileDone;
 		bool m_seek;
 		int64_t m_sample;

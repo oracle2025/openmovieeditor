@@ -22,6 +22,7 @@
 
 #include <stdint.h>
 #include "IAudioReader.H"
+#include "global_includes.H"
 
 namespace nle
 {

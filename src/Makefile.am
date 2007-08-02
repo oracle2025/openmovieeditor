@@ -228,7 +228,10 @@ openmovieeditor_SOURCES = nle.cxx\
 	ScaleCropTiltFilter.H\
 	ScaleCropTiltDialog.H\
 	ScaleCropTiltDialog.cxx\
-	int_float_scale.H
+	int_float_scale.H\
+	ThreadedAudioFile.H\
+	ThreadedAudioFile.cxx
+
 
 #	ShiftAutomationDragHandler.cxx\
 #	AutomationMoveCommand.H\

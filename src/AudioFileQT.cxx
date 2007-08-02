@@ -79,8 +79,7 @@ void AudioFileQT::seek( int64_t position )
 }
 int AudioFileQT::fillBuffer( float* output, unsigned long frames )
 {
-	static float l_buffer[4096];
-	static float r_buffer[4096];
+	// l_buffer and r_buffer are defined in the class definition
 	float *left_buffer = l_buffer;
 	float *right_buffer = r_buffer;
 	int64_t diff = lqt_last_audio_position( m_qt, 0 );

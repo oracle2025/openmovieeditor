@@ -1,4 +1,4 @@
-/*  ThreadedAudioReader.cxx
+/*  ThreadedAudioFile.cxx
  *
  *  Copyright (C) 2007 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,12 +17,13 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 #include <errno.h>
-#include "ThreadedAudioReader.H"
+#include "ThreadedAudioFile.H"
 #include <string>
 #include <iostream>
 using namespace std;
 
 #include "IAudioFile.H"
+#include "AudioFileFactory.H"
 
 #define DEFAULT_RB_SIZE 16384
 #define FRAMES 4096
@@ -32,26 +33,30 @@ namespace nle
 
 static void* start_audio_reader_thread( void* data )
 {
-	ThreadedAudioReader* reader = (ThreadedAudioReader*)data;
+	ThreadedAudioFile* reader = (ThreadedAudioFile*)data;
 	reader->run();
 	return 0;
 }
 
-ThreadedAudioReader::ThreadedAudioReader( IAudioFile* file )
-	: m_file( file )
+ThreadedAudioFile::ThreadedAudioFile( IAudioFile* file )
 {
 	m_ringBuffer = jack_ringbuffer_create( DEFAULT_RB_SIZE * sizeof(float) * 2 );
-	m_buffer = new float[ FRAMES * 2 ];
 	m_running = true;
 	m_seek = false;
 	m_fileDone = false;
+	
+	m_length = file->length();
+	m_filename = file->filename();
+	m_samplerate = file->samplerate();
+	delete file;
+	
 	pthread_mutex_init( &m_readMutex, 0 );
 	pthread_cond_init( &m_readCondition, 0 );
 	pthread_create( &m_thread, NULL, start_audio_reader_thread, (void*)this );
 	
 }
 
-ThreadedAudioReader::~ThreadedAudioReader()
+ThreadedAudioFile::~ThreadedAudioFile()
 {
 	
 	pthread_mutex_lock( &m_readMutex );
@@ -62,10 +67,9 @@ ThreadedAudioReader::~ThreadedAudioReader()
 	pthread_mutex_destroy( &m_readMutex );
 	pthread_cond_destroy( &m_readCondition );
 	jack_ringbuffer_free( m_ringBuffer );
-	delete [] m_buffer;
 }
 
-int ThreadedAudioReader::fillBuffer( float* output, unsigned long frames )
+int ThreadedAudioFile::fillBuffer( float* output, unsigned long frames )
 {
 	int bytes_read;
 	unsigned int frames_read;
@@ -90,7 +94,7 @@ int ThreadedAudioReader::fillBuffer( float* output, unsigned long frames )
 	return frames;
 }	
 
-void ThreadedAudioReader::seek( int64_t sample )
+void ThreadedAudioFile::seek( int64_t sample )
 {
 	if ( pthread_mutex_trylock( &m_readMutex ) != EBUSY ) {
 		jack_ringbuffer_reset( m_ringBuffer );
@@ -105,24 +109,29 @@ void ThreadedAudioReader::seek( int64_t sample )
 	}
 }
 
-void ThreadedAudioReader::run()
+void ThreadedAudioFile::run()
 {
 	int frames_read;
 	pthread_mutex_lock( &m_readMutex );
+	
+	IAudioFile *af = AudioFileFactory::get( m_filename );
+	float* buffer = new float[ FRAMES * 2 ];
 	while( m_running ) {
 		if ( m_seek ) {
-			m_file->seek( m_sample );
+			af->seek( m_sample );
 			m_seek = false;
 		}
 		while ( !m_fileDone && jack_ringbuffer_write_space( m_ringBuffer ) >= ( FRAMES * sizeof(float) * 2) ) {
-			frames_read = m_file->fillBuffer( m_buffer, FRAMES );
-			jack_ringbuffer_write( m_ringBuffer, (char*)m_buffer, frames_read * sizeof(float) * 2 );
+			frames_read = af->fillBuffer( buffer, FRAMES );
+			jack_ringbuffer_write( m_ringBuffer, (char*)buffer, frames_read * sizeof(float) * 2 );
 			if ( frames_read < FRAMES ) {
 				m_fileDone = true;
 			}
 		}
 		pthread_cond_wait( &m_readCondition, &m_readMutex );
 	}
+	delete af;
+	delete [] buffer;
 	pthread_mutex_unlock( &m_readMutex );
 	//pthread_exit( 0 );
 }
