@@ -43,7 +43,7 @@ AudioClip::AudioClip( Track *track, int64_t position, IAudioFile* af, int64_t tr
 		g_wavArtist->add( af );
 		m_artist = new AudioClipArtist( this );
 		if ( m_audioFile ) {
-			m_audioFile = new ThreadedAudioFile( m_audioFile );
+			//m_audioFile = new ThreadedAudioFile( m_audioFile );
 			m_audioReader = m_audioFile;
 		}
 	}
@@ -60,7 +60,7 @@ AudioClip::AudioClip( Track* track, int64_t position, IAudioFile* af, int id )
 		if ( track->render_mode() ) {
 			m_audioReader = m_audioFile;
 		} else {
-			m_audioFile = new ThreadedAudioFile( m_audioFile );
+			//m_audioFile = new ThreadedAudioFile( m_audioFile );
 			m_audioReader = m_audioFile;
 		}
 	}

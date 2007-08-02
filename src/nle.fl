@@ -2,8 +2,7 @@
 version 1.0107 
 header_name {.h} 
 code_name {.cxx}
-class NleUI {open
-} {
+class NleUI {} {
   Function {NleUI()} {open
   } {
     Fl_Window mainWindow {
@@ -76,7 +75,7 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 //	while ( pDlg.progressDialog->shown() )
 //		Fl::wait();
 //	pDlg.progressDialog->hide();
-}} selected
+}}
             xywh {5 5 100 20} divider
             code0 {\#include "ProgressDialog/ProgressDialog.h"}
             code1 {\#include "Renderer.H"}
@@ -837,8 +836,7 @@ g_backButton = backButton;} {}
 decl {Flmm_Scalebar* g_scrollBar;} {public
 } 
 
-class EncodeDialog {open
-} {
+class EncodeDialog {} {
   Function {EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecParameters* codecParams )} {open
   } {
     Fl_Window encodeDialog {
@@ -1427,6 +1425,95 @@ Function {encoder_2_dlg()} {open
         xywh {350 40 75 25}
         code0 {\#include <stdlib.h>}
         code1 {\#include <FL/Fl_File_Chooser.H>}
+      }
+    }
+  }
+} 
+
+class ExportDialog {open
+} {
+  Function {ExportDialog()} {open
+  } {
+    Fl_Window {} {
+      label Export open selected
+      xywh {342 336 560 400} type Double resizable visible
+    } {
+      Fl_Box {} {
+        label Export
+        xywh {0 0 560 40} labelfont 1 labelsize 16
+      }
+      Fl_File_Input export_filename {
+        label Filename
+        xywh {165 45 205 35}
+      }
+      Fl_Button {} {
+        label {File...}
+        callback {export_filename->value( fl_file_chooser( "Set Export Filename", 0, 0 ) );}
+        xywh {375 55 75 25}
+        code0 {\#include <stdlib.h>}
+        code1 {\#include <FL/Fl_File_Chooser.H>}
+      }
+      Fl_Return_Button {} {
+        label Encode
+        callback {if ( strcmp( "", export_filename->value() ) == 0 ) {
+	if ( audio_codec_menu->value() < 0 && video_codec_menu->value() < 0 ) {
+		fl_alert( "Please select a filename,\\nas well as an Audio and Video Codec." );
+		return;
+	} else if ( audio_codec_menu->value() < 0 ) {
+		fl_alert( "Please select a filename,\\n as well as an Audio Codec." );
+		return;
+	} else if ( video_codec_menu->value() < 0 ) {
+		fl_alert( "Please select a filename,\\n as well as a Video Codec." );
+		return;
+	}
+	fl_alert( "Please select a filename." );
+	return;
+}
+
+if ( audio_codec_menu->value() < 0 || video_codec_menu->value() < 0 ) {
+	fl_alert( "Please select an Audio and Video Codec" );
+	return;
+}
+
+struct stat statbuf;
+int r = stat( export_filename->value(), &statbuf );
+if ( r == 0 ) {
+	r = fl_choice( "File exists, replace?\\nWill be overwritten.", "&Cancel", "&Replace", 0 );
+	if ( r == 0 ) {
+		return;
+	}
+}
+
+//nle::renderMovie();
+go = true;
+o->window()->hide();}
+        xywh {290 365 245 25} hotspot
+        code0 {\#include <sys/types.h>}
+        code1 {\#include <sys/stat.h>}
+        code2 {\#include <unistd.h>}
+      }
+      Fl_Button {} {
+        label Cancel
+        callback {go = false;
+o->window()->hide();}
+        xywh {30 365 245 25}
+      }
+      Fl_Group {} {
+        label Video open
+        xywh {30 100 505 255} box ENGRAVED_FRAME labelfont 1 align 5 resizable
+      } {
+        Fl_Group {} {open
+          xywh {40 125 485 220} resizable
+        } {
+          Fl_Text_Display {} {
+            label Information
+            xywh {285 125 240 220} labelfont 1 align 5
+          }
+          Fl_Browser {} {
+            label Presets
+            xywh {40 125 240 220} labelfont 1 align 5 resizable
+          }
+        }
       }
     }
   }

@@ -62,7 +62,7 @@ VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A,
 			g_wavArtist->add( m_audioFile );
 			//ThreadedAudioFile is not initialized in AudioClip::AudioClip
 			
-			m_audioFile = new ThreadedAudioFile( m_audioFile );
+			//m_audioFile = new ThreadedAudioFile( m_audioFile );
 			m_audioReader = m_audioFile;
 		}
 	}
