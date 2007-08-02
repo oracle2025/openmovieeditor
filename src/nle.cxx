@@ -6766,7 +6766,78 @@ ExportDialog::ExportDialog() {
 }
 
 nle::IVideoFileWriter* ExportDialog::getFileWriter() {
-  quicktime_t* qt;
+  if (presets_browser->value() == 2) {
+	quicktime_t* qt;
+	qt = lqt_open_write ( export_filename->value(), LQT_FILE_AVI_ODML );
+	lqt_codec_info_t** codec = lqt_find_video_codec_by_name( "ffmpeg_msmpeg4v3" );
+	lqt_set_video( qt, 1, 768, 576, 1200, 30000, codec[0] );
+	lqt_destroy_codec_info( codec );
+
+	codec = lqt_find_audio_codec_by_name("lame");
+	lqt_set_audio( qt, 2, 48000, 16, codec[0] );
+	lqt_destroy_codec_info( codec );
+
+	lqt_set_cmodel( qt, 0, BC_RGB888 );
+
+	nle::video_format format;
+
+	format.w = 768;
+	format.h = 576;
+	format.analog_blank = 0;
+	format.aspect_w = 4;
+	format.aspect_h = 3;
+	format.aspect = (4.0 / 3.0);
+	format.interlacing = 0;
+	format.black_pixel_h = 0;
+	format.black_pixel_v = 0;
+	strcpy(format.name, "AVI");
+	format.framerate.frame_duration = 1200;
+	format.framerate.timescale = 30000;
+	format.framerate.audio_frames_per_chunk = 19200;
+	format.framerate.video_frames_per_chunk = 10;
+
+
+	return new nle::VideoWriterQT( qt, format );
+
+}
+
+if (presets_browser->value() == 3) {
+	quicktime_t* qt;
+	qt = lqt_open_write ( export_filename->value(), LQT_FILE_QT );
+	lqt_codec_info_t** codec = lqt_find_video_codec_by_name( "ffmpeg_mpg4" );
+	lqt_set_video( qt, 1, 768, 576, 1200, 30000, codec[0] );
+	lqt_destroy_codec_info( codec );
+
+	codec = lqt_find_audio_codec_by_name("faac");
+	lqt_set_audio( qt, 2, 48000, 16, codec[0] );
+	lqt_destroy_codec_info( codec );
+
+	lqt_set_cmodel( qt, 0, BC_RGB888 );
+
+	nle::video_format format;
+
+	format.w = 768;
+	format.h = 576;
+	format.analog_blank = 0;
+	format.aspect_w = 4;
+	format.aspect_h = 3;
+	format.aspect = (4.0 / 3.0);
+	format.interlacing = 0;
+	format.black_pixel_h = 0;
+	format.black_pixel_v = 0;
+	strcpy(format.name, "Quicktime 7");
+	format.framerate.frame_duration = 1200;
+	format.framerate.timescale = 30000;
+	format.framerate.audio_frames_per_chunk = 19200;
+	format.framerate.video_frames_per_chunk = 10;
+
+
+	return new nle::VideoWriterQT( qt, format );
+
+}
+
+
+quicktime_t* qt;
 qt = lqt_open_write ( export_filename->value(), LQT_FILE_QT );
 lqt_codec_info_t** codec = lqt_find_video_codec( QUICKTIME_DV, 1 );
 lqt_set_video( qt, 1, 720, 576, 1200, 30000, codec[0] );
@@ -6809,5 +6880,8 @@ int ExportDialog::shown() {
 
 void ExportDialog::show() {
   presets_browser->add("Quicktime DV (PAL)");
+presets_browser->add("MSMpeg 4v3, mp3 AVI (768x576)");
+presets_browser->add("Quicktime 7");
+
 dialog_window->show();
 }

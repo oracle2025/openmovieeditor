@@ -276,19 +276,10 @@ void VideoEffectClip::prepareFormat( int ww, int hh, int , int , float aspect, i
 	
 	gavl_pixelformat_t colorspace = GAVL_RGBA_32;
 	m_bits = 4;
-	if ( dynamic_cast<VideoClip*>(this) ) {
-		if ( m_filterClip->getFilters() ) { //TODO has Video Effects?
-			colorspace = GAVL_RGBA_32;
-			m_bits = 4;
-		} else {
-			colorspace = GAVL_RGB_24;
-			m_bits = 3;
-		}
-	} else if ( dynamic_cast<TitleClip*>(this) ) {
-		colorspace = GAVL_RGBA_32;
-		m_bits = 4;
-	} else if ( ImageClip* ic = dynamic_cast<ImageClip*>(this) ) {
-		if ( m_filterClip->getFilters() || ic->getFirstFrame()->has_alpha_channel ) {
+	
+	{
+		frame_struct* f = getFrame( dynamic_cast<Clip*>(this)->position() );
+		if ( f->has_alpha_channel ) {
 			colorspace = GAVL_RGBA_32;
 			m_bits = 4;
 		} else {
