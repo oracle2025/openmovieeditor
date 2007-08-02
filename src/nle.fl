@@ -14,7 +14,7 @@ if ( Fl::event()==FL_CLOSE ) {
 	m_videoView->stop();
 	nle::g_loadSaveManager->shutdown();
 }} open
-      xywh {729 222 700 600} type Double resizable size_range {450 380 0 0} visible
+      xywh {597 232 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
         label {Black Borders}
@@ -38,7 +38,9 @@ if ( Fl::event()==FL_CLOSE ) {
             label {Render...}
             callback {Fl_Group::current( mainWindow );
 nle::CodecParameters cp( nle::g_audio_codec_info, nle::g_video_codec_info );
-EncodeDialog dlg( 0, 0, &cp );
+
+ExportDialog dlg;
+//EncodeDialog dlg( 0, 0, &cp );
 dlg.show();
 while (dlg.shown())
   Fl::wait();
@@ -48,9 +50,10 @@ while (dlg.shown())
 
 if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 	ProgressDialog pDlg( "Rendering Project" );
-	render_frame_size* fs = (render_frame_size*)dlg.frameSize();
-	render_fps_chunks* fps = (render_fps_chunks*)dlg.frameRate();
-	nle::Renderer ren( dlg.export_filename->value(), fs, fps, 48000, &cp );
+	//render_frame_size* fs = (render_frame_size*)dlg.frameSize();
+	//render_fps_chunks* fps = (render_fps_chunks*)dlg.frameRate();
+	nle::Renderer ren( dlg.getFileWriter() );
+	//nle::Renderer ren( dlg.export_filename->value(), fs, fps, 48000, &cp );
 
 	/* stop playback before starting to render... */
 	g_playButton->label( "@>" );
@@ -61,12 +64,12 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 	backButton->activate();
 
 	if ( ren.ok() ) {
-		nle::g_preferences->lastVideoCodec( dlg.video_codec_menu->value() );
+		/*nle::g_preferences->lastVideoCodec( dlg.video_codec_menu->value() );
 		nle::g_preferences->lastAudioCodec( dlg.audio_codec_menu->value() );
 		nle::g_preferences->lastFramesize( dlg.frame_size_choice->value() );
 		nle::g_preferences->lastFramerate( dlg.frame_rate_choice->value() );
 		nle::g_preferences->lastRenderFilename( dlg.export_filename->value() );
-	
+	*/
 		ren.go( &pDlg );
 	}
 	
@@ -836,12 +839,13 @@ g_backButton = backButton;} {}
 decl {Flmm_Scalebar* g_scrollBar;} {public
 } 
 
-class EncodeDialog {} {
+class EncodeDialog {open
+} {
   Function {EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecParameters* codecParams )} {open
   } {
     Fl_Window encodeDialog {
-      label Render open
-      private xywh {335 200 485 400} type Double
+      label Render
+      private xywh {106 719 485 400} type Double
       code0 {\#include "IVideoReader.H"}
       code1 {\#include "IAudioReader.H"} modal visible
     } {
@@ -1102,11 +1106,11 @@ encodeDialog->show();} {}
     code {delete encodeDialog;} {}
   }
   decl {nle::CodecParameters* m_codecParams;} {}
-  Function {frameSize()} {open return_type {void*}
+  Function {frameSize()} {return_type {void*}
   } {
     code {return frame_size_choice->mvalue()->user_data();} {}
   }
-  Function {frameRate()} {open return_type {void*}
+  Function {frameRate()} {return_type {void*}
   } {
     code {return frame_rate_choice->mvalue()->user_data();} {}
   }
@@ -1434,9 +1438,11 @@ class ExportDialog {open
 } {
   Function {ExportDialog()} {open
   } {
-    Fl_Window {} {
-      label Export open selected
-      xywh {342 336 560 400} type Double resizable visible
+    Fl_Window dialog_window {
+      label Export open
+      xywh {297 625 560 400} type Double resizable
+      code0 {\#include "VideoWriterQT.H"}
+      code1 {\#include <colormodels.h>} visible
     } {
       Fl_Box {} {
         label Export
@@ -1456,24 +1462,10 @@ class ExportDialog {open
       Fl_Return_Button {} {
         label Encode
         callback {if ( strcmp( "", export_filename->value() ) == 0 ) {
-	if ( audio_codec_menu->value() < 0 && video_codec_menu->value() < 0 ) {
-		fl_alert( "Please select a filename,\\nas well as an Audio and Video Codec." );
-		return;
-	} else if ( audio_codec_menu->value() < 0 ) {
-		fl_alert( "Please select a filename,\\n as well as an Audio Codec." );
-		return;
-	} else if ( video_codec_menu->value() < 0 ) {
-		fl_alert( "Please select a filename,\\n as well as a Video Codec." );
-		return;
-	}
 	fl_alert( "Please select a filename." );
 	return;
 }
 
-if ( audio_codec_menu->value() < 0 || video_codec_menu->value() < 0 ) {
-	fl_alert( "Please select an Audio and Video Codec" );
-	return;
-}
 
 struct stat statbuf;
 int r = stat( export_filename->value(), &statbuf );
@@ -1484,7 +1476,7 @@ if ( r == 0 ) {
 	}
 }
 
-//nle::renderMovie();
+
 go = true;
 o->window()->hide();}
         xywh {290 365 245 25} hotspot
@@ -1509,12 +1501,62 @@ o->window()->hide();}
             label Information
             xywh {285 125 240 220} labelfont 1 align 5
           }
-          Fl_Browser {} {
-            label Presets
+          Fl_Browser presets_browser {
+            label Presets selected
             xywh {40 125 240 220} labelfont 1 align 5 resizable
+            class Fl_Hold_Browser
           }
         }
       }
     }
+  }
+  Function {getFileWriter()} {open return_type {nle::IVideoFileWriter*}
+  } {
+    code {quicktime_t* qt;
+qt = lqt_open_write ( export_filename->value(), LQT_FILE_QT );
+lqt_codec_info_t** codec = lqt_find_video_codec( QUICKTIME_DV, 1 );
+lqt_set_video( qt, 1, 720, 576, 1200, 30000, codec[0] );
+lqt_destroy_codec_info( codec );
+
+codec = lqt_find_audio_codec( QUICKTIME_TWOS, 1 );
+lqt_set_audio( qt, 2, 48000, 16, codec[0] );
+lqt_destroy_codec_info( codec );
+
+lqt_set_cmodel( qt, 0, BC_RGB888 );
+
+nle::video_format format;
+
+format.w = 720;
+format.h = 576;
+format.analog_blank = 10;
+format.aspect_w = 4;
+format.aspect_h = 3;
+format.aspect = (4.0 / 3.0);
+format.interlacing = 0;
+format.black_pixel_h = 0;
+format.black_pixel_v = 0;
+strcpy(format.name, "Quicktime DV");
+format.framerate.frame_duration = 1200;
+format.framerate.timescale = 30000;
+format.framerate.audio_frames_per_chunk = 19200;
+format.framerate.video_frames_per_chunk = 10;
+
+
+return new nle::VideoWriterQT( qt, format );} {}
+  }
+  decl {bool go;} {public
+  }
+  Function {~ExportDialog()} {open
+  } {
+    code {delete dialog_window;} {}
+  }
+  Function {shown()} {open return_type int
+  } {
+    code {return dialog_window->shown();} {}
+  }
+  Function {show()} {open
+  } {
+    code {presets_browser->add("Quicktime DV (PAL)");
+dialog_window->show();} {}
   }
 } 

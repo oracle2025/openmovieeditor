@@ -22,6 +22,7 @@
 
 #include <lqt.h>
 #include "global_includes.H"
+#include "IVideoFileWriter.H"
 
 typedef struct
 {
@@ -66,7 +67,8 @@ class Timeline;
 class Renderer
 {
 	public:
-		Renderer( string filename, render_frame_size* format, render_fps_chunks* framerate, int samplerate, CodecParameters* params = 0 );
+		/*Renderer( string filename, render_frame_size* format, render_fps_chunks* framerate, int samplerate, CodecParameters* params = 0 );*/
+		Renderer( IVideoFileWriter* writer );
 		~Renderer();
 		void go( IProgressListener* l = 0 );
 		bool ok();
@@ -77,6 +79,7 @@ class Renderer
 		int m_samplerate;
 		Timeline* p_timeline;
 		render_fps_chunks m_fps;
+		IVideoFileWriter* m_writer;
 };
 
 } /* namespace nle */

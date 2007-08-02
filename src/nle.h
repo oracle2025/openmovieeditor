@@ -302,6 +302,8 @@ extern Flmm_Scalebar* g_scrollBar;
 #include <FL/Fl_File_Input.H>
 #include <stdlib.h>
 #include <FL/Fl_File_Chooser.H>
+#include <FL/Fl_Spinner.H>
+#include <FL/Fl_Menu_Button.H>
 
 class EncodeDialog {
 public:
@@ -342,6 +344,8 @@ private:
   static void cb_File(Fl_Button*, void*);
   static Fl_Menu_Item menu_Interlacing[];
 public:
+  Fl_Spinner *frame_size_w;
+  Fl_Spinner *frame_size_h;
   void show();
   int shown();
 private:
@@ -436,4 +440,28 @@ extern Fl_Menu_Item menu_Framesize[];
 extern Fl_Menu_Item menu_Samplerate1[];
 extern Fl_Menu_Item menu_Quality[];
 extern Fl_Menu_Item menu_Aspect[];
+#include "VideoWriterQT.H"
+#include <colormodels.h>
+#include <FL/Fl_Text_Display.H>
+
+class ExportDialog {
+public:
+  ExportDialog();
+  Fl_Double_Window *dialog_window;
+  Fl_File_Input *export_filename;
+private:
+  void cb_File2_i(Fl_Button*, void*);
+  static void cb_File2(Fl_Button*, void*);
+  void cb_Encode1_i(Fl_Return_Button*, void*);
+  static void cb_Encode1(Fl_Return_Button*, void*);
+  void cb_Cancel2_i(Fl_Button*, void*);
+  static void cb_Cancel2(Fl_Button*, void*);
+public:
+  Fl_Hold_Browser *presets_browser;
+  nle::IVideoFileWriter* getFileWriter();
+  bool go;
+  ~ExportDialog();
+  int shown();
+  void show();
+};
 #endif

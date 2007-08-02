@@ -230,7 +230,12 @@ openmovieeditor_SOURCES = nle.cxx\
 	ScaleCropTiltDialog.cxx\
 	int_float_scale.H\
 	ThreadedAudioFile.H\
-	ThreadedAudioFile.cxx
+	ThreadedAudioFile.cxx\
+	video_format.H\
+	IVideoFileWriter.H\
+	VideoWriterQT.H\
+	VideoWriterQT.cxx
+	
 
 
 #	ShiftAutomationDragHandler.cxx\

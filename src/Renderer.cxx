@@ -53,12 +53,43 @@ render_fps_chunks fps60x48000 =    { 500,  30000, 16000, 20 };
 namespace nle
 {
 
-static quicktime_t *qt;
+//static quicktime_t *qt;
 
 
-Renderer::Renderer( string filename, render_frame_size* format, render_fps_chunks* framerate, int samplerate, CodecParameters* params )
+/*Renderer::Renderer( string filename, render_frame_size* format, render_fps_chunks* framerate, int samplerate, CodecParameters* params )*/
+Renderer::Renderer( IVideoFileWriter* writer )
 {
+	char buffer[1024];
+	m_writer = writer;
 	p_timeline = 0;
+	Timeline* x = g_timeline;
+	p_timeline = new Timeline();
+	g_timeline = x;
+
+	p_timeline->render_mode( true );
+	string temp_filename;
+	strcpy( buffer,"OME_RENDER_XXXXXX" );
+	temp_filename = string(g_homefolder);
+	
+	temp_filename += ("/.openme/temp" PREF_FILE_ADD);
+	temp_filename += buffer;
+	g_timeline->write( temp_filename, "" );
+
+	p_timeline->read( temp_filename );
+
+	m_w = m_writer->format()->w;
+	m_h = m_writer->format()->h;
+	m_samplerate = m_writer->samplerate();
+	m_fps.frame_duration = m_writer->format()->framerate.frame_duration;
+	m_fps.timescale = m_writer->format()->framerate.timescale;
+	m_fps.audio_frames_per_chunk = m_writer->format()->framerate.audio_frames_per_chunk;
+	m_fps.video_frames_per_chunk = m_writer->format()->framerate.video_frames_per_chunk;
+		
+	p_timeline->prepareFormat( m_w, m_h, m_writer->format()->aspect_w, m_writer->format()->aspect_h, m_writer->format()->aspect, m_writer->format()->analog_blank );
+
+	
+	
+/*	p_timeline = 0;
 	char buffer[1024];
 	m_w = format->w;
 	m_h = format->h;
@@ -91,23 +122,25 @@ Renderer::Renderer( string filename, render_frame_size* format, render_fps_chunk
 
 	p_timeline->read( temp_filename );
 	
-	p_timeline->prepareFormat( m_w, m_h, format->aspect_w, format->aspect_h, format->aspect, format->analog_blank );
+	p_timeline->prepareFormat( m_w, m_h, format->aspect_w, format->aspect_h, format->aspect, format->analog_blank );*/
 
 	return;
 }
 bool Renderer::ok() {
-	return qt;
+	return true;
+//	return qt;
 }
 Renderer::~Renderer()
 {
-	if (qt)
-		quicktime_close( qt );
+	/*if (qt)
+		quicktime_close( qt );*/
 	p_timeline->unPrepareFormat();
 	if ( p_timeline ) {
 		Timeline* x = g_timeline;
 		delete p_timeline;
 		g_timeline = x;
 	}
+	delete m_writer;
 }
 
 //#define AUDIO_BUFFER_SIZE 480
@@ -116,9 +149,9 @@ Renderer::~Renderer()
 void Renderer::go( IProgressListener* l )
 {
 	
-	if ( !qt ) {
+/*	if ( !qt ) {
 		return;
-	}
+	}*/
 	if ( l ) {
 		l->start();
 	}
@@ -163,15 +196,17 @@ void Renderer::go( IProgressListener* l )
 	do {
 		res = p_timeline->fillBuffer( buffer, m_fps.audio_frames_per_chunk );
 		p_timeline->sampleseek( 0, m_fps.audio_frames_per_chunk );
-		for ( int i = 0; i < res; i++ ) {
+		m_writer->encodeAudioFrame( buffer, res );
+/*		for ( int i = 0; i < res; i++ ) {
 			left_buffer[i] = buffer[i*2];
 			right_buffer[i] = buffer[i*2+1];
 		}
-		lqt_encode_audio_track( qt, 0, buffer_p, res, 0 );
+		lqt_encode_audio_track( qt, 0, buffer_p, res, 0 );*/
 		for ( int i = 0; i < m_fps.video_frames_per_chunk; i++ ) {
 			p_timeline->getBlendedFrame( position, &enc_frame );
 			position += frame_length;
-			quicktime_encode_video( qt, enc_frame.rows, 0 );
+			m_writer->encodeVideoFrame( &enc_frame );
+			//quicktime_encode_video( qt, enc_frame.rows, 0 );
 			current_frame++;
 			if ( l ) {
 				if ( l->progress( (double)current_frame / length ) ) {

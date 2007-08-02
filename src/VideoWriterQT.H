@@ -21,6 +21,7 @@
 #define _VIDEO_WRITER_QT_H_
 
 #include "IVideoFileWriter.H"
+#include "video_format.H"
 #include <lqt.h>
 
 namespace nle
@@ -29,14 +30,18 @@ namespace nle
 class VideoWriterQT : public IVideoFileWriter
 {
 	public:
-		VideoWriterQT( quicktime_t *qt );
+		VideoWriterQT( quicktime_t *qt, video_format &format );
 		~VideoWriterQT();
 		void encodeVideoFrame( frame_struct* frame );
 		void encodeAudioFrame( float* buffer, int frames );
+		video_format* format() { return &m_format; }
+		int samplerate() { return m_samplerate; }
 	private:
 		quicktime_t *m_qt;
 		float left_buffer[32000];
 		float right_buffer[32000];
+		video_format m_format;
+		int m_samplerate;
 };
 
 	

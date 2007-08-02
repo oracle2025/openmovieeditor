@@ -22,23 +22,25 @@
 
 namespace nle
 {
-VideoWriterQT::VideoWriterQT( quicktime_t *qt )
+VideoWriterQT::VideoWriterQT( quicktime_t *qt, video_format &format )
 {
 	m_qt = qt;
+	m_format = format;
+	m_samplerate = quicktime_sample_rate( m_qt, 0 );
 }
-~VideoWriterQT()
+VideoWriterQT::~VideoWriterQT()
 {
 	quicktime_close( m_qt );
 }
-void encodeVideoFrame( frame_struct* frame )
+void VideoWriterQT::encodeVideoFrame( frame_struct* frame )
 {
-	quicktime_encode_video( qt, frame->rows, 0 );
+	quicktime_encode_video( m_qt, frame->rows, 0 );
 }
-void encodeAudioFrame( float* buffer, int frames )
+void VideoWriterQT::encodeAudioFrame( float* buffer, int frames )
 {
 	float *buffer_p[2] = { left_buffer, right_buffer };
 	assert( frames <= 32000 );
-	for ( int i = 0; i < res; i++ ) {
+	for ( int i = 0; i < frames; i++ ) {
 		left_buffer[i] = buffer[i*2];
 		right_buffer[i] = buffer[i*2+1];
 	}

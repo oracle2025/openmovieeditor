@@ -32,7 +32,9 @@ void NleUI::cb_Save(Fl_Menu_* o, void* v) {
 void NleUI::cb_Render_i(Fl_Menu_*, void*) {
   Fl_Group::current( mainWindow );
 nle::CodecParameters cp( nle::g_audio_codec_info, nle::g_video_codec_info );
-EncodeDialog dlg( 0, 0, &cp );
+
+ExportDialog dlg;
+//EncodeDialog dlg( 0, 0, &cp );
 dlg.show();
 while (dlg.shown())
   Fl::wait();
@@ -42,9 +44,10 @@ while (dlg.shown())
 
 if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 	ProgressDialog pDlg( "Rendering Project" );
-	render_frame_size* fs = (render_frame_size*)dlg.frameSize();
-	render_fps_chunks* fps = (render_fps_chunks*)dlg.frameRate();
-	nle::Renderer ren( dlg.export_filename->value(), fs, fps, 48000, &cp );
+	//render_frame_size* fs = (render_frame_size*)dlg.frameSize();
+	//render_fps_chunks* fps = (render_fps_chunks*)dlg.frameRate();
+	nle::Renderer ren( dlg.getFileWriter() );
+	//nle::Renderer ren( dlg.export_filename->value(), fs, fps, 48000, &cp );
 
 	/* stop playback before starting to render... */
 	g_playButton->label( "@>" );
@@ -55,12 +58,12 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 	backButton->activate();
 
 	if ( ren.ok() ) {
-		nle::g_preferences->lastVideoCodec( dlg.video_codec_menu->value() );
+		/*nle::g_preferences->lastVideoCodec( dlg.video_codec_menu->value() );
 		nle::g_preferences->lastAudioCodec( dlg.audio_codec_menu->value() );
 		nle::g_preferences->lastFramesize( dlg.frame_size_choice->value() );
 		nle::g_preferences->lastFramerate( dlg.frame_rate_choice->value() );
 		nle::g_preferences->lastRenderFilename( dlg.export_filename->value() );
-	
+	*/
 		ren.go( &pDlg );
 	}
 	
@@ -1499,7 +1502,7 @@ EncodeDialog::EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecPa
           o->down_box(FL_BORDER_BOX);
           o->menu(menu_frame_rate_choice);
         }
-        { Fl_Choice* o = frame_size_choice = new Fl_Choice(145, 190, 205, 25, "Framesize");
+        { Fl_Choice* o = frame_size_choice = new Fl_Choice(145, 190, 115, 25, "Framesize");
           o->down_box(FL_BORDER_BOX);
           o->menu(menu_frame_size_choice);
         }
@@ -1526,6 +1529,10 @@ EncodeDialog::EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecPa
         { Fl_Choice* o = new Fl_Choice(145, 220, 205, 25, "Interlacing");
           o->down_box(FL_BORDER_BOX);
           o->menu(menu_Interlacing);
+        }
+        frame_size_w = new Fl_Spinner(260, 190, 55, 25);
+        frame_size_h = new Fl_Spinner(315, 190, 55, 25);
+        { Fl_Menu_Button* o = new Fl_Menu_Button(370, 190, 70, 25, "Preset");
         }
         o->end();
       }
@@ -6666,4 +6673,141 @@ Fl_Double_Window* encoder_2_dlg() {
     o->end();
   }
   return w;
+}
+
+void ExportDialog::cb_File2_i(Fl_Button*, void*) {
+  export_filename->value( fl_file_chooser( "Set Export Filename", 0, 0 ) );
+}
+void ExportDialog::cb_File2(Fl_Button* o, void* v) {
+  ((ExportDialog*)(o->parent()->user_data()))->cb_File2_i(o,v);
+}
+
+void ExportDialog::cb_Encode1_i(Fl_Return_Button* o, void*) {
+  if ( strcmp( "", export_filename->value() ) == 0 ) {
+	fl_alert( "Please select a filename." );
+	return;
+}
+
+
+struct stat statbuf;
+int r = stat( export_filename->value(), &statbuf );
+if ( r == 0 ) {
+	r = fl_choice( "File exists, replace?\nWill be overwritten.", "&Cancel", "&Replace", 0 );
+	if ( r == 0 ) {
+		return;
+	}
+}
+
+
+go = true;
+o->window()->hide();
+}
+void ExportDialog::cb_Encode1(Fl_Return_Button* o, void* v) {
+  ((ExportDialog*)(o->parent()->user_data()))->cb_Encode1_i(o,v);
+}
+
+void ExportDialog::cb_Cancel2_i(Fl_Button* o, void*) {
+  go = false;
+o->window()->hide();
+}
+void ExportDialog::cb_Cancel2(Fl_Button* o, void* v) {
+  ((ExportDialog*)(o->parent()->user_data()))->cb_Cancel2_i(o,v);
+}
+
+ExportDialog::ExportDialog() {
+  Fl_Double_Window* w;
+  { Fl_Double_Window* o = dialog_window = new Fl_Double_Window(560, 400, "Export");
+    w = o;
+    o->user_data((void*)(this));
+    { Fl_Box* o = new Fl_Box(0, 0, 560, 40, "Export");
+      o->labelfont(1);
+      o->labelsize(16);
+    }
+    export_filename = new Fl_File_Input(165, 45, 205, 35, "Filename");
+    { Fl_Button* o = new Fl_Button(375, 55, 75, 25, "File...");
+      o->callback((Fl_Callback*)cb_File2);
+    }
+    { Fl_Return_Button* o = new Fl_Return_Button(290, 365, 245, 25, "Encode");
+      o->callback((Fl_Callback*)cb_Encode1);
+      w->hotspot(o);
+    }
+    { Fl_Button* o = new Fl_Button(30, 365, 245, 25, "Cancel");
+      o->callback((Fl_Callback*)cb_Cancel2);
+    }
+    { Fl_Group* o = new Fl_Group(30, 100, 505, 255, "Video");
+      o->box(FL_ENGRAVED_FRAME);
+      o->labelfont(1);
+      o->align(FL_ALIGN_TOP_LEFT);
+      { Fl_Group* o = new Fl_Group(40, 125, 485, 220);
+        { Fl_Text_Display* o = new Fl_Text_Display(285, 125, 240, 220, "Information");
+          o->labelfont(1);
+          o->align(FL_ALIGN_TOP_LEFT);
+        }
+        { Fl_Hold_Browser* o = presets_browser = new Fl_Hold_Browser(40, 125, 240, 220, "Presets");
+          o->box(FL_NO_BOX);
+          o->color(FL_BACKGROUND2_COLOR);
+          o->selection_color(FL_SELECTION_COLOR);
+          o->labeltype(FL_NORMAL_LABEL);
+          o->labelfont(1);
+          o->labelsize(14);
+          o->labelcolor(FL_FOREGROUND_COLOR);
+          o->align(FL_ALIGN_TOP_LEFT);
+          o->when(FL_WHEN_RELEASE_ALWAYS);
+          Fl_Group::current()->resizable(o);
+        }
+        o->end();
+        Fl_Group::current()->resizable(o);
+      }
+      o->end();
+      Fl_Group::current()->resizable(o);
+    }
+    o->end();
+  }
+}
+
+nle::IVideoFileWriter* ExportDialog::getFileWriter() {
+  quicktime_t* qt;
+qt = lqt_open_write ( export_filename->value(), LQT_FILE_QT );
+lqt_codec_info_t** codec = lqt_find_video_codec( QUICKTIME_DV, 1 );
+lqt_set_video( qt, 1, 720, 576, 1200, 30000, codec[0] );
+lqt_destroy_codec_info( codec );
+
+codec = lqt_find_audio_codec( QUICKTIME_TWOS, 1 );
+lqt_set_audio( qt, 2, 48000, 16, codec[0] );
+lqt_destroy_codec_info( codec );
+
+lqt_set_cmodel( qt, 0, BC_RGB888 );
+
+nle::video_format format;
+
+format.w = 720;
+format.h = 576;
+format.analog_blank = 10;
+format.aspect_w = 4;
+format.aspect_h = 3;
+format.aspect = (4.0 / 3.0);
+format.interlacing = 0;
+format.black_pixel_h = 0;
+format.black_pixel_v = 0;
+strcpy(format.name, "Quicktime DV");
+format.framerate.frame_duration = 1200;
+format.framerate.timescale = 30000;
+format.framerate.audio_frames_per_chunk = 19200;
+format.framerate.video_frames_per_chunk = 10;
+
+
+return new nle::VideoWriterQT( qt, format );
+}
+
+ExportDialog::~ExportDialog() {
+  delete dialog_window;
+}
+
+int ExportDialog::shown() {
+  return dialog_window->shown();
+}
+
+void ExportDialog::show() {
+  presets_browser->add("Quicktime DV (PAL)");
+dialog_window->show();
 }

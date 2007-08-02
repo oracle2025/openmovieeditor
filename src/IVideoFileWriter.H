@@ -20,6 +20,8 @@
 #ifndef _I_VIDEO_FILE_WRITER_H_
 #define _I_VIDEO_FILE_WRITER_H_
 
+#include "video_format.H"
+#include "frame_struct.h"
 
 namespace nle
 {
@@ -30,6 +32,8 @@ class IVideoFileWriter
 		virtual ~IVideoFileWriter() {}
 		virtual void encodeVideoFrame( frame_struct* frame ) = 0;
 		virtual void encodeAudioFrame( float* buffer, int frames ) = 0;
+		virtual video_format* format() = 0;
+		virtual int samplerate() = 0;
 };
 
 	
