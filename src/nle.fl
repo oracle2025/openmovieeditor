@@ -76,7 +76,7 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 //	while ( pDlg.progressDialog->shown() )
 //		Fl::wait();
 //	pDlg.progressDialog->hide();
-}}
+}} selected
             xywh {5 5 100 20} divider
             code0 {\#include "ProgressDialog/ProgressDialog.h"}
             code1 {\#include "Renderer.H"}
@@ -316,7 +316,7 @@ m_videoView->redraw();}
                 callback {zoom_slider->value( 0 );
 m_videoView->zoom( 0 );
 m_videoView->invalidate();
-m_videoView->redraw();} selected
+m_videoView->redraw();}
                 tooltip {Reset Zoom} xywh {675 320 25 25}
               }
             }
@@ -964,7 +964,7 @@ m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
           }
           Fl_Choice frame_size_choice {
             label Framesize open
-            xywh {145 190 205 25} down_box BORDER_BOX
+            xywh {145 190 115 25} down_box BORDER_BOX
           } {
             MenuItem {} {
               label {720x576 (PAL 4:3) DV, DVD}
@@ -1056,6 +1056,16 @@ m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
               xywh {0 0 100 20}
             }
           }
+          Fl_Spinner frame_size_w {
+            xywh {260 190 55 25}
+          }
+          Fl_Spinner frame_size_h {
+            xywh {315 190 55 25}
+          }
+          Fl_Menu_Button {} {
+            label Preset open
+            xywh {370 190 70 25}
+          } {}
         }
       }
     }
@@ -1228,7 +1238,7 @@ class AboutDialog {} {
   } {
     Fl_Window aboutDialog {
       label {About Dialog} open
-      xywh {372 286 340 370} type Double modal visible
+      xywh {877 631 340 370} type Double modal visible
     } {
       Fl_Box {} {
         image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/logo.xpm} xywh {0 0 340 155}

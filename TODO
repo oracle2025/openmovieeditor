@@ -49,3 +49,4 @@ compile with -Wextra, hint: If you don't intend to use a parameter, don't give i
 remove Timeout for Project-Saving
 
 use llrint instead of rintl in SimplePlaybackCore
+Clip-Name for Effect Plugin Windows

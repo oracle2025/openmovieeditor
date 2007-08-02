@@ -45,8 +45,10 @@ AudioClip::AudioClip( Track *track, int64_t position, IAudioFile* af, int64_t tr
 		g_wavArtist->add( af );
 		m_artist = new AudioClipArtist( this );
 		if ( m_audioFile ) {
-			m_threadedReader = new ThreadedAudioReader( m_audioFile );
-			m_audioReader = m_threadedReader;
+			//FIXME: Debugging:
+			/*m_threadedReader = new ThreadedAudioReader( m_audioFile );
+			m_audioReader = m_threadedReader;*/
+			m_audioReader = m_audioFile;
 		}
 	}
 }
