@@ -3,6 +3,7 @@
 #ifndef nle_h
 #define nle_h
 #include <FL/Fl.H>
+#include "EncodingPreset.H"
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Menu_Bar.H>
 #include "ProgressDialog/ProgressDialog.h"
@@ -19,6 +20,7 @@
 #include <FL/Fl_Group.H>
 #include "VideoViewGL.H"
 #include <FL/Fl_Slider.H>
+#include "IPlaybackCore.H"
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Tabs.H>
 #include "FileBrowser.H"
@@ -457,11 +459,76 @@ private:
   void cb_Cancel2_i(Fl_Button*, void*);
   static void cb_Cancel2(Fl_Button*, void*);
 public:
+  Fl_Text_Display *information_display;
   Fl_Hold_Browser *presets_browser;
+private:
+  void cb_presets_browser_i(Fl_Hold_Browser*, void*);
+  static void cb_presets_browser(Fl_Hold_Browser*, void*);
+  void cb_Create_i(Fl_Button*, void*);
+  static void cb_Create(Fl_Button*, void*);
+  void cb_Edit_i(Fl_Button*, void*);
+  static void cb_Edit(Fl_Button*, void*);
+public:
   nle::IVideoFileWriter* getFileWriter();
   bool go;
   ~ExportDialog();
   int shown();
   void show();
+};
+#include <FL/Fl_Output.H>
+#include <FL/Fl_Check_Button.H>
+
+class CustomFormatDialog {
+  void *audio_codec;
+  void* video_codec;
+  nle::CodecParameters* m_codecParams;
+public:
+  CustomFormatDialog();
+  Fl_Double_Window *dialog_window;
+  Fl_Choice *video_codec_menu;
+private:
+  void cb_video_codec_menu1_i(Fl_Choice*, void*);
+  static void cb_video_codec_menu1(Fl_Choice*, void*);
+  Fl_Button *video_options;
+  void cb_video_options1_i(Fl_Button*, void*);
+  static void cb_video_options1(Fl_Button*, void*);
+public:
+  Fl_Choice *audio_codec_menu;
+private:
+  void cb_audio_codec_menu1_i(Fl_Choice*, void*);
+  static void cb_audio_codec_menu1(Fl_Choice*, void*);
+  Fl_Button *audio_options;
+  void cb_audio_options1_i(Fl_Button*, void*);
+  static void cb_audio_options1(Fl_Button*, void*);
+public:
+  Fl_Choice *samplerate;
+  static Fl_Menu_Item menu_samplerate[];
+  Fl_Input *name;
+  Fl_Choice *frame_rate_choice;
+  static Fl_Menu_Item menu_frame_rate_choice1[];
+  Fl_Spinner *frame_size_w;
+  Fl_Spinner *frame_size_h;
+  Fl_Spinner *aspect_w;
+  Fl_Spinner *aspect_h;
+  Fl_Choice *interlacing;
+  static Fl_Menu_Item menu_interlacing[];
+  Fl_Spinner *black_pixel_v;
+  Fl_Spinner *black_pixel_h;
+  Fl_Spinner *analog_blank;
+  Fl_Output *pixel_aspect;
+private:
+  void cb_Save1_i(Fl_Return_Button*, void*);
+  static void cb_Save1(Fl_Return_Button*, void*);
+  void cb_Cancel3_i(Fl_Button*, void*);
+  static void cb_Cancel3(Fl_Button*, void*);
+public:
+  int shown();
+  void show();
+  ~CustomFormatDialog();
+  nle::EncodingPreset* getEncodingPreset();
+private:
+  bool go;
+public:
+  void setEncodingPreset(nle::EncodingPreset* preset);
 };
 #endif

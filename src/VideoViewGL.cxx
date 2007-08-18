@@ -111,7 +111,8 @@ void VideoViewGL::drawVideoBorder()
 				gl_h = 10.0;
 				gl_w = f_g * 10.0;
 			}
-			gl_h = gl_h / ( ( 16.0 / 9.0 ) / ( 4.0 / 3.0 ) );
+			//gl_h = gl_h / ( ( 16.0 / 9.0 ) / ( 4.0 / 3.0 ) );
+			gl_h = gl_h / ( ( 2.35 / 1.0 ) / ( 4.0 / 3.0 ) );
 			gl_x = ( 10.0 - gl_w ) / 2;
 			gl_y = ( 10.0 - gl_h ) / 2;
 

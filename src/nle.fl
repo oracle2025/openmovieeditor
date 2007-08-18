@@ -2,6 +2,11 @@
 version 1.0107 
 header_name {.h} 
 code_name {.cxx}
+decl {\#include <tinyxml.h>} {} 
+
+decl {\#include "EncodingPreset.H"} {public
+} 
+
 class NleUI {} {
   Function {NleUI()} {open
   } {
@@ -14,7 +19,7 @@ if ( Fl::event()==FL_CLOSE ) {
 	m_videoView->stop();
 	nle::g_loadSaveManager->shutdown();
 }} open
-      xywh {597 232 700 600} type Double resizable size_range {450 380 0 0} visible
+      xywh {579 169 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
         label {Black Borders}
@@ -311,8 +316,11 @@ while (dlg.shown())
               Fl_Slider zoom_slider {
                 callback {m_videoView->zoom( o->value() );
 m_videoView->invalidate();
-m_videoView->redraw();}
+if (!nle::g_playbackCore->active()) {
+	m_videoView->redraw();
+}}
                 tooltip Zoom xywh {675 25 25 295} type {Vert Knob} minimum -1 resizable
+                code0 {\#include "IPlaybackCore.H"}
               }
               Fl_Button {} {
                 callback {zoom_slider->value( 0 );
@@ -845,7 +853,7 @@ class EncodeDialog {open
   } {
     Fl_Window encodeDialog {
       label Render
-      private xywh {106 719 485 400} type Double
+      private xywh {465 137 485 400} type Double
       code0 {\#include "IVideoReader.H"}
       code1 {\#include "IAudioReader.H"} modal visible
     } {
@@ -1240,7 +1248,7 @@ class AboutDialog {} {
   } {
     Fl_Window aboutDialog {
       label {About Dialog} open
-      xywh {877 631 340 370} type Double modal visible
+      xywh {877 399 340 370} type Double modal visible
     } {
       Fl_Box {} {
         image {/home/oracle/Projekte/OpenME/code/openme-developers/icons/logo.xpm} xywh {0 0 340 155}
@@ -1342,8 +1350,7 @@ dlg->hide();} {}
 decl {Fl_Font titleFont;} {public
 } 
 
-Function {encoder_2_dlg()} {open
-} {
+Function {encoder_2_dlg()} {} {
   Fl_Window {} {open
     xywh {360 533 475 315} type Double hide
   } {
@@ -1440,9 +1447,9 @@ class ExportDialog {open
   } {
     Fl_Window dialog_window {
       label Export open
-      xywh {297 625 560 400} type Double resizable
+      xywh {306 258 560 400} type Double resizable
       code0 {\#include "VideoWriterQT.H"}
-      code1 {\#include <colormodels.h>} visible
+      code1 {\#include <colormodels.h>} modal visible
     } {
       Fl_Box {} {
         label Export
@@ -1497,18 +1504,91 @@ o->window()->hide();}
         Fl_Group {} {open
           xywh {40 125 485 220} resizable
         } {
-          Fl_Text_Display {} {
+          Fl_Text_Display information_display {
             label Information
             xywh {285 125 240 220} labelfont 1 align 5
           }
           Fl_Browser presets_browser {
             label Presets
-            xywh {40 125 240 220} labelfont 1 align 5 resizable
+            callback {if ( o->value() > 0 ) {
+	information_display->buffer()->text(o->text(o->value()));
+}}
+            xywh {40 125 240 170} labelfont 1 align 5 resizable
             class Fl_Hold_Browser
+          }
+          Fl_Button {} {
+            label {Create Custom Video Format...}
+            callback {CustomFormatDialog dlg;
+dlg.show();
+while (dlg.shown())
+  Fl::wait();
+  
+nle::EncodingPreset* preset = dlg.getEncodingPreset();
+
+
+if ( preset ) {
+	nle::video_format fmt;
+	preset->getFormat(&fmt);
+	presets_browser->add(fmt.name, preset);
+}}
+            xywh {40 295 240 25}
+          }
+          Fl_Button {} {
+            label {Edit Custom Video Format...}
+            callback {CustomFormatDialog dlg;
+
+nle::EncodingPreset* preset = (nle::EncodingPreset*)presets_browser->data(presets_browser->value());
+
+dlg.setEncodingPreset(preset);
+if ( !preset ) {
+	return;
+}
+
+dlg.show();
+while (dlg.shown())
+  Fl::wait();
+
+
+nle::EncodingPreset* preset_new = dlg.getEncodingPreset();
+
+
+if ( preset_new ) {
+	nle::video_format fmt;
+	preset->getFormat(&fmt);
+	delete preset;
+	
+	presets_browser->data(presets_browser->value(), preset_new);
+	presets_browser->text(presets_browser->value(), fmt.name);
+}}
+            xywh {40 320 240 25}
           }
         }
       }
     }
+    code {information_display->buffer(new Fl_Text_Buffer);
+presets_browser->add("Quicktime DV (PAL)");
+presets_browser->add("MSMpeg 4v3, mp3 AVI (768x576)");
+presets_browser->add("Quicktime 7");
+
+//Load Presets XML
+string presets_filename = "";
+presets_filename += getenv("HOME");
+presets_filename += ("/.openme.presets" PREF_FILE_ADD);
+TiXmlDocument doc( presets_filename.c_str() );
+if ( !doc.LoadFile() ) {
+	return;
+}
+TiXmlHandle docH( &doc );
+
+TiXmlElement* preset = docH.FirstChild( "preset" ).Element();
+
+for ( ; preset; preset = preset->NextSiblingElement( "preset" ) ) {
+	nle::EncodingPreset* encoding_preset = new nle::EncodingPreset();
+	encoding_preset->readXML(preset);
+	nle::video_format fmt;
+	encoding_preset->getFormat(&fmt);
+	presets_browser->add(fmt.name, encoding_preset);
+}} {}
   }
   Function {getFileWriter()} {open return_type {nle::IVideoFileWriter*}
   } {
@@ -1613,14 +1693,45 @@ format.framerate.audio_frames_per_chunk = 19200;
 format.framerate.video_frames_per_chunk = 10;
 
 
-return new nle::VideoWriterQT( qt, format );} {selected
-    }
+return new nle::VideoWriterQT( qt, format );} {}
   }
   decl {bool go;} {public
   }
   Function {~ExportDialog()} {open
   } {
-    code {delete dialog_window;} {}
+    code {int s = presets_browser->size();
+void* data;
+nle::EncodingPreset* preset;
+
+string presets_filename = "";
+presets_filename += getenv("HOME");
+presets_filename += ("/.openme.presets" PREF_FILE_ADD);
+TiXmlDocument doc( presets_filename.c_str() );
+TiXmlDeclaration *dec = new TiXmlDeclaration( "1.0", "", "no" );
+doc.LinkEndChild( dec );
+TiXmlElement *item = new TiXmlElement( "version" );
+doc.LinkEndChild( item );
+TiXmlText* text = new TiXmlText( VERSION );
+item->LinkEndChild( text );
+
+
+for ( int i = 1; i <= s; i++ ) {
+	data = presets_browser->data(i);
+	if ( data ) {
+		preset = (nle::EncodingPreset*)data;
+		nle::video_format fmt;
+		preset->getFormat(&fmt);
+		cout << fmt.name << endl;
+		
+		TiXmlElement* preset_xml = new TiXmlElement( "preset" );
+		doc.LinkEndChild( preset_xml );
+		preset->writeXML( preset_xml );
+		
+		delete preset;
+	}
+}
+doc.SaveFile();
+delete dialog_window;} {}
   }
   Function {shown()} {open return_type int
   } {
@@ -1628,10 +1739,278 @@ return new nle::VideoWriterQT( qt, format );} {selected
   }
   Function {show()} {open
   } {
-    code {presets_browser->add("Quicktime DV (PAL)");
-presets_browser->add("MSMpeg 4v3, mp3 AVI (768x576)");
-presets_browser->add("Quicktime 7");
+    code {dialog_window->show();} {}
+  }
+} 
 
-dialog_window->show();} {}
+class CustomFormatDialog {open
+} {
+  decl {void *audio_codec;} {}
+  decl {void* video_codec;} {}
+  decl {nle::CodecParameters* m_codecParams;} {}
+  Function {CustomFormatDialog()} {open
+  } {
+    code {audio_codec = 0;
+video_codec = 0;
+m_codecParams = new nle::CodecParameters( nle::g_audio_codec_info, nle::g_video_codec_info );} {}
+    Fl_Window dialog_window {
+      label {Custom Video Format} open
+      xywh {322 648 690 385} type Double modal visible
+    } {
+      Fl_Box {} {
+        xywh {350 60 330 285} box ENGRAVED_FRAME labelfont 1 align 5
+      }
+      Fl_Box {} {
+        label {Custom Video Format}
+        xywh {0 0 690 45} labelfont 1 labelsize 16
+      }
+      Fl_Choice video_codec_menu {
+        label {Video Codec}
+        callback {video_codec = o->menu()[o->value()].user_data();
+m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
+        xywh {125 70 205 25} down_box BORDER_BOX
+      } {}
+      Fl_Button video_options {
+        label {Options...}
+        callback {if ( video_codec ) {
+	Fl_Group::current( dialog_window );
+	CodecOptions dlg;
+	dlg.m_audio = false;
+	dlg.m_codecParams = m_codecParams;
+	nle::setCodecInfo( &dlg, video_codec );
+	dlg.codecOptions->show();
+	while (dlg.codecOptions->shown())
+		Fl::wait();
+}}
+        private xywh {255 100 75 25}
+      }
+      Fl_Choice audio_codec_menu {
+        label {Audio Codec}
+        callback {audio_codec = o->menu()[o->value()].user_data();
+m_codecParams->setAudioCodec( (lqt_codec_info_t*)audio_codec );} open
+        xywh {125 220 205 25} down_box BORDER_BOX
+        code0 {\#include "Codecs.H"}
+        code1 {\#include <iostream>}
+        code2 {using namespace std;}
+      } {}
+      Fl_Button audio_options {
+        label {Options...}
+        callback {if ( audio_codec ) {
+	Fl_Group::current( dialog_window );
+	CodecOptions dlg;
+	dlg.m_audio = true;
+	dlg.m_codecParams = m_codecParams;
+	nle::setCodecInfo( &dlg, audio_codec );
+	dlg.codecOptions->show();
+	while (dlg.codecOptions->shown())
+		Fl::wait();
+}}
+        private xywh {255 250 75 25}
+      }
+      Fl_Choice samplerate {
+        label Samplerate open
+        xywh {125 280 205 25} down_box BORDER_BOX
+      } {
+        MenuItem {} {
+          label 48000
+          xywh {15 15 100 20}
+        }
+      }
+      Fl_Input name {
+        label {Preset Name}
+        xywh {495 70 150 25}
+      }
+      Fl_Button {} {
+        label {@-3<-}
+        tooltip Generate xywh {645 70 25 25}
+      }
+      Fl_Choice frame_rate_choice {
+        label Framerate open
+        xywh {495 100 175 25} down_box BORDER_BOX
+      } {
+        MenuItem {} {
+          label {25 (PAL)}
+          user_data {&fps25x48000}
+          xywh {25 25 100 20}
+        }
+        MenuItem {} {
+          label {29.97 (NTSC)}
+          user_data {&fps29_97x48000}
+          xywh {20 20 100 20}
+        }
+        MenuItem {} {
+          label 24
+          user_data {&fps24x48000}
+          xywh {20 20 100 20}
+        }
+        MenuItem {} {
+          label 15
+          user_data {&fps15x48000}
+          xywh {20 20 100 20}
+        }
+        MenuItem {} {
+          label 50
+          user_data {&fps50x48000}
+          xywh {20 20 100 20}
+        }
+        MenuItem {} {
+          label 60
+          user_data {&fps60x48000}
+          xywh {20 20 100 20}
+        }
+      }
+      Fl_Spinner frame_size_w {
+        label Framesize
+        xywh {495 130 85 25}
+      }
+      Fl_Spinner frame_size_h {
+        xywh {585 130 85 25}
+      }
+      Fl_Spinner aspect_w {
+        label {Aspect Ratio}
+        xywh {495 160 85 25}
+      }
+      Fl_Spinner aspect_h {
+        xywh {585 160 85 25}
+      }
+      Fl_Choice interlacing {
+        label Interlacing open
+        xywh {495 190 175 25} down_box BORDER_BOX
+      } {
+        MenuItem {} {
+          label None
+          xywh {10 10 100 20}
+        }
+        MenuItem {} {
+          label {Top field first}
+          xywh {10 10 100 20}
+        }
+        MenuItem {} {
+          label {bottom field first}
+          xywh {10 10 100 20}
+        }
+      }
+      Fl_Spinner black_pixel_v {
+        label {Black Pixels @2<->}
+        xywh {495 220 175 25} deactivate
+      }
+      Fl_Spinner black_pixel_h {
+        label {Black Pixels @<->}
+        xywh {495 250 175 25} deactivate
+      }
+      Fl_Spinner analog_blank {
+        label {Analog Blank}
+        xywh {495 280 175 25}
+      }
+      Fl_Output pixel_aspect {
+        label {Pixel Aspect}
+        xywh {495 310 175 25} color 49
+      }
+      Fl_Return_Button {} {
+        label {Save Custom Format}
+        callback {go = true;
+o->window()->hide();}
+        xywh {350 350 330 25}
+      }
+      Fl_Box {} {
+        label Video
+        xywh {10 60 330 130} box ENGRAVED_FRAME labelfont 1 align 5
+      }
+      Fl_Box {} {
+        label Audio
+        xywh {10 210 330 135} box ENGRAVED_FRAME labelfont 1 align 5
+      }
+      Fl_Check_Button {} {
+        label {Render Video}
+        xywh {125 130 205 25} down_box DOWN_BOX value 1 deactivate
+      }
+      Fl_Check_Button {} {
+        label {Render Audio}
+        xywh {125 310 205 25} down_box DOWN_BOX value 1 deactivate
+      }
+      Fl_Button {} {
+        label Cancel
+        callback {o->window()->hide();}
+        xywh {10 350 330 25}
+      }
+    }
+    code {nle::setAudioCodecMenu( audio_codec_menu );
+nle::setVideoCodecMenu( video_codec_menu );
+go = false;
+frame_size_w->range(1,1024);
+frame_size_h->range(1,1024);
+frame_size_w->value(640);
+frame_size_h->value(480);
+aspect_w->value(4);
+aspect_h->value(3);
+black_pixel_v->value(0);
+black_pixel_h->value(0);
+analog_blank->value(0);
+video_codec_menu->value(0);
+audio_codec_menu->value(0);} {}
+  }
+  Function {shown()} {return_type int
+  } {
+    code {return dialog_window->shown();} {}
+  }
+  Function {show()} {open
+  } {
+    code {dialog_window->show();} {}
+  }
+  Function {~CustomFormatDialog()} {} {
+    code {delete dialog_window;
+delete m_codecParams;} {}
+  }
+  Function {getEncodingPreset()} {open return_type {nle::EncodingPreset*}
+  } {
+    code {if ( !go ) {
+	return 0;
+}
+nle::video_format fmt;
+nle::EncodingPreset* preset = new nle::EncodingPreset;
+preset->getFormat(&fmt);
+
+strcpy( fmt.name, name->value());
+
+
+lqt_codec_info_t* codec_info = (lqt_codec_info_t*)video_codec_menu->menu()[video_codec_menu->value()].user_data();
+strcpy( fmt.video_codec, codec_info->name );
+
+codec_info = (lqt_codec_info_t*)audio_codec_menu->menu()[audio_codec_menu->value()].user_data();
+strcpy( fmt.audio_codec, codec_info->name );
+
+
+
+fmt.w = (int)frame_size_w->value();
+fmt.h = (int)frame_size_h->value();
+fmt.aspect_w = (int)aspect_w->value();
+fmt.aspect_h = (int)aspect_h->value();
+fmt.aspect = (aspect_w->value())/(aspect_h->value());
+fmt.interlacing = interlacing->value();
+fmt.analog_blank = (int)analog_blank->value();
+fmt.black_pixel_v = (int)black_pixel_v->value();
+fmt.black_pixel_h = (int)black_pixel_h->value();
+fmt.samplerate = 48000;
+
+preset->setFormat(&fmt);
+
+return preset;} {selected
+    }
+  }
+  decl {bool go;} {}
+  Function {setEncodingPreset(nle::EncodingPreset* preset)} {open
+  } {
+    code {nle::video_format fmt;
+preset->getFormat(&fmt);
+
+name->value(fmt.name);
+frame_size_w->value(fmt.w);
+frame_size_h->value(fmt.h);
+aspect_w->value(fmt.aspect_w);
+aspect_h->value(fmt.aspect_h);
+interlacing->value(fmt.interlacing);
+analog_blank->value(fmt.analog_blank);
+black_pixel_v->value(fmt.black_pixel_v);
+black_pixel_h->value(fmt.black_pixel_h);} {}
   }
 } 

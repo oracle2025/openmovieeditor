@@ -44,6 +44,9 @@ typedef struct
 	int analog_blank;
 	int black_pixel_h;
 	int black_pixel_v;
+	char video_codec[255];
+	char audio_codec[255];
+	int samplerate;
 } video_format;
 
 } /* namespace nle */

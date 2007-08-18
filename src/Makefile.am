@@ -234,7 +234,9 @@ openmovieeditor_SOURCES = nle.cxx\
 	video_format.H\
 	IVideoFileWriter.H\
 	VideoWriterQT.H\
-	VideoWriterQT.cxx
+	VideoWriterQT.cxx\
+	EncodingPreset.H\
+	EncodingPreset.cxx
 	
 
 

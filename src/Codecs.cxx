@@ -76,7 +76,12 @@ void setCodecInfo( CodecOptions* dialog, void* data )
 	for ( int j = 0; j < info->num_encoding_parameters; j++ ) {
 		if ( info->encoding_parameters[j].type == LQT_PARAMETER_SECTION )
 			continue;
-		dialog->parameters_browser->add( info->encoding_parameters[j].real_name, &(info->encoding_parameters[j]) );
+		string n = "";
+		n+=info->encoding_parameters[j].real_name;
+		n+=" (";
+		n+=info->encoding_parameters[j].name;
+		n+=")";
+		dialog->parameters_browser->add( n.c_str(), &(info->encoding_parameters[j]) );
 	}
 
 }
