@@ -6987,7 +6987,6 @@ for ( int i = 1; i <= s; i++ ) {
 		preset = (nle::EncodingPreset*)data;
 		nle::video_format fmt;
 		preset->getFormat(&fmt);
-		cout << fmt.name << endl;
 		
 		TiXmlElement* preset_xml = new TiXmlElement( "preset" );
 		doc.LinkEndChild( preset_xml );
@@ -7260,4 +7259,21 @@ interlacing->value(fmt.interlacing);
 analog_blank->value(fmt.analog_blank);
 black_pixel_v->value(fmt.black_pixel_v);
 black_pixel_h->value(fmt.black_pixel_h);
+
+int len = video_codec_menu->size();
+for ( int i = 0; i < len; i++ ) {
+	lqt_codec_info_t* codec_info = (lqt_codec_info_t*)video_codec_menu->menu()[i].user_data();
+	if ( strcmp( fmt.video_codec, codec_info->name ) == 0 ) {
+		video_codec_menu->value(i);
+		break;
+	}
+}
+len = audio_codec_menu->size();
+for ( int i = 0; i < len; i++ ) {
+	lqt_codec_info_t* codec_info = (lqt_codec_info_t*)audio_codec_menu->menu()[i].user_data();
+	if ( strcmp( fmt.audio_codec, codec_info->name ) == 0 ) {
+		audio_codec_menu->value(i);
+		break;
+	}
+}
 }
