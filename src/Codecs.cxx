@@ -32,6 +32,7 @@
 #include "Codecs.H"
 #include "globals.H"
 #include "helper.H"
+#include <tinyxml.h>
 
 using namespace std;
 
@@ -186,6 +187,10 @@ void ParameterValue::get( lqt_parameter_value_t& val )
 
 CodecParameters::CodecParameters( lqt_codec_info_t** audio, lqt_codec_info_t** video )
 {
+	init( audio, video );
+}
+void CodecParameters::init( lqt_codec_info_t** audio, lqt_codec_info_t** video )
+{
 	m_audioCodecs       = 0;
 	m_videoCodecs       = 0;
 	m_currentAudioCodec = 0;
@@ -242,6 +247,46 @@ CodecParameters::CodecParameters( lqt_codec_info_t** audio, lqt_codec_info_t** v
 		
 	};
 }
+CodecParameters::CodecParameters( lqt_codec_info_t** audio, lqt_codec_info_t** video, CodecParameters* copy )
+{
+	init( audio, video );
+	if ( !copy->m_currentAudioCodec || !copy->m_currentVideoCodec ) {
+		return;
+	} 
+	for ( codec_node* n = m_audioCodecs; n; n = n->next ) {
+		if ( strcmp( n->codecInfo->name, copy->m_currentAudioCodec->codecInfo->name ) == 0 ) {
+			m_currentAudioCodec = n;
+			for ( param_node* p = copy->m_currentAudioCodec->parameters; p; p = p->next ) {
+				cout << "set Audio: " << p->info->name << endl;
+				if ( p->info->type == LQT_PARAMETER_STRING || p->info->type == LQT_PARAMETER_STRINGLIST ) {
+					ParameterValue pval( p->value.val_string );
+					setAudioParameter( p->info->name, pval );
+				} else {
+					ParameterValue pval( p->value.val_int );
+					setAudioParameter( p->info->name, pval );
+				}
+			}
+			break;
+		}
+	}
+	for ( codec_node* n = m_videoCodecs; n; n = n->next ) {
+		if ( strcmp( n->codecInfo->name, copy->m_currentVideoCodec->codecInfo->name ) == 0 ) {
+			m_currentVideoCodec = n;
+			for ( param_node* p = copy->m_currentVideoCodec->parameters; p; p = p->next ) {
+				cout << "set Video: " << p->info->name << endl;
+				if ( p->info->type == LQT_PARAMETER_STRING || p->info->type == LQT_PARAMETER_STRINGLIST ) {
+					ParameterValue pval( p->value.val_string );
+					setVideoParameter( p->info->name, pval );
+				} else {
+					ParameterValue pval( p->value.val_int );
+					setVideoParameter( p->info->name, pval );
+				}
+			}
+			break;
+		}
+	}
+}
+
 CodecParameters::~CodecParameters()
 {
 	codec_node* q;
@@ -280,14 +325,6 @@ void CodecParameters::setAudioCodec( lqt_codec_info_t* info )
 {
 	codec_node* p = (codec_node*)sl_map( m_audioCodecs, find_a_codec, info );
 	m_currentAudioCodec = p;
-}
-lqt_codec_info_t* CodecParameters::getVideoCodec()
-{
-	return m_currentVideoCodec->codecInfo;
-}
-lqt_codec_info_t* CodecParameters::getAudioCodec()
-{
-	return m_currentAudioCodec->codecInfo;
 }
 static int find_a_parameter( void* p, void* data )
 {
@@ -347,6 +384,146 @@ void CodecParameters::set( quicktime_t* qt, int w, int h, render_fps_chunks* fra
 		}
 	}
 	
+}
+void CodecParameters::writeXML( TiXmlElement* xml_node )
+{
+	if ( !m_currentVideoCodec || !m_currentAudioCodec ) {
+		return;
+	}
+	TiXmlElement* video_codec = new TiXmlElement( "video_codec_parameters" );
+	TiXmlElement* parameter;
+	xml_node->LinkEndChild( video_codec );
+	for ( param_node* p = m_currentVideoCodec->parameters; p; p = p->next ) {
+		if ( p->info->type == LQT_PARAMETER_INT || p->info->type == LQT_PARAMETER_FLOAT || p->info->type == LQT_PARAMETER_STRING || p->info->type == LQT_PARAMETER_STRINGLIST ) {
+			parameter = new TiXmlElement( "parameter" );
+			video_codec->LinkEndChild( parameter );
+			parameter->SetAttribute( "name", p->info->name );
+			switch ( p->info->type ) {
+				case LQT_PARAMETER_INT:
+					parameter->SetAttribute( "type", "int" );
+					parameter->SetAttribute( "value", p->value.val_int );
+					break;
+				case LQT_PARAMETER_FLOAT:
+					parameter->SetAttribute( "type", "float" );
+					parameter->SetDoubleAttribute( "value", (double)p->value.val_float );
+					break;
+				case LQT_PARAMETER_STRING:
+				case LQT_PARAMETER_STRINGLIST:
+					parameter->SetAttribute( "type", "string" );
+					parameter->SetAttribute( "value", p->value.val_string );
+					break;
+				case LQT_PARAMETER_SECTION:
+					break;
+			}
+		}
+	}
+	TiXmlElement* audio_codec = new TiXmlElement( "audio_codec_parameters" );
+	xml_node->LinkEndChild( audio_codec );
+	for ( param_node* p = m_currentAudioCodec->parameters; p; p = p->next ) {
+		if ( p->info->type == LQT_PARAMETER_INT || p->info->type == LQT_PARAMETER_FLOAT || p->info->type == LQT_PARAMETER_STRING || p->info->type == LQT_PARAMETER_STRINGLIST ) {
+			parameter = new TiXmlElement( "parameter" );
+			audio_codec->LinkEndChild( parameter );
+			parameter->SetAttribute( "name", p->info->name );
+			switch ( p->info->type ) {
+				case LQT_PARAMETER_INT:
+					parameter->SetAttribute( "type", "int" );
+					parameter->SetAttribute( "value", p->value.val_int );
+					break;
+				case LQT_PARAMETER_FLOAT:
+					parameter->SetAttribute( "type", "float" );
+					parameter->SetDoubleAttribute( "value", (double)p->value.val_float );
+					break;
+				case LQT_PARAMETER_STRING:
+				case LQT_PARAMETER_STRINGLIST:
+					parameter->SetAttribute( "type", "string" );
+					parameter->SetAttribute( "value", p->value.val_string );
+					break;
+				case LQT_PARAMETER_SECTION:
+					break;
+			}
+		}
+	}
+
+}
+void CodecParameters::readXML( TiXmlElement* xml_node )
+{
+	TiXmlElement* parameter = TiXmlHandle( xml_node ).FirstChildElement( "video_codec" ).Element();
+	const char* str;
+	if ( parameter ) {
+		str = parameter->Attribute( "value" );
+		if ( str ) {
+			for ( codec_node* n = m_videoCodecs; n; n = n->next ) {
+				if ( strcmp( n->codecInfo->name, str ) == 0 ) {
+					m_currentVideoCodec = n;
+					break;
+				}
+			}
+		} 
+	}
+	parameter = TiXmlHandle( xml_node ).FirstChildElement( "audio_codec" ).Element();
+	if ( parameter ) {
+		str = parameter->Attribute( "value" );
+		if ( str ) {
+			for ( codec_node* n = m_audioCodecs; n; n = n->next ) {
+				if ( strcmp( n->codecInfo->name, str ) == 0 ) {
+					m_currentAudioCodec = n;
+					break;
+				}
+			}
+		} 
+	}
+	TiXmlHandle x_node(xml_node);
+	if ( m_currentVideoCodec ) {
+		parameter = x_node.FirstChild( "video_codec_parameters" ).FirstChild( "parameter" ).Element();
+
+		for ( ; parameter; parameter = parameter->NextSiblingElement( "parameter" ) ) {
+			const char* name = parameter->Attribute( "name" );
+			const char* type = parameter->Attribute( "type" );
+			if ( !name || !type ) {
+				continue;
+			}
+			if ( strcmp( type, "int" ) == 0 ) {
+				int v = 0;
+				if ( parameter->Attribute( "value", &v ) ) {
+					ParameterValue pval( v );
+					setVideoParameter( name, pval );
+				}
+			} else if ( strcmp( type, "string" ) == 0 ) {
+				const char *v = parameter->Attribute( "value" );
+				if ( v ) {
+					ParameterValue pval( v );
+					setVideoParameter( name, pval );
+				}
+
+			}
+		}
+	}
+	if ( m_currentAudioCodec ) {
+		parameter = x_node.FirstChild( "audio_codec_parameters" ).FirstChild( "parameter" ).Element();
+
+		for ( ; parameter; parameter = parameter->NextSiblingElement( "parameter" ) ) {
+			const char* name = parameter->Attribute( "name" );
+			const char* type = parameter->Attribute( "type" );
+			if ( !name || !type ) {
+				continue;
+			}
+			if ( strcmp( type, "int" ) == 0 ) {
+				int v = 0;
+				if ( parameter->Attribute( "value", &v ) ) {
+					ParameterValue pval( v );
+					setAudioParameter( name, pval );
+				}
+			} else if ( strcmp( type, "string" ) == 0 ) {
+				const char *v = parameter->Attribute( "value" );
+				if ( v ) {
+					ParameterValue pval( v );
+					setAudioParameter( name, pval );
+				}
+
+			}
+		}
+	}
+
 }
 
 } /* namespace nle */

@@ -71,19 +71,19 @@ class CodecParameters
 {
 	public:
 		CodecParameters( lqt_codec_info_t** audio, lqt_codec_info_t** video );
+		CodecParameters( lqt_codec_info_t** audio, lqt_codec_info_t** video, CodecParameters* copy );
 		~CodecParameters();
-		//read_from_xml
-		//write_to_xml
+		void writeXML( TiXmlElement* );
+		void readXML( TiXmlElement* );
 		void setVideoCodec( lqt_codec_info_t* info );
 		void setAudioCodec( lqt_codec_info_t* info );
-		lqt_codec_info_t* getVideoCodec();
-		lqt_codec_info_t* getAudioCodec();
 		void setVideoParameter( const char* key, ParameterValue& value );
 		void setAudioParameter( const char* key, ParameterValue& value );
 		lqt_parameter_value_t getVideoParameter( const char* key );
 		lqt_parameter_value_t getAudioParameter( const char* key );
 		void set( quicktime_t* qt, int w, int h, render_fps_chunks* framerate );
 	private:
+		void init( lqt_codec_info_t** audio, lqt_codec_info_t** video );
 		codec_node* m_audioCodecs;
 		codec_node* m_videoCodecs;
 		codec_node* m_currentAudioCodec;

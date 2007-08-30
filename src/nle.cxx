@@ -6765,7 +6765,7 @@ nle::EncodingPreset* preset_new = dlg.getEncodingPreset();
 
 if ( preset_new ) {
 	nle::video_format fmt;
-	preset->getFormat(&fmt);
+	preset_new->getFormat(&fmt);
 	delete preset;
 	
 	presets_browser->data(presets_browser->value(), preset_new);
@@ -6851,7 +6851,7 @@ TiXmlHandle docH( &doc );
 TiXmlElement* preset = docH.FirstChild( "preset" ).Element();
 
 for ( ; preset; preset = preset->NextSiblingElement( "preset" ) ) {
-	nle::EncodingPreset* encoding_preset = new nle::EncodingPreset();
+	nle::EncodingPreset* encoding_preset = new nle::EncodingPreset( new nle::CodecParameters( nle::g_audio_codec_info, nle::g_video_codec_info ) );
 	encoding_preset->readXML(preset);
 	nle::video_format fmt;
 	encoding_preset->getFormat(&fmt);
@@ -6930,38 +6930,56 @@ if (presets_browser->value() == 3) {
 
 }
 
+if (presets_browser->value() == 1) {
+	quicktime_t* qt;
+	qt = lqt_open_write ( export_filename->value(), LQT_FILE_QT );
+	lqt_codec_info_t** codec = lqt_find_video_codec( QUICKTIME_DV, 1 );
+	lqt_set_video( qt, 1, 720, 576, 1200, 30000, codec[0] );
+	lqt_destroy_codec_info( codec );
+
+	codec = lqt_find_audio_codec( QUICKTIME_TWOS, 1 );
+	lqt_set_audio( qt, 2, 48000, 16, codec[0] );
+	lqt_destroy_codec_info( codec );
+
+	lqt_set_cmodel( qt, 0, BC_RGB888 );
+
+	nle::video_format format;
+
+	format.w = 720;
+	format.h = 576;
+	format.analog_blank = 10;
+	format.aspect_w = 4;
+	format.aspect_h = 3;
+	format.aspect = (4.0 / 3.0);
+	format.interlacing = 0;
+	format.black_pixel_h = 0;
+	format.black_pixel_v = 0;
+	strcpy(format.name, "Quicktime DV");
+	format.framerate.frame_duration = 1200;
+	format.framerate.timescale = 30000;
+	format.framerate.audio_frames_per_chunk = 19200;
+	format.framerate.video_frames_per_chunk = 10;
+
+	return new nle::VideoWriterQT( qt, format );
+}
 
 quicktime_t* qt;
-qt = lqt_open_write ( export_filename->value(), LQT_FILE_QT );
-lqt_codec_info_t** codec = lqt_find_video_codec( QUICKTIME_DV, 1 );
-lqt_set_video( qt, 1, 720, 576, 1200, 30000, codec[0] );
+qt = lqt_open_write( export_filename->value(), LQT_FILE_QT );
+
+nle::EncodingPreset* preset = (nle::EncodingPreset*)presets_browser->data(presets_browser->value());
+nle::video_format fmt;
+preset->getFormat( &fmt );
+
+lqt_codec_info_t** codec = lqt_find_video_codec_by_name( fmt.video_codec );
+lqt_set_video( qt, 1, fmt.w, fmt.h, fmt.framerate.frame_duration, fmt.framerate.timescale, codec[0] );
 lqt_destroy_codec_info( codec );
 
-codec = lqt_find_audio_codec( QUICKTIME_TWOS, 1 );
-lqt_set_audio( qt, 2, 48000, 16, codec[0] );
+codec = lqt_find_audio_codec_by_name( fmt.audio_codec );
+lqt_set_audio( qt, 2, fmt.samplerate, 16, codec[0] );
 lqt_destroy_codec_info( codec );
-
 lqt_set_cmodel( qt, 0, BC_RGB888 );
 
-nle::video_format format;
-
-format.w = 720;
-format.h = 576;
-format.analog_blank = 10;
-format.aspect_w = 4;
-format.aspect_h = 3;
-format.aspect = (4.0 / 3.0);
-format.interlacing = 0;
-format.black_pixel_h = 0;
-format.black_pixel_v = 0;
-strcpy(format.name, "Quicktime DV");
-format.framerate.frame_duration = 1200;
-format.framerate.timescale = 30000;
-format.framerate.audio_frames_per_chunk = 19200;
-format.framerate.video_frames_per_chunk = 10;
-
-
-return new nle::VideoWriterQT( qt, format );
+return new nle::VideoWriterQT( qt, fmt );
 }
 
 ExportDialog::~ExportDialog() {
@@ -7216,7 +7234,7 @@ nle::EncodingPreset* CustomFormatDialog::getEncodingPreset() {
 	return 0;
 }
 nle::video_format fmt;
-nle::EncodingPreset* preset = new nle::EncodingPreset;
+nle::EncodingPreset* preset = new nle::EncodingPreset( new nle::CodecParameters( nle::g_audio_codec_info, nle::g_video_codec_info, m_codecParams ) );
 preset->getFormat(&fmt);
 
 strcpy( fmt.name, name->value());
@@ -7265,14 +7283,20 @@ for ( int i = 0; i < len; i++ ) {
 	lqt_codec_info_t* codec_info = (lqt_codec_info_t*)video_codec_menu->menu()[i].user_data();
 	if ( strcmp( fmt.video_codec, codec_info->name ) == 0 ) {
 		video_codec_menu->value(i);
+		video_codec = codec_info;
+		m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );
 		break;
 	}
 }
+
+
 len = audio_codec_menu->size();
 for ( int i = 0; i < len; i++ ) {
 	lqt_codec_info_t* codec_info = (lqt_codec_info_t*)audio_codec_menu->menu()[i].user_data();
 	if ( strcmp( fmt.audio_codec, codec_info->name ) == 0 ) {
 		audio_codec_menu->value(i);
+		audio_codec = codec_info;
+		m_codecParams->setAudioCodec( (lqt_codec_info_t*)audio_codec );
 		break;
 	}
 }
