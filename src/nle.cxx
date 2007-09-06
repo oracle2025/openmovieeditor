@@ -63,8 +63,8 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 		nle::g_preferences->lastAudioCodec( dlg.audio_codec_menu->value() );
 		nle::g_preferences->lastFramesize( dlg.frame_size_choice->value() );
 		nle::g_preferences->lastFramerate( dlg.frame_rate_choice->value() );
+		*/
 		nle::g_preferences->lastRenderFilename( dlg.export_filename->value() );
-	*/
 		ren.go( &pDlg );
 	}
 	
@@ -164,12 +164,24 @@ void NleUI::cb_16(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_16_i(o,v);
 }
 
-void NleUI::cb_Black_i(Fl_Menu_* o, void*) {
+void NleUI::cb_black_border_item_i(Fl_Menu_* o, void*) {
   g_black_borders = (o->mvalue())->value();
+g_black_borders_2_35 = false;
+black_border_item_2_35->clear();
 m_videoView->redraw();
 }
-void NleUI::cb_Black(Fl_Menu_* o, void* v) {
-  ((NleUI*)(o->parent()->user_data()))->cb_Black_i(o,v);
+void NleUI::cb_black_border_item(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_black_border_item_i(o,v);
+}
+
+void NleUI::cb_black_border_item_2_35_i(Fl_Menu_* o, void*) {
+  g_black_borders_2_35 = (o->mvalue())->value();
+g_black_borders = false;
+black_border_item->clear();
+m_videoView->redraw();
+}
+void NleUI::cb_black_border_item_2_35(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_black_border_item_2_35_i(o,v);
 }
 
 void NleUI::cb_Transport_i(Fl_Menu_* o, void*) {
@@ -290,7 +302,8 @@ Fl_Menu_Item NleUI::menu_Black[] = {
  {"Format", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"4:3", 0,  (Fl_Callback*)NleUI::cb_4, 0, 12, FL_NORMAL_LABEL, 0, 14, 0},
  {"16:9", 0,  (Fl_Callback*)NleUI::cb_16, 0, 136, FL_NORMAL_LABEL, 0, 14, 0},
- {"Black Borders", 0,  (Fl_Callback*)NleUI::cb_Black, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Black Borders 16:9", 0,  (Fl_Callback*)NleUI::cb_black_border_item, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Black Borders 2.35:1", 0,  (Fl_Callback*)NleUI::cb_black_border_item_2_35, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"&JACK", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"Transport connect", 0,  (Fl_Callback*)NleUI::cb_Transport, 0, 6, FL_NORMAL_LABEL, 0, 14, 0},
@@ -315,7 +328,9 @@ Fl_Menu_Item* NleUI::cut_item = NleUI::menu_Black + 9;
 Fl_Menu_Item* NleUI::copy_item = NleUI::menu_Black + 10;
 Fl_Menu_Item* NleUI::paste_item = NleUI::menu_Black + 11;
 Fl_Menu_Item* NleUI::delete_item = NleUI::menu_Black + 12;
-Fl_Menu_Item* NleUI::jackMenu = NleUI::menu_Black + 28;
+Fl_Menu_Item* NleUI::black_border_item = NleUI::menu_Black + 26;
+Fl_Menu_Item* NleUI::black_border_item_2_35 = NleUI::menu_Black + 27;
+Fl_Menu_Item* NleUI::jackMenu = NleUI::menu_Black + 29;
 
 void NleUI::cb_zoom_slider_i(Fl_Slider* o, void*) {
   m_videoView->zoom( o->value() );
@@ -1142,7 +1157,7 @@ NleUI::NleUI() {
             Fl_Group::current()->resizable(o);
           }
           { Fl_Group* o = new Fl_Group(40, 580, 640, 20);
-            { Flmm_Scalebar* o = scaleBar = new Flmm_Scalebar(155, 580, 525, 20);
+            { Flmm_Scalebar* o = scaleBar = new Flmm_Scalebar(40, 580, 640, 20);
               o->type(1);
               o->box(FL_FLAT_BOX);
               o->color(FL_DARK2);
@@ -1157,10 +1172,6 @@ NleUI::NleUI() {
               o->align(FL_ALIGN_BOTTOM);
               o->when(FL_WHEN_CHANGED);
               Fl_Group::current()->resizable(o);
-            }
-            { Fl_Slider* o = new Fl_Slider(40, 580, 115, 20);
-              o->tooltip("Zoom");
-              o->type(5);
             }
             o->end();
           }
@@ -6578,6 +6589,7 @@ bool g_seek_audio;
 Fl_Scrollbar* g_v_scrollbar;
 bool g_16_9;
 bool g_black_borders;
+bool g_black_borders_2_35;
 
 void font_dialog_callback( Fl_Widget*, void* v ) {
   Fl_Font_Browser* dlg = (Fl_Font_Browser*)v;
@@ -6805,7 +6817,7 @@ ExportDialog::ExportDialog() {
           o->labelfont(1);
           o->align(FL_ALIGN_TOP_LEFT);
         }
-        { Fl_Hold_Browser* o = presets_browser = new Fl_Hold_Browser(40, 125, 240, 170, "Presets");
+        { Fl_Hold_Browser* o = presets_browser = new Fl_Hold_Browser(40, 125, 240, 140, "Presets");
           o->box(FL_NO_BOX);
           o->color(FL_BACKGROUND2_COLOR);
           o->selection_color(FL_SELECTION_COLOR);
@@ -6824,6 +6836,7 @@ ExportDialog::ExportDialog() {
         { Fl_Button* o = new Fl_Button(40, 320, 240, 25, "Edit Custom Video Format...");
           o->callback((Fl_Callback*)cb_Edit);
         }
+        new Fl_Button(40, 265, 240, 25, "Delete Format");
         o->end();
         Fl_Group::current()->resizable(o);
       }
@@ -6857,6 +6870,8 @@ for ( ; preset; preset = preset->NextSiblingElement( "preset" ) ) {
 	encoding_preset->getFormat(&fmt);
 	presets_browser->add(fmt.name, encoding_preset);
 }
+
+export_filename->value( nle::g_preferences->lastRenderFilename().c_str() );
 }
 
 nle::IVideoFileWriter* ExportDialog::getFileWriter() {
@@ -6978,6 +6993,8 @@ codec = lqt_find_audio_codec_by_name( fmt.audio_codec );
 lqt_set_audio( qt, 2, fmt.samplerate, 16, codec[0] );
 lqt_destroy_codec_info( codec );
 lqt_set_cmodel( qt, 0, BC_RGB888 );
+
+preset->getCodecParams()->set2(qt);
 
 return new nle::VideoWriterQT( qt, fmt );
 }
@@ -7267,6 +7284,9 @@ return preset;
 void CustomFormatDialog::setEncodingPreset(nle::EncodingPreset* preset) {
   nle::video_format fmt;
 preset->getFormat(&fmt);
+
+delete m_codecParams;
+m_codecParams = new nle::CodecParameters( nle::g_audio_codec_info, nle::g_video_codec_info, preset->getCodecParams() );
 
 name->value(fmt.name);
 frame_size_w->value(fmt.w);

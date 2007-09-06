@@ -97,8 +97,16 @@ private:
   static void cb_4(Fl_Menu_*, void*);
   void cb_16_i(Fl_Menu_*, void*);
   static void cb_16(Fl_Menu_*, void*);
-  void cb_Black_i(Fl_Menu_*, void*);
-  static void cb_Black(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *black_border_item;
+private:
+  void cb_black_border_item_i(Fl_Menu_*, void*);
+  static void cb_black_border_item(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *black_border_item_2_35;
+private:
+  void cb_black_border_item_2_35_i(Fl_Menu_*, void*);
+  static void cb_black_border_item_2_35(Fl_Menu_*, void*);
 public:
   static Fl_Menu_Item *jackMenu;
 private:
@@ -432,6 +440,7 @@ extern bool g_seek_audio;
 extern Fl_Scrollbar* g_v_scrollbar;
 extern bool g_16_9;
 extern bool g_black_borders;
+extern bool g_black_borders_2_35;
 void font_dialog_callback( Fl_Widget*, void* v );
 extern Fl_Font titleFont;
 #include <FL/Fl_Browser.H>

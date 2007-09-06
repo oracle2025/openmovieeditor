@@ -366,6 +366,10 @@ void CodecParameters::set( quicktime_t* qt, int w, int h, render_fps_chunks* fra
 	int pixel_h;
 	guess_aspect( w, h, 0, 0, 0, 0, &pixel_w, &pixel_h );
 	lqt_set_pixel_aspect( qt, 0, pixel_w, pixel_h );
+	set2( qt );
+}
+void CodecParameters::set2( quicktime_t* qt )
+{
 
 	param_node* p;
 	for ( p = m_currentAudioCodec->parameters; p; p = p->next ) {

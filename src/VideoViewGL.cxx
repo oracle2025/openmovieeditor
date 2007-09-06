@@ -95,7 +95,7 @@ void VideoViewGL::drawVideoBorder()
 	}
 
 	glDisable (GL_TEXTURE_2D);
-	if ( g_black_borders && !g_16_9 ) {
+	if ( (g_black_borders||g_black_borders_2_35) && !g_16_9 ) {
 		int w_ = 768;
 		//int w_ = 1024;
 		int h_ = 576;
@@ -111,8 +111,11 @@ void VideoViewGL::drawVideoBorder()
 				gl_h = 10.0;
 				gl_w = f_g * 10.0;
 			}
-			//gl_h = gl_h / ( ( 16.0 / 9.0 ) / ( 4.0 / 3.0 ) );
-			gl_h = gl_h / ( ( 2.35 / 1.0 ) / ( 4.0 / 3.0 ) );
+			if ( g_black_borders_2_35 ) {
+				gl_h = gl_h / ( ( 2.35 / 1.0 ) / ( 4.0 / 3.0 ) );
+			} else {
+				gl_h = gl_h / ( ( 16.0 / 9.0 ) / ( 4.0 / 3.0 ) );
+			}
 			gl_x = ( 10.0 - gl_w ) / 2;
 			gl_y = ( 10.0 - gl_h ) / 2;
 
@@ -461,7 +464,7 @@ void VideoViewGL::draw()
 
 				//glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGB, GL_UNSIGNED_BYTE, fs[i]->RGB );
 			}
-
+#if 0
 			float glw = 10.0;
 			float glh = 10.0;
 			float ww = w();
@@ -575,7 +578,8 @@ void VideoViewGL::draw()
 
 			glEnd();
 			glEnable (GL_TEXTURE_2D);
-#if 0
+#endif
+#if 1
 			
 			float gl_x, gl_y, gl_w, gl_h;
 			{
