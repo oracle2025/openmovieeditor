@@ -50,3 +50,15 @@ remove Timeout for Project-Saving
 
 use llrint instead of rintl in SimplePlaybackCore
 Clip-Name for Effect Plugin Windows
+
+
+
+
+
+Beispiel für Codec Zusammenfassung.
+Quicktime DV(PAL)
+720x576, 4:3, 25 fps
+Video: FFMPEG DV (PAL)
+Audio: Twos, 48000
+Top field first
+

@@ -302,74 +302,7 @@ public:
   void jack();
 };
 extern Flmm_Scalebar* g_scrollBar;
-#include "IVideoReader.H"
-#include "IAudioReader.H"
 #include <FL/Fl_Return_Button.H>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <iostream>
-#include <FL/Fl_File_Input.H>
-#include <stdlib.h>
-#include <FL/Fl_File_Chooser.H>
-#include <FL/Fl_Spinner.H>
-#include <FL/Fl_Menu_Button.H>
-
-class EncodeDialog {
-public:
-  EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecParameters* codecParams );
-private:
-  Fl_Double_Window *encodeDialog;
-  void cb_Encode_i(Fl_Return_Button*, void*);
-  static void cb_Encode(Fl_Return_Button*, void*);
-  void cb_Cancel_i(Fl_Button*, void*);
-  static void cb_Cancel(Fl_Button*, void*);
-public:
-  Fl_Choice *audio_codec_menu;
-private:
-  void cb_audio_codec_menu_i(Fl_Choice*, void*);
-  static void cb_audio_codec_menu(Fl_Choice*, void*);
-public:
-  Fl_Choice *video_codec_menu;
-private:
-  void cb_video_codec_menu_i(Fl_Choice*, void*);
-  static void cb_video_codec_menu(Fl_Choice*, void*);
-  static Fl_Menu_Item menu_Samplerate[];
-public:
-  Fl_Choice *frame_rate_choice;
-  static Fl_Menu_Item menu_frame_rate_choice[];
-  Fl_Choice *frame_size_choice;
-  static Fl_Menu_Item menu_frame_size_choice[];
-private:
-  Fl_Button *audio_options;
-  void cb_audio_options_i(Fl_Button*, void*);
-  static void cb_audio_options(Fl_Button*, void*);
-  Fl_Button *video_options;
-  void cb_video_options_i(Fl_Button*, void*);
-  static void cb_video_options(Fl_Button*, void*);
-public:
-  Fl_File_Input *export_filename;
-private:
-  void cb_File_i(Fl_Button*, void*);
-  static void cb_File(Fl_Button*, void*);
-  static Fl_Menu_Item menu_Interlacing[];
-public:
-  Fl_Spinner *frame_size_w;
-  Fl_Spinner *frame_size_h;
-  void show();
-  int shown();
-private:
-  void *audio_codec;
-  void* video_codec;
-public:
-  bool go;
-  ~EncodeDialog();
-private:
-  nle::CodecParameters* m_codecParams;
-public:
-  void* frameSize();
-  void* frameRate();
-};
 
 class ChangesDialog {
 public:
@@ -403,13 +336,13 @@ public:
 private:
   void cb_parameter_stringlist_input_i(Fl_Choice*, void*);
   static void cb_parameter_stringlist_input(Fl_Choice*, void*);
-  void cb_Cancel1_i(Fl_Button*, void*);
-  static void cb_Cancel1(Fl_Button*, void*);
+  void cb_Cancel_i(Fl_Button*, void*);
+  static void cb_Cancel(Fl_Button*, void*);
   void cb_Ok_i(Fl_Return_Button*, void*);
   static void cb_Ok(Fl_Return_Button*, void*);
 public:
   bool m_audio;
-  nle::CodecParameters* m_codecParams;
+  nle::EncodingPreset* m_preset;
   ~CodecOptions();
 };
 #include "config.h"
@@ -444,15 +377,21 @@ extern bool g_black_borders_2_35;
 void font_dialog_callback( Fl_Widget*, void* v );
 extern Fl_Font titleFont;
 #include <FL/Fl_Browser.H>
+#include <FL/Fl_File_Input.H>
 extern Fl_File_Input *export_filename_simple;
+#include <stdlib.h>
+#include <FL/Fl_File_Chooser.H>
 Fl_Double_Window* encoder_2_dlg();
 extern Fl_Menu_Item menu_Framerate[];
 extern Fl_Menu_Item menu_Framesize[];
-extern Fl_Menu_Item menu_Samplerate1[];
+extern Fl_Menu_Item menu_Samplerate[];
 extern Fl_Menu_Item menu_Quality[];
 extern Fl_Menu_Item menu_Aspect[];
 #include "VideoWriterQT.H"
 #include <colormodels.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include <FL/Fl_Text_Display.H>
 
 class ExportDialog {
@@ -461,20 +400,20 @@ public:
   Fl_Double_Window *dialog_window;
   Fl_File_Input *export_filename;
 private:
-  void cb_File2_i(Fl_Button*, void*);
-  static void cb_File2(Fl_Button*, void*);
-  void cb_Encode1_i(Fl_Return_Button*, void*);
-  static void cb_Encode1(Fl_Return_Button*, void*);
-  void cb_Cancel2_i(Fl_Button*, void*);
-  static void cb_Cancel2(Fl_Button*, void*);
+  void cb_File1_i(Fl_Button*, void*);
+  static void cb_File1(Fl_Button*, void*);
+  void cb_Encode_i(Fl_Return_Button*, void*);
+  static void cb_Encode(Fl_Return_Button*, void*);
+  void cb_Cancel1_i(Fl_Button*, void*);
+  static void cb_Cancel1(Fl_Button*, void*);
 public:
   Fl_Text_Display *information_display;
   Fl_Hold_Browser *presets_browser;
 private:
   void cb_presets_browser_i(Fl_Hold_Browser*, void*);
   static void cb_presets_browser(Fl_Hold_Browser*, void*);
-  void cb_Create_i(Fl_Button*, void*);
-  static void cb_Create(Fl_Button*, void*);
+  void cb_3_i(Fl_Button*, void*);
+  static void cb_3(Fl_Button*, void*);
   void cb_Edit_i(Fl_Button*, void*);
   static void cb_Edit(Fl_Button*, void*);
 public:
@@ -484,37 +423,39 @@ public:
   int shown();
   void show();
 };
+#include <iostream>
+#include <FL/Fl_Spinner.H>
 #include <FL/Fl_Output.H>
 #include <FL/Fl_Check_Button.H>
 
 class CustomFormatDialog {
   void *audio_codec;
   void* video_codec;
-  nle::CodecParameters* m_codecParams;
+  nle::EncodingPreset* m_preset;
 public:
   CustomFormatDialog();
   Fl_Double_Window *dialog_window;
   Fl_Choice *video_codec_menu;
 private:
-  void cb_video_codec_menu1_i(Fl_Choice*, void*);
-  static void cb_video_codec_menu1(Fl_Choice*, void*);
+  void cb_video_codec_menu_i(Fl_Choice*, void*);
+  static void cb_video_codec_menu(Fl_Choice*, void*);
   Fl_Button *video_options;
-  void cb_video_options1_i(Fl_Button*, void*);
-  static void cb_video_options1(Fl_Button*, void*);
+  void cb_video_options_i(Fl_Button*, void*);
+  static void cb_video_options(Fl_Button*, void*);
 public:
   Fl_Choice *audio_codec_menu;
 private:
-  void cb_audio_codec_menu1_i(Fl_Choice*, void*);
-  static void cb_audio_codec_menu1(Fl_Choice*, void*);
+  void cb_audio_codec_menu_i(Fl_Choice*, void*);
+  static void cb_audio_codec_menu(Fl_Choice*, void*);
   Fl_Button *audio_options;
-  void cb_audio_options1_i(Fl_Button*, void*);
-  static void cb_audio_options1(Fl_Button*, void*);
+  void cb_audio_options_i(Fl_Button*, void*);
+  static void cb_audio_options(Fl_Button*, void*);
 public:
   Fl_Choice *samplerate;
   static Fl_Menu_Item menu_samplerate[];
   Fl_Input *name;
   Fl_Choice *frame_rate_choice;
-  static Fl_Menu_Item menu_frame_rate_choice1[];
+  static Fl_Menu_Item menu_frame_rate_choice[];
   Fl_Spinner *frame_size_w;
   Fl_Spinner *frame_size_h;
   Fl_Spinner *aspect_w;
@@ -528,8 +469,8 @@ public:
 private:
   void cb_Save1_i(Fl_Return_Button*, void*);
   static void cb_Save1(Fl_Return_Button*, void*);
-  void cb_Cancel3_i(Fl_Button*, void*);
-  static void cb_Cancel3(Fl_Button*, void*);
+  void cb_Cancel2_i(Fl_Button*, void*);
+  static void cb_Cancel2(Fl_Button*, void*);
 public:
   int shown();
   void show();

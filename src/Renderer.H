@@ -60,14 +60,12 @@ namespace nle
 {
 
 class IProgressListener;
-class CodecParameters;
 class Timeline;
 
 
 class Renderer
 {
 	public:
-		/*Renderer( string filename, render_frame_size* format, render_fps_chunks* framerate, int samplerate, CodecParameters* params = 0 );*/
 		Renderer( IVideoFileWriter* writer );
 		~Renderer();
 		void go( IProgressListener* l = 0 );

@@ -7,8 +7,7 @@ decl {\#include <tinyxml.h>} {}
 decl {\#include "EncodingPreset.H"} {public
 } 
 
-class NleUI {open
-} {
+class NleUI {} {
   Function {NleUI()} {open
   } {
     Fl_Window mainWindow {
@@ -20,7 +19,7 @@ if ( Fl::event()==FL_CLOSE ) {
 	m_videoView->stop();
 	nle::g_loadSaveManager->shutdown();
 }} open
-      xywh {286 303 700 600} type Double resizable size_range {450 380 0 0} visible
+      xywh {286 199 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
         label {Black Borders} open
@@ -43,10 +42,10 @@ if ( Fl::event()==FL_CLOSE ) {
           MenuItem {} {
             label {Render...}
             callback {Fl_Group::current( mainWindow );
-nle::CodecParameters cp( nle::g_audio_codec_info, nle::g_video_codec_info );
+
 
 ExportDialog dlg;
-//EncodeDialog dlg( 0, 0, &cp );
+
 dlg.show();
 while (dlg.shown())
   Fl::wait();
@@ -84,7 +83,7 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 //	while ( pDlg.progressDialog->shown() )
 //		Fl::wait();
 //	pDlg.progressDialog->hide();
-}} selected
+}}
             xywh {5 5 100 20} divider
             code0 {\#include "ProgressDialog/ProgressDialog.h"}
             code1 {\#include "Renderer.H"}
@@ -855,283 +854,6 @@ g_backButton = backButton;} {}
 decl {Flmm_Scalebar* g_scrollBar;} {public
 } 
 
-class EncodeDialog {open
-} {
-  Function {EncodeDialog( nle::IVideoReader*, nle::IAudioReader*, nle::CodecParameters* codecParams )} {open
-  } {
-    Fl_Window encodeDialog {
-      label Render open
-      private xywh {465 137 485 400} type Double
-      code0 {\#include "IVideoReader.H"}
-      code1 {\#include "IAudioReader.H"} modal visible
-    } {
-      Fl_Return_Button {} {
-        label Encode
-        callback {if ( strcmp( "", export_filename->value() ) == 0 ) {
-	if ( audio_codec_menu->value() < 0 && video_codec_menu->value() < 0 ) {
-		fl_alert( "Please select a filename,\\nas well as an Audio and Video Codec." );
-		return;
-	} else if ( audio_codec_menu->value() < 0 ) {
-		fl_alert( "Please select a filename,\\n as well as an Audio Codec." );
-		return;
-	} else if ( video_codec_menu->value() < 0 ) {
-		fl_alert( "Please select a filename,\\n as well as a Video Codec." );
-		return;
-	}
-	fl_alert( "Please select a filename." );
-	return;
-}
-
-if ( audio_codec_menu->value() < 0 || video_codec_menu->value() < 0 ) {
-	fl_alert( "Please select an Audio and Video Codec" );
-	return;
-}
-
-struct stat statbuf;
-int r = stat( export_filename->value(), &statbuf );
-if ( r == 0 ) {
-	r = fl_choice( "File exists, replace?\\nWill be overwritten.", "&Cancel", "&Replace", 0 );
-	if ( r == 0 ) {
-		return;
-	}
-}
-
-//nle::renderMovie();
-go = true;
-o->window()->hide();}
-        xywh {250 365 200 25} hotspot
-        code0 {\#include <sys/types.h>}
-        code1 {\#include <sys/stat.h>}
-        code2 {\#include <unistd.h>}
-      }
-      Fl_Button {} {
-        label Cancel
-        callback {go = false;
-o->window()->hide();}
-        xywh {35 365 200 25}
-      }
-      Fl_Box {} {
-        label Export
-        xywh {0 0 485 35} labelfont 1 labelsize 16
-      }
-      Fl_Tabs {} {open
-        xywh {5 35 475 320}
-      } {
-        Fl_Group {} {
-          label Extended open
-          xywh {5 60 475 295}
-        } {
-          Fl_Choice audio_codec_menu {
-            label {Audio Codec}
-            callback {audio_codec = o->menu()[o->value()].user_data();
-m_codecParams->setAudioCodec( (lqt_codec_info_t*)audio_codec );} open
-            xywh {145 280 205 25} down_box BORDER_BOX
-            code0 {\#include "Codecs.H"}
-            code1 {\#include <iostream>}
-            code2 {using namespace std;}
-          } {}
-          Fl_Choice video_codec_menu {
-            label {Video Codec}
-            callback {video_codec = o->menu()[o->value()].user_data();
-m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
-            xywh {145 130 205 25} down_box BORDER_BOX
-          } {}
-          Fl_Choice {} {
-            label Samplerate open
-            xywh {145 310 205 25} down_box BORDER_BOX
-          } {
-            MenuItem {} {
-              label 48000
-              xywh {5 5 100 20}
-            }
-          }
-          Fl_Choice frame_rate_choice {
-            label Framerate open
-            xywh {145 160 205 25} down_box BORDER_BOX
-          } {
-            MenuItem {} {
-              label {25 (PAL)}
-              user_data {&fps25x48000}
-              xywh {5 5 100 20}
-            }
-            MenuItem {} {
-              label {29.97 (NTSC)}
-              user_data {&fps29_97x48000}
-              xywh {0 0 100 20}
-            }
-            MenuItem {} {
-              label 24
-              user_data {&fps24x48000}
-              xywh {0 0 100 20}
-            }
-            MenuItem {} {
-              label 15
-              user_data {&fps15x48000}
-              xywh {0 0 100 20}
-            }
-            MenuItem {} {
-              label 50
-              user_data {&fps50x48000}
-              xywh {0 0 100 20}
-            }
-            MenuItem {} {
-              label 60
-              user_data {&fps60x48000}
-              xywh {0 0 100 20}
-            }
-          }
-          Fl_Choice frame_size_choice {
-            label Framesize open
-            xywh {145 190 115 25} down_box BORDER_BOX
-          } {
-            MenuItem {} {
-              label {720x576 (PAL 4:3) DV, DVD}
-              user_data {&fs720x576}
-              xywh {5 5 100 20}
-            }
-            MenuItem {} {
-              label {768x576 (PAL 4:3)}
-              user_data {&fs768x576}
-              xywh {5 5 100 20}
-            }
-            MenuItem {} {
-              label {384x288 (PAL ½ 4:3)}
-              user_data {&fs384x288}
-              xywh {5 5 100 20}
-            }
-            MenuItem {} {
-              label {640x480 (VGA 4:3)}
-              user_data {&fs640x480}
-              xywh {5 5 100 20}
-            }
-            MenuItem {} {
-              label {320x240 (QVGA 4:3)}
-              user_data {&fs320x240}
-              xywh {5 5 100 20}
-            }
-          }
-          Fl_Button audio_options {
-            label {Options...}
-            callback {if ( audio_codec ) {
-	Fl_Group::current( encodeDialog );
-	CodecOptions dlg;
-	dlg.m_audio = true;
-	dlg.m_codecParams = m_codecParams;
-	nle::setCodecInfo( &dlg, audio_codec );
-	dlg.codecOptions->show();
-	while (dlg.codecOptions->shown())
-		Fl::wait();
-}}
-            private xywh {355 280 75 25}
-          }
-          Fl_Button video_options {
-            label {Options...}
-            callback {if ( video_codec ) {
-	Fl_Group::current( encodeDialog );
-	CodecOptions dlg;
-	dlg.m_audio = false;
-	dlg.m_codecParams = m_codecParams;
-	nle::setCodecInfo( &dlg, video_codec );
-	dlg.codecOptions->show();
-	while (dlg.codecOptions->shown())
-		Fl::wait();
-}}
-            private xywh {355 130 75 25}
-          }
-          Fl_Box {} {
-            label Video
-            xywh {35 125 415 125} box ENGRAVED_FRAME labelfont 1 align 5
-          }
-          Fl_Box {} {
-            label Audio
-            xywh {35 275 415 65} box ENGRAVED_FRAME labelfont 1 align 5
-          }
-          Fl_File_Input export_filename {
-            label Filename
-            xywh {145 70 205 35}
-          }
-          Fl_Button {} {
-            label {File...}
-            callback {export_filename->value( fl_file_chooser( "Set Export Filename", 0, 0 ) );}
-            xywh {355 80 75 25}
-            code0 {\#include <stdlib.h>}
-            code1 {\#include <FL/Fl_File_Chooser.H>}
-          }
-          Fl_Choice {} {
-            label Interlacing open
-            xywh {145 220 205 25} down_box BORDER_BOX
-          } {
-            MenuItem {} {
-              label None
-              xywh {0 0 100 20}
-            }
-            MenuItem {} {
-              label {Top field first}
-              xywh {0 0 100 20}
-            }
-            MenuItem {} {
-              label {bottom field first}
-              xywh {0 0 100 20}
-            }
-          }
-          Fl_Spinner frame_size_w {
-            xywh {260 190 55 25}
-          }
-          Fl_Spinner frame_size_h {
-            xywh {315 190 55 25}
-          }
-          Fl_Menu_Button {} {
-            label Preset open
-            xywh {370 190 70 25}
-          } {}
-        }
-      }
-    }
-    code {m_codecParams = codecParams;} {}
-  }
-  Function {show()} {open
-  } {
-    code {audio_codec = 0;
-video_codec = 0;
-nle::setAudioCodecMenu( audio_codec_menu );
-nle::setVideoCodecMenu( video_codec_menu );
-
-video_codec_menu->value( nle::g_preferences->lastVideoCodec() );
-audio_codec_menu->value( nle::g_preferences->lastAudioCodec() );
-frame_size_choice->value( nle::g_preferences->lastFramesize() );
-frame_rate_choice->value( nle::g_preferences->lastFramerate() );
-export_filename->value( nle::g_preferences->lastRenderFilename().c_str() );
-
-video_codec = video_codec_menu->menu()[video_codec_menu->value()].user_data();
-m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );
-audio_codec = audio_codec_menu->menu()[audio_codec_menu->value()].user_data();
-m_codecParams->setAudioCodec( (lqt_codec_info_t*)audio_codec );
-
-encodeDialog->show();} {}
-  }
-  Function {shown()} {open return_type int
-  } {
-    code {return encodeDialog->shown();} {}
-  }
-  decl {void *audio_codec;} {}
-  decl {void* video_codec;} {}
-  decl {bool go;} {public
-  }
-  Function {~EncodeDialog()} {open
-  } {
-    code {delete encodeDialog;} {}
-  }
-  decl {nle::CodecParameters* m_codecParams;} {}
-  Function {frameSize()} {return_type {void*}
-  } {
-    code {return frame_size_choice->mvalue()->user_data();} {}
-  }
-  Function {frameRate()} {return_type {void*}
-  } {
-    code {return frame_rate_choice->mvalue()->user_data();} {}
-  }
-} 
-
 class ChangesDialog {} {
   Function {ChangesDialog()} {open
   } {
@@ -1171,7 +893,7 @@ class CodecOptions {open
   } {
     Fl_Window codecOptions {
       label {Codec Options} open
-      xywh {348 464 345 305} type Double resizable modal visible
+      xywh {416 406 345 305} type Double resizable modal visible
     } {
       Fl_Box codec_label {
         label Codec
@@ -1183,7 +905,7 @@ class CodecOptions {open
         Fl_Browser parameters_browser {
           callback {if ( parameters_browser->value() ) {
 	nle::setCodecParameter( this, parameters_browser->data( parameters_browser->value() ) );
-}}
+}} selected
           xywh {5 40 165 220} resizable
           code0 {\#include <FL/Fl_Hold_Browser.H>}
           class Fl_Hold_Browser
@@ -1195,9 +917,9 @@ class CodecOptions {open
             callback {nle::ParameterValue val( (int)o->value() );
 lqt_parameter_info_t* info = (lqt_parameter_info_t*)parameters_browser->data( parameters_browser->value() );
 if ( m_audio ) {
-	m_codecParams->setAudioParameter( info->name, val );
+	m_preset->setAudioParameter( info->name, val );
 } else {
-	m_codecParams->setVideoParameter( info->name, val );
+	m_preset->setVideoParameter( info->name, val );
 }}
             xywh {175 40 165 25} step 1 deactivate
           }
@@ -1205,9 +927,9 @@ if ( m_audio ) {
             callback {nle::ParameterValue val( o->value() );
 lqt_parameter_info_t* info = (lqt_parameter_info_t*)parameters_browser->data( parameters_browser->value() );
 if ( m_audio ) {
-	m_codecParams->setAudioParameter( info->name, val );
+	m_preset->setAudioParameter( info->name, val );
 } else {
-	m_codecParams->setVideoParameter( info->name, val );
+	m_preset->setVideoParameter( info->name, val );
 }}
             xywh {175 70 165 25} deactivate
           }
@@ -1215,9 +937,9 @@ if ( m_audio ) {
             callback {nle::ParameterValue val( o->text() );
 lqt_parameter_info_t* info = (lqt_parameter_info_t*)parameters_browser->data( parameters_browser->value() );
 if ( m_audio ) {
-	m_codecParams->setAudioParameter( info->name, val );
+	m_preset->setAudioParameter( info->name, val );
 } else {
-	m_codecParams->setVideoParameter( info->name, val );
+	m_preset->setVideoParameter( info->name, val );
 }} open
             xywh {175 100 165 25} down_box BORDER_BOX deactivate
           } {}
@@ -1244,10 +966,9 @@ if ( m_audio ) {
   }
   decl {bool m_audio;} {public
   }
-  decl {nle::CodecParameters* m_codecParams;} {public
+  decl {nle::EncodingPreset* m_preset;} {public
   }
-  Function {~CodecOptions()} {open
-  } {
+  Function {~CodecOptions()} {} {
     code {delete codecOptions;} {}
   }
 } 
@@ -1345,8 +1066,7 @@ decl {bool g_black_borders;} {public
 decl {bool g_black_borders_2_35;} {public
 } 
 
-Function {font_dialog_callback( Fl_Widget*, void* v )} {open
-} {
+Function {font_dialog_callback( Fl_Widget*, void* v )} {} {
   code {Fl_Font_Browser* dlg = (Fl_Font_Browser*)v;
 nle::g_ui->titles_size->value( dlg->box_Example->GetFontSize() );
 titleFont = (Fl_Font)(dlg->box_Example->GetFontName() + dlg->box_Example->GetFontStyle());
@@ -1459,7 +1179,7 @@ class ExportDialog {open
   } {
     Fl_Window dialog_window {
       label Export open
-      xywh {306 258 560 400} type Double resizable
+      xywh {476 168 560 400} type Double resizable
       code0 {\#include "VideoWriterQT.H"}
       code1 {\#include <colormodels.h>} modal visible
     } {
@@ -1524,12 +1244,36 @@ o->window()->hide();}
             label Presets
             callback {if ( o->value() > 0 ) {
 	information_display->buffer()->text(o->text(o->value()));
+	nle::EncodingPreset* preset = (nle::EncodingPreset*)presets_browser->data(presets_browser->value());
+	char buffer[256];
+	if (preset) {
+		nle::video_format fmt;
+		preset->getFormat(&fmt);
+		snprintf( buffer, 256, "\\n%dx%d, %d:%d, %.2f fps\\n", fmt.w, fmt.h, fmt.aspect_w, fmt.aspect_h, ((float)fmt.framerate.timescale/fmt.framerate.frame_duration) );
+		information_display->buffer()->append(buffer);
+		snprintf(buffer, 256, "Video: %s\\nAudio: %s, %d\\n", fmt.video_codec, fmt.audio_codec, fmt.samplerate );
+		information_display->buffer()->append(buffer);
+		switch (fmt.interlacing) {
+			case 1:
+				information_display->buffer()->append("Top field first");
+				break;
+			case 2:
+				information_display->buffer()->append("Bottom field first");
+				break;
+		}
+	} else if (presets_browser->value() == 2) {
+		information_display->buffer()->append("\\n768x576, 4:3, 25.00 fps\\nVideo: ffmpeg_msmpeg4v3\\nAudio: lame, 48000");
+	} else if (presets_browser->value() == 3) {
+		information_display->buffer()->append("\\n768x576, 4:3, 25.00 fps\\nVideo: ffmpeg_mpg4\\nAudio: faac, 48000");
+	} else if (presets_browser->value() == 1) {
+		information_display->buffer()->append("\\n720x576, 4:3, 25.00 fps\\nVideo: QUICKTIME_DV\\nAudio: twos, 48000");
+	}
 }}
-            xywh {40 125 240 140} labelfont 1 align 5 resizable
+            xywh {40 125 240 195} labelfont 1 align 5 resizable
             class Fl_Hold_Browser
           }
           Fl_Button {} {
-            label {Create Custom Video Format...}
+            label {+}
             callback {CustomFormatDialog dlg;
 dlg.show();
 while (dlg.shown())
@@ -1543,10 +1287,10 @@ if ( preset ) {
 	preset->getFormat(&fmt);
 	presets_browser->add(fmt.name, preset);
 }}
-            xywh {40 295 240 25}
+            xywh {65 320 25 25} labelfont 1 labelsize 16
           }
           Fl_Button {} {
-            label {Edit Custom Video Format...}
+            label {Edit...}
             callback {CustomFormatDialog dlg;
 
 nle::EncodingPreset* preset = (nle::EncodingPreset*)presets_browser->data(presets_browser->value());
@@ -1572,16 +1316,17 @@ if ( preset_new ) {
 	presets_browser->data(presets_browser->value(), preset_new);
 	presets_browser->text(presets_browser->value(), fmt.name);
 }}
-            xywh {40 320 240 25}
+            xywh {90 320 190 25}
           }
           Fl_Button {} {
-            label {Delete Format}
-            xywh {40 265 240 25}
+            label {-}
+            xywh {40 320 25 25} labelfont 1 labelsize 16
           }
         }
       }
     }
-    code {information_display->buffer(new Fl_Text_Buffer);
+    code {go = false;
+information_display->buffer(new Fl_Text_Buffer);
 presets_browser->add("Quicktime DV (PAL)");
 presets_browser->add("MSMpeg 4v3, mp3 AVI (768x576)");
 presets_browser->add("Quicktime 7");
@@ -1599,7 +1344,7 @@ TiXmlHandle docH( &doc );
 TiXmlElement* preset = docH.FirstChild( "preset" ).Element();
 
 for ( ; preset; preset = preset->NextSiblingElement( "preset" ) ) {
-	nle::EncodingPreset* encoding_preset = new nle::EncodingPreset( new nle::CodecParameters( nle::g_audio_codec_info, nle::g_video_codec_info ) );
+	nle::EncodingPreset* encoding_preset = new nle::EncodingPreset();
 	encoding_preset->readXML(preset);
 	nle::video_format fmt;
 	encoding_preset->getFormat(&fmt);
@@ -1729,7 +1474,7 @@ lqt_set_audio( qt, 2, fmt.samplerate, 16, codec[0] );
 lqt_destroy_codec_info( codec );
 lqt_set_cmodel( qt, 0, BC_RGB888 );
 
-preset->getCodecParams()->set2(qt);
+preset->set2(qt);
 
 return new nle::VideoWriterQT( qt, fmt );} {}
   }
@@ -1784,15 +1529,15 @@ class CustomFormatDialog {open
 } {
   decl {void *audio_codec;} {}
   decl {void* video_codec;} {}
-  decl {nle::CodecParameters* m_codecParams;} {}
+  decl {nle::EncodingPreset* m_preset;} {}
   Function {CustomFormatDialog()} {open
   } {
     code {audio_codec = 0;
 video_codec = 0;
-m_codecParams = new nle::CodecParameters( nle::g_audio_codec_info, nle::g_video_codec_info );} {}
+m_preset = new nle::EncodingPreset();} {}
     Fl_Window dialog_window {
       label {Custom Video Format} open
-      xywh {301 529 690 385} type Double modal visible
+      xywh {390 310 690 385} type Double modal visible
     } {
       Fl_Box {} {
         xywh {350 60 330 285} box ENGRAVED_FRAME labelfont 1 align 5
@@ -1804,7 +1549,7 @@ m_codecParams = new nle::CodecParameters( nle::g_audio_codec_info, nle::g_video_
       Fl_Choice video_codec_menu {
         label {Video Codec}
         callback {video_codec = o->menu()[o->value()].user_data();
-m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
+m_preset->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
         xywh {125 70 205 25} down_box BORDER_BOX
       } {}
       Fl_Button video_options {
@@ -1813,7 +1558,7 @@ m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
 	Fl_Group::current( dialog_window );
 	CodecOptions dlg;
 	dlg.m_audio = false;
-	dlg.m_codecParams = m_codecParams;
+	dlg.m_preset = m_preset;
 	nle::setCodecInfo( &dlg, video_codec );
 	dlg.codecOptions->show();
 	while (dlg.codecOptions->shown())
@@ -1824,7 +1569,7 @@ m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
       Fl_Choice audio_codec_menu {
         label {Audio Codec}
         callback {audio_codec = o->menu()[o->value()].user_data();
-m_codecParams->setAudioCodec( (lqt_codec_info_t*)audio_codec );} open
+m_preset->setAudioCodec( (lqt_codec_info_t*)audio_codec );} open
         xywh {125 220 205 25} down_box BORDER_BOX
         code0 {\#include "Codecs.H"}
         code1 {\#include <iostream>}
@@ -1836,7 +1581,7 @@ m_codecParams->setAudioCodec( (lqt_codec_info_t*)audio_codec );} open
 	Fl_Group::current( dialog_window );
 	CodecOptions dlg;
 	dlg.m_audio = true;
-	dlg.m_codecParams = m_codecParams;
+	dlg.m_preset = m_preset;
 	nle::setCodecInfo( &dlg, audio_codec );
 	dlg.codecOptions->show();
 	while (dlg.codecOptions->shown())
@@ -1910,6 +1655,10 @@ m_codecParams->setAudioCodec( (lqt_codec_info_t*)audio_codec );} open
       Fl_Spinner aspect_h {
         xywh {585 160 85 25}
       }
+      Fl_Box {} {
+        label Video
+        xywh {10 60 330 130} box ENGRAVED_FRAME labelfont 1 align 5
+      }
       Fl_Choice interlacing {
         label Interlacing open
         xywh {495 190 175 25} down_box BORDER_BOX
@@ -1948,10 +1697,6 @@ m_codecParams->setAudioCodec( (lqt_codec_info_t*)audio_codec );} open
         callback {go = true;
 o->window()->hide();}
         xywh {350 350 330 25}
-      }
-      Fl_Box {} {
-        label Video
-        xywh {10 60 330 130} box ENGRAVED_FRAME labelfont 1 align 5
       }
       Fl_Box {} {
         label Audio
@@ -1997,7 +1742,7 @@ audio_codec_menu->value(0);} {}
   Function {~CustomFormatDialog()} {open
   } {
     code {delete dialog_window;
-delete m_codecParams;} {}
+delete m_preset;} {}
   }
   Function {getEncodingPreset()} {open return_type {nle::EncodingPreset*}
   } {
@@ -2005,7 +1750,7 @@ delete m_codecParams;} {}
 	return 0;
 }
 nle::video_format fmt;
-nle::EncodingPreset* preset = new nle::EncodingPreset( new nle::CodecParameters( nle::g_audio_codec_info, nle::g_video_codec_info, m_codecParams ) );
+nle::EncodingPreset* preset = new nle::EncodingPreset( m_preset );
 preset->getFormat(&fmt);
 
 strcpy( fmt.name, name->value());
@@ -2040,8 +1785,8 @@ return preset;} {}
     code {nle::video_format fmt;
 preset->getFormat(&fmt);
 
-delete m_codecParams;
-m_codecParams = new nle::CodecParameters( nle::g_audio_codec_info, nle::g_video_codec_info, preset->getCodecParams() );
+delete m_preset;
+m_preset = new nle::EncodingPreset( preset );
 
 name->value(fmt.name);
 frame_size_w->value(fmt.w);
@@ -2059,7 +1804,7 @@ for ( int i = 0; i < len; i++ ) {
 	if ( strcmp( fmt.video_codec, codec_info->name ) == 0 ) {
 		video_codec_menu->value(i);
 		video_codec = codec_info;
-		m_codecParams->setVideoCodec( (lqt_codec_info_t*)video_codec );
+		m_preset->setVideoCodec( (lqt_codec_info_t*)video_codec );
 		break;
 	}
 }
@@ -2071,7 +1816,7 @@ for ( int i = 0; i < len; i++ ) {
 	if ( strcmp( fmt.audio_codec, codec_info->name ) == 0 ) {
 		audio_codec_menu->value(i);
 		audio_codec = codec_info;
-		m_codecParams->setAudioCodec( (lqt_codec_info_t*)audio_codec );
+		m_preset->setAudioCodec( (lqt_codec_info_t*)audio_codec );
 		break;
 	}
 }} {}

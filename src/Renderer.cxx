@@ -56,7 +56,6 @@ namespace nle
 //static quicktime_t *qt;
 
 
-/*Renderer::Renderer( string filename, render_frame_size* format, render_fps_chunks* framerate, int samplerate, CodecParameters* params )*/
 Renderer::Renderer( IVideoFileWriter* writer )
 {
 	char buffer[1024];

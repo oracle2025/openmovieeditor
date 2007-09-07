@@ -30,7 +30,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	WavArtist.cxx\
 	TimelineView.cxx\
 	VideoClip.cxx\
-	Codecs.cxx\
 	VideoViewGL.cxx\
 	FilmStrip.cxx\
 	Ruler.cxx\
@@ -79,7 +78,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	nle.h\
 	SwitchBoard.H\
 	WavArtist.H\
-	Codecs.H\
 	helper.H\
 	Timeline.H\
 	DragHandler.H\
