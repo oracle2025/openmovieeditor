@@ -414,8 +414,16 @@ private:
   static void cb_presets_browser(Fl_Hold_Browser*, void*);
   void cb_3_i(Fl_Button*, void*);
   static void cb_3(Fl_Button*, void*);
-  void cb_Edit_i(Fl_Button*, void*);
-  static void cb_Edit(Fl_Button*, void*);
+public:
+  Fl_Button *edit_format_button;
+private:
+  void cb_edit_format_button_i(Fl_Button*, void*);
+  static void cb_edit_format_button(Fl_Button*, void*);
+public:
+  Fl_Button *remove_format_button;
+private:
+  void cb_remove_format_button_i(Fl_Button*, void*);
+  static void cb_remove_format_button(Fl_Button*, void*);
 public:
   nle::IVideoFileWriter* getFileWriter();
   bool go;
