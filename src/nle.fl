@@ -7,7 +7,8 @@ decl {\#include <tinyxml.h>} {}
 decl {\#include "EncodingPreset.H"} {public
 } 
 
-class NleUI {} {
+class NleUI {open
+} {
   Function {NleUI()} {open
   } {
     Fl_Window mainWindow {
@@ -87,7 +88,6 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
             xywh {5 5 100 20} divider
             code0 {\#include "ProgressDialog/ProgressDialog.h"}
             code1 {\#include "Renderer.H"}
-            code2 {\#include "Codecs.H"}
             code3 {\#include "Prefs.H"}
           }
           MenuItem {} {
@@ -1345,7 +1345,7 @@ if ( preset_new ) {
 			information_display->buffer()->append("Bottom field first");
 			break;
 	}
-}} selected
+}}
                 xywh {90 320 190 25} deactivate resizable
               }
               Fl_Button remove_format_button {
@@ -1754,9 +1754,8 @@ m_preset->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
       Fl_Choice audio_codec_menu {
         label {Audio Codec}
         callback {audio_codec = o->menu()[o->value()].user_data();
-m_preset->setAudioCodec( (lqt_codec_info_t*)audio_codec );} open
+m_preset->setAudioCodec( (lqt_codec_info_t*)audio_codec );} open selected
         xywh {125 220 205 25} down_box BORDER_BOX
-        code0 {\#include "Codecs.H"}
         code1 {\#include <iostream>}
         code2 {using namespace std;}
       } {}

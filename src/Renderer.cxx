@@ -28,7 +28,6 @@
 #include "globals.H"
 #include "Timeline.H"
 #include "ProgressDialog/IProgressListener.H"
-#include "Codecs.H"
 #include "render_helper.H"
 
 render_frame_size fs720x576 = { 720, 576, 4, 3, ( 4.0 / 3.0 ), 10 };
