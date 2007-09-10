@@ -6570,6 +6570,22 @@ if ( preset_new ) {
 	
 	presets_browser->data(presets_browser->value(), preset_new);
 	presets_browser->text(presets_browser->value(), fmt.name);
+	
+	
+	char buffer[256];
+	information_display->buffer()->text(fmt.name);
+	snprintf( buffer, 256, "\n%dx%d, %d:%d, %.2f fps\n", fmt.w, fmt.h, fmt.aspect_w, fmt.aspect_h, ((float)fmt.framerate.timescale/fmt.framerate.frame_duration) );
+	information_display->buffer()->append(buffer);
+	snprintf(buffer, 256, "Video: %s\nAudio: %s, %d\n", fmt.video_codec, fmt.audio_codec, fmt.samplerate );
+	information_display->buffer()->append(buffer);
+	switch (fmt.interlacing) {
+		case 1:
+			information_display->buffer()->append("Top field first");
+			break;
+		case 2:
+			information_display->buffer()->append("Bottom field first");
+			break;
+	}
 };
 }
 void ExportDialog::cb_edit_format_button(Fl_Button* o, void* v) {
@@ -6590,55 +6606,9 @@ void ExportDialog::cb_remove_format_button(Fl_Button* o, void* v) {
   ((ExportDialog*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_remove_format_button_i(o,v);
 }
 
-static const char *idata_emblem[] = {
-"14 14 27 1",
-" \tc None",
-".\tc #000000",
-"+\tc #9F1918",
-"@\tc #A50202",
-"#\tc #A40000",
-"$\tc #A40100",
-"%\tc #A10B0B",
-"&\tc #B23130",
-"*\tc #C83232",
-"=\tc #DF6464",
-"-\tc #E06666",
-";\tc #C93232",
-">\tc #A30000",
-",\tc #CD0505",
-"\'\tc #CC0000",
-")\tc #A50000",
-"!\tc #CD0404",
-"~\tc #D83C3C",
-"{\tc #D94040",
-"]\tc #D73636",
-"^\tc #FFFFFF",
-"/\tc #E98F8F",
-"(\tc #D63434",
-"_\tc #A40101",
-":\tc #A10000",
-"<\tc #A70000",
-"[\tc #A60000",
-".+@########$%.",
-"&*=--------=;>",
-"@=,\'\'\'\'\'\'\'\',=)",
-"#-\'!~\'\'\'\'{!\'-#",
-"#-\']^/\'\'/^(\'-#",
-"#-\'\'/^//^/\'\'-#",
-"#-\'\'\'/^^/\'\'\'-#",
-"#-\'\'\'/^^/\'\'\'-#",
-"#-\'\'/^//^/\'\'-#",
-"#-\'(^/\'\'/^]\'-#",
-"#-\'!{\'\'\'\'~!\'-#",
-"_=,\'\'\'\'\'\'\'\',=)",
-":;=--------=;<",
-".[)########)[."
-};
-static Fl_Pixmap image_emblem(idata_emblem);
-
 ExportDialog::ExportDialog() {
   Fl_Double_Window* w;
-  { Fl_Double_Window* o = dialog_window = new Fl_Double_Window(560, 455, "Export");
+  { Fl_Double_Window* o = dialog_window = new Fl_Double_Window(560, 405, "Export");
     w = o;
     o->user_data((void*)(this));
     { Fl_Box* o = new Fl_Box(0, 0, 560, 40, "Export");
@@ -6649,24 +6619,24 @@ ExportDialog::ExportDialog() {
     { Fl_Button* o = new Fl_Button(375, 55, 75, 25, "File...");
       o->callback((Fl_Callback*)cb_File1);
     }
-    { Fl_Return_Button* o = new Fl_Return_Button(290, 415, 245, 25, "Encode");
+    { Fl_Return_Button* o = new Fl_Return_Button(290, 365, 245, 25, "Encode");
       o->callback((Fl_Callback*)cb_Encode);
       w->hotspot(o);
     }
-    { Fl_Button* o = new Fl_Button(30, 415, 245, 25, "Cancel");
+    { Fl_Button* o = new Fl_Button(30, 365, 245, 25, "Cancel");
       o->callback((Fl_Callback*)cb_Cancel1);
     }
-    { Fl_Group* o = new Fl_Group(30, 150, 505, 255, "Video");
+    { Fl_Group* o = new Fl_Group(30, 100, 505, 255, "Video");
       o->box(FL_ENGRAVED_FRAME);
       o->labelfont(1);
       o->align(FL_ALIGN_TOP_LEFT);
-      { Fl_Group* o = new Fl_Group(40, 175, 485, 220);
-        { Fl_Text_Display* o = information_display = new Fl_Text_Display(285, 175, 240, 220, "Information");
+      { Fl_Group* o = new Fl_Group(40, 125, 485, 220);
+        { Fl_Text_Display* o = information_display = new Fl_Text_Display(285, 125, 240, 220, "Information");
           o->labelfont(1);
           o->align(FL_ALIGN_TOP_LEFT);
         }
-        { Fl_Group* o = new Fl_Group(40, 175, 240, 220);
-          { Fl_Hold_Browser* o = presets_browser = new Fl_Hold_Browser(40, 175, 240, 195, "Presets");
+        { Fl_Group* o = new Fl_Group(40, 125, 240, 220);
+          { Fl_Hold_Browser* o = presets_browser = new Fl_Hold_Browser(40, 125, 240, 195, "Presets");
             o->box(FL_NO_BOX);
             o->color(FL_BACKGROUND2_COLOR);
             o->selection_color(FL_SELECTION_COLOR);
@@ -6679,18 +6649,18 @@ ExportDialog::ExportDialog() {
             o->when(FL_WHEN_RELEASE_ALWAYS);
             Fl_Group::current()->resizable(o);
           }
-          { Fl_Group* o = new Fl_Group(40, 370, 240, 25);
-            { Fl_Button* o = new Fl_Button(65, 370, 25, 25, "+");
+          { Fl_Group* o = new Fl_Group(40, 320, 240, 25);
+            { Fl_Button* o = new Fl_Button(65, 320, 25, 25, "+");
               o->labelfont(1);
               o->labelsize(16);
               o->callback((Fl_Callback*)cb_3);
             }
-            { Fl_Button* o = edit_format_button = new Fl_Button(90, 370, 190, 25, "Edit...");
+            { Fl_Button* o = edit_format_button = new Fl_Button(90, 320, 190, 25, "Edit...");
               o->callback((Fl_Callback*)cb_edit_format_button);
               o->deactivate();
               Fl_Group::current()->resizable(o);
             }
-            { Fl_Button* o = remove_format_button = new Fl_Button(40, 370, 25, 25, "-");
+            { Fl_Button* o = remove_format_button = new Fl_Button(40, 320, 25, 25, "-");
               o->labelfont(1);
               o->labelsize(16);
               o->callback((Fl_Callback*)cb_remove_format_button);
@@ -6705,14 +6675,6 @@ ExportDialog::ExportDialog() {
       }
       o->end();
       Fl_Group::current()->resizable(o);
-    }
-    { Fl_Button* o = new Fl_Button(30, 85, 505, 40, "Multimedia Codecs missing, click for more Info");
-      o->color((Fl_Color)175);
-      o->selection_color((Fl_Color)175);
-      o->image(image_emblem);
-      o->labelfont(1);
-      o->labelcolor((Fl_Color)1);
-      o->align(132|FL_ALIGN_INSIDE);
     }
     o->set_modal();
     o->end();
@@ -6746,13 +6708,25 @@ format.framerate.audio_frames_per_chunk = 19200;
 format.framerate.video_frames_per_chunk = 10;
 
 encoding_preset->setFormat(&format);
-lqt_codec_info_t** codec = lqt_find_video_codec_by_name( "ffmpeg_mpg4" );
-encoding_preset->setVideoCodec( codec[0] );
-lqt_destroy_codec_info( codec );
+lqt_codec_info_t** vcodec = lqt_find_video_codec_by_name( "ffmpeg_mpg4" );
+encoding_preset->setVideoCodec( vcodec[0] );
 
-codec = lqt_find_audio_codec_by_name("faac");
-encoding_preset->setAudioCodec( codec[0] );
-lqt_destroy_codec_info( codec );presets_browser->add(format.name, encoding_preset);
+lqt_codec_info_t** acodec = lqt_find_audio_codec_by_name("faac");
+encoding_preset->setAudioCodec( acodec[0] );
+
+if ( vcodec[0] && acodec[0] ) {
+	presets_browser->add(format.name, encoding_preset);
+} else {
+	delete encoding_preset;
+	if ( !vcodec[0] ) {
+		cout << "Video Codec Missing: ffmpeg_mpg4, Hint: install ffmpeg with shared libs before installing libquicktime" << endl;
+	}
+	if ( !acodec[0] ) {
+		cout << "Audio Codec Missing: faac, Hint: install libfaac before installing libquicktime" << endl;
+	}
+}
+lqt_destroy_codec_info( vcodec );
+lqt_destroy_codec_info( acodec );
 
 /*-----*/
 
@@ -6780,16 +6754,25 @@ format.framerate.video_frames_per_chunk = 10;
 
 encoding_preset->setFormat(&format);
 
-codec = lqt_find_video_codec_by_name( "ffmpeg_msmpeg4v3" );
-encoding_preset->setVideoCodec( codec[0] );
-lqt_destroy_codec_info( codec );
+vcodec = lqt_find_video_codec_by_name( "ffmpeg_msmpeg4v3" );
+encoding_preset->setVideoCodec( vcodec[0] );
 
-codec = lqt_find_audio_codec_by_name("lame");
-encoding_preset->setAudioCodec( codec[0] );
-lqt_destroy_codec_info( codec );
+acodec = lqt_find_audio_codec_by_name("lame");
+encoding_preset->setAudioCodec( acodec[0] );
 
-presets_browser->add(format.name, encoding_preset);
-
+if ( vcodec[0] && acodec[0] ) {
+	presets_browser->add(format.name, encoding_preset);
+} else {
+	delete encoding_preset;
+	if ( !vcodec[0] ) {
+		cout << "Video Codec Missing: ffmpeg_msmpeg4v3, Hint: install ffmpeg with shared libs before installing libquicktime" << endl;
+	}
+	if ( !acodec[0] ) {
+		cout << "Audio Codec Missing: lame, Hint: install lame before installing libquicktime" << endl;
+	}
+}
+lqt_destroy_codec_info( vcodec );
+lqt_destroy_codec_info( acodec );
 
 
 encoding_preset = new nle::EncodingPreset();
@@ -6813,15 +6796,22 @@ format.framerate.timescale = 30000;
 format.framerate.audio_frames_per_chunk = 19200;
 format.framerate.video_frames_per_chunk = 10;
 encoding_preset->setFormat(&format);
-codec = lqt_find_video_codec( QUICKTIME_DV, 1 );
-encoding_preset->setVideoCodec( codec[0] );
-lqt_destroy_codec_info( codec );
+vcodec = lqt_find_video_codec( QUICKTIME_DV, 1 );
+encoding_preset->setVideoCodec( vcodec[0] );
 
-codec = lqt_find_audio_codec( QUICKTIME_TWOS, 1 );
-encoding_preset->setAudioCodec( codec[0] );
-lqt_destroy_codec_info( codec );
-presets_browser->add(format.name, encoding_preset);
+acodec = lqt_find_audio_codec( QUICKTIME_TWOS, 1 );
+encoding_preset->setAudioCodec( acodec[0] );
 
+if ( vcodec[0] && acodec[0] ) {
+	presets_browser->add(format.name, encoding_preset);
+} else {
+	delete encoding_preset;
+	if ( !vcodec[0] ) {
+		cout << "Video Codec Missing: DV, Hint: install libdv before installing libquicktime" << endl;
+	}
+}
+lqt_destroy_codec_info( vcodec );
+lqt_destroy_codec_info( acodec );
 
 
 
@@ -7265,6 +7255,46 @@ fmt.black_pixel_v = (int)black_pixel_v->value();
 fmt.black_pixel_h = (int)black_pixel_h->value();
 fmt.samplerate = 48000;
 
+
+switch ( frame_rate_choice->value() ) {
+	case 0: // 25
+		fmt.framerate.frame_duration = 1200;
+		fmt.framerate.timescale = 30000;
+		fmt.framerate.audio_frames_per_chunk = 19200;
+		fmt.framerate.video_frames_per_chunk = 10;
+		break;
+	case 1: //29.97
+		fmt.framerate.frame_duration = 1001;
+		fmt.framerate.timescale = 30000;
+		fmt.framerate.audio_frames_per_chunk = 16016;
+		fmt.framerate.video_frames_per_chunk = 10;
+		break;
+	case 2: // 24
+		fmt.framerate.frame_duration = 1250;
+		fmt.framerate.timescale = 30000;
+		fmt.framerate.audio_frames_per_chunk = 20000;
+		fmt.framerate.video_frames_per_chunk = 10;
+		break;
+	case 3: // 15
+		fmt.framerate.frame_duration = 2000;
+		fmt.framerate.timescale = 30000;
+		fmt.framerate.audio_frames_per_chunk = 32000;
+		fmt.framerate.video_frames_per_chunk = 10;
+		break;
+	case 4: //50
+		fmt.framerate.frame_duration = 600;
+		fmt.framerate.timescale = 30000;
+		fmt.framerate.audio_frames_per_chunk = 19200;
+		fmt.framerate.video_frames_per_chunk = 20;
+		break;
+	case 5: // 60
+		fmt.framerate.frame_duration = 500;
+		fmt.framerate.timescale = 30000;
+		fmt.framerate.audio_frames_per_chunk = 16000;
+		fmt.framerate.video_frames_per_chunk = 20;
+		break;
+}
+
 preset->setFormat(&fmt);
 
 return preset;
@@ -7308,5 +7338,27 @@ for ( int i = 0; i < len; i++ ) {
 		m_preset->setAudioCodec( (lqt_codec_info_t*)audio_codec );
 		break;
 	}
+}
+
+
+switch ( fmt.framerate.frame_duration ) {
+	case 1200: // 25
+		frame_rate_choice->value( 0 );
+		break;
+	case 1001: //29.97
+		frame_rate_choice->value( 1 );
+		break;
+	case 1250: // 24
+		frame_rate_choice->value( 2 );
+		break;
+	case 2000: // 15
+		frame_rate_choice->value( 3 );
+		break;
+	case 600: //50
+		frame_rate_choice->value( 4 );
+		break;
+	case 500: // 60
+		frame_rate_choice->value( 5 );
+		break;
 }
 }

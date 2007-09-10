@@ -1179,7 +1179,7 @@ class ExportDialog {open
   } {
     Fl_Window dialog_window {
       label Export open
-      xywh {353 151 560 455} type Double resizable
+      xywh {338 377 560 405} type Double resizable
       code0 {\#include "VideoWriterQT.H"}
       code1 {\#include <colormodels.h>} modal visible
     } {
@@ -1218,7 +1218,7 @@ if ( r == 0 ) {
 
 go = true;
 o->window()->hide();}
-        xywh {290 415 245 25} hotspot
+        xywh {290 365 245 25} hotspot
         code0 {\#include <sys/types.h>}
         code1 {\#include <sys/stat.h>}
         code2 {\#include <unistd.h>}
@@ -1227,21 +1227,21 @@ o->window()->hide();}
         label Cancel
         callback {go = false;
 o->window()->hide();}
-        xywh {30 415 245 25}
+        xywh {30 365 245 25}
       }
       Fl_Group {} {
         label Video open
-        xywh {30 150 505 255} box ENGRAVED_FRAME labelfont 1 align 5 resizable
+        xywh {30 100 505 255} box ENGRAVED_FRAME labelfont 1 align 5 resizable
       } {
         Fl_Group {} {open
-          xywh {40 175 485 220} resizable
+          xywh {40 125 485 220} resizable
         } {
           Fl_Text_Display information_display {
             label Information
-            xywh {285 175 240 220} labelfont 1 align 5
+            xywh {285 125 240 220} labelfont 1 align 5
           }
           Fl_Group {} {open
-            xywh {40 175 240 220}
+            xywh {40 125 240 220}
           } {
             Fl_Browser presets_browser {
               label Presets
@@ -1280,11 +1280,11 @@ o->window()->hide();}
 	remove_format_button->deactivate();
 	edit_format_button->deactivate();
 }}
-              xywh {40 175 240 195} labelfont 1 align 5 resizable
+              xywh {40 125 240 195} labelfont 1 align 5 resizable
               class Fl_Hold_Browser
             }
             Fl_Group {} {open
-              xywh {40 370 240 25}
+              xywh {40 320 240 25}
             } {
               Fl_Button {} {
                 label {+}
@@ -1301,7 +1301,7 @@ if ( preset ) {
 	preset->getFormat(&fmt);
 	presets_browser->add(fmt.name, preset);
 }}
-                xywh {65 370 25 25} labelfont 1 labelsize 16
+                xywh {65 320 25 25} labelfont 1 labelsize 16
               }
               Fl_Button edit_format_button {
                 label {Edit...}
@@ -1329,8 +1329,24 @@ if ( preset_new ) {
 	
 	presets_browser->data(presets_browser->value(), preset_new);
 	presets_browser->text(presets_browser->value(), fmt.name);
-}}
-                xywh {90 370 190 25} deactivate resizable
+	
+	
+	char buffer[256];
+	information_display->buffer()->text(fmt.name);
+	snprintf( buffer, 256, "\\n%dx%d, %d:%d, %.2f fps\\n", fmt.w, fmt.h, fmt.aspect_w, fmt.aspect_h, ((float)fmt.framerate.timescale/fmt.framerate.frame_duration) );
+	information_display->buffer()->append(buffer);
+	snprintf(buffer, 256, "Video: %s\\nAudio: %s, %d\\n", fmt.video_codec, fmt.audio_codec, fmt.samplerate );
+	information_display->buffer()->append(buffer);
+	switch (fmt.interlacing) {
+		case 1:
+			information_display->buffer()->append("Top field first");
+			break;
+		case 2:
+			information_display->buffer()->append("Bottom field first");
+			break;
+	}
+}} selected
+                xywh {90 320 190 25} deactivate resizable
               }
               Fl_Button remove_format_button {
                 label {-}
@@ -1342,15 +1358,11 @@ if ( preset_new ) {
 		presets_browser->remove( presets_browser->value() );
 	}
 }}
-                xywh {40 370 25 25} labelfont 1 labelsize 16 deactivate
+                xywh {40 320 25 25} labelfont 1 labelsize 16 deactivate
               }
             }
           }
         }
-      }
-      Fl_Button {} {
-        label {Multimedia Codecs missing, click for more Info}
-        image {../icons/emblem-unreadable.xpm} xywh {30 85 505 40} color 175 selection_color 175 labelfont 1 labelcolor 1 align 148
       }
     }
     code {go = false;
@@ -1382,13 +1394,25 @@ format.framerate.audio_frames_per_chunk = 19200;
 format.framerate.video_frames_per_chunk = 10;
 
 encoding_preset->setFormat(&format);
-lqt_codec_info_t** codec = lqt_find_video_codec_by_name( "ffmpeg_mpg4" );
-encoding_preset->setVideoCodec( codec[0] );
-lqt_destroy_codec_info( codec );
+lqt_codec_info_t** vcodec = lqt_find_video_codec_by_name( "ffmpeg_mpg4" );
+encoding_preset->setVideoCodec( vcodec[0] );
 
-codec = lqt_find_audio_codec_by_name("faac");
-encoding_preset->setAudioCodec( codec[0] );
-lqt_destroy_codec_info( codec );presets_browser->add(format.name, encoding_preset);
+lqt_codec_info_t** acodec = lqt_find_audio_codec_by_name("faac");
+encoding_preset->setAudioCodec( acodec[0] );
+
+if ( vcodec[0] && acodec[0] ) {
+	presets_browser->add(format.name, encoding_preset);
+} else {
+	delete encoding_preset;
+	if ( !vcodec[0] ) {
+		cout << "Video Codec Missing: ffmpeg_mpg4, Hint: install ffmpeg with shared libs before installing libquicktime" << endl;
+	}
+	if ( !acodec[0] ) {
+		cout << "Audio Codec Missing: faac, Hint: install libfaac before installing libquicktime" << endl;
+	}
+}
+lqt_destroy_codec_info( vcodec );
+lqt_destroy_codec_info( acodec );
 
 /*-----*/
 
@@ -1416,16 +1440,25 @@ format.framerate.video_frames_per_chunk = 10;
 
 encoding_preset->setFormat(&format);
 
-codec = lqt_find_video_codec_by_name( "ffmpeg_msmpeg4v3" );
-encoding_preset->setVideoCodec( codec[0] );
-lqt_destroy_codec_info( codec );
+vcodec = lqt_find_video_codec_by_name( "ffmpeg_msmpeg4v3" );
+encoding_preset->setVideoCodec( vcodec[0] );
 
-codec = lqt_find_audio_codec_by_name("lame");
-encoding_preset->setAudioCodec( codec[0] );
-lqt_destroy_codec_info( codec );
+acodec = lqt_find_audio_codec_by_name("lame");
+encoding_preset->setAudioCodec( acodec[0] );
 
-presets_browser->add(format.name, encoding_preset);
-
+if ( vcodec[0] && acodec[0] ) {
+	presets_browser->add(format.name, encoding_preset);
+} else {
+	delete encoding_preset;
+	if ( !vcodec[0] ) {
+		cout << "Video Codec Missing: ffmpeg_msmpeg4v3, Hint: install ffmpeg with shared libs before installing libquicktime" << endl;
+	}
+	if ( !acodec[0] ) {
+		cout << "Audio Codec Missing: lame, Hint: install lame before installing libquicktime" << endl;
+	}
+}
+lqt_destroy_codec_info( vcodec );
+lqt_destroy_codec_info( acodec );
 
 
 encoding_preset = new nle::EncodingPreset();
@@ -1449,15 +1482,22 @@ format.framerate.timescale = 30000;
 format.framerate.audio_frames_per_chunk = 19200;
 format.framerate.video_frames_per_chunk = 10;
 encoding_preset->setFormat(&format);
-codec = lqt_find_video_codec( QUICKTIME_DV, 1 );
-encoding_preset->setVideoCodec( codec[0] );
-lqt_destroy_codec_info( codec );
+vcodec = lqt_find_video_codec( QUICKTIME_DV, 1 );
+encoding_preset->setVideoCodec( vcodec[0] );
 
-codec = lqt_find_audio_codec( QUICKTIME_TWOS, 1 );
-encoding_preset->setAudioCodec( codec[0] );
-lqt_destroy_codec_info( codec );
-presets_browser->add(format.name, encoding_preset);
+acodec = lqt_find_audio_codec( QUICKTIME_TWOS, 1 );
+encoding_preset->setAudioCodec( acodec[0] );
 
+if ( vcodec[0] && acodec[0] ) {
+	presets_browser->add(format.name, encoding_preset);
+} else {
+	delete encoding_preset;
+	if ( !vcodec[0] ) {
+		cout << "Video Codec Missing: DV, Hint: install libdv before installing libquicktime" << endl;
+	}
+}
+lqt_destroy_codec_info( vcodec );
+lqt_destroy_codec_info( acodec );
 
 
 
@@ -1682,7 +1722,7 @@ video_codec = 0;
 m_preset = new nle::EncodingPreset();} {}
     Fl_Window dialog_window {
       label {Custom Video Format} open
-      xywh {589 414 690 385} type Double modal visible
+      xywh {284 418 690 385} type Double modal visible
     } {
       Fl_Box {} {
         xywh {350 60 330 285} box ENGRAVED_FRAME labelfont 1 align 5
@@ -1920,16 +1960,49 @@ fmt.black_pixel_v = (int)black_pixel_v->value();
 fmt.black_pixel_h = (int)black_pixel_h->value();
 fmt.samplerate = 48000;
 
-/*
-switch () {
-	case:
-	break;
+
+switch ( frame_rate_choice->value() ) {
+	case 0: // 25
+		fmt.framerate.frame_duration = 1200;
+		fmt.framerate.timescale = 30000;
+		fmt.framerate.audio_frames_per_chunk = 19200;
+		fmt.framerate.video_frames_per_chunk = 10;
+		break;
+	case 1: //29.97
+		fmt.framerate.frame_duration = 1001;
+		fmt.framerate.timescale = 30000;
+		fmt.framerate.audio_frames_per_chunk = 16016;
+		fmt.framerate.video_frames_per_chunk = 10;
+		break;
+	case 2: // 24
+		fmt.framerate.frame_duration = 1250;
+		fmt.framerate.timescale = 30000;
+		fmt.framerate.audio_frames_per_chunk = 20000;
+		fmt.framerate.video_frames_per_chunk = 10;
+		break;
+	case 3: // 15
+		fmt.framerate.frame_duration = 2000;
+		fmt.framerate.timescale = 30000;
+		fmt.framerate.audio_frames_per_chunk = 32000;
+		fmt.framerate.video_frames_per_chunk = 10;
+		break;
+	case 4: //50
+		fmt.framerate.frame_duration = 600;
+		fmt.framerate.timescale = 30000;
+		fmt.framerate.audio_frames_per_chunk = 19200;
+		fmt.framerate.video_frames_per_chunk = 20;
+		break;
+	case 5: // 60
+		fmt.framerate.frame_duration = 500;
+		fmt.framerate.timescale = 30000;
+		fmt.framerate.audio_frames_per_chunk = 16000;
+		fmt.framerate.video_frames_per_chunk = 20;
+		break;
 }
-*/
+
 preset->setFormat(&fmt);
 
-return preset;} {selected
-    }
+return preset;} {}
   }
   decl {bool go;} {}
   Function {setEncodingPreset(nle::EncodingPreset* preset)} {open
@@ -1971,6 +2044,28 @@ for ( int i = 0; i < len; i++ ) {
 		m_preset->setAudioCodec( (lqt_codec_info_t*)audio_codec );
 		break;
 	}
+}
+
+
+switch ( fmt.framerate.frame_duration ) {
+	case 1200: // 25
+		frame_rate_choice->value( 0 );
+		break;
+	case 1001: //29.97
+		frame_rate_choice->value( 1 );
+		break;
+	case 1250: // 24
+		frame_rate_choice->value( 2 );
+		break;
+	case 2000: // 15
+		frame_rate_choice->value( 3 );
+		break;
+	case 600: //50
+		frame_rate_choice->value( 4 );
+		break;
+	case 500: // 60
+		frame_rate_choice->value( 5 );
+		break;
 }} {}
   }
 } 
