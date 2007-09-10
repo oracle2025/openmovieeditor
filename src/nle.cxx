@@ -7201,6 +7201,7 @@ nle::setVideoCodecMenu( video_codec_menu );
 go = false;
 frame_size_w->range(1,1024);
 frame_size_h->range(1,1024);
+analog_blank->range(0,99);
 frame_size_w->value(640);
 frame_size_h->value(480);
 aspect_w->value(4);

@@ -1722,7 +1722,7 @@ video_codec = 0;
 m_preset = new nle::EncodingPreset();} {}
     Fl_Window dialog_window {
       label {Custom Video Format} open
-      xywh {284 418 690 385} type Double modal visible
+      xywh {284 414 690 385} type Double modal visible
     } {
       Fl_Box {} {
         xywh {350 60 330 285} box ENGRAVED_FRAME labelfont 1 align 5
@@ -1754,7 +1754,7 @@ m_preset->setVideoCodec( (lqt_codec_info_t*)video_codec );} open
       Fl_Choice audio_codec_menu {
         label {Audio Codec}
         callback {audio_codec = o->menu()[o->value()].user_data();
-m_preset->setAudioCodec( (lqt_codec_info_t*)audio_codec );} open selected
+m_preset->setAudioCodec( (lqt_codec_info_t*)audio_codec );} open
         xywh {125 220 205 25} down_box BORDER_BOX
         code1 {\#include <iostream>}
         code2 {using namespace std;}
@@ -1905,6 +1905,7 @@ nle::setVideoCodecMenu( video_codec_menu );
 go = false;
 frame_size_w->range(1,1024);
 frame_size_h->range(1,1024);
+analog_blank->range(0,99);
 frame_size_w->value(640);
 frame_size_h->value(480);
 aspect_w->value(4);
@@ -1913,7 +1914,8 @@ black_pixel_v->value(0);
 black_pixel_h->value(0);
 analog_blank->value(0);
 video_codec_menu->value(0);
-audio_codec_menu->value(0);} {}
+audio_codec_menu->value(0);} {selected
+    }
   }
   Function {shown()} {return_type int
   } {
