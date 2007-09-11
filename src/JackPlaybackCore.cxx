@@ -191,7 +191,7 @@ void open_jack(void *data)
 	 connect_jackports();
 }
 
-long jack_poll_frame (void)
+int64_t jack_poll_frame (void)
 {
 	jack_position_t	jack_position;
 	double		jack_time;
@@ -201,7 +201,7 @@ long jack_poll_frame (void)
 	/* Calculate frame. */
 	jack_transport_query(jack_client, &jack_position);
 	jack_time = jack_position.frame / (double) jack_position.frame_rate;
-	frame = (int) rint(1200.0 * jack_time );
+	frame = (int64_t) llrint(NLE_TIME_BASE * jack_time );
 	return(frame);
 }
 
