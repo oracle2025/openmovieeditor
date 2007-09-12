@@ -78,10 +78,12 @@ void Frei0rFactory::enumerate( string folder, IEffectMenu* menu )
 		return;
 	}
 	for ( int i = 0; i < n; i++ ) {
-		p = new dir_node;
-		p->next = 0;
-		p->name = string( folder ) + list[i]->d_name;
-		folders = (dir_node*)sl_push( folders, p );
+		if ( list[i]->d_name[0] != '.' ) {
+			p = new dir_node;
+			p->next = 0;
+			p->name = string( folder ) + list[i]->d_name;
+			folders = (dir_node*)sl_push( folders, p );
+		}
 	}
 	for ( int i = n; i > 0; ) { // This is some bad ass hacking style from the fltk manual ;)
 		free( (void*)( list[--i] ) );
@@ -89,7 +91,6 @@ void Frei0rFactory::enumerate( string folder, IEffectMenu* menu )
 	if ( n > 0 ) {
 		free( (void*)list );
 	}
-
 
 	while( folders ) {
 		p = (dir_node*)sl_pop( &folders );
@@ -121,7 +122,7 @@ void Frei0rFactory::enumerate( string folder, IEffectMenu* menu )
 				identifier += effect->name();
 				g_mainFilterFactory->add( identifier.c_str(), effect );
 				g_ui->special_clips->add( effect->name(), PL_VIDEO_EFFECT, identifier.c_str() );
-			} else {
+			} else { 
 				delete effect;
 			}
 		}
