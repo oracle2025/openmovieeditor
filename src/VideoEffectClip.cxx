@@ -78,41 +78,9 @@ VideoEffectClip::VideoEffectClip( FilterClip* filterClip )
 void VideoEffectClip::setEffects( ClipData* )
 {
 	return;
-/*	EffectClipData* edata = dynamic_cast<EffectClipData*>(data);
-	if ( edata ) {
-		FilterFactory* ef;
-		for ( int i = 0; i < edata->effect_count; i++ ) {
-			ef = g_frei0rFactory->get( edata->effects[i].name );
-			if ( ef ) {
-				Frei0rEffect* effectObj = dynamic_cast<Frei0rEffect*>( appendEffect( ef ) );
-				f0r_plugin_info_t* finfo = effectObj->getPluginInfo();
-				f0r_param_info_t pinfo;
-				for ( int j = 0; j < finfo->num_params; j++ ) {
-					effectObj->getParamInfo( &pinfo, j );
-					switch ( pinfo.type ) {
-						case F0R_PARAM_DOUBLE:
-							{
-								f0r_param_double dvalue;
-								dvalue = edata->effects[i].parameters[j].param_double;
-								effectObj->setValue( &dvalue, j );
-								break;
-							}
-						default:
-							break;
-					}
-				}
-			}
-			
-		}
-	}*/
 }
 VideoEffectClip::~VideoEffectClip()
 {
-/*	effect_stack* node;
-	while ( ( node = (effect_stack*)sl_pop( &m_effects ) ) ) {
-		delete node->effect;
-		delete node;
-	}*/
 	unPrepareFormat();
 }
 frame_struct* VideoEffectClip::getFrame( int64_t position )
@@ -148,120 +116,22 @@ frame_struct* VideoEffectClip::getFrame( int64_t position )
 IVideoEffect* VideoEffectClip::appendEffect( FilterFactory* factory )
 {
 	return dynamic_cast<IVideoEffect*>( m_filterClip->appendFilter( factory ) );
-/*	FilterBase* fb;
-	VideoClip* c1;
-	ImageClip* c2;
-	TitleClip* c3;
-	c1 = dynamic_cast<VideoClip*>(this);
-	if ( c1 ) {
-		fb = factory->get( c1 );
-	} else if ( (c2 = dynamic_cast<ImageClip*>(this)) ) {
-		fb = factory->get( c2 );
-	} else if ( (c3 = dynamic_cast<TitleClip*>(this)) ) {
-		fb = factory->get( c3 );
-	}
-	assert(fb);
-	
-	IVideoEffect* e = dynamic_cast<IVideoEffect*>(fb);
-	if ( !e ) {
-		delete fb;
-		return 0;
-	}
-	effect_stack* n = new effect_stack;
-	n->next = 0;
-	n->effect = e;
-	m_effects = (effect_stack*)sl_unshift( m_effects, n );
-	return e;*/
 }
 IVideoEffect* VideoEffectClip::pushEffect( FilterFactory* factory )
 {
 	return dynamic_cast<IVideoEffect*>(m_filterClip->pushFilter( factory ));
-/*	FilterBase* fb;
-	VideoClip* c1;
-	ImageClip* c2;
-	TitleClip* c3;
-	c1 = dynamic_cast<VideoClip*>(this);
-	if ( c1 ) {
-		fb = factory->get( c1 );
-	} else if ( (c2 = dynamic_cast<ImageClip*>(this)) ) {
-		fb = factory->get( c2 );
-	} else if ( (c3 = dynamic_cast<TitleClip*>(this)) ) {
-		fb = factory->get( c3 );
-	}
-	assert(fb);
-	IVideoEffect* e = dynamic_cast<IVideoEffect*>(fb);
-	if ( !e ) {
-		delete fb;
-		return;
-	}
-	effect_stack* n = new effect_stack;
-	n->next = 0;
-	n->effect = e;
-	m_effects = (effect_stack*)sl_push( m_effects, n );*/
 }
-/*
-static effect_stack* sl_swap( effect_stack* root )
-{
-	effect_stack* q = root;
-	effect_stack* r;
-	if ( !q || !q->next ) {
-		return q;
-	}
-	r = q->next;
-	q->next = r->next;
-	r->next = q;
-	return r;
-}*/
 void VideoEffectClip::moveEffectUp( int num )
 {
 	m_filterClip->moveFilterUp( num );
-/*	if ( !m_effects || num <= 1 ) {
-		return;
-	}
-	if ( num == 2 ) {
-		m_effects = sl_swap( m_effects );
-		return;
-	}
-	effect_stack* p = m_effects;
-	for ( int i = 3; i < num; i++ ) {
-		p = p->next;
-	}
-	p->next = sl_swap( p->next );*/
 }
 void VideoEffectClip::moveEffectDown( int num )
 {
 	m_filterClip->moveFilterDown( num );
-/*	if ( !m_effects ) {
-		return;
-	}
-	if ( num == 1 ) {
-		m_effects = sl_swap( m_effects );
-		return;
-	}
-	effect_stack* p = m_effects;
-	for ( int i = 2; i < num; i++ ) {
-		p = p->next;
-	}
-	p->next = sl_swap( p->next );*/
 }
-/*static int remove_effect_helper( void*, void* data )
-{
-	int* num = (int*)data;
-	if ( *num ) {
-		(*num)--;
-		return 0;
-	}
-	return 1;
-}*/
 void VideoEffectClip::removeEffect( int num )
 {
 	m_filterClip->removeFilter( num );
-/*	int count = num - 1;
-	effect_stack* node = (effect_stack*)sl_remove( &m_effects, remove_effect_helper, &count );
-	if ( node ) {
-		delete node->effect;
-		delete node;
-	}*/
 }
 //void VideoEffectClip::prepareFormat( int ww, int hh, int aspect_w, int aspect_h, float aspect, int analog_blank )
 void VideoEffectClip::prepareFormat( int ww, int hh, int , int , float aspect, int analog_blank )
@@ -401,72 +271,6 @@ frame_struct* VideoEffectClip::getFormattedFrame( frame_struct* tmp_frame, int64
 ClipData* VideoEffectClip::vec_getClipData()
 {
 	return 0;
-	/*
-	int effect_count = 0;
-	filter_stack *node = m_filterClip->getFilters();
-	while ( node ) {
-		effect_count++;
-		node = node->next;
-	}
-	if ( effect_count == 0 ) {
-		return 0;
-	}
-	EffectClipData* data = new EffectClipData;
-	data->effects = new struct effect_data[effect_count];
-	data->effect_count = effect_count;
-	node = m_filterClip->getFilters();
-	int i = 0;
-	while ( node ) {
-		IVideoEffect* effect = dynamic_cast<IVideoEffect*>(node->filter);
-		node = node->next;
-		if ( !effect ) {
-			i++;
-			continue;
-		}
-		data->effects[i].name = effect->name();
-		Frei0rEffect* fe = dynamic_cast<Frei0rEffect*>( effect );
-		f0r_plugin_info_t* finfo;
-		f0r_param_info_t pinfo;
-		finfo = fe->getPluginInfo();
-		data->effects[i].parameters = new struct effect_parameter[finfo->num_params];
-		for ( int j = 0; j < finfo->num_params; j++ ) {
-			fe->getParamInfo( &pinfo, j );
-			data->effects[i].parameters[j].name = pinfo.name;
-			switch ( pinfo.type ) {
-				case F0R_PARAM_DOUBLE:
-					{
-						f0r_param_double dvalue;
-						fe->getValue( &dvalue, j );
-						data->effects[i].parameters[j].param_double = (double)dvalue;
-						break;
-					}
-				case F0R_PARAM_BOOL:
-					{
-						f0r_param_bool bvalue;
-						fe->getValue( &bvalue, j );
-						data->effects[i].parameters[j].param_bool = bvalue;
-						break;
-					}
-				case F0R_PARAM_COLOR:
-					break;
-				case F0R_PARAM_POSITION:
-					{
-						f0r_param_position_t pos;
-						fe->getValue( &pos, j );
-						data->effects[i].parameters[j].param_position = pos;
-						break;
-					}
-				default:
-					break;
-			}
-		}
-		
-
-		
-		i++;
-	}
-	return data;
-	*/
 }
 
 
