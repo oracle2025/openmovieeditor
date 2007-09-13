@@ -68,6 +68,8 @@ class Frei0rEffect : public IVideoEffect
 		f0r_set_param_value_f f0r_set_param_value;
 		f0r_get_param_value_f f0r_get_param_value;
 		f0r_plugin_info_t* m_info;
+		int m_w;
+		int m_h;
 };
 
 } /* namespace nle */

@@ -58,6 +58,13 @@ unsigned int mixChannels( float *A, float *B, float* out, unsigned int frames );
 void decode_int16_to_float(void * _in, float ** out, int num_channels, int num_samples);
 void decode_uint8_to_float(void * _in, float ** out, int num_channels, int num_samples);
 
+// Frame: is interlaced
+// Fields: two images above each other in one array.
+void frame_to_fields( int interlace_order /* 1=top ff, 2=bottom ff */, unsigned
+	char* src, unsigned char* dst, int w, int h, bool src_alpha );
+void fields_to_frames( int interlace_order /* 1=top ff, 2=bottom ff */, unsigned
+	char* src, unsigned char* dst, int w, int h );
+
 } /* namespace nle */
 
 #endif /* _RENDER_HELPER_H_ */

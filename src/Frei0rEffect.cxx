@@ -25,6 +25,7 @@
 #include "global_includes.H"
 #include "globals.H"
 #include "Frei0rDialog.H"
+#include "render_helper.H"
 
 namespace nle
 {
@@ -32,6 +33,8 @@ namespace nle
 Frei0rEffect::Frei0rEffect( f0r_plugin_info_t* info, void* handle, int w, int h )
 	: m_info( info )
 {
+	m_w = w;
+	m_h = h;
 	m_dialog = 0;
 	f0r_construct = (f0r_construct_f)dlsym( handle, "f0r_construct" );
 	f0r_destruct = (f0r_destruct_f)dlsym( handle, "f0r_destruct" );
@@ -80,6 +83,23 @@ Frei0rEffect::~Frei0rEffect()
 }
 frame_struct* Frei0rEffect::getFrame( frame_struct* frame, int64_t position )
 {
+	//TODO: Check if interlaced and if Filter needs separate fields, then
+	//perform conversion
+if ( 0 ) {
+	//if ( frame->interlace_mode == 1 ) {
+		if ( m_h > frame->h / 2 ) {
+			m_h = m_h / 2;
+			f0r_destruct( m_instance );
+			m_instance = f0r_construct( m_w, m_h );
+		}
+	//}
+	//This is seriously degrading performance!!
+	frame_to_fields( 1, frame->RGB, m_frame, frame->w, frame->h, frame->has_alpha_channel );
+	f0r_update( m_instance, position / (float)NLE_TIME_BASE,(uint32_t*)(m_frame+m_w*m_h*4), (uint32_t*)(m_tmpFrame+m_w*m_h*4) );
+	f0r_update( m_instance, position / (float)NLE_TIME_BASE, (uint32_t*)m_frame, (uint32_t*)m_tmpFrame );
+	fields_to_frames( 1, m_tmpFrame, m_frame, frame->w, frame->h );
+} else {
+//   vv Old Code without deinterlaceing and interlacing
 	if ( frame->has_alpha_channel ) {
 		f0r_update( m_instance, position / (float)NLE_TIME_BASE, (uint32_t*)frame->RGB, (uint32_t*)m_frame );
 	} else {
@@ -98,6 +118,7 @@ frame_struct* Frei0rEffect::getFrame( frame_struct* frame, int64_t position )
 		}
 		f0r_update( m_instance, position / (float)NLE_TIME_BASE, (uint32_t*)m_tmpFrame, (uint32_t*)m_frame );
 	}
+}
 	return &m_framestruct;
 }
 

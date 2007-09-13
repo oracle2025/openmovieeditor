@@ -357,6 +357,104 @@ void stretch_format(
 }
 
 
+void frame_to_fields( int interlace_order /* 1=top ff, 2=bottom ff */, unsigned
+	char* source, unsigned char* destination, int w, int h, bool src_alpha )
+{
+	
+	if ( src_alpha ) {
+		uint32_t *src, *dst, *end;
+		int h_2 = h/2;
+		if ( interlace_order == 1 ) {
+			src = (uint32_t*)source;
+			dst = (uint32_t*)destination;
+		} else {
+			src = (uint32_t*)( source + ( w * 4 ) );
+			dst = (uint32_t*)destination;
+		}
+		for ( int y = 0; y < h_2; y++ ) {
+			for ( int x = 0; x < w; x++ ) {
+				dst[x+y*w] = src[x+y*w*2];
+			}
+		}
+		if ( interlace_order == 1 ) {
+			src = (uint32_t*)( source + ( w * 4 ) );
+			dst = (uint32_t*)( destination + ( w*h*2 ) );
+		} else {
+			src = (uint32_t*)source;
+			dst = (uint32_t*)( destination + ( w*h*2 ) );
+		}
+		for ( int y = 0; y < h_2; y++ ) {
+			for ( int x = 0; x < w; x++ ) {
+				dst[x+y*w] = src[x+y*w*2];
+			}
+		}
+	} else {
+		unsigned char *src, *dst, *end;
+		int h_2 = h/2;
+		if ( interlace_order == 1 ) {
+			src = source;
+			dst = destination;
+		} else {
+			src = ( source + ( w * 3 ) );
+			dst = destination;
+		}
+		for ( int y = 0; y < h_2; y++ ) {
+			for ( int x = 0; x < w; x++ ) {
+				dst[(x+y*w)*4] = src[(x+y*w*2)*3];
+				dst[(x+y*w)*4+1] = src[(x+y*w*2)*3+1];
+				dst[(x+y*w)*4+2] = src[(x+y*w*2)*3+2];
+				dst[(x+y*w)*4+3] = 255;
+			}
+		}
+		if ( interlace_order == 1 ) {
+			src = ( source + ( w * 3 ) );
+			dst = ( destination + ( w*h*2 ) );
+		} else {
+			src = source;
+			dst = ( destination + ( w*h*2 ) );
+		}
+		for ( int y = 0; y < h_2; y++ ) {
+			for ( int x = 0; x < w; x++ ) {
+				dst[(x+y*w)*4] = src[(x+y*w*2)*3];
+				dst[(x+y*w)*4+1] = src[(x+y*w*2)*3+1];
+				dst[(x+y*w)*4+2] = src[(x+y*w*2)*3+2];
+				dst[(x+y*w)*4+3] = 255;
+			}
+		}
+	}
+}
+
+void fields_to_frames( int interlace_order /* 1=top ff, 2=bottom ff */, unsigned
+	char* source, unsigned char* destination, int w, int h )
+{
+	uint32_t *src, *dst, *end;
+	int h_2 = h/2;
+	if ( interlace_order == 1 ) {
+		src = (uint32_t*)source;
+		dst = (uint32_t*)destination;
+	} else {
+		src = (uint32_t*)source;
+		dst = (uint32_t*)( destination + ( w * 4 ) );
+	}
+	for ( int y = 0; y < h_2; y++ ) {
+		for ( int x = 0; x < w; x++ ) {
+			dst[x+y*w*2] = src[x+y*w];
+		}
+	}
+	if ( interlace_order == 1 ) {
+		src = (uint32_t*)( source + ( w*h*2 ) );
+		dst = (uint32_t*)( destination + ( w * 4 ) );
+	} else {
+		src = (uint32_t*)( source + ( w*h*2 ) );
+		dst = (uint32_t*)destination;
+	}
+	for ( int y = 0; y < h_2; y++ ) {
+		for ( int x = 0; x < w; x++ ) {
+			dst[x+y*w*2] = src[x+y*w];
+		}
+	}
+
+}
 
 } /* namespace nle */
 
