@@ -6789,17 +6789,17 @@ format.interlacing = 0;
 format.black_pixel_h = 0;
 format.black_pixel_v = 0;
 strcpy(format.name, "Quicktime DV");
-strcpy(format.audio_codec, QUICKTIME_TWOS );
-strcpy(format.video_codec, QUICKTIME_DV );
+strcpy(format.audio_codec, "dv_pal" );
+strcpy(format.video_codec, "twos" );
 format.framerate.frame_duration = 1200;
 format.framerate.timescale = 30000;
 format.framerate.audio_frames_per_chunk = 19200;
 format.framerate.video_frames_per_chunk = 10;
 encoding_preset->setFormat(&format);
-vcodec = lqt_find_video_codec( QUICKTIME_DV, 1 );
+vcodec = lqt_find_video_codec_by_name( "dv_pal" );
 encoding_preset->setVideoCodec( vcodec[0] );
 
-acodec = lqt_find_audio_codec( QUICKTIME_TWOS, 1 );
+acodec = lqt_find_audio_codec_by_name( "twos" );
 encoding_preset->setAudioCodec( acodec[0] );
 
 if ( vcodec[0] && acodec[0] ) {
