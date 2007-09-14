@@ -25,6 +25,9 @@
 extern "C" {
 #include <ffmpeg/avcodec.h>
 #include <ffmpeg/avformat.h>
+#ifdef SWSCALE
+	#include <ffmpeg/swscale.h>
+#endif /* SWSCALE */
 }
 
 #include "global_includes.H"
@@ -63,6 +66,9 @@ class VideoFileFfmpeg : public IVideoFile
 		int64_t          m_length;
 		int              m_videoStream;
 		int64_t          m_ticksPerFrame;
+#ifdef SWSCALE
+		struct SwsContext *pSWSCtx;
+#endif
 };
 	
 } /* namespace nle */

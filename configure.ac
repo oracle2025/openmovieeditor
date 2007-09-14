@@ -114,6 +114,14 @@ if test x$HAVE_AVFORMAT = xfalse; then
   fi
 fi
 
+HAVE_SWSCALE=false
+PKG_CHECK_MODULES(SWSCALE, libswscale, [HAVE_SWSCALE=true], [true])
+if test x$HAVE_SWSCALE = xfalse; then
+  AC_MSG_WARN([*** libswscale not found])
+else
+  CPPFLAGS="$CPPFLAGS $SWSCALE_CFLAGS -DSWSCALE"
+  LDFLAGS="$LDFLAGS $SWSCALE_LIBS"
+fi
 
 PKG_CHECK_MODULES(JACK, jack, ac_jack_lib=yes, ac_jack_lib=no)
 AC_CHECK_HEADER(jack/jack.h, [ac_jack_h="yes"], [ac_jack_h="no"])

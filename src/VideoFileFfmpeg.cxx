@@ -124,11 +124,17 @@ VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 	
 	int64_t len = m_formatContext->duration - m_formatContext->start_time;
 	m_length = (int64_t)( len * NLE_TIME_BASE / AV_TIME_BASE ) - m_ticksPerFrame;
+#ifdef SWSCALE
+	pSWSCtx = sws_getContext(m_width, m_height, m_codecContext->pix_fmt, m_width, m_height, PIX_FMT_RGB24, SWS_BICUBIC, NULL, NULL, NULL);
+#endif
 	
 	m_ok = true;
 }
 VideoFileFfmpeg::~VideoFileFfmpeg()
 {
+#ifdef SWSCALE
+	sws_freeContext(pSWSCtx);
+#endif
 	if ( m_avFrame )
 		av_free( m_avFrame );
 	if ( m_avFrameRGB )
@@ -152,8 +158,18 @@ frame_struct* VideoFileFfmpeg::read()
 			if ( m_packet.stream_index == m_videoStream ) {
 				avcodec_decode_video( m_codecContext, m_avFrame, &frameFinished, m_packet.data, m_packet.size );
 				if ( frameFinished ) {
+#ifdef SWSCALE
+					sws_scale(pSWSCtx,
+						((AVPicture*)m_avFrame)->data,
+						((AVPicture*)m_avFrame)->linesize, 0,
+						m_codecContext->height,
+						((AVPicture*)m_avFrameRGB)->data,
+						((AVPicture*)m_avFrameRGB)->linesize);
+#else
 					img_convert( (AVPicture*)m_avFrameRGB, PIX_FMT_RGB24,
 						  (AVPicture*)m_avFrame, m_codecContext->pix_fmt, m_width, m_height );
+#endif
+
 					av_free_packet( &m_packet );
 					return &m_framestruct;
 				}
