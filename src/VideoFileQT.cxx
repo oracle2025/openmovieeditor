@@ -24,6 +24,7 @@
 
 #include "VideoFileQT.H"
 #include "ErrorDialog/IErrorHandler.H"
+#include "helper.H"
 
 namespace nle
 {
@@ -92,6 +93,9 @@ VideoFileQT::VideoFileQT( string filename )
 	m_framestruct.crop_bottom = 0;
 	m_framestruct.tilt_x = 0;
 	m_framestruct.tilt_y = 0;
+
+	int aw, ah;
+	guess_aspect( m_framestruct.w, m_framestruct.h, &ah, &aw, &m_framestruct.aspect, &m_framestruct.analog_blank, 0, 0 );
 
 	m_filename = filename;
 	m_ok = true;

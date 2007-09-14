@@ -23,6 +23,7 @@
 #include "render_helper.H"
 #include "ErrorDialog/IErrorHandler.H"
 #include "globals.H"
+#include "helper.H"
 
 namespace nle
 {
@@ -104,6 +105,8 @@ VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 	m_framestruct.tilt_x = 0;
 	m_framestruct.tilt_y = 0;
 	m_filename = filename;
+	int ah, aw;
+	guess_aspect( m_framestruct.w, m_framestruct.h, &ah, &aw, &m_framestruct.aspect, &m_framestruct.analog_blank, 0, 0 );
 
 
 	int64_t num = m_formatContext->streams[m_videoStream]->r_frame_rate.num;
