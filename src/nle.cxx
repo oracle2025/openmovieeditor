@@ -6848,11 +6848,11 @@ nle::IVideoFileWriter* ExportDialog::getFileWriter() {
 
 nle::EncodingPreset* preset = (nle::EncodingPreset*)presets_browser->data(presets_browser->value());
 if ( preset->m_avi_odml ) {
-	qt = quicktime_open( export_filename->value(), 0, 1 );
+	qt = quicktime_open( (char*)export_filename->value(), 0, 1 );
 	quicktime_set_avi(qt, 1);
 	//qt = lqt_open_write ( export_filename->value(), LQT_FILE_AVI_ODML ); /* For new Libquicktime */
 } else {
-	qt = quicktime_open( export_filename->value(), 0, 1 );
+	qt = quicktime_open( (char*)export_filename->value(), 0, 1 );
 	//qt = lqt_open_write( export_filename->value(), LQT_FILE_QT ); /* For new Libquicktime */
 }
 
