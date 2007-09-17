@@ -386,6 +386,7 @@ void EncodingPreset::writeXML_CodecParameters( TiXmlElement* xml_node )
 	TiXmlElement* parameter;
 	xml_node->LinkEndChild( video_codec );
 	for ( param_node* p = m_currentVideoCodec->parameters; p; p = p->next ) {
+#if (LQT_CODEC_API_VERSION & 0xffff) > 6
 		if ( p->info->type == LQT_PARAMETER_INT || p->info->type == LQT_PARAMETER_FLOAT || p->info->type == LQT_PARAMETER_STRING || p->info->type == LQT_PARAMETER_STRINGLIST ) {
 			parameter = new TiXmlElement( "parameter" );
 			video_codec->LinkEndChild( parameter );
@@ -408,10 +409,32 @@ void EncodingPreset::writeXML_CodecParameters( TiXmlElement* xml_node )
 					break;
 			}
 		}
+#else
+		if ( p->info->type == LQT_PARAMETER_INT || p->info->type == LQT_PARAMETER_STRING || p->info->type == LQT_PARAMETER_STRINGLIST ) {
+			parameter = new TiXmlElement( "parameter" );
+			video_codec->LinkEndChild( parameter );
+			parameter->SetAttribute( "name", p->info->name );
+			switch ( p->info->type ) {
+				case LQT_PARAMETER_INT:
+					parameter->SetAttribute( "type", "int" );
+					parameter->SetAttribute( "value", p->value.val_int );
+					break;
+				case LQT_PARAMETER_STRING:
+				case LQT_PARAMETER_STRINGLIST:
+					parameter->SetAttribute( "type", "string" );
+					parameter->SetAttribute( "value", p->value.val_string );
+					break;
+				case LQT_PARAMETER_SECTION:
+					break;
+			}
+		}
+
+#endif
 	}
 	TiXmlElement* audio_codec = new TiXmlElement( "audio_codec_parameters" );
 	xml_node->LinkEndChild( audio_codec );
 	for ( param_node* p = m_currentAudioCodec->parameters; p; p = p->next ) {
+#if (LQT_CODEC_API_VERSION & 0xffff) > 6
 		if ( p->info->type == LQT_PARAMETER_INT || p->info->type == LQT_PARAMETER_FLOAT || p->info->type == LQT_PARAMETER_STRING || p->info->type == LQT_PARAMETER_STRINGLIST ) {
 			parameter = new TiXmlElement( "parameter" );
 			audio_codec->LinkEndChild( parameter );
@@ -434,6 +457,27 @@ void EncodingPreset::writeXML_CodecParameters( TiXmlElement* xml_node )
 					break;
 			}
 		}
+#else
+		if ( p->info->type == LQT_PARAMETER_INT || p->info->type == LQT_PARAMETER_STRING || p->info->type == LQT_PARAMETER_STRINGLIST ) {
+			parameter = new TiXmlElement( "parameter" );
+			audio_codec->LinkEndChild( parameter );
+			parameter->SetAttribute( "name", p->info->name );
+			switch ( p->info->type ) {
+				case LQT_PARAMETER_INT:
+					parameter->SetAttribute( "type", "int" );
+					parameter->SetAttribute( "value", p->value.val_int );
+					break;
+				case LQT_PARAMETER_STRING:
+				case LQT_PARAMETER_STRINGLIST:
+					parameter->SetAttribute( "type", "string" );
+					parameter->SetAttribute( "value", p->value.val_string );
+					break;
+				case LQT_PARAMETER_SECTION:
+					break;
+			}
+		}
+#endif
+
 	}
 
 }
