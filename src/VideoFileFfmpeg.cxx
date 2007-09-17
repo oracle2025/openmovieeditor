@@ -158,6 +158,10 @@ frame_struct* VideoFileFfmpeg::read()
 			if ( m_packet.stream_index == m_videoStream ) {
 				avcodec_decode_video( m_codecContext, m_avFrame, &frameFinished, m_packet.data, m_packet.size );
 				if ( frameFinished ) {
+#if 0
+					cout << "m_avFrame->interlaced_frame: " << m_avFrame->interlaced_frame << endl;
+					cout << "m_avFrame->top_field_first: " << m_avFrame->top_field_first << endl;
+#endif
 #ifdef SWSCALE
 					sws_scale(pSWSCtx,
 						((AVPicture*)m_avFrame)->data,

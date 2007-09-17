@@ -58,6 +58,18 @@ VideoFileQT::VideoFileQT( string filename )
 	int64_t frame_duration = lqt_frame_duration( m_qt, 0, 0 );
 	int64_t time_scale = lqt_video_time_scale( m_qt, 0 );
 	m_ticksPerFrame = ( frame_duration * NLE_TIME_BASE ) / time_scale;
+
+	switch ( lqt_get_interlace_mode( m_qt, 0 ) ) {
+		case LQT_INTERLACE_NONE:
+			cout << "Interlace NONE: " << filename << endl;
+			break;
+		case LQT_INTERLACE_TOP_FIRST:
+			cout << "Interlace TOP: " << filename << endl;
+			break;
+		case LQT_INTERLACE_BOTTOM_FIRST:
+			cout << "Interlace BOTTOM: " << filename << endl;
+			break;
+	}
 	
 /*	if ( quicktime_frame_rate( m_qt, 0 ) < 24.9 || quicktime_frame_rate( m_qt, 0 ) > 25.1 ) {
 		CLEAR_ERRORS();

@@ -257,6 +257,9 @@ frame_struct* VideoEffectClip::getFormattedFrame( frame_struct* tmp_frame, int64
 		return 0;
 	}
 	if ( m_video_scaler ) {
+
+		// TODO: Deinterlace the Frame here?
+
 		m_frame_src->planes[0] = f->RGB;
 		m_frame_dst->planes[0] = tmp_frame->RGB;
 		tmp_frame->has_alpha_channel = ( m_bits == 4 );
