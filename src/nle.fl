@@ -206,7 +206,11 @@ m_videoView->redraw();}
 g_black_borders = false;
 black_border_item->clear();
 m_videoView->redraw();}
-            xywh {10 10 100 20} type Toggle
+            xywh {10 10 100 20} type Toggle divider
+          }
+          MenuItem {} {
+            label {Disable Interlacing}
+            xywh {0 0 100 20} type Toggle
           }
         }
         Submenu jackMenu {
