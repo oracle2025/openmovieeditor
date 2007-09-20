@@ -213,12 +213,12 @@ frame_struct** Timeline::getFrameStack( int64_t position )
 }
 int Timeline::fillBuffer( float* output, unsigned long frames )
 {
-	static float buffer1[23040*2] = {0};
-	static float buffer2[23040*2] = {0};
+	static float buffer1[32000*2] = {0};
+	static float buffer2[32000*2] = {0};
 	unsigned int rv;
 	unsigned int max_frames = 0;
 	track_node* p = m_allTracks;
-	assert( frames <= 23040);
+	assert( frames <= 32000);
 	if ( !p )
 		return 0;
 	rv = (dynamic_cast<TrackBase*>(p->track))->fillBuffer( buffer1, frames, m_samplePosition );

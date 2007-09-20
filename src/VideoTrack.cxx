@@ -316,8 +316,8 @@ int VideoTrack::fillBuffer( float* output, unsigned long frames, int64_t positio
 	unsigned long written = 0;
 	unsigned long emptyItems = 0;
 	float* incBuffer = output;
-	float buf[23040*2];
-	assert( frames <= 23040);
+	float buf[32000*2];
+	assert( frames <= 32000);
 	while ( m_current && m_current->clip->type() != CLIP_TYPE_VIDEO && m_current->clip->type() != CLIP_TYPE_AUDIO ) {
 		m_current = m_current->next;
 	}
