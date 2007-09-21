@@ -37,6 +37,10 @@ VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 	m_avFrame = NULL;
 	m_avFrameRGB = NULL;
 	m_formatContext = NULL;
+#ifdef SWSCALE
+	pSWSCtx = 0;
+#endif
+	
 	
 	AVInputFormat *file_iformat = av_find_input_format( filename.c_str() );
 	
@@ -132,9 +136,6 @@ VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 }
 VideoFileFfmpeg::~VideoFileFfmpeg()
 {
-#ifdef SWSCALE
-	sws_freeContext(pSWSCtx);
-#endif
 	if ( m_avFrame )
 		av_free( m_avFrame );
 	if ( m_avFrameRGB )
@@ -145,6 +146,12 @@ VideoFileFfmpeg::~VideoFileFfmpeg()
 		delete [] m_rows;
 	if ( m_formatContext )
 		av_close_input_file( m_formatContext );
+#ifdef SWSCALE
+	if ( pSWSCtx ) {
+		sws_freeContext(pSWSCtx);
+		pSWSCtx = 0;
+	}
+#endif
 }
 bool VideoFileFfmpeg::ok() { return m_ok; }
 int64_t VideoFileFfmpeg::length() { return m_length; }
