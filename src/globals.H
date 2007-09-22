@@ -59,6 +59,7 @@ extern bool g_SEEKING;
 extern bool g_PREVENT_OFFSCREEN_CRASH;
 
 extern char* g_homefolder;
+extern bool g_INTERLACING;
 
 } /* namespace nle */
 

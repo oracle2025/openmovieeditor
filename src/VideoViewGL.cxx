@@ -217,7 +217,112 @@ void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 		swap_buffers();
 		return;
 	}
-	
+
+	drawFrameStack(fs);
+
+	swap_buffers();
+
+}
+
+void VideoViewGL::pushFrame( frame_struct* fs, bool move_cursor )
+{
+	frame_struct* fstack[2] = {0};
+	fstack[0] = fs;
+	pushFrameStack( fstack, move_cursor );
+}
+/*
+ *  GL_NVX_ycrcb
+ */
+void VideoViewGL::draw()
+{
+	if (g_backseek) { reset_cache(); g_backseek=false; }
+	if ( !valid() ) {
+		float glo1, glo2;
+		if ( m_zoom < 0.0 ) {
+			glo1 = 10.0 * m_zoom;
+			glo2 = 10.0 - 10.0 * m_zoom;
+			/*
+			0.0:
+				0.0;
+				10.0;
+			-1.0:
+				-10.0
+				20.0;
+			*/
+		} else {
+			glo1 = 0.0 + m_zoom * 5.0; // -> 5.0
+			glo2 = 10.0 - m_zoom * 5.0; // -> 5.0
+		}
+		glLoadIdentity(); glViewport( 0, 0, w(), h() ); // glViewport( _x, _y, _w, _h );
+		glOrtho( glo1, glo2, glo2, glo1, -20000, 10000 ); glEnable( GL_BLEND );
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		glEnable (GL_TEXTURE_2D);
+	}
+	static bool once = true;
+	static unsigned char p[3 * T_W * T_H] = { 0 };
+	if (once) {
+		glGenTextures( 10, video_canvas );
+		for ( int i = 0; i < 10; i++ ) {
+			glBindTexture (GL_TEXTURE_2D, video_canvas[i] );
+			glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
+			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+			glTexImage2D (GL_TEXTURE_2D, 0, GL_RGBA, T_W, T_H, 0, GL_RGB, GL_UNSIGNED_BYTE, p);
+		}
+		once = false;
+	}
+	if ( g_playbackCore->active() ) { return; }
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	glBindTexture( GL_TEXTURE_2D, video_canvas[0] );
+	if ( m_seekPosition >= 0 ) {
+		g_SEEKING = true;
+		frame_struct** fs = g_timeline->getFrameStack( m_seekPosition );
+		g_SEEKING = false;
+		if ( !fs[0] ) {
+			g_PREVENT_OFFSCREEN_CRASH = false;
+			return;
+		}
+
+
+		drawFrameStack( fs );
+	}
+	g_PREVENT_OFFSCREEN_CRASH = false;
+	drawVideoBorder();
+}
+
+void VideoViewGL::seek( int64_t position )
+{
+	m_seekPosition = position;
+	redraw();
+}
+
+void VideoViewGL::play()
+{
+	if ( g_playbackCore->active() ) {
+		return;
+	}
+	reset_cache();
+	m_seekPosition = -1;
+	g_timeline->sort();
+	g_playbackCore->play();
+}
+
+void VideoViewGL::stop()
+{
+	g_playbackCore->stop();
+}
+
+void VideoViewGL::pause()
+{
+	g_playbackCore->pause();
+}
+
+
+void VideoViewGL::drawFrameStack( frame_struct** fs )
+{
 	int count = 0;	
 	for ( int i = 1; fs[i]; i++ ) {
 		count++;
@@ -235,13 +340,7 @@ void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 		if ( fs[i]->has_alpha_channel ) {
 			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGBA, GL_UNSIGNED_BYTE, fs[i]->RGB );
 		} else {
-			// Pulldown large Image
-/*			if ( fs[i]->w > T_W || fs[i]->h > T_H  ) {
-				halve_image( pulldown_frame, fs[i]->RGB, fs[i]->w, fs[i]->h );
-				glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w >> 1, fs[i]->h >> 1, GL_RGB, GL_UNSIGNED_BYTE, pulldown_frame );
-			} else {*/
 				glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGB, GL_UNSIGNED_BYTE, fs[i]->RGB );
-/*			}*/
 		}
 	}
 	for ( int i = count; i>=0; i-- ) {
@@ -376,375 +475,8 @@ void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 		glEnd ();
 	}
 	drawVideoBorder();
-/*	gl_font(FL_TIMES|FL_BOLD, 80);
-	glRasterPos3f( 2, 2, 0 );
-	gl_draw( "HELLO", strlen( "HELLO" ) );*/
-
-	swap_buffers();
 
 }
 
-void VideoViewGL::pushFrame( frame_struct* fs, bool move_cursor )
-{
-	frame_struct* fstack[2] = {0};
-	fstack[0] = fs;
-	pushFrameStack( fstack, move_cursor );
-}
-/*
- *  GL_NVX_ycrcb
- */
-void VideoViewGL::draw()
-{
-	if (g_backseek) { reset_cache(); g_backseek=false; }
-	if ( !valid() ) {
-		float glo1, glo2;
-		if ( m_zoom < 0.0 ) {
-			glo1 = 10.0 * m_zoom;
-			glo2 = 10.0 - 10.0 * m_zoom;
-			/*
-			0.0:
-				0.0;
-				10.0;
-			-1.0:
-				-10.0
-				20.0;
-			*/
-		} else {
-			glo1 = 0.0 + m_zoom * 5.0; // -> 5.0
-			glo2 = 10.0 - m_zoom * 5.0; // -> 5.0
-		}
-		glLoadIdentity(); glViewport( 0, 0, w(), h() ); // glViewport( _x, _y, _w, _h );
-		glOrtho( glo1, glo2, glo2, glo1, -20000, 10000 ); glEnable( GL_BLEND );
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		glEnable (GL_TEXTURE_2D);
-	}
-	static bool once = true;
-	static unsigned char p[3 * T_W * T_H] = { 0 };
-	if (once) {
-		glGenTextures( 10, video_canvas );
-		for ( int i = 0; i < 10; i++ ) {
-			glBindTexture (GL_TEXTURE_2D, video_canvas[i] );
-			glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
-			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-			glTexImage2D (GL_TEXTURE_2D, 0, GL_RGBA, T_W, T_H, 0, GL_RGB, GL_UNSIGNED_BYTE, p);
-		}
-		once = false;
-	}
-	if ( g_playbackCore->active() ) { return; }
-	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-	glBindTexture( GL_TEXTURE_2D, video_canvas[0] );
-	if ( m_seekPosition >= 0 ) {
-		g_SEEKING = true;
-		frame_struct** fs = g_timeline->getFrameStack( m_seekPosition );
-		g_SEEKING = false;
-		if ( !fs[0] ) {
-			g_PREVENT_OFFSCREEN_CRASH = false;
-			return;
-		}
-		int count = 0;	
-		for ( int i = 1; fs[i]; i++ ) {
-			count++;
-		}
-
-		for ( int i = count; i>=0; i-- ) {
-			if ( fs[i]->has_alpha_channel ) {
-				glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGBA, GL_UNSIGNED_BYTE, fs[i]->RGB );
-			} else {
-/*				if ( fs[i]->w > 512 || fs[i]->h > 512  ) {
-					halve_image( pulldown_frame, fs[i]->RGB, fs[i]->w, fs[i]->h );
-					//glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGB, GL_UNSIGNED_BYTE, pulldown_frame );
-					glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w >> 1, fs[i]->h >> 1, GL_RGB, GL_UNSIGNED_BYTE, pulldown_frame );
-				} else {*/
-					glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGB, GL_UNSIGNED_BYTE, fs[i]->RGB );
-				//}
-
-				//glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGB, GL_UNSIGNED_BYTE, fs[i]->RGB );
-			}
-#if 0
-			float glw = 10.0;
-			float glh = 10.0;
-			float ww = w();
-			float wh = h();
-			float aspect_frame = ( 4.0 / 3.0 );
-			float aspect_window = ww / wh;
-			float aspect_image = fs[i]->aspect;
-
-			float tw = fs[i]->w / TEXTURE_WIDTH;
-			float th = fs[i]->h / TEXTURE_HEIGHT;
-
-			float fx, fy, fw, fh;
-
-			if ( (aspect_frame/aspect_window) > 1.0 ) {
-				fw = glw;
-				fh = glh / (aspect_frame/aspect_window);
-				fx = 0.0;
-				fy = (glh - fh) / 2.0;
-			} else {
-				fw = glw * (aspect_frame/aspect_window);
-				fh = glh;
-				fx = (glw - fw) / 2.0;
-				fy = 0.0;
-			}
-			
-			
-			float ix = 0.0;
-			float iy = 0.0;
-			float iw = 1.0;
-			float ih = 1.0;
-			float ct = (float)fs[i]->crop_top / (float)INT_FLOAT_SCALE;
-			float cb = (float)fs[i]->crop_bottom / (float)INT_FLOAT_SCALE;
-			float cl = (float)fs[i]->crop_left / (float)INT_FLOAT_SCALE;
-			float cr = (float)fs[i]->crop_right / (float)INT_FLOAT_SCALE;
-
-			ix += cl;
-			iy += ct;
-			iw -= (cl + cr);
-			ih -= (ct + cb);
-
-			float tiltx = (float)fs[i]->tilt_x / (float)INT_FLOAT_SCALE;
-			float tilty = (float)fs[i]->tilt_y / (float)INT_FLOAT_SCALE;
-
-			float scalex = (float)fs[i]->scale_x / (float)INT_FLOAT_SCALE;
-			float scaley = (float)fs[i]->scale_y / (float)INT_FLOAT_SCALE;
-
-			float tiltx_modifier = 1.0;
-			float tilty_modifier = 1.0;
-			if ( scalex < 0.0 ) {
-				scalex += 1.0; // 0.0 -> 1.0
-			} else {
-				scalex = 1.0 + scalex;
-				tiltx_modifier *= scalex;
-			}
-			if ( scaley < 0.0 ) {
-				scaley += 1.0; // 0.0 -> 1.0
-			} else {
-				scaley = 1.0 + scaley;
-				tilty_modifier *= scaley;
-			}
-
-			
-			if ( fs[i]->render_strategy == RENDER_FIT ) {
-				if ( aspect_image > aspect_frame ) { //Banner
-					fy += ( fh - (fw / ( aspect_image / aspect_window )) ) / 2.0;
-					tilty_modifier *= fh / (fw / ( aspect_image / aspect_window ));
-					fh = fw / ( aspect_image / aspect_window );
-				} else { //Skyscraper
-					fx += ( fw - (fh * ( aspect_image / aspect_window )) ) / 2.0;
-					tiltx_modifier *= fw / (fh * ( aspect_image / aspect_window ));
-					fw = fh * ( aspect_image / aspect_window );
-				}
-			}
-			float vertex_x = fx + ix * fw * scalex + tiltx * fw * tiltx_modifier;
-			float vertex_y = fy + iy * fh * scaley + tilty * fh * tilty_modifier;
-			float vertex_w = fw * iw * scalex;
-			float vertex_h = fh * ih * scaley;
-
-			float border_x = fx + tiltx * fw * tiltx_modifier;
-			float border_y = fy + tilty * fh * tilty_modifier;
-			float border_w = fw * scalex;
-			float border_h = fh * scaley;
-
-			float tex_x = cl * tw;
-			float tex_y = ct * th;
-			float tex_w = iw * tw;
-			float tex_h = ih * th;
-
-			glColor4f( 1.0f, 1.0f, 1.0f, fs[i]->alpha );
-			
-			glBegin (GL_QUADS);
-				glTexCoord2f ( tex_x, tex_y );
-				glVertex3f   ( vertex_x, vertex_y, 0.0 );
-				glTexCoord2f ( tex_x + tex_w, tex_y );
-				glVertex3f   ( vertex_x + vertex_w, vertex_y, 0.0 );
-				glTexCoord2f ( tex_x + tex_w, tex_y + tex_h );
-				glVertex3f   ( vertex_x + vertex_w, vertex_y + vertex_h, 0.0 );
-				glTexCoord2f ( tex_x, tex_y + tex_h );
-				glVertex3f   ( vertex_x, vertex_y + vertex_h, 0.0 );
-			glEnd ();
-
-			glDisable (GL_TEXTURE_2D);
-			glLineWidth(3);
-			glBegin (GL_LINE_LOOP);
-			glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
-
-				glVertex3f ( border_x, border_y, 0.0 );
-				glVertex3f ( border_x + border_w, border_y, 0.0 );
-				glVertex3f ( border_x + border_w, border_y + border_h, 0.0 );
-				glVertex3f ( border_x, border_y + border_h, 0.0 );
-
-			glEnd();
-			glEnable (GL_TEXTURE_2D);
-#endif
-#if 1
-			
-			float gl_x, gl_y, gl_w, gl_h;
-			{
-				if ( fs[i]->render_strategy == RENDER_FIT ) {
-					
-					float f_v = fs[i]->aspect;
-					float _4_3 = g_16_9 ? ( 16.0 / 9.0 ) : ( 4.0 / 3.0 );
-					float _4_3_w, _4_3_h, _4_3_x, _4_3_y;
-					float f_w = ( (float)w() / (float)h() );
-					{
-						float f_g = _4_3 / f_w;
-						if ( f_g > 1.0 ) {
-							_4_3_h = 10.0 / f_g;
-							_4_3_w = 10.0;
-						} else {
-							_4_3_h = 10.0;
-							_4_3_w = f_g * 10.0;
-						}
-						_4_3_x = ( 10.0 - _4_3_w ) / 2;
-						_4_3_y = ( 10.0 - _4_3_h ) / 2;
-
-					}
-					if ( f_v > _4_3 ) { //Banner Format
-						gl_w = _4_3_w;
-						gl_h = _4_3_w / (f_v / f_w);
-						gl_x = _4_3_x;
-						gl_y = ( 10.0 - gl_h ) / 2;
-					} else { //Skyscraper Format
-						gl_h = _4_3_h;
-						gl_w = _4_3_h * (f_v / f_w);
-						gl_y = _4_3_y;
-						gl_x = ( 10.0 - gl_w ) / 2;
-					}
-				} else if ( fs[i]->render_strategy == RENDER_CROP ) {
-					float f_v = fs[i]->aspect;
-					float _4_3 = g_16_9 ? ( 16.0 / 9.0 ) : ( 4.0 / 3.0 );
-					float _4_3_w, _4_3_h, _4_3_x, _4_3_y;
-					float f_w = ( (float)w() / (float)h() );
-					{
-						float f_g = _4_3 / f_w;
-						if ( f_g > 1.0 ) {
-							_4_3_h = 10.0 / f_g;
-							_4_3_w = 10.0;
-						} else {
-							_4_3_h = 10.0;
-							_4_3_w = f_g * 10.0;
-						}
-						_4_3_x = ( 10.0 - _4_3_w ) / 2;
-						_4_3_y = ( 10.0 - _4_3_h ) / 2;
-
-					}
-					if ( f_v > _4_3 ) { //Banner Format
-						gl_h = _4_3_h;
-						gl_w = _4_3_h * (f_v / f_w);
-						gl_y = _4_3_y;
-						gl_x = ( 10.0 - gl_w ) / 2;
-					} else { //Skyscraper Format
-						gl_w = _4_3_w;
-						gl_h = _4_3_w / (f_v / f_w);
-						gl_x = _4_3_x;
-						gl_y = ( 10.0 - gl_h ) / 2;
-					}
-				} else {
-					float f_v;// = ( (float)fs[i]->w / (float)fs[i]->h );
-					if ( g_16_9 ) {
-						f_v = ( 16.0 / 9.0 );
-					} else {
-						f_v = ( 4.0 / 3.0 );
-					}
-					float f_w = ( (float)w() / (float)h() );
-					float f_g = f_v / f_w;
-					if ( f_g > 1.0 ) {
-						gl_h = 10.0 / f_g;
-						gl_w = 10.0;
-					} else {
-						gl_h = 10.0;
-						gl_w = f_g * 10.0;
-					}
-					gl_x = ( 10.0 - gl_w ) / 2;
-					gl_y = ( 10.0 - gl_h ) / 2;
-				}
-			}
-
-			if ( fs[i]->render_strategy == RENDER_FIT && !fs[i]->has_alpha_channel ) {
-				int w_ = g_16_9 ? 1024 : 768;
-				int h_ = 576;
-				float gl_x, gl_y, gl_w, gl_h;
-				{
-					float f_v = ( (float)w_ / (float)h_ );
-					float f_w = ( (float)w() / (float)h() );
-					float f_g = f_v / f_w;
-					if ( f_g > 1.0 ) {
-						gl_h = 10.0 / f_g;
-						gl_w = 10.0;
-					} else {
-						gl_h = 10.0;
-						gl_w = f_g * 10.0;
-					}
-					gl_x = ( 10.0 - gl_w ) / 2;
-					gl_y = ( 10.0 - gl_h ) / 2;
-
-				}
-				glDisable (GL_TEXTURE_2D);
-				glBegin (GL_QUADS);
-				glColor4f( 0.0f, 0.0f, 0.0f, fs[i]->alpha );
-
-				glVertex3f   (  gl_x,      gl_y, 0.0 );
-				glVertex3f   ( gl_x + gl_w,      gl_y, 0.0 );
-				glVertex3f   ( gl_x + gl_w,     gl_y + gl_h, 0.0 );
-				glVertex3f   (  gl_x,     gl_y + gl_h, 0.0 );
-
-				glEnd();
-				glEnable (GL_TEXTURE_2D);
-			}
-			
-			glColor4f( 1.0f, 1.0f, 1.0f, fs[i]->alpha ); //Control Transparency
-			float ww = ( fs[i]->w - 2 * fs[i]->analog_blank ) / TEXTURE_WIDTH;
-			float xx = ( fs[i]->analog_blank ) / TEXTURE_WIDTH;
-			float hh = fs[i]->h / TEXTURE_HEIGHT;
-					glBegin (GL_QUADS);
-				glTexCoord2f (  xx,      0.0 );
-				glVertex3f   (  gl_x + fs[i]->tilt_x,      gl_y + fs[i]->tilt_y, 0.0 );
-				glTexCoord2f (  xx + ww,  0.0 );  // (fs->w / 512.0)
-				glVertex3f   ( gl_x + gl_w + fs[i]->tilt_x,      gl_y + fs[i]->tilt_y, 0.0 );
-				glTexCoord2f (  xx + ww,  hh ); // (368.0 / 512.0) (240.0 / 512.0)
-				glVertex3f   ( gl_x + gl_w + fs[i]->tilt_x,     gl_y + gl_h + fs[i]->tilt_y, 0.0 );
-				glTexCoord2f (  xx,      hh ); // (fs->h / 512.0)
-				glVertex3f   (  gl_x + fs[i]->tilt_x,     gl_y + gl_h + fs[i]->tilt_y, 0.0 );
-			glEnd ();
-
-#endif
-		}
-	}
-	g_PREVENT_OFFSCREEN_CRASH = false;
-/*	drawVideoBorder( 720, 576  ); //Pixel sind nicht quadratisch?
-	drawVideoBorder( 768, 576  );
-	drawVideoBorder( 1024, 576  );*/
-	drawVideoBorder();
-}
-
-void VideoViewGL::seek( int64_t position )
-{
-	m_seekPosition = position;
-	redraw();
-}
-
-void VideoViewGL::play()
-{
-	if ( g_playbackCore->active() ) {
-		return;
-	}
-	reset_cache();
-	m_seekPosition = -1;
-	g_timeline->sort();
-	g_playbackCore->play();
-}
-
-void VideoViewGL::stop()
-{
-	g_playbackCore->stop();
-}
-
-void VideoViewGL::pause()
-{
-	g_playbackCore->pause();
-}
 
 } /* namespace nle */

@@ -32,6 +32,13 @@ typedef enum {
 	RENDER_DEFAULT
 } render_strategy_t;
 
+typedef enum {
+	INTERLACE_PROGRESSIVE = 0,
+	INTERLACE_TOP_FIELD_FIRST = 1,
+	INTERLACE_BOTTOM_FIELD_FIRST = 2,
+	INTERLACE_DEVIDED_FIELDS = 3 /* Top Frame is first */
+} interlace_state;
+
 typedef struct
 {
 	int x, y, w, h;

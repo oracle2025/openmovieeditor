@@ -303,7 +303,8 @@ Fl_Menu_Item NleUI::menu_Black[] = {
  {"4:3", 0,  (Fl_Callback*)NleUI::cb_4, 0, 12, FL_NORMAL_LABEL, 0, 14, 0},
  {"16:9", 0,  (Fl_Callback*)NleUI::cb_16, 0, 136, FL_NORMAL_LABEL, 0, 14, 0},
  {"Black Borders 16:9", 0,  (Fl_Callback*)NleUI::cb_black_border_item, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
- {"Black Borders 2.35:1", 0,  (Fl_Callback*)NleUI::cb_black_border_item_2_35, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Black Borders 2.35:1", 0,  (Fl_Callback*)NleUI::cb_black_border_item_2_35, 0, 130, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Disable Interlacing", 0,  0, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"&JACK", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"Transport connect", 0,  (Fl_Callback*)NleUI::cb_Transport, 0, 6, FL_NORMAL_LABEL, 0, 14, 0},
@@ -330,7 +331,7 @@ Fl_Menu_Item* NleUI::paste_item = NleUI::menu_Black + 11;
 Fl_Menu_Item* NleUI::delete_item = NleUI::menu_Black + 12;
 Fl_Menu_Item* NleUI::black_border_item = NleUI::menu_Black + 26;
 Fl_Menu_Item* NleUI::black_border_item_2_35 = NleUI::menu_Black + 27;
-Fl_Menu_Item* NleUI::jackMenu = NleUI::menu_Black + 29;
+Fl_Menu_Item* NleUI::jackMenu = NleUI::menu_Black + 30;
 
 void NleUI::cb_zoom_slider_i(Fl_Slider* o, void*) {
   m_videoView->zoom( o->value() );

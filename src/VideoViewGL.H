@@ -46,6 +46,7 @@ class VideoViewGL : public Fl_Gl_Window, public IVideoWriter
 		void stop();
 		void zoom( float zoom ) { m_zoom = zoom; }
 	private:
+		void drawFrameStack( frame_struct** fs );
 		int64_t m_seekPosition;
 		void drawVideoBorder();
 		float m_zoom;

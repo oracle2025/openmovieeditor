@@ -80,6 +80,7 @@ frame_struct* ColorCurveFilter::getFrame( frame_struct* frame, int64_t )
 	if ( m_bypass ) {
 		return frame;
 	}
+	m_framestruct.interlace_mode = frame->interlace_mode;
 	unsigned int len = m_framestruct.w * m_framestruct.h;
 	unsigned char* dst = m_frame;
 	unsigned char* src = frame->RGB;

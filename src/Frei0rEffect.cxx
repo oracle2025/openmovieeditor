@@ -85,6 +85,7 @@ frame_struct* Frei0rEffect::getFrame( frame_struct* frame, int64_t position )
 {
 	//TODO: Check if interlaced and if Filter needs separate fields, then
 	//perform conversion
+	m_framestruct.interlace_mode = frame->interlace_mode;
 if ( 0 ) {
 	//if ( frame->interlace_mode == 1 ) {
 		if ( m_h > frame->h / 2 ) {

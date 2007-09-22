@@ -58,24 +58,6 @@ VideoFileQT::VideoFileQT( string filename )
 	int64_t frame_duration = lqt_frame_duration( m_qt, 0, 0 );
 	int64_t time_scale = lqt_video_time_scale( m_qt, 0 );
 	m_ticksPerFrame = ( frame_duration * NLE_TIME_BASE ) / time_scale;
-
-	switch ( lqt_get_interlace_mode( m_qt, 0 ) ) {
-		case LQT_INTERLACE_NONE:
-			cout << "Interlace NONE: " << filename << endl;
-			break;
-		case LQT_INTERLACE_TOP_FIRST:
-			cout << "Interlace TOP: " << filename << endl;
-			break;
-		case LQT_INTERLACE_BOTTOM_FIRST:
-			cout << "Interlace BOTTOM: " << filename << endl;
-			break;
-	}
-	
-/*	if ( quicktime_frame_rate( m_qt, 0 ) < 24.9 || quicktime_frame_rate( m_qt, 0 ) > 25.1 ) {
-		CLEAR_ERRORS();
-		ERROR_DETAIL( "Video framerates other than 25 are not supported" );
-		return;
-	}*/
 	
 	lqt_set_cmodel( m_qt, 0, BC_RGB888);
 	m_width = quicktime_video_width( m_qt, 0 );
@@ -105,6 +87,17 @@ VideoFileQT::VideoFileQT( string filename )
 	m_framestruct.crop_bottom = 0;
 	m_framestruct.tilt_x = 0;
 	m_framestruct.tilt_y = 0;
+	switch ( lqt_get_interlace_mode( m_qt, 0 ) ) {
+		case LQT_INTERLACE_NONE:
+			m_framestruct.interlace_mode = INTERLACE_PROGRESSIVE;
+			break;
+		case LQT_INTERLACE_TOP_FIRST:
+			m_framestruct.interlace_mode = INTERLACE_TOP_FIELD_FIRST;
+			break;
+		case LQT_INTERLACE_BOTTOM_FIRST:
+			m_framestruct.interlace_mode = INTERLACE_BOTTOM_FIELD_FIRST;
+			break;
+	}
 
 	int aw, ah;
 	guess_aspect( m_framestruct.w, m_framestruct.h, &ah, &aw, &m_framestruct.aspect, &m_framestruct.analog_blank, 0, 0 );

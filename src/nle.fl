@@ -1560,8 +1560,7 @@ lqt_set_cmodel( qt, 0, BC_RGB888 );
 
 preset->set2(qt);
 
-return new nle::VideoWriterQT( qt, fmt );} {selected
-    }
+return new nle::VideoWriterQT( qt, fmt );} {}
   }
   decl {bool go;} {public
   }
@@ -1906,7 +1905,8 @@ switch ( frame_rate_choice->value() ) {
 
 preset->setFormat(&fmt);
 
-return preset;} {}
+return preset;} {selected
+    }
   }
   decl {bool go;} {}
   Function {setEncodingPreset(nle::EncodingPreset* preset)} {open
