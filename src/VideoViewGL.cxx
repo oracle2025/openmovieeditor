@@ -337,10 +337,30 @@ void VideoViewGL::drawFrameStack( frame_struct** fs )
 				tcache[i].p = fs[i];
 			}
 		}
-		if ( fs[i]->has_alpha_channel ) {
-			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGBA, GL_UNSIGNED_BYTE, fs[i]->RGB );
+		if ( fs[i]->interlace_mode == INTERLACE_DEVIDED_FIELDS && g_INTERLACING ) {
+			unsigned char *framebuffer;
+			if ( fs[i]->has_alpha_channel ) {
+				if ( !fs[i]->first_field ) {
+					framebuffer = fs[i]->RGB + fs[i]->w * (fs[i]->h/2) * 4;
+				} else {
+					framebuffer = fs[i]->RGB;
+				}
+				glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h/2, GL_RGBA, GL_UNSIGNED_BYTE, framebuffer );
+			} else {
+				if ( !fs[i]->first_field ) {
+					framebuffer = fs[i]->RGB + fs[i]->w * (fs[i]->h/2) * 3;
+				} else {
+					framebuffer = fs[i]->RGB;
+				}
+
+				glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h/2, GL_RGB, GL_UNSIGNED_BYTE, framebuffer );
+			}
 		} else {
+			if ( fs[i]->has_alpha_channel ) {
+				glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGBA, GL_UNSIGNED_BYTE, fs[i]->RGB );
+			} else {
 				glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGB, GL_UNSIGNED_BYTE, fs[i]->RGB );
+			}
 		}
 	}
 	for ( int i = count; i>=0; i-- ) {
@@ -462,6 +482,9 @@ void VideoViewGL::drawFrameStack( frame_struct** fs )
 		float ww = ( fs[i]->w - 2 * fs[i]->analog_blank ) / TEXTURE_WIDTH;
 		float xx = ( fs[i]->analog_blank ) / TEXTURE_WIDTH;
 		float hh = fs[i]->h / TEXTURE_HEIGHT;
+		if ( fs[i]->interlace_mode == INTERLACE_DEVIDED_FIELDS && g_INTERLACING ) {
+			hh = fs[i]->h / TEXTURE_HEIGHT / 2;
+		}
 		glColor4f( 1.0f, 1.0f, 1.0f, fs[i]->alpha ); //Control Transparency
 		glBegin (GL_QUADS);
 			glTexCoord2f (  xx,      0.0 );

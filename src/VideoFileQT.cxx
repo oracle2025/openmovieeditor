@@ -96,8 +96,14 @@ VideoFileQT::VideoFileQT( string filename )
 			break;
 		case LQT_INTERLACE_BOTTOM_FIRST:
 			m_framestruct.interlace_mode = INTERLACE_BOTTOM_FIELD_FIRST;
+			for (int i = 0; i < m_height/2; i++) {
+				m_rows[i*2 + 1] = m_frame + m_width * 3 * i;
+				m_rows[i*2] = m_frame + m_width * 3 * i + m_width * 3 * m_height / 2;
+			}
+			m_framestruct.interlace_mode = INTERLACE_DEVIDED_FIELDS;
 			break;
 	}
+	m_interlace_mode = m_framestruct.interlace_mode;
 
 	int aw, ah;
 	guess_aspect( m_framestruct.w, m_framestruct.h, &ah, &aw, &m_framestruct.aspect, &m_framestruct.analog_blank, 0, 0 );
@@ -127,6 +133,7 @@ frame_struct* VideoFileQT::read()
 {
 	quicktime_decode_video( m_qt, m_rows, 0);
 	m_framestruct.alpha = 1.0;
+	m_framestruct.first_field = m_first_field;
 	return &m_framestruct;
 }
 void VideoFileQT::read( unsigned char** rows, int w, int h )

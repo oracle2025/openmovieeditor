@@ -38,7 +38,10 @@ class IVideoFile : public IVideoReader
 //		virtual double fps() = 0; //TODO: remove this
 		virtual frame_struct* read() = 0;
 		//======== From IVideoReader
-		frame_struct* getFrame( int64_t position ) { //TODO: use ticks ( position / 1200 )
+		frame_struct* getFrame( int64_t position ) {
+			if ( m_interlace_mode && g_INTERLACING ) {
+				m_first_field = ( position % ticksPerFrame() < ticksPerFrame() / 2 );
+			}
 			int64_t frameNum = position / ticksPerFrame();
 			if ( m_lastFramePosition + 1 == frameNum ) {
 				m_lastFramePosition = frameNum;
@@ -51,17 +54,19 @@ class IVideoFile : public IVideoReader
 		}
 		//========
 		virtual void read( unsigned char** rows, int w, int h ) = 0; //For Timeline Picture Preview
-		virtual void seek( int64_t position ) = 0; //TODO: use ticks
+		virtual void seek( int64_t position ) = 0;
 		string filename() { return m_filename; }
 		virtual bool ok() = 0;
 	protected:
 		virtual int64_t ticksPerFrame() = 0;
 		virtual void seekToFrame( int64_t frame ) = 0;
-		IVideoFile() { m_lastFramePosition = -1; }
+		IVideoFile() { m_lastFramePosition = -1; m_interlace_mode = 0; m_first_field = true; }
 		int m_width;
 		int m_height;
 		string m_filename;
 		int64_t m_lastFramePosition; //TODO: is this ticks or frames? frames is propable more useful
+		int m_interlace_mode;
+		bool m_first_field;
 };
 
 } /* namespace nle */
