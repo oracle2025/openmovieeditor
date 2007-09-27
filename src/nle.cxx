@@ -312,7 +312,7 @@ Fl_Menu_Item NleUI::menu_Black[] = {
  {"16:9", 0,  (Fl_Callback*)NleUI::cb_16, 0, 136, FL_NORMAL_LABEL, 0, 14, 0},
  {"Black Borders 16:9", 0,  (Fl_Callback*)NleUI::cb_black_border_item, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
  {"Black Borders 2.35:1", 0,  (Fl_Callback*)NleUI::cb_black_border_item_2_35, 0, 130, FL_NORMAL_LABEL, 0, 14, 0},
- {"Disable Interlacing", 0,  (Fl_Callback*)NleUI::cb_Disable, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Disable Interlacing", 0,  (Fl_Callback*)NleUI::cb_Disable, 0, 6, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"&JACK", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"Transport connect", 0,  (Fl_Callback*)NleUI::cb_Transport, 0, 6, FL_NORMAL_LABEL, 0, 14, 0},

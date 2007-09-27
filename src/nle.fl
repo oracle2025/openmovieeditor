@@ -212,7 +212,7 @@ m_videoView->redraw();}
             label {Disable Interlacing}
             callback {nle::g_INTERLACING = !(o->mvalue())->value();
 m_videoView->redraw();}
-            xywh {0 0 100 20} type Toggle
+            xywh {0 0 100 20} type Toggle value 1
           }
         }
         Submenu jackMenu {

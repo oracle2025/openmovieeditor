@@ -63,7 +63,7 @@ namespace nle
 	NleUI* g_ui;
 	bool g_SEEKING;
 	char* g_homefolder;
-	bool g_INTERLACING = true;
+	bool g_INTERLACING = false;
 } /* namespace nle */
 
 int main( int argc, char** argv )
