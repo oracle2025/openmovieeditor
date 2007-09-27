@@ -184,6 +184,14 @@ void NleUI::cb_black_border_item_2_35(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_black_border_item_2_35_i(o,v);
 }
 
+void NleUI::cb_Disable_i(Fl_Menu_* o, void*) {
+  nle::g_INTERLACING = !(o->mvalue())->value();
+m_videoView->redraw();
+}
+void NleUI::cb_Disable(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_Disable_i(o,v);
+}
+
 void NleUI::cb_Transport_i(Fl_Menu_* o, void*) {
   // FIXME: allow change only if not currently playing ?!
 // -> assign this value in SimplePlaybackCore "on play"
@@ -304,7 +312,7 @@ Fl_Menu_Item NleUI::menu_Black[] = {
  {"16:9", 0,  (Fl_Callback*)NleUI::cb_16, 0, 136, FL_NORMAL_LABEL, 0, 14, 0},
  {"Black Borders 16:9", 0,  (Fl_Callback*)NleUI::cb_black_border_item, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
  {"Black Borders 2.35:1", 0,  (Fl_Callback*)NleUI::cb_black_border_item_2_35, 0, 130, FL_NORMAL_LABEL, 0, 14, 0},
- {"Disable Interlacing", 0,  0, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Disable Interlacing", 0,  (Fl_Callback*)NleUI::cb_Disable, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"&JACK", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"Transport connect", 0,  (Fl_Callback*)NleUI::cb_Transport, 0, 6, FL_NORMAL_LABEL, 0, 14, 0},
@@ -6459,7 +6467,10 @@ void ExportDialog::cb_Encode_i(Fl_Return_Button* o, void*) {
 	fl_alert( "Please select a filename." );
 	return;
 }
-
+if ( presets_browser->value() == 0 ) {
+	fl_alert( "Please select a Format Preset." );
+	return;
+}
 
 struct stat statbuf;
 int r = stat( export_filename->value(), &statbuf );
@@ -6710,12 +6721,11 @@ format.framerate.video_frames_per_chunk = 10;
 
 encoding_preset->setFormat(&format);
 lqt_codec_info_t** vcodec = lqt_find_video_codec_by_name( "ffmpeg_mpg4" );
-encoding_preset->setVideoCodec( vcodec[0] );
-
 lqt_codec_info_t** acodec = lqt_find_audio_codec_by_name("faac");
-encoding_preset->setAudioCodec( acodec[0] );
 
-if ( vcodec[0] && acodec[0] ) {
+if ( vcodec && acodec && vcodec[0] && acodec[0] ) {
+	encoding_preset->setVideoCodec( vcodec[0] );
+	encoding_preset->setAudioCodec( acodec[0] );
 	presets_browser->add(format.name, encoding_preset);
 } else {
 	delete encoding_preset;
@@ -6756,12 +6766,11 @@ format.framerate.video_frames_per_chunk = 10;
 encoding_preset->setFormat(&format);
 
 vcodec = lqt_find_video_codec_by_name( "ffmpeg_msmpeg4v3" );
-encoding_preset->setVideoCodec( vcodec[0] );
-
 acodec = lqt_find_audio_codec_by_name("lame");
-encoding_preset->setAudioCodec( acodec[0] );
 
-if ( vcodec[0] && acodec[0] ) {
+if ( vcodec && acodec && vcodec[0] && acodec[0] ) {
+	encoding_preset->setVideoCodec( vcodec[0] );
+	encoding_preset->setAudioCodec( acodec[0] );
 	presets_browser->add(format.name, encoding_preset);
 } else {
 	delete encoding_preset;
@@ -6790,20 +6799,20 @@ format.interlacing = 0;
 format.black_pixel_h = 0;
 format.black_pixel_v = 0;
 strcpy(format.name, "Quicktime DV");
-strcpy(format.audio_codec, "dv_pal" );
-strcpy(format.video_codec, "twos" );
+strcpy(format.video_codec, "dv_pal" );
+strcpy(format.audio_codec, "twos" );
 format.framerate.frame_duration = 1200;
 format.framerate.timescale = 30000;
 format.framerate.audio_frames_per_chunk = 19200;
 format.framerate.video_frames_per_chunk = 10;
 encoding_preset->setFormat(&format);
 vcodec = lqt_find_video_codec_by_name( "dv_pal" );
-encoding_preset->setVideoCodec( vcodec[0] );
 
 acodec = lqt_find_audio_codec_by_name( "twos" );
-encoding_preset->setAudioCodec( acodec[0] );
 
-if ( vcodec[0] && acodec[0] ) {
+if ( vcodec && acodec && vcodec[0] && acodec[0] ) {
+	encoding_preset->setVideoCodec( vcodec[0] );
+	encoding_preset->setAudioCodec( acodec[0] );
 	presets_browser->add(format.name, encoding_preset);
 } else {
 	delete encoding_preset;
@@ -6846,6 +6855,9 @@ export_filename->value( nle::g_preferences->lastRenderFilename().c_str() );
 
 nle::IVideoFileWriter* ExportDialog::getFileWriter() {
   quicktime_t* qt;
+if (presets_browser->value()==0) {
+	return 0;
+}
 
 nle::EncodingPreset* preset = (nle::EncodingPreset*)presets_browser->data(presets_browser->value());
 if ( preset->m_avi_odml ) {
@@ -6861,10 +6873,20 @@ nle::video_format fmt;
 preset->getFormat( &fmt );
 
 lqt_codec_info_t** codec = lqt_find_video_codec_by_name( fmt.video_codec );
+if (!codec || !codec[0]) {
+	cerr << "Video Codec missing: " << fmt.video_codec << endl;
+}
+assert(codec);
+assert(codec[0]);
 lqt_set_video( qt, 1, fmt.w, fmt.h, fmt.framerate.frame_duration, fmt.framerate.timescale, codec[0] );
 lqt_destroy_codec_info( codec );
 
 codec = lqt_find_audio_codec_by_name( fmt.audio_codec );
+if (!codec || !codec[0]) {
+	cerr << "Audio Codec missing: " << fmt.audio_codec << endl;
+}
+assert(codec);
+assert(codec[0]);
 lqt_set_audio( qt, 2, fmt.samplerate, 16, codec[0] );
 lqt_destroy_codec_info( codec );
 lqt_set_cmodel( qt, 0, BC_RGB888 );

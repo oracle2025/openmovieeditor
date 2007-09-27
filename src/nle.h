@@ -106,6 +106,8 @@ public:
 private:
   void cb_black_border_item_2_35_i(Fl_Menu_*, void*);
   static void cb_black_border_item_2_35(Fl_Menu_*, void*);
+  void cb_Disable_i(Fl_Menu_*, void*);
+  static void cb_Disable(Fl_Menu_*, void*);
 public:
   static Fl_Menu_Item *jackMenu;
 private:
