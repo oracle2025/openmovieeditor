@@ -87,21 +87,23 @@ VideoFileQT::VideoFileQT( string filename )
 	m_framestruct.crop_bottom = 0;
 	m_framestruct.tilt_x = 0;
 	m_framestruct.tilt_y = 0;
-	switch ( lqt_get_interlace_mode( m_qt, 0 ) ) {
-		case LQT_INTERLACE_NONE:
-			m_framestruct.interlace_mode = INTERLACE_PROGRESSIVE;
-			break;
-		case LQT_INTERLACE_TOP_FIRST:
-			m_framestruct.interlace_mode = INTERLACE_TOP_FIELD_FIRST;
-			break;
-		case LQT_INTERLACE_BOTTOM_FIRST:
-			m_framestruct.interlace_mode = INTERLACE_BOTTOM_FIELD_FIRST;
-			for (int i = 0; i < m_height/2; i++) {
-				m_rows[i*2 + 1] = m_frame + m_width * 3 * i;
-				m_rows[i*2] = m_frame + m_width * 3 * i + m_width * 3 * m_height / 2;
-			}
-			m_framestruct.interlace_mode = INTERLACE_DEVIDED_FIELDS;
-			break;
+	if ( g_INTERLACING ) {
+		switch ( lqt_get_interlace_mode( m_qt, 0 ) ) {
+			case LQT_INTERLACE_NONE:
+				m_framestruct.interlace_mode = INTERLACE_PROGRESSIVE;
+				break;
+			case LQT_INTERLACE_TOP_FIRST:
+				m_framestruct.interlace_mode = INTERLACE_TOP_FIELD_FIRST;
+				break;
+			case LQT_INTERLACE_BOTTOM_FIRST:
+				m_framestruct.interlace_mode = INTERLACE_BOTTOM_FIELD_FIRST;
+				for (int i = 0; i < m_height/2; i++) {
+					m_rows[i*2 + 1] = m_frame + m_width * 3 * i;
+					m_rows[i*2] = m_frame + m_width * 3 * i + m_width * 3 * m_height / 2;
+				}
+				m_framestruct.interlace_mode = INTERLACE_DEVIDED_FIELDS;
+				break;
+		}
 	}
 	m_interlace_mode = m_framestruct.interlace_mode;
 

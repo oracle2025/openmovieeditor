@@ -337,7 +337,7 @@ void VideoViewGL::drawFrameStack( frame_struct** fs )
 				tcache[i].p = fs[i];
 			}
 		}
-		if ( fs[i]->interlace_mode == INTERLACE_DEVIDED_FIELDS && g_INTERLACING ) {
+		if ( g_INTERLACING && fs[i]->interlace_mode == INTERLACE_DEVIDED_FIELDS ) {
 			unsigned char *framebuffer;
 			if ( fs[i]->has_alpha_channel ) {
 				if ( !fs[i]->first_field ) {
@@ -482,7 +482,7 @@ void VideoViewGL::drawFrameStack( frame_struct** fs )
 		float ww = ( fs[i]->w - 2 * fs[i]->analog_blank ) / TEXTURE_WIDTH;
 		float xx = ( fs[i]->analog_blank ) / TEXTURE_WIDTH;
 		float hh = fs[i]->h / TEXTURE_HEIGHT;
-		if ( fs[i]->interlace_mode == INTERLACE_DEVIDED_FIELDS && g_INTERLACING ) {
+		if ( g_INTERLACING && fs[i]->interlace_mode == INTERLACE_DEVIDED_FIELDS ) {
 			hh = fs[i]->h / TEXTURE_HEIGHT / 2;
 		}
 		glColor4f( 1.0f, 1.0f, 1.0f, fs[i]->alpha ); //Control Transparency
