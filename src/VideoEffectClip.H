@@ -59,6 +59,7 @@ class VideoEffectClip : public IVideoReader
 		virtual int aspectWidth() = 0;
 		virtual float aspectRatio() = 0;
 		virtual int analogBlank() = 0;
+		virtual int interlacing() = 0;
 		void unPrepareFormat();
 		void prepareFormat( int w, int h, int aspect_w, int aspect_h, float aspect, int analog_blank ); // might add fps here
 		frame_struct* getFormattedFrame( frame_struct* tmp_frame, int64_t position );
