@@ -27,6 +27,7 @@
 #include <FL/Fl_Shared_Image.H>
 
 #include <lqt.h>
+#include <lqt_version.h>
 
 #ifdef AVCODEC
 extern "C" {
@@ -68,6 +69,9 @@ namespace nle
 
 int main( int argc, char** argv )
 {
+	cout << "Libquicktime Version: " << LQT_VERSION << endl;
+	cout << "libavcodec Version: " << LIBAVCODEC_IDENT<< endl;
+	cout << "libavformat Version: " << LIBAVFORMAT_IDENT << endl;
 	
 	nle::g_PREVENT_OFFSCREEN_CRASH = true;
 	nle::g_homefolder = getenv( "HOME" );
