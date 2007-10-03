@@ -234,7 +234,9 @@ openmovieeditor_SOURCES = nle.cxx\
 	VideoWriterQT.H\
 	VideoWriterQT.cxx\
 	EncodingPreset.H\
-	EncodingPreset.cxx
+	EncodingPreset.cxx\
+	InkscapeClip.cxx\
+	InkscapeClip.H
 	
 
 

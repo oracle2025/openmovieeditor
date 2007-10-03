@@ -30,6 +30,7 @@
 #include "globals.H"
 #include "DummyClip.H"
 #include "TitleClip.H"
+#include "InkscapeClip.H"
 
 namespace nle
 {
@@ -68,6 +69,11 @@ void VideoTrack::addFile( int64_t position, string filename, int64_t trimA, int6
 {
 	if ( filename == "src:builtin:TitleClip" ) {
 		TitleClip* c = new TitleClip( this, position, length - trimA - trimB, id, data );
+		addClip( c );
+		return;
+	}
+	if ( filename == "src:builtin:InkscapeClip" ) {
+		InkscapeClip* c = new InkscapeClip( this, position, length - trimA - trimB, id, data );
 		addClip( c );
 		return;
 	}
