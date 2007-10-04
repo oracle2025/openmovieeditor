@@ -89,6 +89,14 @@ TimelineView::TimelineView( int x, int y, int w, int, const char *label )
 TimelineView::~TimelineView()
 {
 }
+struct action_menu_struct {
+	Clip* clip;
+	int index;
+};
+void action_menu_callback( Fl_Widget*, void* data ) {
+	struct action_menu_struct* tupel = (struct action_menu_struct*)data;
+	tupel->clip->doAction( tupel->index );
+}
 #define MENU_ITEM_INIT 0, 0, 0, 0, 0, 0, 0, 0
 int TimelineView::handle( int event )
 {
@@ -286,30 +294,53 @@ int TimelineView::handle( int event )
 				}
 				VideoEffectClip* vec;
 				if ( ( vec = dynamic_cast<VideoEffectClip*>(cl) ) && ( Fl::event_button() == FL_RIGHT_MOUSE ) ) {
-						Fl_Menu_Item menuitem[] = { { "Crop", 0,0,0,FL_MENU_RADIO|( vec->crop() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
-							{ "Fit", 0,0,0,FL_MENU_RADIO|( vec->fit() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
-							{ "Stretch", 0,0,0,FL_MENU_RADIO |( vec->stretch() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
-							{ "Default", 0,0,0,FL_MENU_RADIO | FL_MENU_DIVIDER|( vec->def() ? FL_MENU_VALUE : 0 ),0,0,0,0 }, 
-							{ "Select all Clips after Cursor", MENU_ITEM_INIT }, 
-							{ 0L, MENU_ITEM_INIT } };
-						//menuitem[2].setonly();
-						Fl_Menu_Item* r = (Fl_Menu_Item*)menuitem->popup( Fl::event_x(), Fl::event_y() );
-						if ( r == &menuitem[0] ) {
-							vec->crop( true );
-							g_videoView->redraw();
-						} else if ( r == &menuitem[1] ) {
-							vec->fit( true );
-							g_videoView->redraw();
-						} else if ( r == &menuitem[2] ) {
-							vec->stretch( true );
-							g_videoView->redraw();
-						} else if ( r == &menuitem[3] ) {
-							vec->def( true );
-							g_videoView->redraw();
-						} else if ( r == &menuitem[4] ) {
-							select_all_after_cursor();	
-						}
-						return 1;
+					struct action_menu_struct action_menu_tuples[cl->getActionCount()];
+					Fl_Menu_Item action_menu[cl->getActionCount()+1];
+					//Fl_Menu_ action_menu(0,0,0,0);
+					for ( int i = 0; i < cl->getActionCount(); i++ ) {
+						action_menu_tuples[i].clip = cl;
+						action_menu_tuples[i].index = i;
+						action_menu[i].text = cl->getActionName( i );
+						action_menu[i].shortcut_ = 0;
+						action_menu[i].callback_ = (Fl_Callback*)action_menu_callback;
+						action_menu[i].user_data_ = &(action_menu_tuples[i]);
+						action_menu[i].flags = 0;
+						action_menu[i].labeltype_ = FL_NORMAL_LABEL;
+						action_menu[i].labelfont_ = FL_HELVETICA;
+						action_menu[i].labelsize_ = 14;
+						action_menu[i].labelcolor_ = FL_BLACK;
+					}
+					action_menu[cl->getActionCount()].text = 0;
+
+					Fl_Menu_Item menuitem[] = { { "Crop", 0,0,0,FL_MENU_RADIO|( vec->crop() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
+						{ "Fit", 0,0,0,FL_MENU_RADIO|( vec->fit() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
+						{ "Stretch", 0,0,0,FL_MENU_RADIO |( vec->stretch() ? FL_MENU_VALUE : 0 ),0,0,0,0 },
+						{ "Default", 0,0,0,FL_MENU_RADIO | FL_MENU_DIVIDER|( vec->def() ? FL_MENU_VALUE : 0 ),0,0,0,0 }, 
+						{ "Actions", 0,0,action_menu,FL_SUBMENU_POINTER,0,0,0,0},
+						{ "Select all Clips after Cursor", MENU_ITEM_INIT }, 
+						{ 0L, MENU_ITEM_INIT } };
+					//menuitem[2].setonly();
+					Fl_Menu_Item* r = (Fl_Menu_Item*)menuitem->popup( Fl::event_x(), Fl::event_y() );
+					if ( r && r->callback() ) {
+						 Fl_Callback* cb = r->callback();
+						 cb( 0, r->user_data() );
+					}
+					if ( r == &menuitem[0] ) {
+						vec->crop( true );
+						g_videoView->redraw();
+					} else if ( r == &menuitem[1] ) {
+						vec->fit( true );
+						g_videoView->redraw();
+					} else if ( r == &menuitem[2] ) {
+						vec->stretch( true );
+						g_videoView->redraw();
+					} else if ( r == &menuitem[3] ) {
+						vec->def( true );
+						g_videoView->redraw();
+					} else if ( r == &menuitem[4] ) {
+						select_all_after_cursor();	
+					}
+					return 1;
 				}
 				if ( Fl::event_button() == FL_RIGHT_MOUSE ) {
 					Fl_Menu_Item menuitem[] = { { "Select all Clips after Cursor", MENU_ITEM_INIT }, { 0L, MENU_ITEM_INIT } };

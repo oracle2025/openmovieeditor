@@ -18,6 +18,7 @@
  */
 
 #include <FL/Fl_Shared_Image.H>
+#include <FL/Fl.H>
 
 #include "InkscapeClip.H"
 #include "ErrorDialog/IErrorHandler.H"
@@ -26,6 +27,10 @@
 #include "globals.H"
 #include "timeline/Track.H"
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include "VideoViewGL.H"
 
 namespace nle
 {
@@ -52,7 +57,7 @@ static int copy_file( string source, string destination ) { //This sucks
 	command += "\"";
 	return system( command.c_str() );
 }
-
+static void detect_svg_update_callback( void* data );
 
 InkscapeClip::InkscapeClip( Track* track, int64_t position, int64_t length, int id, ClipData* data )
 	: FilterClip( track, position, id ), VideoEffectClip( this )
@@ -136,10 +141,12 @@ InkscapeClip::InkscapeClip( Track* track, int64_t position, int64_t length, int 
 	m_aspectRatio = (float)m_aspectWidth / (float)m_aspectHeight;
 	m_ok = true;
 	setEffects( data );
+	Fl::add_timeout(1.0, detect_svg_update_callback, this );
 }
 
 InkscapeClip::~InkscapeClip()
 {
+	Fl::remove_timeout( detect_svg_update_callback, this );
 	if ( m_image ) {
 		m_image->release();
 		m_image = 0;
@@ -147,10 +154,82 @@ InkscapeClip::~InkscapeClip()
 	if ( m_artist ) {
 		delete m_artist;
 	}
+	
 }
 int64_t InkscapeClip::length()
 {
 	return m_length;
+}
+
+void InkscapeClip::doAction( int index )
+{
+	string svg_filename = string(getenv("HOME")) + "/" + "Video Projects/" + m_unique_id + ".svg";
+	string inkscape_command = "inkscape \"";
+	inkscape_command += svg_filename;
+	inkscape_command += "\"";
+	//system( inkscape_command.c_str() );
+
+	const char* args[] = { "/bin/sh", "-c", inkscape_command.c_str(), (char *)0 };
+	if ( fork() == 0 ) {
+		execvp( "/bin/sh", (char* const*)args );
+	}
+}
+static void detect_svg_update_callback( void* data ) {
+	InkscapeClip* ic = (InkscapeClip*)data;
+	ic->detectSvgUpdate();
+	Fl::repeat_timeout(1.0, detect_svg_update_callback, data);
+}
+void InkscapeClip::detectSvgUpdate()
+{
+	string svg_filename = string(getenv("HOME")) + "/" + "Video Projects/" + m_unique_id + ".svg";
+	string png_filename = string(getenv("HOME")) + "/" + "Video Projects/" + m_unique_id + ".png";
+	struct stat statbuf1;
+	struct stat statbuf2;
+	int r = stat( svg_filename.c_str(), &statbuf1 );
+	assert( r != -1 );
+	r = stat( png_filename.c_str(), &statbuf2 );
+	assert( r != -1 );
+	if ( statbuf1.st_mtime > statbuf2.st_mtime ) {
+		string inkscape_command = "inkscape --export-png=\"";
+		inkscape_command += png_filename;
+		inkscape_command += "\" \"";
+		inkscape_command += svg_filename;
+		inkscape_command += "\"";
+		system( inkscape_command.c_str() );
+		if ( m_image ) {
+			m_image->release();
+			m_image = 0;
+		}
+		if ( m_artist ) {
+			delete m_artist;
+		}
+		m_artist = 0;
+		m_image = Fl_Shared_Image::get( png_filename.c_str() );
+		if ( !m_image ) {
+			cerr << "Inkscape Clip: Not an Image" << endl;
+			return;
+		}
+		m_frame.w = m_image->w();
+		m_frame.h = m_image->h();
+		if ( m_image->d() == 4 ) {
+			m_frame.has_alpha_channel = true;
+		} else if ( m_image->d() == 3 ) {
+			m_frame.has_alpha_channel = false;
+		}
+		char** d = (char**)m_image->data();
+		m_frame.RGB = (unsigned char *)d[0];
+
+		if ( !track()->render_mode() ) {
+			m_artist = new ImageClipArtist( m_image );
+		}
+
+		unsigned long gcd_wh = gcd( m_frame.w, m_frame.h );
+		m_aspectHeight = m_frame.h / gcd_wh; 
+		m_aspectWidth = m_frame.w /gcd_wh;
+		m_aspectRatio = (float)m_aspectWidth / (float)m_aspectHeight;
+		m_frame.cacheable = false;
+		g_videoView->redraw();
+	}
 }
 
 frame_struct* InkscapeClip::getRawFrame( int64_t position, int64_t &position_in_file )

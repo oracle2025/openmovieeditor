@@ -55,8 +55,9 @@ class InkscapeClip : public FilterClip, public VideoEffectClip
 		int getActionCount() { return 1; }
 		// vv- Index starts at 0, good old C-Style. ;-)
 		const char* getActionName( int index )
-			{ if ( index == 0 ) { return "Edit with Inkscape" } return 0; }
+			{ if ( index == 0 ) { return "Edit with Inkscape"; } return 0; }
 		void doAction( int index );
+		void detectSvgUpdate();
 	private:
 		Fl_Shared_Image* m_image;
 		int64_t m_length;

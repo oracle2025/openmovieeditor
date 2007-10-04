@@ -67,6 +67,9 @@ class Clip
 		inline void selected( bool s ) { m_selected = s; }
 		inline bool selected() { return m_selected; }
 		virtual ClipData* getClipData() = 0;
+		virtual int getActionCount() { return 0; }
+		virtual const char* getActionName( int index ) { return 0; }
+		virtual void doAction( int index ) {}
 	protected:
 		Clip( Track *track, int64_t position, int id = -1 );
 		int64_t m_position;
