@@ -56,6 +56,7 @@ extern "C" {
 #include "AudioVolumeFilterFactory.H"
 #include "MainFilterFactory.H"
 #include <stdlib.h>
+#include <stdio.h>
 namespace nle 
 {
 	bool g_PREVENT_OFFSCREEN_CRASH;
@@ -67,11 +68,61 @@ namespace nle
 	bool g_INTERLACING = false;
 } /* namespace nle */
 
+static void print_file_if_exists( const char* filename )
+{
+	FILE *stream;
+	stream = fopen( filename, "r" );
+	if ( stream ) {
+		cout << filename << ":" << endl;
+		int c;
+		while ( ( c = fgetc( stream ) ) != EOF ) {
+			putchar( c );
+		}
+	}
+}
+
 int main( int argc, char** argv )
 {
+	cout << "When submitting a BUG report, or SUPPORT request, please include the following information:" << endl;
+	cout << "----8<-----------------------" << endl;
 	cout << "Libquicktime Version: " << LQT_VERSION << endl;
 	cout << "libavcodec Version: " << LIBAVCODEC_IDENT<< endl;
 	cout << "libavformat Version: " << LIBAVFORMAT_IDENT << endl;
+	print_file_if_exists( "/etc/SUSE-release" );
+	print_file_if_exists( "/etc/redhat-release" );
+	print_file_if_exists( "/etc/redhat_version" );
+	print_file_if_exists( "/etc/fedora-release" );
+	print_file_if_exists( "/etc/slackware-release" );
+	print_file_if_exists( "/etc/slackware-version" );
+	print_file_if_exists( "/etc/debian_release" );
+	print_file_if_exists( "/etc/debian_version" );
+	print_file_if_exists( "/etc/mandrake-release" );
+	print_file_if_exists( "/etc/sun-release" );
+	print_file_if_exists( "/etc/release" );
+	print_file_if_exists( "/etc/gentoo-release" );
+	print_file_if_exists( "/etc/yellowdog-release" );
+	print_file_if_exists( "/etc/UnitedLinux-release" );
+	print_file_if_exists( "/etc/lsb-release" );
+	cout << "----8<-----------------------" << endl;
+	/*
+
+/etc/SUSE-release
+/etc/redhat-release
+/etc/redhat_version
+/etc/fedora-release
+/etc/slackware-release
+/etc/slackware-version
+/etc/debian_release
+/etc/debian_version
+/etc/mandrake-release
+/etc/yellowdog-release
+/etc/sun-release
+/etc/release
+/etc/gentoo-release
+/etc/UnitedLinux-release
+/etc/lsb-release
+
+	*/
 	
 	nle::g_PREVENT_OFFSCREEN_CRASH = true;
 	nle::g_homefolder = getenv( "HOME" );
