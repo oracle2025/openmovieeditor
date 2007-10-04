@@ -108,6 +108,7 @@ InkscapeClip::InkscapeClip( Track* track, int64_t position, int64_t length, int 
 	m_frame.w = m_image->w();
 	m_frame.h = m_image->h();
 	m_frame.alpha = 1.0;
+	m_frame.dirty = true;
 	m_frame.cacheable = true;
 	m_frame.interlace_mode = 0;
 	m_frame.first_field = true;
@@ -142,6 +143,68 @@ InkscapeClip::InkscapeClip( Track* track, int64_t position, int64_t length, int 
 	m_ok = true;
 	setEffects( data );
 	Fl::add_timeout(1.0, detect_svg_update_callback, this );
+}
+InkscapeClip::InkscapeClip( Track* track, int64_t position, int64_t length, int id, TiXmlElement* xml_node )
+	: FilterClip( track, position, id ), VideoEffectClip( this )
+{
+	assert( xml_node );
+	m_image = 0;
+	m_artist = 0;
+	m_ok = false;
+	const char* textp;
+	if ( ( textp = xml_node->Attribute( "unique_id" ) ) ) {
+		m_unique_id = textp;
+	} else {
+		return;
+	}
+	string png_filename = string(getenv("HOME")) + "/" + "Video Projects/" + m_unique_id + ".png";
+	m_image = Fl_Shared_Image::get( png_filename.c_str() );
+	if ( !m_image ) {
+		cerr << "Inkscape Clip: Not an Image" << endl;
+		return;
+	}
+	if ( length > 0 ) {
+		m_length = length;
+	} else {
+		m_length = NLE_TIME_BASE * 10;
+	}
+	m_frame.x = m_frame.y = 0;
+	m_frame.w = m_image->w();
+	m_frame.h = m_image->h();
+	m_frame.alpha = 1.0;
+	m_frame.cacheable = true;
+	m_frame.dirty = true;
+	m_frame.interlace_mode = 0;
+	m_frame.first_field = true;
+	m_frame.scale_x = 0;
+	m_frame.scale_y = 0;
+	m_frame.crop_left = 0;
+	m_frame.crop_right = 0;
+	m_frame.crop_top = 0;
+	m_frame.crop_bottom = 0;
+	m_frame.tilt_x = 0;
+	m_frame.tilt_y = 0;
+
+	if ( m_image->d() == 4 ) {
+		m_frame.has_alpha_channel = true;
+	} else if ( m_image->d() == 3 ) {
+		m_frame.has_alpha_channel = false;
+	}
+	char** d = (char**)m_image->data();
+	m_frame.RGB = (unsigned char *)d[0];
+
+	if ( !track->render_mode() ) {
+		m_artist = new ImageClipArtist( m_image );
+	}
+
+	unsigned long gcd_wh = gcd( m_frame.w, m_frame.h );
+	m_aspectHeight = m_frame.h / gcd_wh; 
+	m_aspectWidth = m_frame.w /gcd_wh;
+	m_aspectRatio = (float)m_aspectWidth / (float)m_aspectHeight;
+	detectSvgUpdate();
+
+	Fl::add_timeout(1.0, detect_svg_update_callback, this );
+	m_ok = true;
 }
 
 InkscapeClip::~InkscapeClip()
@@ -227,7 +290,7 @@ void InkscapeClip::detectSvgUpdate()
 		m_aspectHeight = m_frame.h / gcd_wh; 
 		m_aspectWidth = m_frame.w /gcd_wh;
 		m_aspectRatio = (float)m_aspectWidth / (float)m_aspectHeight;
-		m_frame.cacheable = false;
+		m_frame.dirty = true;
 		g_videoView->redraw();
 	}
 }

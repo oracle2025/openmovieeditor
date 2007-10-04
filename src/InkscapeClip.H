@@ -23,6 +23,7 @@
 #include "IVideoReader.H"
 #include "global_includes.H"
 #include "VideoEffectClip.H"
+#include <tinyxml.h>
 class Fl_Shared_Image;
 namespace nle
 {
@@ -31,7 +32,7 @@ class InkscapeClip : public FilterClip, public VideoEffectClip
 {
 	public:
 		InkscapeClip( Track* track, int64_t position, int64_t length = -1, int id = -1, ClipData* data = 0 );
-		//InkscapeClip( Track* track, int64_t position, int64_t length = -1, int id = -1, xml_node );
+		InkscapeClip( Track* track, int64_t position, int64_t length, int id, TiXmlElement* xml_node );
 		~InkscapeClip();
 		int64_t length();
 		frame_struct* getRawFrame( int64_t position, int64_t &position_in_file );
@@ -58,6 +59,7 @@ class InkscapeClip : public FilterClip, public VideoEffectClip
 			{ if ( index == 0 ) { return "Edit with Inkscape"; } return 0; }
 		void doAction( int index );
 		void detectSvgUpdate();
+		const char* UniqueId() { return m_unique_id.c_str(); }
 	private:
 		Fl_Shared_Image* m_image;
 		int64_t m_length;

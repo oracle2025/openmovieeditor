@@ -64,6 +64,7 @@ typedef struct
 	int crop_bottom;
 	int tilt_x;
 	int tilt_y;
+	bool dirty;
 } frame_struct;
 
 } /* namespace nle */

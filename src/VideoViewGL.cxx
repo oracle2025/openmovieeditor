@@ -331,11 +331,16 @@ void VideoViewGL::drawFrameStack( frame_struct** fs )
 	for ( int i = count; i>=0; i-- ) {
 		glBindTexture( GL_TEXTURE_2D, video_canvas[i] );
 		if ( fs[i]->cacheable ) {
-			if ( tcache[i].p == fs[i] ) {
+			if ( tcache[i].p == fs[i] && !tcache[i].dirty && !fs[i]->dirty ) {
 				continue;
 			} else {
+				cout << "Reloading cache "<< endl;
 				tcache[i].p = fs[i];
+				tcache[i].dirty = false;
+				fs[i]->dirty = false;
 			}
+		} else {
+			tcache[i].dirty = true;
 		}
 		if ( g_INTERLACING && fs[i]->interlace_mode == INTERLACE_DEVIDED_FIELDS ) {
 			unsigned char *framebuffer;

@@ -44,7 +44,9 @@ void FilterAddCommand::doo()
 {
 	Track* t = g_timeline->getTrack( m_track );
 	Clip* bc = t->getClip( m_clip );
+	assert(bc);
 	FilterClip* c = dynamic_cast<FilterClip*>(bc);
+	assert(c);
 	
 	FilterFactory* f = g_mainFilterFactory->get( m_identifier.c_str() );
 	assert( f );

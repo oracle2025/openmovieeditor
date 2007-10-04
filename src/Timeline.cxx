@@ -34,6 +34,7 @@
 #include "DummyClip.H"
 #include "VideoFileFactory.H"
 #include "TitleClip.H"
+#include "InkscapeClip.H"
 #include "MainFilterFactory.H"
 #include "FilterBase.H"
 #include "AudioFileFactory.H"
@@ -450,6 +451,9 @@ int Timeline::write( string filename, string name )
 					clip->SetAttribute( "font", tc->font() );
 					clip->SetAttribute( "color", tc->color() );
 				}
+				if ( InkscapeClip* inc = dynamic_cast<InkscapeClip*>(cn->clip) ) {
+					clip->SetAttribute( "unique_id", inc->UniqueId() );
+				}
 			}
 			cn = cn->next;
 		}
@@ -563,7 +567,19 @@ int Timeline::read( string filename )
 					}
 				}
 				this->addClip( trackId, c );
-			} else {
+			} else if ( strcmp( filename, "src:builtin:InkscapeClip" ) == 0 ) {
+				InkscapeClip* c = new InkscapeClip( tr, position, length - trimA - trimB, -1, j );
+				TiXmlElement* effectXml = TiXmlHandle( j ).FirstChildElement( "filter" ).Element();
+				for( ; effectXml; effectXml = effectXml->NextSiblingElement( "filter" ) ) {
+					FilterFactory* ef = g_mainFilterFactory->get( effectXml->Attribute( "identifier" ) );
+					if ( ef ) {
+						FilterBase* effectObj = c->appendFilter( ef );
+						effectObj->readXML( effectXml );
+						
+					}
+				}
+				this->addClip( trackId, c );
+			}else {
 				IVideoFile* vf = VideoFileFactory::get( filename );
 				if ( vf ) {
 					VideoClip* c = new VideoClip( tr, position, vf, trimA, trimB, -1 );

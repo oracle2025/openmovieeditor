@@ -22,6 +22,7 @@
 #include "VideoClip.H"
 #include "ImageClip.H"
 #include "TitleClip.H"
+#include "InkscapeClip.H"
 
 
 namespace nle
@@ -41,6 +42,7 @@ FilterBase* ColorCurveFactory::get( Clip* clip )
 	VideoClip* c1;
 	ImageClip* c2;
 	TitleClip* c3;
+	InkscapeClip* c4;
 	c1 = dynamic_cast<VideoClip*>(clip);
 	if ( c1 ) {
 		effectClip = c1;
@@ -48,7 +50,10 @@ FilterBase* ColorCurveFactory::get( Clip* clip )
 		effectClip = c2;
 	} else if ( (c3 = dynamic_cast<TitleClip*>(clip)) ) {
 		effectClip = c3;
+	} else if ( (c4 = dynamic_cast<InkscapeClip*>(clip)) ) {
+		effectClip = c4;
 	}
+
 	//VideoEffectClip* effectClip = dynamic_cast<VideoEffectClip*>(clip);
 	if ( !effectClip ) {
 		return 0;
