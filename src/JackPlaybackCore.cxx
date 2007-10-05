@@ -30,7 +30,6 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Button.H>
 
-#include "global_includes.H"
 #include "globals.H"
 #include "JackPlaybackCore.H"
 #include "IAudioReader.H"
@@ -38,6 +37,7 @@
 #include "IVideoWriter.H"
 #include "Timeline.H"
 #include "ErrorDialog/IErrorHandler.H"
+#include <iostream>
 
 #define VIDEO_DRIFT_LIMIT 2 //Calculate this based on frame size
 #define FRAMES 4096
@@ -105,7 +105,7 @@ int jack_callback (jack_nframes_t nframes, void *data)
 void jack_shutdown(void *data)
 {
 	jack_client=NULL;
-	cerr << "jack server shutdown." << endl;
+	std::cerr << "jack server shutdown." << std::endl;
 	JackPlaybackCore* pc = (JackPlaybackCore*)data;
 	pc->hardstop(); 
 }
@@ -291,7 +291,7 @@ void JackPlaybackCore::play()
 		 * possibly resulting in a backwards seek.
 		 */
 		int spin = 1000000;
-		while (abs(jack_poll_frame()-m_currentFrame) > 2 && spin-- > 0 );
+		while (::llabs(jack_poll_frame()-m_currentFrame) > 2 && spin-- > 0 );
 	}
 	if (g_use_jack_transport) jack_play();
 

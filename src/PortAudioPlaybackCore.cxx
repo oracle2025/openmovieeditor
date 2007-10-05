@@ -28,7 +28,6 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Button.H>
 
-#include "global_includes.H"
 #include "globals.H"
 #include "portaudio/portaudio.h"
 #include "PortAudioPlaybackCore.H"
@@ -37,6 +36,7 @@
 #include "IVideoWriter.H"
 #include "Timeline.H"
 #include "ErrorDialog/IErrorHandler.H"
+#include <iostream>
 
 #define VIDEO_DRIFT_LIMIT (2 * 1200) //Calculate this based on frame size
 #define FRAMES 4096
@@ -86,7 +86,7 @@ static bool portaudio_start( int rate, int frames, void* data )
 	
 	return 1;
 error:
-	cerr << "Soundoutput failed: " << Pa_GetErrorText( err ) << endl;
+	std::cerr << "Soundoutput failed: " << Pa_GetErrorText( err ) << std::endl;
 	return 0;
 }
 static bool portaudio_stop()
@@ -187,7 +187,7 @@ void PortAudioPlaybackCore::flipFrame()
 	m_lastFrame++;
 	pthread_mutex_lock( &condition_mutex );
 	int64_t diff = m_lastFrame - m_currentFrame;
-	if ( abs( diff ) > VIDEO_DRIFT_LIMIT ) {
+	if ( ::llabs( diff ) > VIDEO_DRIFT_LIMIT ) {
 		if ( diff > 0 ) {
 			while( ( m_lastFrame - m_currentFrame ) > VIDEO_DRIFT_LIMIT && Pa_StreamActive( g_stream ) ) {
 				pthread_cond_wait( &condition_cond, &condition_mutex );
