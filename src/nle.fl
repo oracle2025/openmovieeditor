@@ -206,13 +206,13 @@ m_videoView->redraw();}
 g_black_borders = false;
 black_border_item->clear();
 m_videoView->redraw();}
-            xywh {10 10 100 20} type Toggle divider
+            xywh {10 10 100 20} type Toggle
           }
           MenuItem {} {
             label {Disable Interlacing}
             callback {nle::g_INTERLACING = !(o->mvalue())->value();
 m_videoView->redraw();}
-            xywh {0 0 100 20} type Toggle value 1
+            xywh {0 0 100 20} type Toggle value 1 hide
           }
         }
         Submenu jackMenu {
