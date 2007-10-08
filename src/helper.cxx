@@ -22,6 +22,7 @@
 #include <cstdio>
 #include <cstring>
 #include <cerrno>
+#include <cstdlib>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>

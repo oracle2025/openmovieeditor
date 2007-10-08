@@ -19,6 +19,7 @@
 #include <FL/filename.H>
 #include "FolderBrowser.H"
 
+#include <cstdlib>
 #include <iostream>
 
 namespace nle

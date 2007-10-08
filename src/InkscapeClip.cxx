@@ -31,6 +31,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include "VideoViewGL.H"
+#include <cassert>
 
 namespace nle
 {

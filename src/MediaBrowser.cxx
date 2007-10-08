@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <cstring>
+#include <cstdlib>
 
 #include <FL/Fl.H>
 #include <FL/filename.H>
