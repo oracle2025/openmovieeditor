@@ -984,6 +984,7 @@ NleUI::NleUI() {
               { Fl_Input* o = titles_text = new Fl_Input(205, 80, 155, 220);
                 o->type(4);
                 o->callback((Fl_Callback*)cb_titles_text);
+                o->when(FL_WHEN_CHANGED);
                 Fl_Group::current()->resizable(o);
               }
               { Fl_Group* o = new Fl_Group(5, 80, 195, 220);

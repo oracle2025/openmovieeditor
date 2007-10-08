@@ -440,7 +440,7 @@ fb->load_rel();}
               } {
                 Fl_Input titles_text {
                   callback {m_timelineView->titles_text( o->value() );}
-                  xywh {205 80 155 220} type Multiline resizable
+                  xywh {205 80 155 220} type Multiline when 1 resizable
                 }
                 Fl_Group {} {open
                   xywh {5 80 195 220} box ENGRAVED_FRAME
