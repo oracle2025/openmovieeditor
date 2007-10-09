@@ -86,8 +86,10 @@ int main( int argc, char** argv )
 	cout << "When submitting a BUG report, or SUPPORT request, please include the following information:" << endl;
 	cout << "----8<-----------------------" << endl;
 	cout << "Libquicktime Version: " << LQT_VERSION << endl;
+#ifdef AVCODEC
 	cout << "libavcodec Version: " << LIBAVCODEC_IDENT<< endl;
 	cout << "libavformat Version: " << LIBAVFORMAT_IDENT << endl;
+#endif /* AVCODEC */
 	print_file_if_exists( "/etc/SUSE-release" );
 	print_file_if_exists( "/etc/redhat-release" );
 	print_file_if_exists( "/etc/redhat_version" );
