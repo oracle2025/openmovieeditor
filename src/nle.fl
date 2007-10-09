@@ -1412,10 +1412,10 @@ if ( vcodec && acodec && vcodec[0] && acodec[0] ) {
 	presets_browser->add(format.name, encoding_preset);
 } else {
 	delete encoding_preset;
-	if ( !vcodec[0] ) {
+	if ( !vcodec || !vcodec[0] ) {
 		cout << "Video Codec Missing: ffmpeg_mpg4, Hint: install ffmpeg with shared libs before installing libquicktime" << endl;
 	}
-	if ( !acodec[0] ) {
+	if ( !acodec || !acodec[0] ) {
 		cout << "Audio Codec Missing: faac, Hint: install libfaac before installing libquicktime" << endl;
 	}
 }
@@ -1457,10 +1457,10 @@ if ( vcodec && acodec && vcodec[0] && acodec[0] ) {
 	presets_browser->add(format.name, encoding_preset);
 } else {
 	delete encoding_preset;
-	if ( !vcodec[0] ) {
+	if ( !vcodec || !vcodec[0] ) {
 		cout << "Video Codec Missing: ffmpeg_msmpeg4v3, Hint: install ffmpeg with shared libs before installing libquicktime" << endl;
 	}
-	if ( !acodec[0] ) {
+	if ( !acodec || !acodec[0] ) {
 		cout << "Audio Codec Missing: lame, Hint: install lame before installing libquicktime" << endl;
 	}
 }
@@ -1499,7 +1499,7 @@ if ( vcodec && acodec && vcodec[0] && acodec[0] ) {
 	presets_browser->add(format.name, encoding_preset);
 } else {
 	delete encoding_preset;
-	if ( !vcodec[0] ) {
+	if ( !vcodec || !vcodec[0] ) {
 		cout << "Video Codec Missing: DV, Hint: install libdv before installing libquicktime" << endl;
 	}
 }
