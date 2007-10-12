@@ -55,7 +55,7 @@ class JackPlaybackCore : public IPlaybackCore
 		int64_t m_lastFrame;
 		int64_t m_nexttolastFrame;
 		int64_t m_prevSeek;
-		int m_scrubpos,m_scrubmax;
+		int64_t m_scrubpos,m_scrubmax;
 };
 
 } /* namespace nle */

@@ -195,7 +195,7 @@ int64_t jack_poll_frame (void)
 {
 	jack_position_t	jack_position;
 	double		jack_time;
-	long 		frame;
+	int64_t		frame;
 
 	if (!jack_client) return (-1);
 	/* Calculate frame. */
@@ -205,9 +205,9 @@ int64_t jack_poll_frame (void)
 	return(frame);
 }
 
-void jack_reposition(int vframe)
+void jack_reposition(int64_t vframe)
 {
-	jack_nframes_t frame= vframe * 48000/NLE_TIME_BASE;
+	jack_nframes_t frame= (jack_nframes_t)(vframe * 48000/NLE_TIME_BASE);
 	if (jack_client)
 		jack_transport_locate (jack_client, frame);
 }
@@ -264,7 +264,7 @@ void resume_idle_handlers();
 
 void JackPlaybackCore::play()
 {
-	int scrublen = 3*1920;  // TODO: get from preferences :  scrub_freq = sample_rate/scrublen   
+	int64_t scrublen = 3*1920;  // TODO: get from preferences :  scrub_freq = sample_rate/scrublen   
 				// good values for scrub_freq are 1..50 Hz
 				// scrub length is rounded up to next multiple of jack buffer size.
 	if (m_active) return; 
@@ -275,7 +275,7 @@ void JackPlaybackCore::play()
 	m_currentFrame = g_timeline->m_seekPosition;
 	m_lastFrame = g_timeline->m_seekPosition;
 	m_scrubpos = 0;
-	m_scrubmax = (jack_bufsiz!=0)?(int)ceil((double)(scrublen/jack_bufsiz)):1;
+	m_scrubmax = (jack_bufsiz!=0)?(int64_t)ceil((double)(scrublen/jack_bufsiz)):1;
 
 	if (!g_use_jack_transport) {
 		m_audioPosition = m_currentFrame * 48000 / NLE_TIME_BASE; 
