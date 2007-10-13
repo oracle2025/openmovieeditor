@@ -18,6 +18,7 @@
  */
 
 #include <cstring>
+#include <cassert>
 
 #include <colormodels.h>
 
@@ -125,10 +126,7 @@ void Renderer::go( IProgressListener* l )
 	p_timeline->sort();
 	
 	int res;
-	float buffer[AUDIO_BUFFER_SIZE*2];
-	float left_buffer[AUDIO_BUFFER_SIZE];
-	float right_buffer[AUDIO_BUFFER_SIZE];
-	float *buffer_p[2] = { left_buffer, right_buffer };
+	float abuffer[AUDIO_BUFFER_SIZE*2];
 
 	int64_t length = (int64_t)( p_timeline->length() * ( (float)m_fps.timescale / (float)m_fps.frame_duration  ) );
 	int64_t current_frame = 0;
@@ -154,20 +152,15 @@ void Renderer::go( IProgressListener* l )
 	int64_t frame_length = 35280000 / m_fps.timescale * m_fps.frame_duration;
 	bool run = true;
 	int frames_to_write;
+	assert( m_fps.audio_frames_per_chunk <= AUDIO_BUFFER_SIZE );
 	do {
-		res = p_timeline->fillBuffer( buffer, m_fps.audio_frames_per_chunk );
+		res = p_timeline->fillBuffer( abuffer, m_fps.audio_frames_per_chunk );
 		p_timeline->sampleseek( 0, m_fps.audio_frames_per_chunk );
-		m_writer->encodeAudioFrame( buffer, res );
-/*		for ( int i = 0; i < res; i++ ) {
-			left_buffer[i] = buffer[i*2];
-			right_buffer[i] = buffer[i*2+1];
-		}
-		lqt_encode_audio_track( qt, 0, buffer_p, res, 0 );*/
+		m_writer->encodeAudioFrame( abuffer, res );
 		for ( int i = 0; i < m_fps.video_frames_per_chunk; i++ ) {
 			p_timeline->getBlendedFrame( position, &enc_frame );
 			position += frame_length;
 			m_writer->encodeVideoFrame( &enc_frame );
-			//quicktime_encode_video( qt, enc_frame.rows, 0 );
 			current_frame++;
 			if ( l ) {
 				if ( l->progress( (double)current_frame / length ) ) {
@@ -177,7 +170,6 @@ void Renderer::go( IProgressListener* l )
 			}
 		}
 	} while ( res == m_fps.audio_frames_per_chunk && run );
-	
 	delete [] enc_frame.RGB;
 	delete [] enc_frame.rows;
 	if ( l ) {
