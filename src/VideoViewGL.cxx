@@ -272,6 +272,15 @@ void VideoViewGL::draw()
 			glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 			glTexImage2D (GL_TEXTURE_2D, 0, GL_RGBA, T_W, T_H, 0, GL_RGB, GL_UNSIGNED_BYTE, p);
 		}
+		GLint max[2];
+		glGetIntegerv(GL_MAX_TEXTURE_SIZE, max);
+		cout << "When submitting a BUG report, or SUPPORT request, please include the following information:" << endl;
+		cout << "----8<-----------------------" << endl;
+		cout << "OpenGL vendor string: " << ((const char*)glGetString(GL_VENDOR)) << endl;
+		cout << "OpenGL renderer string: " << ((const char*)glGetString(GL_RENDERER)) << endl;
+		cout << "OpenGL version string: " << ((const char*)glGetString(GL_VERSION)) << endl;
+		cout << "GL_MAX_TEXTURE_SIZE = " << max[0] << endl;
+		cout << "----8<-----------------------" << endl;
 		once = false;
 	}
 	if ( g_playbackCore->active() ) { return; }
