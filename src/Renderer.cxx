@@ -84,44 +84,7 @@ Renderer::Renderer( IVideoFileWriter* writer )
 	m_fps.video_frames_per_chunk = m_writer->format()->framerate.video_frames_per_chunk;
 		
 	p_timeline->prepareFormat( m_w, m_h, m_writer->format()->aspect_w, m_writer->format()->aspect_h, m_writer->format()->aspect, m_writer->format()->analog_blank );
-
 	
-	
-/*	p_timeline = 0;
-	char buffer[1024];
-	m_w = format->w;
-	m_h = format->h;
-	m_fps = *framerate;
-	m_samplerate = samplerate;
-	m_filename = filename;
-	strlcpy( buffer, m_filename.c_str(), sizeof(buffer) );
-	qt = quicktime_open( buffer, false, true );
-	if ( !qt ) {
-		fl_alert( "Could not open file.\n%s", filename.c_str() );
-		return;
-	}
-
-	params->set( qt, m_w, m_h, &m_fps );
-
-	lqt_set_cmodel( qt, 0, BC_RGB888 );
-	
-	Timeline* x = g_timeline;
-	p_timeline = new Timeline();
-	g_timeline = x;
-
-	p_timeline->render_mode( true );
-	string temp_filename;
-	strcpy( buffer,"OME_RENDER_XXXXXX" );
-	temp_filename = string(g_homefolder);
-	
-	temp_filename += ("/.openme/temp" PREF_FILE_ADD);
-	temp_filename += buffer;
-	g_timeline->write( temp_filename, "" );
-
-	p_timeline->read( temp_filename );
-	
-	p_timeline->prepareFormat( m_w, m_h, format->aspect_w, format->aspect_h, format->aspect, format->analog_blank );*/
-
 	return;
 }
 bool Renderer::ok() {
