@@ -1016,8 +1016,8 @@ int Timeline::write_smil( std::string filename, int track )
 			video->SetAttribute( "src", cn->clip->filename().c_str() );
 			int64_t clipBegin = cn->clip->trimA();
 			int64_t clipEnd = cn->clip->fileLength() - cn->clip->trimB();
-			video->SetAttribute( "clipBegin", timestamp_to_smil_string( clipBegin, 40 ) );
-			video->SetAttribute( "clipEnd", timestamp_to_smil_string( clipEnd, 40 ) );
+			video->SetAttribute( "clipBegin", timestamp_to_smil_string( clipBegin, 40 ) ); // FIXME: 25fps Hardcoded
+			video->SetAttribute( "clipEnd", timestamp_to_smil_string( clipEnd, 40 ) ); // FIXME: 25fps Hardcoded
 		}
 		cn = cn->next;
 	}
