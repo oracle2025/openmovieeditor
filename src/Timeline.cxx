@@ -27,6 +27,7 @@
 #include "VideoClip.H"
 #include "timeline/Track.H"
 #include "render_helper.H"
+#include "helper.H"
 #include "globals.H"
 #include "config.h"
 
@@ -984,6 +985,63 @@ int Timeline::read_20061221_and_earlier( string filename )
 
 }
 
+int Timeline::write_smil( std::string filename, int track )
+{
+	sort();
+	TiXmlDocument doc( filename.c_str() );
+	TiXmlDeclaration* dec = new TiXmlDeclaration( "1.0", "", "" );
+	doc.LinkEndChild( dec );
+	TiXmlElement* smil = new TiXmlElement( "smil" );
+	smil->SetAttribute( "xmlns", "http://www.w3.org/2001/SMIL20/Language" );
+	doc.LinkEndChild( smil );
+
+	TiXmlElement* body = new TiXmlElement( "body" );
+	smil->LinkEndChild( body );
+
+	track_node* node = this->getTracks();
+	int i = 0;
+
+	for ( ; i < track; node = node->next ) {
+		i++;
+	}
+	clip_node* cn = node->track->getClips();
+	TiXmlElement* seq;
+	TiXmlElement* video;
+	while ( cn ) {
+		if ( cn->clip->type() == CLIP_TYPE_VIDEO ) {
+			seq = new TiXmlElement( "seq" );
+			body->LinkEndChild( seq );
+			video = new TiXmlElement( "video" );
+			seq->LinkEndChild( video );
+			video->SetAttribute( "src", cn->clip->filename().c_str() );
+			int64_t clipBegin = cn->clip->trimA();
+			int64_t clipEnd = cn->clip->fileLength() - cn->clip->trimB();
+			video->SetAttribute( "clipBegin", timestamp_to_smil_string( clipBegin, 40 ) );
+			video->SetAttribute( "clipEnd", timestamp_to_smil_string( clipEnd, 40 ) );
+		}
+		cn = cn->next;
+	}
+	doc.SaveFile();
+	
+	return 1;
+
+
+
+/*
+<?xml version="1.0"?>
+<smil xmlns="http://www.w3.org/2001/SMIL20/Language">
+  <body>
+    <seq title="">
+      <video src="var/video/test-dv2-001.avi" clipBegin="00:00:01.840" clipEnd="00:00:09.160"/>
+    </seq>
+    <seq>
+      <video src="var/video/test-dv1-001.avi" clipBegin="00:00:00.000" clipEnd="00:00:14.920"/>
+    </seq>
+  </body>
+</smil>
+
+*/
+}
 
 
 

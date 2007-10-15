@@ -44,6 +44,16 @@ const char* timestamp_to_string( int64_t timestamp )
 	snprintf( buffer, 256, "%02d:%02d:%02d", hours, minutes, seconds );
 	return buffer;
 }
+const char* timestamp_to_smil_string( int64_t timestamp, int frame_length )
+{
+	static char buffer[256];
+	int hours = (int) ( timestamp / NLE_TIME_BASE / 60 / 60 );
+	int minutes = (int) ( ( timestamp / ( NLE_TIME_BASE * 60 ) ) ) % 60;
+	int seconds = (int) ( ( timestamp / NLE_TIME_BASE ) ) % 60;
+	int ticks = (int) ( ( timestamp * 1000 / NLE_TIME_BASE ) ) % 1000 / frame_length * frame_length;
+	snprintf( buffer, 256, "%02d:%02d:%02d.%03d", hours, minutes, seconds, ticks );
+	return buffer;
+}
 
 int mkdirp( const char* pathname )
 {

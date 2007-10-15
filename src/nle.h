@@ -56,6 +56,8 @@ private:
   static void cb_Save(Fl_Menu_*, void*);
   void cb_Render_i(Fl_Menu_*, void*);
   static void cb_Render(Fl_Menu_*, void*);
+  void cb_Export_i(Fl_Menu_*, void*);
+  static void cb_Export(Fl_Menu_*, void*);
   void cb_Quit_i(Fl_Menu_*, void*);
   static void cb_Quit(Fl_Menu_*, void*);
 public:
@@ -489,5 +491,26 @@ private:
   bool go;
 public:
   void setEncodingPreset(nle::EncodingPreset* preset);
+};
+
+class SmilExportDialog {
+public:
+  SmilExportDialog();
+  Fl_Double_Window *dialog_window;
+  Fl_File_Input *export_filename;
+private:
+  void cb_File2_i(Fl_Button*, void*);
+  static void cb_File2(Fl_Button*, void*);
+public:
+  Fl_Choice *track_choice;
+private:
+  void cb_Export1_i(Fl_Return_Button*, void*);
+  static void cb_Export1(Fl_Return_Button*, void*);
+  void cb_Cancel3_i(Fl_Button*, void*);
+  static void cb_Cancel3(Fl_Button*, void*);
+public:
+  int shown();
+  void show();
+  ~SmilExportDialog();
 };
 #endif

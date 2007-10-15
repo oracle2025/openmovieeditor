@@ -79,6 +79,20 @@ void NleUI::cb_Render(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Render_i(o,v);
 }
 
+void NleUI::cb_Export_i(Fl_Menu_*, void*) {
+  Fl_Group::current( mainWindow );
+
+
+SmilExportDialog dlg;
+
+dlg.show();
+while (dlg.shown())
+  Fl::wait();
+}
+void NleUI::cb_Export(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_Export_i(o,v);
+}
+
 void NleUI::cb_Quit_i(Fl_Menu_* o, void*) {
   m_videoView->stop();
 o->window()->hide();
@@ -287,7 +301,8 @@ Fl_Menu_Item NleUI::menu_Black[] = {
  {"&Project", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"New Project", 0,  (Fl_Callback*)NleUI::cb_New, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Save as...", 0x50073,  (Fl_Callback*)NleUI::cb_Save, 0, 128, FL_NORMAL_LABEL, 0, 14, 0},
- {"Render...", 0,  (Fl_Callback*)NleUI::cb_Render, 0, 128, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Render...", 0,  (Fl_Callback*)NleUI::cb_Render, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Export SMIL/Kino...", 0,  (Fl_Callback*)NleUI::cb_Export, 0, 128, FL_NORMAL_LABEL, 0, 14, 0},
  {"Quit", 0x40071,  (Fl_Callback*)NleUI::cb_Quit, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"&Edit", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
@@ -331,15 +346,15 @@ Fl_Menu_Item NleUI::menu_Black[] = {
  {0,0,0,0,0,0,0,0,0},
  {0,0,0,0,0,0,0,0,0}
 };
-Fl_Menu_Item* NleUI::undo_item = NleUI::menu_Black + 7;
-Fl_Menu_Item* NleUI::redo_item = NleUI::menu_Black + 8;
-Fl_Menu_Item* NleUI::cut_item = NleUI::menu_Black + 9;
-Fl_Menu_Item* NleUI::copy_item = NleUI::menu_Black + 10;
-Fl_Menu_Item* NleUI::paste_item = NleUI::menu_Black + 11;
-Fl_Menu_Item* NleUI::delete_item = NleUI::menu_Black + 12;
-Fl_Menu_Item* NleUI::black_border_item = NleUI::menu_Black + 26;
-Fl_Menu_Item* NleUI::black_border_item_2_35 = NleUI::menu_Black + 27;
-Fl_Menu_Item* NleUI::jackMenu = NleUI::menu_Black + 30;
+Fl_Menu_Item* NleUI::undo_item = NleUI::menu_Black + 8;
+Fl_Menu_Item* NleUI::redo_item = NleUI::menu_Black + 9;
+Fl_Menu_Item* NleUI::cut_item = NleUI::menu_Black + 10;
+Fl_Menu_Item* NleUI::copy_item = NleUI::menu_Black + 11;
+Fl_Menu_Item* NleUI::paste_item = NleUI::menu_Black + 12;
+Fl_Menu_Item* NleUI::delete_item = NleUI::menu_Black + 13;
+Fl_Menu_Item* NleUI::black_border_item = NleUI::menu_Black + 27;
+Fl_Menu_Item* NleUI::black_border_item_2_35 = NleUI::menu_Black + 28;
+Fl_Menu_Item* NleUI::jackMenu = NleUI::menu_Black + 31;
 
 void NleUI::cb_zoom_slider_i(Fl_Slider* o, void*) {
   m_videoView->zoom( o->value() );
@@ -7285,4 +7300,100 @@ switch ( fmt.framerate.frame_duration ) {
 		frame_rate_choice->value( 5 );
 		break;
 }
+}
+
+void SmilExportDialog::cb_File2_i(Fl_Button*, void*) {
+  export_filename->value( fl_file_chooser( "Set Export Filename", 0, 0 ) );
+}
+void SmilExportDialog::cb_File2(Fl_Button* o, void* v) {
+  ((SmilExportDialog*)(o->parent()->user_data()))->cb_File2_i(o,v);
+}
+
+void SmilExportDialog::cb_Export1_i(Fl_Return_Button* o, void*) {
+  if ( strcmp( "", export_filename->value() ) == 0 ) {
+	fl_alert( "Please select a filename." );
+	return;
+}
+if ( track_choice->value() < 0 ) {
+	fl_alert( "Please select a Video Track." );
+	return;
+}
+struct stat statbuf;
+int r = stat( export_filename->value(), &statbuf );
+if ( r == 0 ) {
+	r = fl_choice( "File exists, replace?\nWill be overwritten.", "&Cancel", "&Replace", 0 );
+	if ( r == 0 ) {
+		return;
+	}
+}
+nle::g_timeline->write_smil( export_filename->value(), track_choice->value() );
+o->window()->hide();
+}
+void SmilExportDialog::cb_Export1(Fl_Return_Button* o, void* v) {
+  ((SmilExportDialog*)(o->parent()->user_data()))->cb_Export1_i(o,v);
+}
+
+void SmilExportDialog::cb_Cancel3_i(Fl_Button* o, void*) {
+  o->window()->hide();
+}
+void SmilExportDialog::cb_Cancel3(Fl_Button* o, void* v) {
+  ((SmilExportDialog*)(o->parent()->user_data()))->cb_Cancel3_i(o,v);
+}
+
+SmilExportDialog::SmilExportDialog() {
+  Fl_Double_Window* w;
+  { Fl_Double_Window* o = dialog_window = new Fl_Double_Window(555, 215, "SMIL Export");
+    w = o;
+    o->user_data((void*)(this));
+    { Fl_Box* o = new Fl_Box(0, 0, 555, 45, "SMIL Export (Kino compatible)");
+      o->labelfont(1);
+      o->labelsize(16);
+    }
+    export_filename = new Fl_File_Input(175, 55, 205, 35, "Filename");
+    { Fl_Button* o = new Fl_Button(385, 65, 75, 25, "File...");
+      o->callback((Fl_Callback*)cb_File2);
+    }
+    { Fl_Choice* o = track_choice = new Fl_Choice(175, 100, 205, 25, "Video Track");
+      o->down_box(FL_BORDER_BOX);
+    }
+    { Fl_Return_Button* o = new Fl_Return_Button(285, 175, 245, 25, "Export");
+      o->callback((Fl_Callback*)cb_Export1);
+      w->hotspot(o);
+    }
+    { Fl_Button* o = new Fl_Button(25, 175, 245, 25, "Cancel");
+      o->callback((Fl_Callback*)cb_Cancel3);
+    }
+    { Fl_Box* o = new Fl_Box(25, 135, 505, 25, "Hint: Only simple cuts and trims are exported");
+      o->box(FL_BORDER_BOX);
+      o->color((Fl_Color)175);
+      o->labelfont(1);
+      o->labelcolor((Fl_Color)35);
+    }
+    o->set_modal();
+    o->end();
+  }
+  nle::track_node* p;
+p = nle::g_timeline->getTracks();
+int i = 1;
+char buffer[256];
+for ( ; p; p = p->next ) {
+	if ( p->track->type() == nle::TRACK_TYPE_VIDEO ) {
+		snprintf(buffer, 255, "%d: %s", i, p->track->name().c_str() );
+		track_choice->add( buffer );
+	}
+	i++;
+}
+track_choice->value(0);
+}
+
+int SmilExportDialog::shown() {
+  return dialog_window->shown();
+}
+
+void SmilExportDialog::show() {
+  dialog_window->show();
+}
+
+SmilExportDialog::~SmilExportDialog() {
+  delete dialog_window;
 }
