@@ -1281,11 +1281,11 @@ void TiXmlDeclaration::Print( FILE* cfile, int /*depth*/ ) const
 	fprintf (cfile, "<?xml ");
 
 	if ( !version.empty() )
-		fprintf (cfile, "version=\"%s\" ", version.c_str ());
+		fprintf (cfile, "version=\"%s\"", version.c_str ());
 	if ( !encoding.empty() )
-		fprintf (cfile, "encoding=\"%s\" ", encoding.c_str ());
+		fprintf (cfile, " encoding=\"%s\" ", encoding.c_str ());
 	if ( !standalone.empty() )
-		fprintf (cfile, "standalone=\"%s\" ", standalone.c_str ());
+		fprintf (cfile, " standalone=\"%s\" ", standalone.c_str ());
 	fprintf (cfile, "?>");
 }
 
