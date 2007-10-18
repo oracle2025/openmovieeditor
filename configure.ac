@@ -131,6 +131,9 @@ else
    AC_MSG_ERROR([*** You need JACK audio library (libjack-dev) installed.  http://jackit.sf.net/])
 fi
 
+ AC_CHECK_HEADER(GL/gl.h,,
+  AC_MSG_ERROR([*** GL/gl.h not found - this program requires OpenGL or compatible (Mesa) Hint: install mesa-common-dev ***]))
+
 
 dnl FLTK-Check Shamelessly stolen from SpiralSynthModular
 AC_PATH_PROG(FLTK_CONFIG, fltk-config, no)
