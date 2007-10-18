@@ -178,7 +178,7 @@ void Frei0rEffect::writeXML( TiXmlElement* xml_node )
 				{
 					f0r_param_bool bvalue;
 					getValue( &bvalue, i );
-					parameter->SetAttribute( "value", (int)bvalue );
+					parameter->SetAttribute( "value", (int)(bvalue >= 0.5) );
 					break;
 				}
 			case F0R_PARAM_COLOR:
@@ -224,7 +224,11 @@ void Frei0rEffect::readXML( TiXmlElement* xml_node )
 						}
 					case F0R_PARAM_BOOL:
 						{
-							//int bval;
+							int bval;
+							f0r_param_bool bvalue;
+							parameterXml->Attribute( "value", &bval );
+							bvalue = (double)bval;
+							setValue( &bvalue, i );
 							break;
 						}
 				}

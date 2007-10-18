@@ -127,6 +127,10 @@ Frei0rDialog::Frei0rDialog( Frei0rEffect* effect )
 				{
 				Fl_Check_Button* b = new Fl_Check_Button( x, y, w, h, pinfo.name );
 				b->callback( boolCallback, &(m_infostack[i]) );
+				b->tooltip( pinfo.explanation );
+				f0r_param_bool bvalue;
+				m_effect->getValue( &bvalue, i );
+				b->value( ( bvalue >= 0.5 ) );
 				break;
 				}
 			case F0R_PARAM_COLOR:
