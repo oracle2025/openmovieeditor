@@ -260,7 +260,6 @@ void EncodingPreset::construct_CodecParameters( lqt_codec_info_t** audio, lqt_co
 		if ( strcmp( n->codecInfo->name, copy->m_currentAudioCodec->codecInfo->name ) == 0 ) {
 			m_currentAudioCodec = n;
 			for ( param_node* p = copy->m_currentAudioCodec->parameters; p; p = p->next ) {
-				cout << "set Audio: " << p->info->name << endl;
 				if ( p->info->type == LQT_PARAMETER_STRING || p->info->type == LQT_PARAMETER_STRINGLIST ) {
 					ParameterValue pval( p->value.val_string );
 					setAudioParameter( p->info->name, pval );
@@ -276,7 +275,6 @@ void EncodingPreset::construct_CodecParameters( lqt_codec_info_t** audio, lqt_co
 		if ( strcmp( n->codecInfo->name, copy->m_currentVideoCodec->codecInfo->name ) == 0 ) {
 			m_currentVideoCodec = n;
 			for ( param_node* p = copy->m_currentVideoCodec->parameters; p; p = p->next ) {
-				cout << "set Video: " << p->info->name << endl;
 				if ( p->info->type == LQT_PARAMETER_STRING || p->info->type == LQT_PARAMETER_STRINGLIST ) {
 					ParameterValue pval( p->value.val_string );
 					setVideoParameter( p->info->name, pval );
@@ -334,8 +332,6 @@ void EncodingPreset::setAudioParameter( const char* key, ParameterValue& value )
 }
 lqt_parameter_value_t EncodingPreset::getVideoParameter( const char* key )
 {
-	cout << "THIS: " << this << endl;
-	cout << "KEY: " << key << endl;
 	param_node* p = (param_node*)sl_map( m_currentVideoCodec->parameters, find_a_parameter, (void*)key );
 	assert( p );
 	return p->value;
