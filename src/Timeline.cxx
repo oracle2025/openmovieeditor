@@ -597,7 +597,6 @@ int Timeline::read( string filename )
 					this->addClip( trackId, c );
 				} else {
 					ImageClip* ic = new ImageClip( tr, position, filename, length - trimA - trimB, -1 );
-					vec = ic;
 					if ( !ic->ok() ) {
 						delete ic;
 						if ( length > 0 ) {
@@ -605,7 +604,7 @@ int Timeline::read( string filename )
 							this->addClip( trackId, c );
 						}
 					} else {
-
+						vec = ic;
 						//TODO: This is copy and paste
 						TiXmlElement* effectXml = TiXmlHandle( j ).FirstChildElement( "filter" ).Element();
 						for( ; effectXml; effectXml = effectXml->NextSiblingElement( "filter" ) ) {
