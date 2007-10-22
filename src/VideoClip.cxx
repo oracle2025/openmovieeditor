@@ -155,5 +155,9 @@ int64_t VideoClip::trimB( int64_t trim )
 	}
 	return Clip::trimB( trim );
 }
+int VideoClip::interlacing()
+{
+	return m_videoFile->interlacing();
+}
 
 } /* namespace nle */

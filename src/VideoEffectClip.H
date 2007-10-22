@@ -87,6 +87,7 @@ class VideoEffectClip : public IVideoReader
 		gavl_video_frame_t* m_frame_dst;
 		int m_bits;
 		FilterClip* m_filterClip;
+		bool m_scale_half_frame;
 };
 
 } /* namespace nle */

@@ -57,6 +57,7 @@ class IVideoFile : public IVideoReader
 		virtual void seek( int64_t position ) = 0;
 		string filename() { return m_filename; }
 		virtual bool ok() = 0;
+		inline int interlacing() { return m_interlace_mode; }
 	protected:
 		virtual int64_t ticksPerFrame() = 0;
 		virtual void seekToFrame( int64_t frame ) = 0;

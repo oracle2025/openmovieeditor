@@ -23,7 +23,7 @@ if ( Fl::event()==FL_CLOSE ) {
       xywh {286 199 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
-        label {Black Borders} open selected
+        label {Black Borders} open
         xywh {0 0 530 25}
       } {
         Submenu {} {
@@ -2000,7 +2000,7 @@ class SmilExportDialog {open
   } {
     Fl_Window dialog_window {
       label {SMIL Export} open
-      xywh {495 822 555 215} type Double
+      xywh {495 584 555 215} type Double
       code0 {\#include "Timeline.H"} modal visible
     } {
       Fl_Box {} {
@@ -2080,5 +2080,20 @@ track_choice->value(0);} {}
   Function {~SmilExportDialog()} {open
   } {
     code {delete dialog_window;} {}
+  }
+} 
+
+class DvgrabImportDialog {open
+} {
+  Function {DvgrabImportDialog()} {open
+  } {
+    Fl_Window dialog_window {open
+      xywh {906 17 100 100} type Double visible
+    } {}
+  }
+  Function {~DvgrabImportDialog()} {open
+  } {
+    code {delete dialog_window;} {selected
+    }
   }
 } 

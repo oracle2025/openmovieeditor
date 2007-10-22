@@ -42,8 +42,11 @@ Frei0rEffect::Frei0rEffect( f0r_plugin_info_t* info, void* handle, int w, int h 
 	f0r_get_param_info = (f0r_get_param_info_f)dlsym( handle, "f0r_get_param_info" );
 	f0r_set_param_value = (f0r_set_param_value_f)dlsym( handle, "f0r_set_param_value" );
 	f0r_get_param_value = (f0r_get_param_value_f)dlsym( handle, "f0r_get_param_value" );
-
+if ( g_INTERLACING ) {
+	m_instance = f0r_construct( w, h/2 );
+} else {
 	m_instance = f0r_construct( w, h );
+}
 	//create frame
 	m_tmpFrame = new unsigned char[w * h * 4];
 	m_frame = new unsigned char[w * h * 4];
@@ -86,19 +89,38 @@ frame_struct* Frei0rEffect::getFrame( frame_struct* frame, int64_t position )
 	//TODO: Check if interlaced and if Filter needs separate fields, then
 	//perform conversion
 	m_framestruct.interlace_mode = frame->interlace_mode;
-if ( 0 ) {
+	m_framestruct.first_field = frame->first_field;
+if ( g_INTERLACING ) {
 	//if ( frame->interlace_mode == 1 ) {
-		if ( m_h > frame->h / 2 ) {
+	/*	if ( m_h > frame->h / 2 ) {
 			m_h = m_h / 2;
 			f0r_destruct( m_instance );
 			m_instance = f0r_construct( m_w, m_h );
-		}
+		}*/
 	//}
 	//This is seriously degrading performance!!
-	frame_to_fields( 1, frame->RGB, m_frame, frame->w, frame->h, frame->has_alpha_channel );
-	f0r_update( m_instance, position / (float)NLE_TIME_BASE,(uint32_t*)(m_frame+m_w*m_h*4), (uint32_t*)(m_tmpFrame+m_w*m_h*4) );
-	f0r_update( m_instance, position / (float)NLE_TIME_BASE, (uint32_t*)m_frame, (uint32_t*)m_tmpFrame );
-	fields_to_frames( 1, m_tmpFrame, m_frame, frame->w, frame->h );
+	//frame_to_fields( 1, frame->RGB, m_frame, frame->w, frame->h, frame->has_alpha_channel );
+	if ( frame->has_alpha_channel ) {
+		f0r_update( m_instance, position / (float)NLE_TIME_BASE, (uint32_t*)frame->RGB, (uint32_t*)m_frame );
+		f0r_update( m_instance, position / (float)NLE_TIME_BASE,(uint32_t*)(frame->RGB+m_w*m_h*2), (uint32_t*)(m_frame+m_w*m_h*2) );
+	} else {
+		int len = frame->w * frame->h * 3;
+		unsigned char *src, *dst, *end;
+		src = frame->RGB;
+		dst = m_tmpFrame;
+		end = frame->RGB + len;
+		while ( src < end ) {
+			dst[0] = src[0];
+			dst[1] = src[1];
+			dst[2] = src[2];
+			dst[3] = 255;
+			dst += 4;
+			src += 3;
+		}
+		f0r_update( m_instance, position / (float)NLE_TIME_BASE, (uint32_t*)m_tmpFrame, (uint32_t*)m_frame );
+		f0r_update( m_instance, position / (float)NLE_TIME_BASE, (uint32_t*)(m_tmpFrame+m_w*m_h*2), (uint32_t*)(m_frame+m_w*m_h*2) );
+	}
+	//fields_to_frames( 1, m_tmpFrame, m_frame, frame->w, frame->h );
 } else {
 //   vv Old Code without deinterlaceing and interlacing
 	if ( frame->has_alpha_channel ) {

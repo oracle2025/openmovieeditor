@@ -350,7 +350,6 @@ void VideoViewGL::drawFrameStack( frame_struct** fs )
 		} else {
 			tcache[i].dirty = true;
 		}
-#if 0
 		if ( g_INTERLACING && fs[i]->interlace_mode == INTERLACE_DEVIDED_FIELDS ) {
 			unsigned char *framebuffer;
 			if ( fs[i]->has_alpha_channel ) {
@@ -370,13 +369,12 @@ void VideoViewGL::drawFrameStack( frame_struct** fs )
 				glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h/2, GL_RGB, GL_UNSIGNED_BYTE, framebuffer );
 			}
 		} else {
-#endif
 			if ( fs[i]->has_alpha_channel ) {
 				glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGBA, GL_UNSIGNED_BYTE, fs[i]->RGB );
 			} else {
 				glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGB, GL_UNSIGNED_BYTE, fs[i]->RGB );
 			}
-//		}
+		}
 	}
 	for ( int i = count; i>=0; i-- ) {
 		glBindTexture( GL_TEXTURE_2D, video_canvas[i] );
@@ -497,11 +495,9 @@ void VideoViewGL::drawFrameStack( frame_struct** fs )
 		float ww = ( fs[i]->w - 2 * fs[i]->analog_blank ) / TEXTURE_WIDTH;
 		float xx = ( fs[i]->analog_blank ) / TEXTURE_WIDTH;
 		float hh = fs[i]->h / TEXTURE_HEIGHT;
-#if 0		
 		if ( g_INTERLACING && fs[i]->interlace_mode == INTERLACE_DEVIDED_FIELDS ) {
 			hh = fs[i]->h / TEXTURE_HEIGHT / 2;
 		}
-#endif
 		glColor4f( 1.0f, 1.0f, 1.0f, fs[i]->alpha ); //Control Transparency
 		glBegin (GL_QUADS);
 			glTexCoord2f (  xx,      0.0 );
@@ -515,7 +511,6 @@ void VideoViewGL::drawFrameStack( frame_struct** fs )
 		glEnd ();
 	}
 	drawVideoBorder();
-
 }
 
 

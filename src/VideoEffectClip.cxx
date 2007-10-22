@@ -32,6 +32,7 @@
 #include "frei0r.h"
 #include "Frei0rEffect.H"
 #include "Frei0rFactory.H"
+#include "globals.H"
 
 namespace nle
 {
@@ -74,6 +75,7 @@ VideoEffectClip::VideoEffectClip( FilterClip* filterClip )
 	m_video_scaler = 0;
 	m_frame_src = 0;
 	m_frame_dst = 0;
+	m_scale_half_frame = false;
 }
 void VideoEffectClip::setEffects( ClipData* )
 {
@@ -92,8 +94,8 @@ frame_struct* VideoEffectClip::getFrame( int64_t position )
 	}
 	f->tilt_x = 0;
 	f->tilt_y = 0;
-	f->scale_x = 1.0;
-	f->scale_y = 1.0;
+	f->scale_x = 1;
+	f->scale_y = 1;
 	f->crop_left = 0;
 	f->crop_right = 0;
 	f->crop_top = 0;
@@ -139,10 +141,13 @@ void VideoEffectClip::prepareFormat( int ww, int hh, int , int , float aspect, i
 	if ( ww == w() && hh == h() ) {
 		return;
 	}
+	m_scale_half_frame = false;
 	if ( m_video_scaler ) {
 		gavl_video_scaler_destroy( m_video_scaler );
 		m_video_scaler = 0;
 	}
+
+
 	
 	gavl_pixelformat_t colorspace = GAVL_RGBA_32;
 	m_bits = 4;
@@ -179,15 +184,22 @@ void VideoEffectClip::prepareFormat( int ww, int hh, int , int , float aspect, i
 	format_src.pixel_width = 1;
 	format_src.pixel_height = 1;
 	format_src.pixelformat = colorspace;
-	
+	VideoClip* thisvc;
+	if (  g_INTERLACING && ( thisvc = dynamic_cast<VideoClip*>(this) ) && thisvc->interlacing() == INTERLACE_DEVIDED_FIELDS ) {
+		//FIXME: currently only progressive Export, so this should be enough
+		m_scale_half_frame = true;
+		format_src.frame_height /= 2;
+		format_src.image_height /= 2;
+	}
 	if ( m_render_strategy == RENDER_CROP ) {
 		gavl_rectangle_f_t src_rect;
 		gavl_rectangle_i_t dst_rect;
 		crop_format( w(), h(), aspectRatio(), analogBlank(), ww, hh, aspect, analog_blank,
 				src_rect.x, src_rect.y, src_rect.w, src_rect.h,
 				dst_rect.x, dst_rect.y, dst_rect.w, dst_rect.h );
-		//cout << "1src_rect: " << src_rect.x <<" "<< src_rect.y <<" "<< src_rect.w <<" "<< src_rect.h << endl; 
-		//cout << "1dst_rect: " << dst_rect.x <<" "<< dst_rect.y <<" "<< dst_rect.w <<" "<< dst_rect.h << endl; 
+		if ( m_scale_half_frame ) {
+			src_rect.h  /= 2;
+		}
 		gavl_video_options_set_rectangles( options, &src_rect, &dst_rect );
 	} else if ( m_render_strategy == RENDER_FIT ) {
 		gavl_rectangle_f_t src_rect;
@@ -195,8 +207,9 @@ void VideoEffectClip::prepareFormat( int ww, int hh, int , int , float aspect, i
 		fit_format( w(), h(), aspectRatio(), analogBlank(), ww, hh, aspect, analog_blank,
 				src_rect.x, src_rect.y, src_rect.w, src_rect.h,
 				dst_rect.x, dst_rect.y, dst_rect.w, dst_rect.h );
-		//cout << "2src_rect: " << src_rect.x <<" "<< src_rect.y <<" "<< src_rect.w <<" "<< src_rect.h << endl; 
-		//cout << "2dst_rect: " << dst_rect.x <<" "<< dst_rect.y <<" "<< dst_rect.w <<" "<< dst_rect.h << endl; 
+		if ( m_scale_half_frame ) {
+			src_rect.h  /= 2;
+		}
 		gavl_video_options_set_rectangles( options, &src_rect, &dst_rect );
 	} else if ( analogBlank() != analog_blank ) {
 		gavl_rectangle_f_t src_rect;
@@ -204,11 +217,13 @@ void VideoEffectClip::prepareFormat( int ww, int hh, int , int , float aspect, i
 		stretch_format( w(), h(), aspectRatio(), analogBlank(), ww, hh, aspect, analog_blank,
 				src_rect.x, src_rect.y, src_rect.w, src_rect.h,
 				dst_rect.x, dst_rect.y, dst_rect.w, dst_rect.h );
-		//cout << "3src_rect: " << src_rect.x <<" "<< src_rect.y <<" "<< src_rect.w <<" "<< src_rect.h << endl; 
-		//cout << "3dst_rect: " << dst_rect.x <<" "<< dst_rect.y <<" "<< dst_rect.w <<" "<< dst_rect.h << endl; 
+		if ( m_scale_half_frame ) {
+			src_rect.h  /= 2;
+		}
 		gavl_video_options_set_rectangles( options, &src_rect, &dst_rect );
 	}
 	
+
 	if ( gavl_video_scaler_init( m_video_scaler, &format_src, &format_dst ) == -1 ) {
 		cerr << "Video Scaler Init failed" << endl;
 		return;
@@ -259,8 +274,15 @@ frame_struct* VideoEffectClip::getFormattedFrame( frame_struct* tmp_frame, int64
 	if ( m_video_scaler ) {
 
 		// TODO: Deinterlace the Frame here?
-
-		m_frame_src->planes[0] = f->RGB;
+		if ( m_scale_half_frame ) {
+			if ( f->first_field ) {
+				m_frame_src->planes[0] = f->RGB;
+			} else {
+				m_frame_src->planes[0] = f->RGB + (m_bits*f->w*f->h/2);
+			}
+		} else {
+			m_frame_src->planes[0] = f->RGB;
+		}
 		m_frame_dst->planes[0] = tmp_frame->RGB;
 		tmp_frame->has_alpha_channel = ( m_bits == 4 );
 		tmp_frame->alpha = 1.0;
