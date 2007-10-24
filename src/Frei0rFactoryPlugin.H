@@ -31,8 +31,6 @@ typedef void (*f0r_get_plugin_info_f)(f0r_plugin_info_t *info);
 namespace nle
 {
 
-class Frei0rEffect;
-
 class Frei0rFactoryPlugin : public FilterFactory
 {
 	public:
