@@ -32,7 +32,6 @@ namespace nle
 {
 
 class Frei0rEffect;
-class IVideoReader;
 
 class Frei0rFactoryPlugin : public FilterFactory
 {
