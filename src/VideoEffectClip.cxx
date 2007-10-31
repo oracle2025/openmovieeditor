@@ -76,7 +76,6 @@ VideoEffectClip::VideoEffectClip( FilterClip* filterClip )
 	m_video_converter = 0;
 	m_frame_src = 0;
 	m_frame_dst = 0;
-	m_scale_half_frame = false;
 }
 void VideoEffectClip::setEffects( ClipData* )
 {
@@ -144,19 +143,15 @@ void VideoEffectClip::prepareFormat( video_format* fmt )
 			return;
 		} else {
 			IVideoFile* videofile = videoclip->file();
-			if ( videofile->interlacing() == INTERLACE_PROGRESSIVE ) {
+			if ( videofile->interlacing() == fmt->interlacing ) {
 				return;
 			}
 		}
 	}
-	m_scale_half_frame = false;
 	if ( m_video_converter ) {
 		gavl_video_converter_destroy( m_video_converter );
 		m_video_converter = 0;
 	}
-
-
-	
 	gavl_pixelformat_t colorspace = GAVL_RGBA_32;
 	m_bits = 4;
 	
@@ -204,6 +199,14 @@ void VideoEffectClip::prepareFormat( video_format* fmt )
 				break;
 		}
 	}
+	switch ( fmt->interlacing ) {
+		case INTERLACE_TOP_FIELD_FIRST:
+			m_format_dst.interlace_mode = GAVL_INTERLACE_TOP_FIRST;
+			break;
+		case INTERLACE_BOTTOM_FIELD_FIRST:
+			m_format_dst.interlace_mode = GAVL_INTERLACE_BOTTOM_FIRST;
+			break;
+	}
 
 	gavl_rectangle_f_t src_rect;
 	gavl_rectangle_i_t dst_rect;
@@ -222,58 +225,9 @@ void VideoEffectClip::prepareFormat( video_format* fmt )
 				0.0
 				);
 	}
-	cout << "--" << endl;
-	cout << "Destination" << endl;
-	gavl_rectangle_i_dump(&dst_rect);
-	cout << "Source" << endl;
-	gavl_rectangle_f_dump(&src_rect);
+
+
 	gavl_video_options_set_rectangles( options, &src_rect, &dst_rect );
-
-/* Here we need to know whether the source or the target are interlaced
-*/
-
-
-#if 0
-	VideoClip* thisvc;
-	if (  g_INTERLACING && ( thisvc = dynamic_cast<VideoClip*>(this) ) && thisvc->interlacing() == INTERLACE_DEVIDED_FIELDS ) {
-		//FIXME: currently only progressive Export, so this should be enough
-		m_scale_half_frame = true;
-		format_src.frame_height /= 2;
-		format_src.image_height /= 2;
-	}
-	if ( m_render_strategy == RENDER_CROP ) {
-		gavl_rectangle_f_t src_rect;
-		gavl_rectangle_i_t dst_rect;
-		crop_format( w(), h(), aspectRatio(), analogBlank(), ww, hh, aspect, analog_blank,
-				src_rect.x, src_rect.y, src_rect.w, src_rect.h,
-				dst_rect.x, dst_rect.y, dst_rect.w, dst_rect.h );
-		if ( m_scale_half_frame ) {
-			src_rect.h  /= 2;
-		}
-		gavl_video_options_set_rectangles( options, &src_rect, &dst_rect );
-	} else if ( m_render_strategy == RENDER_FIT ) {
-		gavl_rectangle_f_t src_rect;
-		gavl_rectangle_i_t dst_rect;
-		fit_format( w(), h(), aspectRatio(), analogBlank(), ww, hh, aspect, analog_blank,
-				src_rect.x, src_rect.y, src_rect.w, src_rect.h,
-				dst_rect.x, dst_rect.y, dst_rect.w, dst_rect.h );
-		if ( m_scale_half_frame ) {
-			src_rect.h  /= 2;
-		}
-		gavl_video_options_set_rectangles( options, &src_rect, &dst_rect );
-	} else if ( analogBlank() != analog_blank ) {
-		gavl_rectangle_f_t src_rect;
-		gavl_rectangle_i_t dst_rect;
-		stretch_format( w(), h(), aspectRatio(), analogBlank(), ww, hh, aspect, analog_blank,
-				src_rect.x, src_rect.y, src_rect.w, src_rect.h,
-				dst_rect.x, dst_rect.y, dst_rect.w, dst_rect.h );
-		if ( m_scale_half_frame ) {
-			src_rect.h  /= 2;
-		}
-		gavl_video_options_set_rectangles( options, &src_rect, &dst_rect );
-	}
-#endif	
-
 	if ( gavl_video_converter_init( m_video_converter, &format_src, &m_format_dst ) == -1 ) {
 		cerr << "Video Scaler Init failed" << endl;
 		return;
@@ -322,17 +276,7 @@ frame_struct* VideoEffectClip::getFormattedFrame( frame_struct* tmp_frame, int64
 		return 0;
 	}
 	if ( m_video_converter ) {
-
-		// TODO: Deinterlace the Frame here?
-		if ( m_scale_half_frame ) {
-			if ( f->first_field ) {
-				m_frame_src->planes[0] = f->RGB;
-			} else {
-				m_frame_src->planes[0] = f->RGB + (m_bits*f->w*f->h/2);
-			}
-		} else {
-			m_frame_src->planes[0] = f->RGB;
-		}
+		m_frame_src->planes[0] = f->RGB;
 		m_frame_dst->planes[0] = tmp_frame->RGB;
 		tmp_frame->has_alpha_channel = ( m_bits == 4 );
 		tmp_frame->alpha = 1.0;

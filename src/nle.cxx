@@ -6897,6 +6897,18 @@ assert(codec[0]);
 lqt_set_video( qt, 1, fmt.w, fmt.h, fmt.framerate.frame_duration, fmt.framerate.timescale, codec[0] );
 lqt_destroy_codec_info( codec );
 
+switch ( fmt.interlacing ) {
+	case nle::INTERLACE_TOP_FIELD_FIRST:
+		lqt_set_interlace_mode( qt, 0, LQT_INTERLACE_TOP_FIRST );
+		break;
+	case nle::INTERLACE_BOTTOM_FIELD_FIRST:
+		lqt_set_interlace_mode( qt, 0, LQT_INTERLACE_BOTTOM_FIRST );
+		break;
+	case nle::INTERLACE_PROGRESSIVE:
+		lqt_set_interlace_mode( qt, 0, LQT_INTERLACE_NONE );
+		break;
+}
+
 codec = lqt_find_audio_codec_by_name( fmt.audio_codec );
 if (!codec || !codec[0]) {
 	cerr << "Audio Codec missing: " << fmt.audio_codec << endl;
@@ -7395,5 +7407,18 @@ void SmilExportDialog::show() {
 }
 
 SmilExportDialog::~SmilExportDialog() {
+  delete dialog_window;
+}
+
+DvgrabImportDialog::DvgrabImportDialog() {
+  Fl_Double_Window* w;
+  { Fl_Double_Window* o = dialog_window = new Fl_Double_Window(100, 100);
+    w = o;
+    o->user_data((void*)(this));
+    o->end();
+  }
+}
+
+DvgrabImportDialog::~DvgrabImportDialog() {
   delete dialog_window;
 }

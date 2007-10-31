@@ -513,4 +513,11 @@ public:
   void show();
   ~SmilExportDialog();
 };
+
+class DvgrabImportDialog {
+public:
+  DvgrabImportDialog();
+  Fl_Double_Window *dialog_window;
+  ~DvgrabImportDialog();
+};
 #endif

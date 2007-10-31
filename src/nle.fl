@@ -7,8 +7,7 @@ decl {\#include <tinyxml.h>} {}
 decl {\#include "EncodingPreset.H"} {public
 } 
 
-class NleUI {open
-} {
+class NleUI {} {
   Function {NleUI()} {open
   } {
     Fl_Window mainWindow {
@@ -1190,7 +1189,8 @@ Function {encoder_2_dlg()} {} {
   }
 } 
 
-class ExportDialog {} {
+class ExportDialog {open
+} {
   Function {ExportDialog()} {open
   } {
     Fl_Window dialog_window {
@@ -1545,7 +1545,7 @@ for ( ; preset; preset = preset->NextSiblingElement( "preset" ) ) {
 
 export_filename->value( nle::g_preferences->lastRenderFilename().c_str() );} {}
   }
-  Function {getFileWriter()} {return_type {nle::IVideoFileWriter*}
+  Function {getFileWriter()} {open return_type {nle::IVideoFileWriter*}
   } {
     code {quicktime_t* qt;
 if (presets_browser->value()==0) {
@@ -1574,6 +1574,18 @@ assert(codec[0]);
 lqt_set_video( qt, 1, fmt.w, fmt.h, fmt.framerate.frame_duration, fmt.framerate.timescale, codec[0] );
 lqt_destroy_codec_info( codec );
 
+switch ( fmt.interlacing ) {
+	case nle::INTERLACE_TOP_FIELD_FIRST:
+		lqt_set_interlace_mode( qt, 0, LQT_INTERLACE_TOP_FIRST );
+		break;
+	case nle::INTERLACE_BOTTOM_FIELD_FIRST:
+		lqt_set_interlace_mode( qt, 0, LQT_INTERLACE_BOTTOM_FIRST );
+		break;
+	case nle::INTERLACE_PROGRESSIVE:
+		lqt_set_interlace_mode( qt, 0, LQT_INTERLACE_NONE );
+		break;
+}
+
 codec = lqt_find_audio_codec_by_name( fmt.audio_codec );
 if (!codec || !codec[0]) {
 	cerr << "Audio Codec missing: " << fmt.audio_codec << endl;
@@ -1586,7 +1598,8 @@ lqt_set_cmodel( qt, 0, BC_RGB888 );
 
 preset->set2(qt);
 
-return new nle::VideoWriterQT( qt, fmt );} {}
+return new nle::VideoWriterQT( qt, fmt );} {selected
+    }
   }
   decl {bool go;} {public
   }
@@ -1637,8 +1650,7 @@ delete dialog_window;} {}
   }
 } 
 
-class CustomFormatDialog {open
-} {
+class CustomFormatDialog {} {
   decl {void *audio_codec;} {}
   decl {void* video_codec;} {}
   decl {nle::EncodingPreset* m_preset;} {}
@@ -1648,7 +1660,7 @@ video_codec = 0;
 m_preset = new nle::EncodingPreset();} {}
     Fl_Window dialog_window {
       label {Custom Video Format} open
-      xywh {284 414 690 385} type Double modal visible
+      xywh {747 226 690 385} type Double modal visible
     } {
       Fl_Box {} {
         xywh {350 60 330 285} box ENGRAVED_FRAME labelfont 1 align 5
@@ -1853,7 +1865,7 @@ audio_codec_menu->value(0);} {}
     code {delete dialog_window;
 delete m_preset;} {}
   }
-  Function {getEncodingPreset()} {return_type {nle::EncodingPreset*}
+  Function {getEncodingPreset()} {open return_type {nle::EncodingPreset*}
   } {
     code {if ( !go ) {
 	return 0;
@@ -1994,8 +2006,7 @@ switch ( fmt.framerate.frame_duration ) {
   }
 } 
 
-class SmilExportDialog {open
-} {
+class SmilExportDialog {} {
   Function {SmilExportDialog()} {open
   } {
     Fl_Window dialog_window {
@@ -2083,17 +2094,15 @@ track_choice->value(0);} {}
   }
 } 
 
-class DvgrabImportDialog {open
-} {
+class DvgrabImportDialog {} {
   Function {DvgrabImportDialog()} {open
   } {
     Fl_Window dialog_window {open
-      xywh {906 17 100 100} type Double visible
+      xywh {906 20 100 100} type Double visible
     } {}
   }
   Function {~DvgrabImportDialog()} {open
   } {
-    code {delete dialog_window;} {selected
-    }
+    code {delete dialog_window;} {}
   }
 } 
