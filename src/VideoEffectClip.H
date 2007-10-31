@@ -25,8 +25,9 @@
 #include "frame_struct.h"
 #include "video_format.H"
 #include "IVideoReader.H"
+#include <gavl/gavl.h>
 
-typedef struct gavl_video_scaler_s gavl_video_scaler_t;
+typedef struct gavl_video_converter_s gavl_video_converter_t;
 typedef struct gavl_video_frame_s gavl_video_frame_t;
 namespace nle
 {
@@ -83,9 +84,10 @@ class VideoEffectClip : public IVideoReader
 		ClipData* vec_getClipData();
 	private:
 //		effect_stack* m_effects;
-		gavl_video_scaler_t *m_video_scaler;
+		gavl_video_converter_t *m_video_converter;
 		gavl_video_frame_t* m_frame_src;
 		gavl_video_frame_t* m_frame_dst;
+		gavl_video_format_t m_format_dst;
 		int m_bits;
 		FilterClip* m_filterClip;
 		bool m_scale_half_frame;

@@ -33,6 +33,7 @@
 #include "Frei0rEffect.H"
 #include "Frei0rFactory.H"
 #include "globals.H"
+#include "IVideoFile.H"
 
 namespace nle
 {
@@ -72,7 +73,7 @@ VideoEffectClip::VideoEffectClip( FilterClip* filterClip )
 	//m_effects = 0;
 	m_crop = m_fit = m_stretch = false;
 	m_default = true;
-	m_video_scaler = 0;
+	m_video_converter = 0;
 	m_frame_src = 0;
 	m_frame_dst = 0;
 	m_scale_half_frame = false;
@@ -137,13 +138,21 @@ void VideoEffectClip::removeEffect( int num )
 }
 void VideoEffectClip::prepareFormat( video_format* fmt )
 {
-	if ( ww == w() && hh == h() ) {
-		return;
+	VideoClip* videoclip = dynamic_cast<VideoClip*>(this);
+	if ( fmt->w == w() && fmt->h == h() ) {
+		if ( !videoclip ) {
+			return;
+		} else {
+			IVideoFile* videofile = videoclip->file();
+			if ( videofile->interlacing() == INTERLACE_PROGRESSIVE ) {
+				return;
+			}
+		}
 	}
 	m_scale_half_frame = false;
-	if ( m_video_scaler ) {
-		gavl_video_scaler_destroy( m_video_scaler );
-		m_video_scaler = 0;
+	if ( m_video_converter ) {
+		gavl_video_converter_destroy( m_video_converter );
+		m_video_converter = 0;
 	}
 
 
@@ -162,11 +171,10 @@ void VideoEffectClip::prepareFormat( video_format* fmt )
 		}
 	}
  
-	m_video_scaler = gavl_video_scaler_create();
-	gavl_video_options_t* options = gavl_video_scaler_get_options( m_video_scaler );
+	m_video_converter = gavl_video_converter_create();
+	gavl_video_options_t* options = gavl_video_converter_get_options( m_video_converter );
 
 	gavl_video_format_t format_src;
-	gavl_video_format_t format_dst;
 
 	m_format_dst.frame_width  = fmt->w;
 	m_format_dst.frame_height = fmt->h;
@@ -184,6 +192,48 @@ void VideoEffectClip::prepareFormat( video_format* fmt )
 	format_src.pixel_width = 1;
 	format_src.pixel_height = 1;
 	format_src.pixelformat = colorspace;
+	format_src.interlace_mode = GAVL_INTERLACE_NONE;
+	if ( videoclip ) {
+		IVideoFile* videofile = videoclip->file();
+		switch ( videofile->interlacing() ) {
+			case INTERLACE_TOP_FIELD_FIRST:
+				format_src.interlace_mode = GAVL_INTERLACE_TOP_FIRST;
+				break;
+			case INTERLACE_BOTTOM_FIELD_FIRST:
+				format_src.interlace_mode = GAVL_INTERLACE_BOTTOM_FIRST;
+				break;
+		}
+	}
+
+	gavl_rectangle_f_t src_rect;
+	gavl_rectangle_i_t dst_rect;
+	gavl_video_options_set_deinterlace_mode( options, GAVL_DEINTERLACE_SCALE );
+
+	gavl_rectangle_f_set_all( &src_rect, &format_src );
+	gavl_rectangle_i_set_all( &dst_rect, &m_format_dst );
+	if ( m_render_strategy == RENDER_CROP ) {
+		gavl_rectangle_crop_to_format_scale( &src_rect, &dst_rect, &format_src, &m_format_dst );
+	} else if ( m_render_strategy == RENDER_FIT ) {
+		gavl_rectangle_fit_aspect( &dst_rect,
+				&format_src,
+				&src_rect,
+				&m_format_dst,
+				1.0,
+				0.0
+				);
+	}
+	cout << "--" << endl;
+	cout << "Destination" << endl;
+	gavl_rectangle_i_dump(&dst_rect);
+	cout << "Source" << endl;
+	gavl_rectangle_f_dump(&src_rect);
+	gavl_video_options_set_rectangles( options, &src_rect, &dst_rect );
+
+/* Here we need to know whether the source or the target are interlaced
+*/
+
+
+#if 0
 	VideoClip* thisvc;
 	if (  g_INTERLACING && ( thisvc = dynamic_cast<VideoClip*>(this) ) && thisvc->interlacing() == INTERLACE_DEVIDED_FIELDS ) {
 		//FIXME: currently only progressive Export, so this should be enough
@@ -224,7 +274,7 @@ void VideoEffectClip::prepareFormat( video_format* fmt )
 	}
 #endif	
 
-	if ( gavl_video_scaler_init( m_video_scaler, &format_src, &format_dst ) == -1 ) {
+	if ( gavl_video_converter_init( m_video_converter, &format_src, &m_format_dst ) == -1 ) {
 		cerr << "Video Scaler Init failed" << endl;
 		return;
 	}
@@ -247,9 +297,9 @@ void VideoEffectClip::prepareFormat( video_format* fmt )
 }
 void VideoEffectClip::unPrepareFormat()
 {
-	if ( m_video_scaler ) {
-		gavl_video_scaler_destroy( m_video_scaler );
-		m_video_scaler = 0;
+	if ( m_video_converter ) {
+		gavl_video_converter_destroy( m_video_converter );
+		m_video_converter = 0;
 	}
 	if ( m_frame_src ) {
 		gavl_video_frame_null( m_frame_src );
@@ -271,7 +321,7 @@ frame_struct* VideoEffectClip::getFormattedFrame( frame_struct* tmp_frame, int64
 	if ( !f ) {
 		return 0;
 	}
-	if ( m_video_scaler ) {
+	if ( m_video_converter ) {
 
 		// TODO: Deinterlace the Frame here?
 		if ( m_scale_half_frame ) {
@@ -286,7 +336,8 @@ frame_struct* VideoEffectClip::getFormattedFrame( frame_struct* tmp_frame, int64
 		m_frame_dst->planes[0] = tmp_frame->RGB;
 		tmp_frame->has_alpha_channel = ( m_bits == 4 );
 		tmp_frame->alpha = 1.0;
-		gavl_video_scaler_scale( m_video_scaler, m_frame_src, m_frame_dst );
+		gavl_video_frame_clear( m_frame_dst, &m_format_dst );
+		gavl_video_convert( m_video_converter, m_frame_src, m_frame_dst );
 		return tmp_frame;
 	} else {
 		return f;
