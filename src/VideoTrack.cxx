@@ -187,28 +187,28 @@ frame_struct** VideoTrack::getFrameStack( int64_t position )
 	}
 	return frameStack;
 }
-void VideoTrack::prepareFormat( int w, int h, int aspect_w, int aspect_h, float aspect, int analog_blank )
+void VideoTrack::prepareFormat( video_format* fmt )
 {
-	m_preparedFrame1.RGB = new unsigned char[w * h * 4];
-	m_preparedFrame2.RGB = new unsigned char[w * h * 4];
+	m_preparedFrame1.RGB = new unsigned char[fmt->w * fmt->h * 4];
+	m_preparedFrame2.RGB = new unsigned char[fmt->w * fmt->h * 4];
 	//TODO: anders initialisieren?
 	m_preparedFrame1.x = 0;
 	m_preparedFrame1.y = 0;
-	m_preparedFrame1.w = w;
-	m_preparedFrame1.h = h;
+	m_preparedFrame1.w = fmt->w;
+	m_preparedFrame1.h = fmt->h;
 	m_preparedFrame1.alpha = 1.0;
 	m_preparedFrame1.has_alpha_channel = true;
 	m_preparedFrame2.x = 0;
 	m_preparedFrame2.y = 0;
-	m_preparedFrame2.w = w;
-	m_preparedFrame2.h = h;
+	m_preparedFrame2.w = fmt->w;
+	m_preparedFrame2.h = fmt->h;
 	m_preparedFrame2.alpha = 1.0;
 	m_preparedFrame2.has_alpha_channel = true;
 
 	for ( clip_node* j = getClips(); j; j = j->next ) {
 		VideoEffectClip* vec = dynamic_cast<VideoEffectClip*>(j->clip);
 		if ( vec ) {
-			vec->prepareFormat( w, h, aspect_w, aspect_h, aspect, analog_blank );
+			vec->prepareFormat( fmt );
 		}
 	}
 

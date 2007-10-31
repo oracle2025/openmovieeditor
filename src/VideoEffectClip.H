@@ -23,6 +23,7 @@
 #include <stdint.h>
 
 #include "frame_struct.h"
+#include "video_format.H"
 #include "IVideoReader.H"
 
 typedef struct gavl_video_scaler_s gavl_video_scaler_t;
@@ -61,7 +62,7 @@ class VideoEffectClip : public IVideoReader
 		virtual int analogBlank() = 0;
 		//virtual int interlacing() = 0;
 		void unPrepareFormat();
-		void prepareFormat( int w, int h, int aspect_w, int aspect_h, float aspect, int analog_blank ); // might add fps here
+		void prepareFormat( video_format* fmt );
 		frame_struct* getFormattedFrame( frame_struct* tmp_frame, int64_t position );
 		bool crop() { return m_crop; }
 		bool fit() { return m_fit; }

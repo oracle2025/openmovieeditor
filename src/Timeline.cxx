@@ -324,14 +324,14 @@ void Timeline::getBlendedFrame( int64_t position, frame_struct* dst )
 
 	delete tmp_frame.RGB;
 }
-void Timeline::prepareFormat( int w, int h, int aspect_w, int aspect_h, float aspect, int analog_blank )
+void Timeline::prepareFormat( video_format* fmt )
 {
 	for ( track_node *p = m_allTracks; p; p = p->next ) {
 		VideoTrack* current = dynamic_cast<VideoTrack*>(p->track);
 		if ( !current ) {
 			continue;
 		}
-		current->prepareFormat( w, h, aspect_w, aspect_h, aspect, analog_blank );
+		current->prepareFormat( fmt );
 	}
 
 }

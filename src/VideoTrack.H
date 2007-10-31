@@ -24,6 +24,7 @@
 #include "frame_struct.h"
 #include "global_includes.H"
 #include "timebase.H"
+#include "video_format.H"
 
 namespace nle
 {
@@ -54,7 +55,7 @@ class VideoTrack : public TrackBase
 		float stretchFactor() { return (float)NLE_TIME_BASE; }
 		frame_struct* getFrame( int64_t position );
 		frame_struct** getFrameStack( int64_t position );
-		void prepareFormat( int w, int h, int aspect_w, int aspect_h, float aspect, int analog_blank );
+		void prepareFormat( video_format* fmt );
 		void unPrepareFormat();
 		frame_struct** getFormattedFrameStack( int64_t position );
 		void sort();

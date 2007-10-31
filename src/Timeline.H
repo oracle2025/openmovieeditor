@@ -24,6 +24,7 @@
 
 #include "timeline/TimelineBase.H"
 #include "frame_struct.h"
+#include "video_format.H"
 #include "IAudioReader.H"
 #include "IVideoReader.H"
 
@@ -44,7 +45,7 @@ class Timeline : public TimelineBase, public IAudioReader, public IVideoReader
 		frame_struct* getFrame( int64_t position );
 		void getBlendedFrame( frame_struct* dst );
 		void getBlendedFrame( int64_t position, frame_struct* dst );
-		void prepareFormat( int w, int h, int aspect_w, int aspect_h, float aspect, int analog_blank );
+		void prepareFormat( video_format* fmt );
 		void unPrepareFormat();
 		frame_struct** getFormattedFrameStack( int64_t position );
 		frame_struct** getFrameStack( int64_t position );

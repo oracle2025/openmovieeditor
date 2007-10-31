@@ -135,8 +135,7 @@ void VideoEffectClip::removeEffect( int num )
 {
 	m_filterClip->removeFilter( num );
 }
-//void VideoEffectClip::prepareFormat( int ww, int hh, int aspect_w, int aspect_h, float aspect, int analog_blank )
-void VideoEffectClip::prepareFormat( int ww, int hh, int , int , float aspect, int analog_blank )
+void VideoEffectClip::prepareFormat( video_format* fmt )
 {
 	if ( ww == w() && hh == h() ) {
 		return;
@@ -169,13 +168,14 @@ void VideoEffectClip::prepareFormat( int ww, int hh, int , int , float aspect, i
 	gavl_video_format_t format_src;
 	gavl_video_format_t format_dst;
 
-	format_dst.frame_width  = ww;
-	format_dst.frame_height = hh;
-	format_dst.image_width  = ww;
-	format_dst.image_height = hh;
-	format_dst.pixel_width = 1;
-	format_dst.pixel_height = 1;
-	format_dst.pixelformat = colorspace;
+	m_format_dst.frame_width  = fmt->w;
+	m_format_dst.frame_height = fmt->h;
+	m_format_dst.image_width  = fmt->w;
+	m_format_dst.image_height = fmt->h;
+	m_format_dst.pixel_width = 1;
+	m_format_dst.pixel_height = 1;
+	m_format_dst.pixelformat = colorspace;
+	m_format_dst.interlace_mode = GAVL_INTERLACE_NONE;
 	
 	format_src.frame_width  = w();
 	format_src.frame_height = h();
@@ -222,7 +222,7 @@ void VideoEffectClip::prepareFormat( int ww, int hh, int , int , float aspect, i
 		}
 		gavl_video_options_set_rectangles( options, &src_rect, &dst_rect );
 	}
-	
+#endif	
 
 	if ( gavl_video_scaler_init( m_video_scaler, &format_src, &format_dst ) == -1 ) {
 		cerr << "Video Scaler Init failed" << endl;
@@ -242,7 +242,7 @@ void VideoEffectClip::prepareFormat( int ww, int hh, int , int , float aspect, i
 	m_frame_src = gavl_video_frame_create( 0 );
 	m_frame_src->strides[0] = w() * m_bits;
 	m_frame_dst = gavl_video_frame_create( 0 );
-	m_frame_dst->strides[0] = ww * m_bits;
+	m_frame_dst->strides[0] = fmt->w * m_bits;
 
 }
 void VideoEffectClip::unPrepareFormat()

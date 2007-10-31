@@ -84,7 +84,7 @@ Renderer::Renderer( IVideoFileWriter* writer )
 	m_fps.audio_frames_per_chunk = m_writer->format()->framerate.audio_frames_per_chunk;
 	m_fps.video_frames_per_chunk = m_writer->format()->framerate.video_frames_per_chunk;
 		
-	p_timeline->prepareFormat( m_w, m_h, m_writer->format()->aspect_w, m_writer->format()->aspect_h, m_writer->format()->aspect, m_writer->format()->analog_blank );
+	p_timeline->prepareFormat( m_writer->format() ); 
 	
 	return;
 }
