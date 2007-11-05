@@ -19,24 +19,186 @@
 
 #include "NodeFilter.H"
 #include "NodeFilterDialog.H"
+#include "Frei0rNode.H"
+#include "NodeFilterFrei0rFactoryPlugin.H"
+#include <tinyxml.h>
+#include "sl/sl.h"
+#include "SinkNode.H"
+#include "SrcNode.H"
+#include "timebase.H"
+#include <iostream>
+using namespace std;
 
 namespace nle {
 
 NodeFilter::NodeFilter( int w, int h )
 {
+	m_w = w;
+	m_h = h;
 	m_dialog = 0;
+	m_filters = 0;
+	m_filters = (filters*)sl_push( m_filters, filters_create( 10,200, 50, 50, new SinkNode(), "Output" ) );
+	filters* C = m_filters;
+	m_sink_node = C->node;
+	m_filters = (filters*)sl_push( m_filters, filters_create( 10,100, 50, 50, new SrcNode( this ), "Input" ) );
+	C = m_filters;
+	m_src_node = C->node;
+	m_frame_cache = 0;
+	m_frame = new unsigned char[w * h * 4];
+	m_framestruct.x = 0;
+	m_framestruct.y = 0;
+	m_framestruct.w = w;
+	m_framestruct.h = h;
+	m_framestruct.RGB = m_frame;
+	m_framestruct.YUV = 0;
+	m_framestruct.rows = 0;
+	m_framestruct.alpha = 1.0;
+	m_framestruct.has_alpha_channel = true;
+	m_framestruct.cacheable = false;
+	m_framestruct.tilt_x = 0;
+	m_framestruct.tilt_y = 0;
+	m_framestruct.scale_x = 1.0;
+	m_framestruct.scale_y = 1.0;
+	m_framestruct.crop_left = 0;
+	m_framestruct.crop_right = 0;
+	m_framestruct.crop_top = 0;
+	m_framestruct.crop_bottom = 0;
+
 }
 NodeFilter::~NodeFilter()
 {
 	if ( m_dialog ) {
 		delete m_dialog;
 	}
+	filters* n;
+	while ( ( n = (filters*)sl_pop( &m_filters ) ) ) {
+		delete n->node;
+		delete n;
+	}
+
 }
-void NodeFilter::writeXML( TiXmlElement* )
+void NodeFilter::writeXML( TiXmlElement* xml_node )
 {
+	TiXmlElement* project = xml_node;
+
+	TiXmlElement* xml_filter;
+	for ( filters* filter_node = m_filters; filter_node; filter_node = filter_node->next ) {
+		xml_filter = new TiXmlElement( "filter" );
+		project->LinkEndChild( xml_filter );
+		xml_filter->SetAttribute( "x", filter_node->x );
+		xml_filter->SetAttribute( "y", filter_node->y );
+		xml_filter->SetAttribute( "w", filter_node->w );
+		xml_filter->SetAttribute( "h", filter_node->h );
+		xml_filter->SetAttribute( "name", filter_node->name.c_str() );
+		xml_filter->SetAttribute( "id", filter_node->id );
+		Frei0rNode* frei0r_node = dynamic_cast<Frei0rNode*>(filter_node->node);
+		if ( frei0r_node ) {
+			string identifier( "effect:frei0r:" );
+			identifier += filter_node->name;
+			xml_filter->SetAttribute( "identifier", identifier.c_str() );
+		}
+		xml_filter->SetAttribute( "id", filter_node->id );
+		for ( int i = 0; i < filter_node->input_count; i++ ) {
+			if ( filter_node->inputs[i] ) {
+				TiXmlElement* xml_input = new TiXmlElement( "input" );
+				xml_filter->LinkEndChild( xml_input );
+				xml_input->SetAttribute( "nr", i );
+				xml_input->SetAttribute( "input_id", filter_node->inputs[i]->id );
+			}
+		}
+		for ( int i = 0; i < filter_node->output_count; i++ ) {
+			if ( filter_node->outputs[i] ) {
+				TiXmlElement* xml_output = new TiXmlElement( "output" );
+				xml_filter->LinkEndChild( xml_output );
+				xml_output->SetAttribute( "nr", i );
+				xml_output->SetAttribute( "output_id", filter_node->outputs[i]->id );
+			}
+		}
+	}
+
 }
-void NodeFilter::readXML( TiXmlElement* )
+void NodeFilter::readXML( TiXmlElement* xml_node )
 {
+	TiXmlElement* xml_filter = TiXmlHandle( xml_node ).FirstChild( "filter" ).Element();
+	for ( ; xml_filter; xml_filter = xml_filter->NextSiblingElement( "filter" ) ) {
+		int id;
+		if ( xml_filter->Attribute( "id", &id ) ) {
+			filters* filter_node = 0;
+			for ( filter_node = m_filters; filter_node; filter_node = filter_node->next ) {
+				if ( filter_node->id == id ) {
+					int x, y, w, h;
+					if ( xml_filter->Attribute( "x", &x ) ) {
+						filter_node->x = x;
+					}
+					if ( xml_filter->Attribute( "y", &y ) ) {
+						filter_node->y = y;
+					}
+					if ( xml_filter->Attribute( "w", &w ) ) {
+						filter_node->w = w;
+					}
+					if ( xml_filter->Attribute( "h", &h ) ) {
+						filter_node->h = h;
+					}
+					break;
+				}
+			}
+			if ( !filter_node ) {
+				//Create from Frei0r
+				const char* identifier = xml_filter->Attribute( "identifier" );
+				if ( identifier && g_node_filter_frei0r_factory ) {
+					identifier += strlen("effect:frei0r:");
+					NodeFilterFrei0rFactoryPlugin* ffp = g_node_filter_frei0r_factory->get( identifier );
+						if ( ffp ) {
+							int x = 10;
+							int y = 10;
+							int w = 50;
+							int h = 50;
+							int id = -1;
+							xml_filter->Attribute( "x", &x );
+							xml_filter->Attribute( "y", &y );
+							xml_filter->Attribute( "w", &w );
+							xml_filter->Attribute( "h", &h );
+							xml_filter->Attribute( "id", &id );
+
+							m_filters = (filters*)sl_push( m_filters, filters_create( x, y, w, h, ffp->get( m_w, m_h ), ffp->name(), id ) );
+
+					}
+				}
+			}
+		}
+	}
+
+	xml_filter = TiXmlHandle( xml_node ).FirstChild( "filter" ).Element();
+	for ( ; xml_filter; xml_filter = xml_filter->NextSiblingElement( "filter" ) ) {
+		int id;
+		if ( xml_filter->Attribute( "id", &id ) ) {
+			filters* filter_node = 0;
+			for ( filter_node = m_filters; filter_node; filter_node = filter_node->next ) {
+				if ( filter_node->id == id ) {
+					TiXmlElement* xml_input =  TiXmlHandle( xml_filter ).FirstChildElement( "input" ).Element();
+					for ( ; xml_input; xml_input = xml_input->NextSiblingElement( "input" ) ) {
+						int nr, input_id;
+						if ( xml_input->Attribute( "nr", &nr ) && xml_input->Attribute( "input_id", &input_id ) ) {
+							filters* src_node = 0;
+							for ( src_node = m_filters; src_node; src_node = src_node->next ) {
+								if ( src_node->id == input_id ) {
+									int output_slot = 0;
+									while ( src_node->outputs[output_slot] && output_slot < MAX_FILTER_OUT - 1 ) {
+										output_slot++;
+									}
+									filter_node->inputs[nr] = src_node;
+									src_node->outputs[output_slot] = filter_node;
+									src_node->target_slots[output_slot] = nr;
+									break;
+								}
+							}
+						}
+					}
+					break;
+				}
+			}
+		}
+	}
 }
 const char* NodeFilter::name()
 {
@@ -44,7 +206,33 @@ const char* NodeFilter::name()
 }
 frame_struct* NodeFilter::getFrame( frame_struct* frame, int64_t position )
 {
-	return frame;
+	m_framestruct.interlace_mode = frame->interlace_mode;
+	m_framestruct.first_field = frame->first_field;
+	if ( frame->has_alpha_channel ) {
+		m_frame_cache = (uint32_t*)frame->RGB;
+		m_framestruct.RGB = (unsigned char*)m_sink_node->getFrame( 0, position / (double)NLE_TIME_BASE );
+	} else {
+		int len = frame->w * frame->h * 3;
+		unsigned char *src, *dst, *end;
+		src = frame->RGB;
+		dst = m_frame;
+		end = frame->RGB + len;
+		while ( src < end ) {
+			dst[0] = src[0];
+			dst[1] = src[1];
+			dst[2] = src[2];
+			dst[3] = 255;
+			dst += 4;
+			src += 3;
+		}
+		m_frame_cache = (uint32_t*)m_frame;
+		m_framestruct.RGB = (unsigned char*)m_sink_node->getFrame( 0, position / (double)NLE_TIME_BASE );
+	}
+	if ( m_framestruct.RGB ) {
+		return &m_framestruct;
+	} else {
+		return frame;
+	}
 }
 IEffectDialog* NodeFilter::dialog()
 {

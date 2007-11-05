@@ -3,22 +3,20 @@
 #include "NodeFilterFrei0rFactoryPlugin.H"
 #include "Frei0rNode.H"
 //#include "ImageNode.H"
-#include "SinkNode.H"
 #include <FL/fl_draw.H>
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
-#include "sl.h"
+#include "sl/sl.h"
 #include <cassert>
 #include <iostream>
 #include <stdlib.h>
-#include <tinyxml.h>
 using namespace std;
 
 const int FILTER_IO_SIZE = 16;
 const int FILTER_IO_MIDDLE = ( FILTER_IO_SIZE / 2 );
 const int FILTER_IO_SPACING = ( FILTER_IO_SIZE + 5 );
 
-static filters* filters_create( int x, int y, int w, int h, INode* node, string name = "", int id = -1 ) {
+filters* filters_create( int x, int y, int w, int h, INode* node, string name, int id ) {
 	static int id_src = 0;
 	filters* p;
 	p = new filters;
@@ -64,30 +62,38 @@ Frei0rGraphEditor::Frei0rGraphEditor( int x, int y, int w, int h, const char *la
 	  : Fl_Widget( x, y, w, h, label )
 {
 	m_factory = g_node_filter_frei0r_factory;
+	m_filter = 0;
 	m_trash = 0;
 	m_input_drag = -1;
 	m_output_drag = -1;
 	m_current = 0;
+	/*
 	m_filters = 0;
-/*	m_filters = (filters*)sl_push( m_filters, filters_create( 10,10, 50, 50, new ImageNode("/home/oracle/src/frei0r_compositor/image.png"), "Source" ) );
-	m_filters = (filters*)sl_push( m_filters, filters_create( 10,100, 50, 50, new ImageNode("/home/oracle/src/frei0r_compositor/image2.png"), "Source" ) );
-	m_filters = (filters*)sl_push( m_filters, filters_create( 100,100, 50, 50, new ImageNode("/home/oracle/src/frei0r_compositor/greenscreen.png"), "Source" ) );
-	m_filters = (filters*)sl_push( m_filters, filters_create( 100,100, 50,
-	50, new ImageNode("/home/oracle/src/frei0r_compositor/clockwork.png"),
-	"Source" ) );*/
-	m_filters = (filters*)sl_push( m_filters, filters_create( 10,200, 50, 50, new SinkNode(), "Output" ) );
+	m_filters = (filters*)sl_push( m_filters, filters_create( 10,200, 50,
+	50, new SinkNode(), "Output" ) );
 	filters* C = m_filters;
-	m_sink_node = C->node;
+	m_sink_node = C->node;*/
 }
 Frei0rGraphEditor::~Frei0rGraphEditor()
 {
+	if ( m_filter ) {
+		for ( filters* i = m_filter->m_filters; i; i = i->next ) {
+			Frei0rNode* n = dynamic_cast<Frei0rNode*>( i->node );
+			if ( n ) {
+				n->delete_widgets();
+			}
+		}
+	}
 }
 void Frei0rGraphEditor::draw()
 {
+	if ( !m_filter ) {
+		return;
+	}
 	fl_draw_box( FL_DOWN_BOX, x(), y(), w(), h(), FL_BACKGROUND_COLOR );
 	fl_push_clip( x() + 2, y() + 2,  w() - 4, h() - 4 );
 	fl_line_style( FL_SOLID, 1 );
-	for ( filters* i = m_filters; i; i = i->next ) {
+	for ( filters* i = m_filter->m_filters; i; i = i->next ) {
 		if ( m_current && i == m_current ) {
 			if ( m_output_drag >= 0 ) {
 				fl_color( FL_FOREGROUND_COLOR );
@@ -164,9 +170,12 @@ static int inside_filter_output( filters* f, int x, int y )
 }
 int Frei0rGraphEditor::handle( int event )
 {
+	if ( !m_filter ) {
+		return Fl_Widget::handle( event );
+	}
 	switch ( event ) {
 		case FL_PUSH:
-			for ( filters* i = m_filters; i; i = i->next ) {
+			for ( filters* i = m_filter->m_filters; i; i = i->next ) {
 				if ( inside_filter( i, Fl::event_x() - x(), Fl::event_y() - y() ) ) {
 					m_current = i;
 					m_x_drag_offset = Fl::event_x() - x() - i->x;
@@ -206,8 +215,8 @@ int Frei0rGraphEditor::handle( int event )
 		case FL_RELEASE:
 			if ( m_current && m_output_drag < 0 && m_input_drag < 0 ) {
 				if ( m_trash && Fl::event_x() > m_trash->x() && Fl::event_x() < m_trash->x()+m_trash->w() && Fl::event_y() > m_trash->y() && Fl::event_y() < m_trash->y()+m_trash->h() ) {
-					if ( m_current->node == m_sink_node ) {
-						m_current->x -= 100;
+					if ( m_current->node == m_filter->m_sink_node ) {
+						m_current->y -= 100;
 					} else {
 
 						for ( int j = 0; j < MAX_FILTER_OUT; j++ ) {
@@ -229,10 +238,10 @@ int Frei0rGraphEditor::handle( int event )
 							}
 						}
 
-						if ( m_current == m_filters ) {
-							m_filters = m_current->next;
+						if ( m_current == m_filter->m_filters ) {
+							m_filter->m_filters = m_current->next;
 						} else {
-							filters* filter_node = m_filters;
+							filters* filter_node = m_filter->m_filters;
 							while ( filter_node->next !=  m_current ) {
 								filter_node = filter_node->next;
 							}
@@ -252,7 +261,7 @@ int Frei0rGraphEditor::handle( int event )
 				return 1;
 			} else if ( m_current && m_output_drag >= 0 ) {
 				int target_input = -1;
-				for ( filters* i = m_filters; i; i = i->next ) {
+				for ( filters* i = m_filter->m_filters; i; i = i->next ) {
 					if ( i == m_current ) {
 						continue;
 					}
@@ -295,156 +304,27 @@ int Frei0rGraphEditor::handle( int event )
 }
 void Frei0rGraphEditor::addNode( NodeFilterFrei0rFactoryPlugin* ffp )
 {
-	window()->make_current();
 	window()->begin();
-	m_filters = (filters*)sl_push( m_filters, filters_create( 10,10, 50, 50, ffp->get( 640, 480 ), ffp->name() ) );
+	m_filter->m_filters = (filters*)sl_push( m_filter->m_filters, filters_create( 10,10, 50, 50, ffp->get( m_filter->m_w, m_filter->m_h ), ffp->name() ) );
+	Frei0rNode* n = dynamic_cast<Frei0rNode*>( m_filter->m_filters->node );
+	if ( n ) {
+			n->init_widgets();
+	}
 	window()->end();
 	redraw();
 }
-
-void Frei0rGraphEditor::writeXml()
+void Frei0rGraphEditor::setFilter( nle::NodeFilter* filter )
 {
-	string filename = getenv( "HOME" );
-	filename += "/.frei0r_compositor_layout";
-	TiXmlDocument doc( filename.c_str() );
-	TiXmlDeclaration* dec = new TiXmlDeclaration( "1.0", "", "no" );
-	doc.LinkEndChild( dec );
-
-	TiXmlElement* project = new TiXmlElement( "frei0r_compositor_project" );
-	doc.LinkEndChild( project );
-
-	TiXmlElement* xml_filter;
-	for ( filters* filter_node = m_filters; filter_node; filter_node = filter_node->next ) {
-		xml_filter = new TiXmlElement( "filter" );
-		project->LinkEndChild( xml_filter );
-		xml_filter->SetAttribute( "x", filter_node->x );
-		xml_filter->SetAttribute( "y", filter_node->y );
-		xml_filter->SetAttribute( "w", filter_node->w );
-		xml_filter->SetAttribute( "h", filter_node->h );
-		xml_filter->SetAttribute( "name", filter_node->name.c_str() );
-		xml_filter->SetAttribute( "id", filter_node->id );
-		Frei0rNode* frei0r_node = dynamic_cast<Frei0rNode*>(filter_node->node);
-		if ( frei0r_node ) {
-			string identifier( "effect:frei0r:" );
-			identifier += filter_node->name;
-			xml_filter->SetAttribute( "identifier", identifier.c_str() );
-		}
-		xml_filter->SetAttribute( "id", filter_node->id );
-		for ( int i = 0; i < filter_node->input_count; i++ ) {
-			if ( filter_node->inputs[i] ) {
-				TiXmlElement* xml_input = new TiXmlElement( "input" );
-				xml_filter->LinkEndChild( xml_input );
-				xml_input->SetAttribute( "nr", i );
-				xml_input->SetAttribute( "input_id", filter_node->inputs[i]->id );
-			}
-		}
-		for ( int i = 0; i < filter_node->output_count; i++ ) {
-			if ( filter_node->outputs[i] ) {
-				TiXmlElement* xml_output = new TiXmlElement( "output" );
-				xml_filter->LinkEndChild( xml_output );
-				xml_output->SetAttribute( "nr", i );
-				xml_output->SetAttribute( "output_id", filter_node->outputs[i]->id );
-			}
+	m_filter = filter;
+	assert(m_filter);
+	for ( filters* i = m_filter->m_filters; i; i = i->next ) {
+		Frei0rNode* n = dynamic_cast<Frei0rNode*>( i->node );
+		if ( n ) {
+			window()->begin();
+			n->init_widgets();
+			window()->end();
+			redraw();
 		}
 	}
-
-	doc.SaveFile();
-
-}
-void Frei0rGraphEditor::readXml()
-{
-	string filename = getenv( "HOME" );
-	filename += "/.frei0r_compositor_layout";
-	TiXmlDocument doc( filename.c_str() );
-	if ( !doc.LoadFile() ) {
-		return;
-	}
-	TiXmlHandle docH( &doc );
-
-	TiXmlElement* xml_filter = docH.FirstChild( "frei0r_compositor_project" ).FirstChild( "filter" ).Element();
-	for ( ; xml_filter; xml_filter = xml_filter->NextSiblingElement( "filter" ) ) {
-		int id;
-		if ( xml_filter->Attribute( "id", &id ) ) {
-			filters* filter_node = 0;
-			for ( filter_node = m_filters; filter_node; filter_node = filter_node->next ) {
-				if ( filter_node->id == id ) {
-					int x, y, w, h;
-					if ( xml_filter->Attribute( "x", &x ) ) {
-						filter_node->x = x;
-					}
-					if ( xml_filter->Attribute( "y", &y ) ) {
-						filter_node->y = y;
-					}
-					if ( xml_filter->Attribute( "w", &w ) ) {
-						filter_node->w = w;
-					}
-					if ( xml_filter->Attribute( "h", &h ) ) {
-						filter_node->h = h;
-					}
-					break;
-				}
-			}
-			if ( !filter_node ) {
-				//Create from Frei0r
-				const char* identifier = xml_filter->Attribute( "identifier" );
-				if ( identifier && m_factory ) {
-					identifier += strlen("effect:frei0r:");
-					NodeFilterFrei0rFactoryPlugin* ffp = m_factory->get( identifier );
-						if ( ffp ) {
-							int x = 10;
-							int y = 10;
-							int w = 50;
-							int h = 50;
-							int id = -1;
-							xml_filter->Attribute( "x", &x );
-							xml_filter->Attribute( "y", &y );
-							xml_filter->Attribute( "w", &w );
-							xml_filter->Attribute( "h", &h );
-							xml_filter->Attribute( "id", &id );
-
-							window()->make_current();
-							window()->begin();
-							m_filters = (filters*)sl_push( m_filters, filters_create( x, y, w, h, ffp->get( 640, 480 ), ffp->name(), id ) );
-							window()->end();
-							redraw();
-
-					}
-				}
-			}
-		}
-	}
-
-	xml_filter = docH.FirstChild( "frei0r_compositor_project" ).FirstChild( "filter" ).Element();
-	for ( ; xml_filter; xml_filter = xml_filter->NextSiblingElement( "filter" ) ) {
-		int id;
-		if ( xml_filter->Attribute( "id", &id ) ) {
-			filters* filter_node = 0;
-			for ( filter_node = m_filters; filter_node; filter_node = filter_node->next ) {
-				if ( filter_node->id == id ) {
-					TiXmlElement* xml_input =  TiXmlHandle( xml_filter ).FirstChildElement( "input" ).Element();
-					for ( ; xml_input; xml_input = xml_input->NextSiblingElement( "input" ) ) {
-						int nr, input_id;
-						if ( xml_input->Attribute( "nr", &nr ) && xml_input->Attribute( "input_id", &input_id ) ) {
-							filters* src_node = 0;
-							for ( src_node = m_filters; src_node; src_node = src_node->next ) {
-								if ( src_node->id == input_id ) {
-									int output_slot = 0;
-									while ( src_node->outputs[output_slot] && output_slot < MAX_FILTER_OUT - 1 ) {
-										output_slot++;
-									}
-									filter_node->inputs[nr] = src_node;
-									src_node->outputs[output_slot] = filter_node;
-									src_node->target_slots[output_slot] = nr;
-									break;
-								}
-							}
-						}
-					}
-					break;
-				}
-			}
-		}
-	}
-
 }
 

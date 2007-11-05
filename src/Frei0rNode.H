@@ -26,6 +26,8 @@ class Frei0rNode : public INode
 		int getOutputCount();
 		uint32_t* getFrame( int output, double position );
 		void init();
+		void init_widgets();
+		void delete_widgets();
 	private:
 		f0r_instance_t m_instance;
 		f0r_construct_f f0r_construct;

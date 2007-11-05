@@ -10,6 +10,9 @@ typedef struct _effect_list_node {
 	NodeFilterFrei0rFactoryPlugin* effect;
 } effect_node;
 
+class NodeFilterFrei0rFactory;
+extern NodeFilterFrei0rFactory* g_node_filter_frei0r_factory;
+
 class NodeFilterFrei0rFactory
 {
 	public:

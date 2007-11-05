@@ -21,6 +21,31 @@
 #define _NODE_FILTER_H_
 
 #include "IVideoEffect.H"
+#include <string>
+#include <stdint.h>
+
+const int MAX_FILTER_OUT = 20;
+const int MAX_FILTER_IN = 20;
+
+class INode;
+class Fl_Widget;
+
+typedef struct _filters {
+	struct _filters* next;
+	int id;
+	int x;
+	int y;
+	int w;
+	int h;
+	int input_count;
+	int output_count;
+	struct _filters* inputs[MAX_FILTER_IN];
+	struct _filters* outputs[MAX_FILTER_OUT];
+	int target_slots[MAX_FILTER_OUT];
+	std::string name;
+	INode* node;
+	Fl_Widget* widgets[20];
+} filters;
 
 namespace nle
 {
@@ -34,13 +59,20 @@ class NodeFilter : public IVideoEffect
 		void setFilterData( FilterData* ) {}
 		void writeXML( TiXmlElement* );
 		void readXML( TiXmlElement* );
-		const char* identifier() { return "effect:builtin:ColorCurves"; }
+		const char* identifier() { return "effect:builtin:NodeFilter"; }
 		const char* name();
 		frame_struct* getFrame( frame_struct* frame, int64_t position = -1 );
 		int numParams() { return 1; }
 		IEffectDialog* dialog();
 		IEffectDialog* m_dialog;
-	private:
+		filters* m_filters;
+		INode* m_sink_node;
+		INode* m_src_node;
+		uint32_t* m_frame_cache;
+		int m_w;
+		int m_h;
+		frame_struct m_framestruct;
+		unsigned char *m_frame;
 };
 	
 } /* namespace nle */

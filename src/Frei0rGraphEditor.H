@@ -3,31 +3,14 @@
 
 #include <FL/Fl.H>
 #include <FL/Fl_Widget.H>
+#include "NodeFilter.H"
 #include <string>
-const int MAX_FILTER_OUT = 20;
-const int MAX_FILTER_IN = 20;
 
-class INode;
 class NodeFilterFrei0rFactoryPlugin;
 class NodeFilterFrei0rFactory;
-class Fl_Widget;
+class INode;
 
-typedef struct _filters {
-	struct _filters* next;
-	int id;
-	int x;
-	int y;
-	int w;
-	int h;
-	int input_count;
-	int output_count;
-	struct _filters* inputs[MAX_FILTER_IN];
-	struct _filters* outputs[MAX_FILTER_OUT];
-	int target_slots[MAX_FILTER_OUT];
-	std::string name;
-	INode* node;
-	Fl_Widget* widgets[20];
-} filters;
+filters* filters_create( int x, int y, int w, int h, INode* node, std::string name = "", int id = -1 );
 
 class Frei0rGraphEditor : public Fl_Widget
 {
@@ -36,13 +19,13 @@ class Frei0rGraphEditor : public Fl_Widget
 		~Frei0rGraphEditor();
 		void draw();
 		int handle( int event );
-		INode* getSink() { return m_sink_node; }
+	//	INode* getSink() { return m_sink_node; }
 		void addNode( NodeFilterFrei0rFactoryPlugin* ffp );
-		void writeXml();
-		void readXml();
 		Fl_Widget* m_trash;
+		void setFilter( nle::NodeFilter* filter );
 	private:
-		filters* m_filters;
+		nle::NodeFilter* m_filter;
+//		filters* m_filters;
 		filters* m_current;
 		int m_x_drag_offset;
 		int m_y_drag_offset;
@@ -50,7 +33,7 @@ class Frei0rGraphEditor : public Fl_Widget
 		int m_output_drag;
 		int m_connection_x;
 		int m_connection_y;
-		INode* m_sink_node;
+	//	INode* m_sink_node;
 		NodeFilterFrei0rFactory* m_factory;
 
 };

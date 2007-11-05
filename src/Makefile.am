@@ -251,6 +251,8 @@ openmovieeditor_SOURCES = nle.cxx\
 	NodeFilterFrei0rFactoryPlugin.cxx\
 	SinkNode.H\
 	SinkNode.cxx\
+	SrcNode.H\
+	SrcNode.cxx\
 	Frei0rNode.H\
 	Frei0rNode.cxx\
 	INode.H\

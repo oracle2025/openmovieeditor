@@ -11,14 +11,13 @@ decl {\#include "IEffectDialog.H"} {public
 decl {\#include "NodeFilterFrei0rFactory.H"} {public
 } 
 
-decl {\#include "NodeFilterFrei0rFactoryPlugin.H"} {selected
-} 
+decl {\#include "NodeFilterFrei0rFactoryPlugin.H"} {} 
 
 class NodeFilterDialog {open : {public nle::IEffectDialog}
 } {
   Function {NodeFilterDialog( nle::NodeFilter* filter )} {open
   } {
-    code {m_factory = new NodeFilterFrei0rFactory();} {}
+    code {m_factory = g_node_filter_frei0r_factory;} {}
     Fl_Window m_dialog {
       label {Node Editor} open
       xywh {1201 671 650 495} type Double resizable visible
@@ -66,7 +65,9 @@ if ( ffp ) {
 for ( effect_node* p = m_factory->m_effects; p; p = p->next ) {
 	plugin_browser->add( p->effect->name(), (void*)p->effect );
 }
-graph_editor->m_trash = trash_can;} {}
+graph_editor->m_trash = trash_can;
+graph_editor->setFilter( m_filter );} {selected
+    }
   }
   Function {~NodeFilterDialog()} {open
   } {

@@ -22,7 +22,7 @@ typedef struct _dir_list_node {
 	std::string name;
 } dir_node;
 
-NodeFilterFrei0rFactory* g_node_filter_frei0r_factory;
+NodeFilterFrei0rFactory* g_node_filter_frei0r_factory = 0;
 
 NodeFilterFrei0rFactory::NodeFilterFrei0rFactory()
 {

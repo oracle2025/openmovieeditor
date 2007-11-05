@@ -51,7 +51,7 @@ static Fl_Pixmap image_trash(idata_trash);
 
 NodeFilterDialog::NodeFilterDialog( nle::NodeFilter* filter ) {
   Fl_Double_Window* w;
-  m_factory = new NodeFilterFrei0rFactory();
+  m_factory = g_node_filter_frei0r_factory;
   { Fl_Double_Window* o = m_dialog = new Fl_Double_Window(650, 495, "Node Editor");
     w = o;
     o->user_data((void*)(this));
@@ -101,6 +101,7 @@ for ( effect_node* p = m_factory->m_effects; p; p = p->next ) {
 	plugin_browser->add( p->effect->name(), (void*)p->effect );
 }
 graph_editor->m_trash = trash_can;
+graph_editor->setFilter( m_filter );
 }
 
 NodeFilterDialog::~NodeFilterDialog() {

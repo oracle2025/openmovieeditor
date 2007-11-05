@@ -56,6 +56,9 @@ extern "C" {
 #include "AudioVolumeFilterFactory.H"
 #include "NodeFilterFactory.H"
 #include "MainFilterFactory.H"
+
+#include "NodeFilterFrei0rFactory.H"
+
 #include <stdlib.h>
 #include <stdio.h>
 namespace nle 
@@ -160,6 +163,7 @@ int main( int argc, char** argv )
 	nui.m_effectMenu->addEffect( &nodeFilterFactory );
 	fFactory.add( "effect:builtin:NodeFilter", &nodeFilterFactory );
 
+	NodeFilterFrei0rFactory nodeFilterFrei0rFactory;
 /*
 	nui.m_effectMenu->addEffect( &SCTFilterFactory );
 	fFactory.add( SCTFilterFactory.identifier(), &SCTFilterFactory );

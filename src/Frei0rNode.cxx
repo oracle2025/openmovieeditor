@@ -21,9 +21,7 @@ Frei0rNode::~Frei0rNode()
 	if ( f0r_destruct ) {
 		f0r_destruct( m_instance );
 	}
-	for ( int i = 0; node->widgets[i]; i++ ) {
-		delete node->widgets[i];
-	}
+	assert( !node->widgets[0] );
 }
 void Frei0rNode::setInput( int input, INode* node )
 {
@@ -46,7 +44,7 @@ int Frei0rNode::getOutputCount()
 {
 	return 1;
 }
-void Frei0rNode::init()
+void Frei0rNode::init_widgets()
 {
 	f0r_param_info param_info;
 	int k = 0;
@@ -61,6 +59,16 @@ void Frei0rNode::init()
 		}
 	}
 	node->widgets[k] = 0;
+}
+void Frei0rNode::delete_widgets()
+{
+	for ( int i = 0; node->widgets[i]; i++ ) {
+		delete node->widgets[i];
+		node->widgets[i] = 0;
+	}
+}
+void Frei0rNode::init()
+{
 }
 
 uint32_t* Frei0rNode::getFrame( int output, double position )
