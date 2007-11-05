@@ -179,6 +179,11 @@ void VideoEffectClip::prepareFormat( video_format* fmt )
 	m_format_dst.pixel_height = 1;
 	m_format_dst.pixelformat = colorspace;
 	m_format_dst.interlace_mode = GAVL_INTERLACE_NONE;
+
+	if ( m_format_dst.frame_width == 720 && m_format_dst.frame_height == 576 ) {
+		m_format_dst.pixel_width = 197;
+		m_format_dst.pixel_height = 180;
+	}
 	
 	format_src.frame_width  = w();
 	format_src.frame_height = h();
@@ -188,6 +193,11 @@ void VideoEffectClip::prepareFormat( video_format* fmt )
 	format_src.pixel_height = 1;
 	format_src.pixelformat = colorspace;
 	format_src.interlace_mode = GAVL_INTERLACE_NONE;
+
+	if ( format_src.frame_width == 720 && format_src.frame_height == 576 ) {
+		format_src.pixel_width = 197;
+		format_src.pixel_height = 180;
+	}
 	if ( videoclip ) {
 		IVideoFile* videofile = videoclip->file();
 		switch ( videofile->interlacing() ) {
@@ -215,7 +225,11 @@ void VideoEffectClip::prepareFormat( video_format* fmt )
 	gavl_rectangle_f_set_all( &src_rect, &format_src );
 	gavl_rectangle_i_set_all( &dst_rect, &m_format_dst );
 	if ( m_render_strategy == RENDER_CROP ) {
-		gavl_rectangle_crop_to_format_scale( &src_rect, &dst_rect, &format_src, &m_format_dst );
+		rectangle_crop_aspect( &dst_rect,
+				&format_src,
+				&src_rect,
+				&m_format_dst
+				);
 	} else if ( m_render_strategy == RENDER_FIT ) {
 		gavl_rectangle_fit_aspect( &dst_rect,
 				&format_src,

@@ -236,7 +236,26 @@ openmovieeditor_SOURCES = nle.cxx\
 	EncodingPreset.H\
 	EncodingPreset.cxx\
 	InkscapeClip.cxx\
-	InkscapeClip.H
+	InkscapeClip.H\
+	NodeFilterFactory.H\
+	NodeFilterFactory.cxx\
+	NodeFilter.H\
+	NodeFilter.cxx\
+	NodeFilterDialog.H\
+	NodeFilterDialog.cxx\
+	Frei0rGraphEditor.cxx\
+	Frei0rGraphEditor.H\
+	NodeFilterFrei0rFactory.H\
+	NodeFilterFrei0rFactory.cxx\
+	NodeFilterFrei0rFactoryPlugin.H\
+	NodeFilterFrei0rFactoryPlugin.cxx\
+	SinkNode.H\
+	SinkNode.cxx\
+	Frei0rNode.H\
+	Frei0rNode.cxx\
+	INode.H\
+	Frei0rDoubleSlider.H\
+	Frei0rDoubleSlider.cxx
 	
 
 

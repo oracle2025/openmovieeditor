@@ -54,6 +54,7 @@ extern "C" {
 #include "ColorCurveFactory.H"
 #include "ScaleCropTiltFilterFactory.H"
 #include "AudioVolumeFilterFactory.H"
+#include "NodeFilterFactory.H"
 #include "MainFilterFactory.H"
 #include <stdlib.h>
 #include <stdio.h>
@@ -154,6 +155,10 @@ int main( int argc, char** argv )
 	nle::ColorCurveFactory colorCurveFactory;
 	nui.m_effectMenu->addEffect( &colorCurveFactory );
 	fFactory.add( "effect:builtin:ColorCurves", &colorCurveFactory );
+
+	nle::NodeFilterFactory nodeFilterFactory;
+	nui.m_effectMenu->addEffect( &nodeFilterFactory );
+	fFactory.add( "effect:builtin:NodeFilter", &nodeFilterFactory );
 
 /*
 	nui.m_effectMenu->addEffect( &SCTFilterFactory );

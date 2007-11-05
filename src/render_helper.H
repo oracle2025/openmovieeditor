@@ -21,9 +21,15 @@
 #define _RENDER_HELPER_H_
 
 #include "frame_struct.h"
+#include <gavl/gavl.h>
 
 namespace nle
 {
+
+void rectangle_crop_aspect(const gavl_rectangle_i_t * dst_rect,
+                               const gavl_video_format_t * src_format,
+                               gavl_rectangle_f_t * src_rect,
+                               const gavl_video_format_t * dst_format);
 
 void crop_format( int src_w, int src_h, float src_aspect, int src_blank,
 		int dst_w, int dst_h, float dst_aspect, int dst_blank,

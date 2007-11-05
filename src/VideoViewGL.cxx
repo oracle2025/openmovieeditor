@@ -368,7 +368,9 @@ void VideoViewGL::drawFrameStack( frame_struct** fs )
 
 				glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h/2, GL_RGB, GL_UNSIGNED_BYTE, framebuffer );
 			}
-		} else {
+		} /*else if ( fs[i]->interlace_mode ==
+		INTERLACE_BOTTOM_FIELD_FIRST || ) {
+		}*/ else {
 			if ( fs[i]->has_alpha_channel ) {
 				glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->w, fs[i]->h, GL_RGBA, GL_UNSIGNED_BYTE, fs[i]->RGB );
 			} else {

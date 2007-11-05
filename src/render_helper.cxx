@@ -18,6 +18,7 @@
  */
 
 #include <gavl/gavl.h>
+#include <math.h>
 
 #include "global_includes.H"
 #include "render_helper.H"
@@ -455,6 +456,39 @@ void fields_to_frames( int interlace_order /* 1=top ff, 2=bottom ff */, unsigned
 	}
 
 }
+void rectangle_crop_aspect(const gavl_rectangle_i_t * dst_rect,
+                               const gavl_video_format_t * src_format,
+			       gavl_rectangle_f_t * r,
+			       const gavl_video_format_t * dst_format)
+{
+	float dst_display_aspect;
+	float src_pixel_aspect;
+	float src_display_aspect;
+
+	src_pixel_aspect =
+		(float)(src_format->pixel_width) /
+		(float)(src_format->pixel_height);
+
+	src_display_aspect =  
+		src_pixel_aspect * 
+		(float)(src_format->image_width) /
+		(float)(src_format->image_height);
+
+	dst_display_aspect =
+		dst_rect->w * (float)(dst_format->pixel_width) /
+		(dst_rect->h * (float)(dst_format->pixel_height));
+
+	if(dst_display_aspect > src_display_aspect) { /* Crop top and bottom */
+		r->w = (float)src_format->image_width;
+		r->h = (float)src_format->image_width * src_pixel_aspect / dst_display_aspect;
+	} else {  /* Crop left and right */
+		r->w = (float)src_format->image_height * dst_display_aspect / src_pixel_aspect;
+		r->h = (float)src_format->image_height;
+	}
+	r->x = (src_format->image_width - r->w)/2;
+	r->y = (src_format->image_height - r->h)/2;
+}
+
 
 } /* namespace nle */
 
