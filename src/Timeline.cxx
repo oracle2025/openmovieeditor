@@ -1023,23 +1023,6 @@ int Timeline::write_smil( std::string filename, int track )
 	doc.SaveFile();
 	
 	return 1;
-
-
-
-/*
-<?xml version="1.0"?>
-<smil xmlns="http://www.w3.org/2001/SMIL20/Language">
-  <body>
-    <seq title="">
-      <video src="var/video/test-dv2-001.avi" clipBegin="00:00:01.840" clipEnd="00:00:09.160"/>
-    </seq>
-    <seq>
-      <video src="var/video/test-dv1-001.avi" clipBegin="00:00:00.000" clipEnd="00:00:14.920"/>
-    </seq>
-  </body>
-</smil>
-
-*/
 }
 
 
