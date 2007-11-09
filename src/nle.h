@@ -58,6 +58,8 @@ private:
   static void cb_Render(Fl_Menu_*, void*);
   void cb_Export_i(Fl_Menu_*, void*);
   static void cb_Export(Fl_Menu_*, void*);
+  void cb_Export1_i(Fl_Menu_*, void*);
+  static void cb_Export1(Fl_Menu_*, void*);
   void cb_Quit_i(Fl_Menu_*, void*);
   static void cb_Quit(Fl_Menu_*, void*);
 public:
@@ -505,8 +507,8 @@ private:
 public:
   Fl_Choice *track_choice;
 private:
-  void cb_Export1_i(Fl_Return_Button*, void*);
-  static void cb_Export1(Fl_Return_Button*, void*);
+  void cb_Export2_i(Fl_Return_Button*, void*);
+  static void cb_Export2(Fl_Return_Button*, void*);
   void cb_Cancel3_i(Fl_Button*, void*);
   static void cb_Cancel3(Fl_Button*, void*);
 public:
@@ -520,5 +522,26 @@ public:
   DvgrabImportDialog();
   Fl_Double_Window *dialog_window;
   ~DvgrabImportDialog();
+};
+
+class SrtExportDialog {
+public:
+  SrtExportDialog();
+  Fl_Double_Window *dialog_window;
+  Fl_File_Input *export_filename;
+private:
+  void cb_File3_i(Fl_Button*, void*);
+  static void cb_File3(Fl_Button*, void*);
+public:
+  Fl_Choice *track_choice;
+private:
+  void cb_Export3_i(Fl_Return_Button*, void*);
+  static void cb_Export3(Fl_Return_Button*, void*);
+  void cb_Cancel4_i(Fl_Button*, void*);
+  static void cb_Cancel4(Fl_Button*, void*);
+public:
+  int shown();
+  void show();
+  ~SrtExportDialog();
 };
 #endif

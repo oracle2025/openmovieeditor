@@ -65,6 +65,7 @@ class Timeline : public TimelineBase, public IAudioReader, public IVideoReader
 		int write( std::string filename, std::string name );
 		int read( std::string filename );
 		int write_smil( std::string filename, int track );
+		int write_srt( std::string filename, int track );
 		bool render_mode() { return m_render_mode; }
 		void render_mode( bool b ) { m_render_mode = b; }
 	private:

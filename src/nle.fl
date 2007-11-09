@@ -7,7 +7,8 @@ decl {\#include <tinyxml.h>} {}
 decl {\#include "EncodingPreset.H"} {public
 } 
 
-class NleUI {} {
+class NleUI {open
+} {
   Function {NleUI()} {open
   } {
     Fl_Window mainWindow {
@@ -88,6 +89,18 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
             code0 {\#include "ProgressDialog/ProgressDialog.h"}
             code1 {\#include "Renderer.H"}
             code3 {\#include "Prefs.H"}
+          }
+          MenuItem {} {
+            label {Export SRT/Subtitles}
+            callback {Fl_Group::current( mainWindow );
+
+
+SrtExportDialog dlg;
+
+dlg.show();
+while (dlg.shown())
+  Fl::wait();} selected
+            xywh {0 0 100 20}
           }
           MenuItem {} {
             label {Export SMIL/Kino...}
@@ -1189,8 +1202,7 @@ Function {encoder_2_dlg()} {} {
   }
 } 
 
-class ExportDialog {open
-} {
+class ExportDialog {} {
   Function {ExportDialog()} {open
   } {
     Fl_Window dialog_window {
@@ -1649,8 +1661,7 @@ delete dialog_window;} {}
   }
 } 
 
-class CustomFormatDialog {open
-} {
+class CustomFormatDialog {} {
   decl {void *audio_codec;} {}
   decl {void* video_codec;} {}
   decl {nle::EncodingPreset* m_preset;} {}
@@ -1835,7 +1846,7 @@ o->window()->hide();}
         xywh {10 350 330 25}
       }
       Fl_Input_Choice pixel_aspect_ratio {
-        label {Pixel Aspect Ratio} open selected
+        label {Pixel Aspect Ratio} open
         xywh {495 220 175 25}
       } {
         MenuItem {} {
@@ -2129,6 +2140,95 @@ class DvgrabImportDialog {} {
     } {}
   }
   Function {~DvgrabImportDialog()} {open
+  } {
+    code {delete dialog_window;} {}
+  }
+} 
+
+class SrtExportDialog {open
+} {
+  Function {SrtExportDialog()} {open
+  } {
+    Fl_Window dialog_window {
+      label {SRT Export} open
+      xywh {655 492 555 215} type Double
+      code0 {\#include "Timeline.H"} modal visible
+    } {
+      Fl_Box {} {
+        label {SRT Subtitle Export}
+        xywh {0 0 555 45} labelfont 1 labelsize 16
+      }
+      Fl_File_Input export_filename {
+        label Filename
+        xywh {175 55 205 35}
+      }
+      Fl_Button {} {
+        label {File...}
+        callback {export_filename->value( fl_file_chooser( "Set Export Filename", 0, 0 ) );}
+        xywh {385 65 75 25}
+        code0 {\#include <FL/Fl_File_Chooser.H>}
+      }
+      Fl_Choice track_choice {
+        label {Video Track} open
+        xywh {175 100 205 25} down_box BORDER_BOX
+      } {}
+      Fl_Return_Button {} {
+        label Export
+        callback {if ( strcmp( "", export_filename->value() ) == 0 ) {
+	fl_alert( "Please select a filename." );
+	return;
+}
+if ( track_choice->value() < 0 ) {
+	fl_alert( "Please select a Video Track." );
+	return;
+}
+struct stat statbuf;
+int r = stat( export_filename->value(), &statbuf );
+if ( r == 0 ) {
+	r = fl_choice( "File exists, replace?\\nWill be overwritten.", "&Cancel", "&Replace", 0 );
+	if ( r == 0 ) {
+		return;
+	}
+}
+nle::g_timeline->write_srt( export_filename->value(), track_choice->value() );
+o->window()->hide();}
+        xywh {285 175 245 25} hotspot
+        code0 {\#include <sys/types.h>}
+        code1 {\#include <sys/stat.h>}
+        code2 {\#include <unistd.h>}
+      }
+      Fl_Button {} {
+        label Cancel
+        callback {o->window()->hide();}
+        xywh {25 175 245 25}
+      }
+      Fl_Box {} {
+        label {Hint: Select a Video Track with Title Clips}
+        xywh {25 135 505 25} box BORDER_BOX color 175 labelfont 1 labelcolor 35
+      }
+    }
+    code {nle::track_node* p;
+p = nle::g_timeline->getTracks();
+int i = 1;
+char buffer[256];
+for ( ; p; p = p->next ) {
+	if ( p->track->type() == nle::TRACK_TYPE_VIDEO ) {
+		snprintf(buffer, 255, "%d: %s", i, p->track->name().c_str() );
+		track_choice->add( buffer );
+	}
+	i++;
+}
+track_choice->value(0);} {}
+  }
+  Function {shown()} {open return_type int
+  } {
+    code {return dialog_window->shown();} {}
+  }
+  Function {show()} {open
+  } {
+    code {dialog_window->show();} {}
+  }
+  Function {~SrtExportDialog()} {open
   } {
     code {delete dialog_window;} {}
   }

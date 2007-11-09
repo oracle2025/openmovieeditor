@@ -20,6 +20,7 @@
 #include <cmath>
 #include <cassert>
 #include <tinyxml.h>
+#include <fstream>
 
 #include "Timeline.H"
 #include "VideoTrack.H"
@@ -1022,6 +1023,40 @@ int Timeline::write_smil( std::string filename, int track )
 	}
 	doc.SaveFile();
 	
+	return 1;
+}
+
+int Timeline::write_srt( std::string filename, int track )
+{
+	sort();
+
+	std::ofstream srt_file;
+	srt_file.open( filename.c_str() );
+
+	track_node* node = this->getTracks();
+	int i = 0;
+	for ( ; i < track; node = node->next ) {
+		i++;
+	}
+	clip_node* cn = node->track->getClips();
+	TitleClip* title_clip;
+	i = 1;
+	while ( cn ) {
+		title_clip = dynamic_cast<TitleClip*>(cn->clip);
+		if ( title_clip ) {
+			int64_t textBegin = title_clip->A();
+			int64_t textEnd = title_clip->B();
+			string text = title_clip->text();
+			srt_file << i << std::endl;
+			srt_file << timestamp_to_smil_string( textBegin );
+			srt_file << " --> ";
+			srt_file << timestamp_to_smil_string( textBegin ) << std::endl;
+			srt_file << text << std::endl << std::endl;
+		}
+		cn = cn->next;
+		i++;
+	}
+	srt_file.close();
 	return 1;
 }
 
