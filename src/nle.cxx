@@ -7062,7 +7062,7 @@ Fl_Menu_Item CustomFormatDialog::menu_pixel_aspect_ratio[] = {
  {"1.21557 (NTSC 16:9)", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"1.094 (PAL)", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"1.4587 (PAL 16:9)", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"1.333 (HDV)", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"1.333 (HDV 1440x1080)", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0}
 };
 

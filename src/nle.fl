@@ -1804,7 +1804,7 @@ m_preset->setAudioCodec( (lqt_codec_info_t*)audio_codec );} open
         xywh {495 250 175 25} labelcolor 1 deactivate
       }
       Fl_Spinner black_pixel_h {
-        label {Black Pixels @<->} selected
+        label {Black Pixels @<->}
         xywh {495 280 175 25} labelcolor 1 deactivate
       }
       Fl_Spinner analog_blank {
@@ -1835,7 +1835,7 @@ o->window()->hide();}
         xywh {10 350 330 25}
       }
       Fl_Input_Choice pixel_aspect_ratio {
-        label {Pixel Aspect Ratio} open
+        label {Pixel Aspect Ratio} open selected
         xywh {495 220 175 25}
       } {
         MenuItem {} {
@@ -1859,7 +1859,7 @@ o->window()->hide();}
           xywh {0 0 100 20}
         }
         MenuItem {} {
-          label {1.333 (HDV)}
+          label {1.333 (HDV 1440x1080)}
           xywh {0 0 100 20}
         }
       }
