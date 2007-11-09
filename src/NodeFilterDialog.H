@@ -10,6 +10,7 @@
 #include <FL/Fl_Tile.H>
 #include "Frei0rGraphEditor.H"
 #include "VideoViewGL.H"
+#include "Timeline.H"
 #include <FL/Fl_Hold_Browser.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Return_Button.H>
@@ -29,6 +30,8 @@ public:
 private:
   void cb_plugin_browser_i(Fl_Hold_Browser*, void*);
   static void cb_plugin_browser(Fl_Hold_Browser*, void*);
+  void cb_Close_i(Fl_Return_Button*, void*);
+  static void cb_Close(Fl_Return_Button*, void*);
 public:
   Fl_Button *trash_can;
   ~NodeFilterDialog();

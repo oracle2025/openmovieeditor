@@ -26,10 +26,12 @@ class NodeFilterDialog {open : {public nle::IEffectDialog}
         xywh {5 55 640 375} resizable
       } {
         Fl_Box graph_editor {
-          callback {nle::g_videoView->redraw();}
+          callback {nle::g_videoView->redraw();
+nle::g_timeline->changing();} selected
           xywh {285 55 360 375} box DOWN_BOX
           code0 {\#include "Frei0rGraphEditor.H"}
           code1 {\#include "VideoViewGL.H"}
+          code2 {\#include "Timeline.H"}
           class Frei0rGraphEditor
         }
         Fl_Browser plugin_browser {
@@ -51,6 +53,7 @@ if ( ffp ) {
       }
       Fl_Return_Button {} {
         label Close
+        callback {delete this;}
         xywh {5 465 640 25}
       }
       Fl_Check_Button {} {
@@ -66,8 +69,7 @@ for ( effect_node* p = m_factory->m_effects; p; p = p->next ) {
 	plugin_browser->add( p->effect->name(), (void*)p->effect );
 }
 graph_editor->m_trash = trash_can;
-graph_editor->setFilter( m_filter );} {selected
-    }
+graph_editor->setFilter( m_filter );} {}
   }
   Function {~NodeFilterDialog()} {open
   } {

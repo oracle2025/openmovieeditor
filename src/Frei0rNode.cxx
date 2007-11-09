@@ -1,6 +1,11 @@
 #include <dlfcn.h>
 #include "Frei0rNode.H"
 #include "Frei0rDoubleSlider.H"
+#include "Frei0rColorButton.H"
+#include "Frei0rBoolButton.H"
+#include <tinyxml.h>
+#include <string>
+#include <FL/Fl_Group.H>
 
 
 Frei0rNode::Frei0rNode( f0r_plugin_info_t* info, void* handle, int w, int h)
@@ -21,7 +26,7 @@ Frei0rNode::~Frei0rNode()
 	if ( f0r_destruct ) {
 		f0r_destruct( m_instance );
 	}
-	assert( !node->widgets[0] );
+	delete_widgets();
 }
 void Frei0rNode::setInput( int input, INode* node )
 {
@@ -52,9 +57,24 @@ void Frei0rNode::init_widgets()
 		f0r_get_param_info( &param_info, i );
 		if ( param_info.type == F0R_PARAM_DOUBLE ) {
 			Frei0rDoubleSlider* slider = new Frei0rDoubleSlider( 0, 0, 25, 25 );
+			slider->tooltip( param_info.explanation );
 			slider->set_instance( m_instance, f0r_set_param_value, f0r_get_param_value, i );
 			slider->show();
 			node->widgets[k] = slider;
+			k++;
+		} else if ( param_info.type == F0R_PARAM_COLOR ) {
+			Frei0rColorButton* button = new Frei0rColorButton( 0, 0, 25, 25, param_info.name );
+			button->tooltip( param_info.explanation );
+			button->set_instance( m_instance, f0r_set_param_value, f0r_get_param_value, i );
+			button->show();
+			node->widgets[k] = button;
+			k++;
+		} else if ( param_info.type == F0R_PARAM_BOOL ) {
+			Frei0rBoolButton* button = new Frei0rBoolButton( 0, 0, 25, 25, param_info.name );
+			button->tooltip( param_info.explanation );
+			button->set_instance( m_instance, f0r_set_param_value, f0r_get_param_value, i );
+			button->show();
+			node->widgets[k] = button;
 			k++;
 		}
 	}
@@ -63,6 +83,7 @@ void Frei0rNode::init_widgets()
 void Frei0rNode::delete_widgets()
 {
 	for ( int i = 0; node->widgets[i]; i++ ) {
+		node->widgets[i]->parent()->remove( node->widgets[i] );
 		delete node->widgets[i];
 		node->widgets[i] = 0;
 	}
@@ -98,5 +119,103 @@ uint32_t* Frei0rNode::getFrame( int output, double position )
 			return m_frame;
 	};
 	return 0;
+}
+void Frei0rNode::readXML( TiXmlElement* xml_node )
+{
+	TiXmlElement* parameterXml = TiXmlHandle( xml_node ).FirstChildElement( "parameter" ).Element();
+	for ( ; parameterXml; parameterXml = parameterXml->NextSiblingElement( "parameter" ) ) {
+		std::string paramName = parameterXml->Attribute( "name" );
+		f0r_param_info_t pinfo;
+		for ( int i = 0; i < m_info->num_params; i++ ) {
+			f0r_get_param_info( &pinfo, i );
+			if ( paramName == pinfo.name ) {
+				switch ( pinfo.type ) {
+					case F0R_PARAM_DOUBLE:
+						{
+							double dval;
+							f0r_param_double dvalue;
+							parameterXml->Attribute( "value", &dval );
+							dvalue = dval;
+							f0r_set_param_value( m_instance, &dvalue, i );
+							break;
+						}
+					case F0R_PARAM_BOOL:
+						{
+							int bval;
+							f0r_param_bool bvalue;
+							parameterXml->Attribute( "value", &bval );
+							bvalue = (double)bval;
+							f0r_set_param_value( m_instance, &bvalue, i );
+							break;
+						}
+					case F0R_PARAM_COLOR:
+						{
+							double r = 0;
+							double g = 0;
+							double b = 0;
+							parameterXml->Attribute( "r", &r );
+							parameterXml->Attribute( "g", &g );
+							parameterXml->Attribute( "b", &b );
+							f0r_param_color_t cvalue;
+							cvalue.r = r;
+							cvalue.g = g;
+							cvalue.b = b;
+							f0r_set_param_value( m_instance, &cvalue, i );
+							break;
+						}
+				}
+				break;
+			}
+		}
+	}
+
+}
+void Frei0rNode::writeXML( TiXmlElement* xml_node )
+{
+	TiXmlElement* parameter;
+	TiXmlElement* effect = xml_node;
+	f0r_param_info_t pinfo;
+	for ( int i = 0; i < m_info->num_params; i++ ) {
+		f0r_get_param_info( &pinfo, i );
+		parameter = new TiXmlElement( "parameter" );
+		effect->LinkEndChild( parameter );
+		parameter->SetAttribute( "name", pinfo.name );
+		switch ( pinfo.type ) {
+			case F0R_PARAM_DOUBLE: //Seems to be always between 0.0 and 1.0
+				{
+					f0r_param_double dvalue;
+					f0r_get_param_value( m_instance, &dvalue, i );
+					parameter->SetDoubleAttribute( "value", (double)dvalue );
+					break;
+				}
+			case F0R_PARAM_BOOL:
+				{
+					f0r_param_bool bvalue;
+					f0r_get_param_value( m_instance, &bvalue, i );
+					parameter->SetAttribute( "value", (int)(bvalue >= 0.5) );
+					break;
+				}
+			case F0R_PARAM_COLOR:
+				{
+					f0r_param_color_t cvalue;
+					f0r_get_param_value( m_instance, &cvalue, i );
+					parameter->SetDoubleAttribute( "r", cvalue.r );
+					parameter->SetDoubleAttribute( "g", cvalue.g );
+					parameter->SetDoubleAttribute( "b", cvalue.b );
+					break;
+				}
+			case F0R_PARAM_POSITION:
+				{
+					f0r_param_position_t pos;
+					f0r_get_param_value( m_instance, &pos, i );
+					parameter->SetDoubleAttribute( "x", pos.x );
+					parameter->SetDoubleAttribute( "y", pos.y );
+					break;
+				}
+			default:
+				break;
+
+		}
+	}
 }
 

@@ -5,6 +5,7 @@
 
 void NodeFilterDialog::cb_graph_editor_i(Frei0rGraphEditor*, void*) {
   nle::g_videoView->redraw();
+nle::g_timeline->changing();
 }
 void NodeFilterDialog::cb_graph_editor(Frei0rGraphEditor* o, void* v) {
   ((NodeFilterDialog*)(o->parent()->parent()->user_data()))->cb_graph_editor_i(o,v);
@@ -21,6 +22,13 @@ if ( ffp ) {
 }
 void NodeFilterDialog::cb_plugin_browser(Fl_Hold_Browser* o, void* v) {
   ((NodeFilterDialog*)(o->parent()->parent()->user_data()))->cb_plugin_browser_i(o,v);
+}
+
+void NodeFilterDialog::cb_Close_i(Fl_Return_Button*, void*) {
+  delete this;
+}
+void NodeFilterDialog::cb_Close(Fl_Return_Button* o, void* v) {
+  ((NodeFilterDialog*)(o->parent()->user_data()))->cb_Close_i(o,v);
 }
 
 #include <FL/Fl_Pixmap.H>
@@ -87,7 +95,9 @@ NodeFilterDialog::NodeFilterDialog( nle::NodeFilter* filter ) {
       o->labelfont(1);
       o->labelsize(16);
     }
-    new Fl_Return_Button(5, 465, 640, 25, "Close");
+    { Fl_Return_Button* o = new Fl_Return_Button(5, 465, 640, 25, "Close");
+      o->callback((Fl_Callback*)cb_Close);
+    }
     { Fl_Check_Button* o = new Fl_Check_Button(5, 435, 615, 25, "Bypass");
       o->down_box(FL_DOWN_BOX);
     }

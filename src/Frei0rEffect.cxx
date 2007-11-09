@@ -204,7 +204,14 @@ void Frei0rEffect::writeXML( TiXmlElement* xml_node )
 					break;
 				}
 			case F0R_PARAM_COLOR:
-				break;
+				{
+					f0r_param_color_t cvalue;
+					f0r_get_param_value( m_instance, &cvalue, i );
+					parameter->SetDoubleAttribute( "r", cvalue.r );
+					parameter->SetDoubleAttribute( "g", cvalue.g );
+					parameter->SetDoubleAttribute( "b", cvalue.b );
+					break;
+				}
 			case F0R_PARAM_POSITION:
 				{
 					f0r_param_position_t pos;
@@ -251,6 +258,21 @@ void Frei0rEffect::readXML( TiXmlElement* xml_node )
 							parameterXml->Attribute( "value", &bval );
 							bvalue = (double)bval;
 							setValue( &bvalue, i );
+							break;
+						}
+					case F0R_PARAM_COLOR:
+						{
+							double r = 0;
+							double g = 0;
+							double b = 0;
+							parameterXml->Attribute( "r", &r );
+							parameterXml->Attribute( "g", &g );
+							parameterXml->Attribute( "b", &b );
+							f0r_param_color_t cvalue;
+							cvalue.r = r;
+							cvalue.g = g;
+							cvalue.b = b;
+							f0r_set_param_value( m_instance, &cvalue, i );
 							break;
 						}
 				}

@@ -96,6 +96,7 @@ void NodeFilter::writeXML( TiXmlElement* xml_node )
 			string identifier( "effect:frei0r:" );
 			identifier += filter_node->name;
 			xml_filter->SetAttribute( "identifier", identifier.c_str() );
+			frei0r_node->writeXML( xml_filter );
 		}
 		xml_filter->SetAttribute( "id", filter_node->id );
 		for ( int i = 0; i < filter_node->input_count; i++ ) {
@@ -161,6 +162,11 @@ void NodeFilter::readXML( TiXmlElement* xml_node )
 							xml_filter->Attribute( "id", &id );
 
 							m_filters = (filters*)sl_push( m_filters, filters_create( x, y, w, h, ffp->get( m_w, m_h ), ffp->name(), id ) );
+							Frei0rNode* frei0r_node = dynamic_cast<Frei0rNode*>(m_filters->node);
+							if ( frei0r_node ) {
+								frei0r_node->readXML( xml_filter );
+							}
+
 
 					}
 				}

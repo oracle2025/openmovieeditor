@@ -257,7 +257,11 @@ openmovieeditor_SOURCES = nle.cxx\
 	Frei0rNode.cxx\
 	INode.H\
 	Frei0rDoubleSlider.H\
-	Frei0rDoubleSlider.cxx
+	Frei0rDoubleSlider.cxx\
+	Frei0rColorButton.H\
+	Frei0rColorButton.cxx\
+	Frei0rBoolButton.H\
+	Frei0rBoolButton.cxx
 	
 
 

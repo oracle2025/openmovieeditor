@@ -28,6 +28,8 @@ class Frei0rNode : public INode
 		void init();
 		void init_widgets();
 		void delete_widgets();
+		void readXML( TiXmlElement* xml_node );
+		void writeXML( TiXmlElement* xml_node );
 	private:
 		f0r_instance_t m_instance;
 		f0r_construct_f f0r_construct;

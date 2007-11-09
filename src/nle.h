@@ -436,8 +436,8 @@ public:
 };
 #include <iostream>
 #include <FL/Fl_Spinner.H>
-#include <FL/Fl_Output.H>
 #include <FL/Fl_Check_Button.H>
+#include <FL/Fl_Input_Choice.H>
 
 class CustomFormatDialog {
   void *audio_codec;
@@ -476,13 +476,14 @@ public:
   Fl_Spinner *black_pixel_v;
   Fl_Spinner *black_pixel_h;
   Fl_Spinner *analog_blank;
-  Fl_Output *pixel_aspect;
 private:
   void cb_Save1_i(Fl_Return_Button*, void*);
   static void cb_Save1(Fl_Return_Button*, void*);
   void cb_Cancel2_i(Fl_Button*, void*);
   static void cb_Cancel2(Fl_Button*, void*);
 public:
+  Fl_Input_Choice *pixel_aspect_ratio;
+  static Fl_Menu_Item menu_pixel_aspect_ratio[];
   int shown();
   void show();
   ~CustomFormatDialog();

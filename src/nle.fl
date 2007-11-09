@@ -1598,8 +1598,7 @@ lqt_set_cmodel( qt, 0, BC_RGB888 );
 
 preset->set2(qt);
 
-return new nle::VideoWriterQT( qt, fmt );} {selected
-    }
+return new nle::VideoWriterQT( qt, fmt );} {}
   }
   decl {bool go;} {public
   }
@@ -1650,11 +1649,13 @@ delete dialog_window;} {}
   }
 } 
 
-class CustomFormatDialog {} {
+class CustomFormatDialog {open
+} {
   decl {void *audio_codec;} {}
   decl {void* video_codec;} {}
   decl {nle::EncodingPreset* m_preset;} {}
-  Function {CustomFormatDialog()} {} {
+  Function {CustomFormatDialog()} {open
+  } {
     code {audio_codec = 0;
 video_codec = 0;
 m_preset = new nle::EncodingPreset();} {}
@@ -1772,7 +1773,7 @@ m_preset->setAudioCodec( (lqt_codec_info_t*)audio_codec );} open
       }
       Fl_Spinner aspect_w {
         label {Aspect Ratio}
-        xywh {495 160 85 25}
+        xywh {495 160 85 25} labelcolor 1
       }
       Fl_Spinner aspect_h {
         xywh {585 160 85 25}
@@ -1800,19 +1801,15 @@ m_preset->setAudioCodec( (lqt_codec_info_t*)audio_codec );} open
       }
       Fl_Spinner black_pixel_v {
         label {Black Pixels @2<->}
-        xywh {495 220 175 25} deactivate
+        xywh {495 250 175 25} labelcolor 1 deactivate
       }
       Fl_Spinner black_pixel_h {
-        label {Black Pixels @<->}
-        xywh {495 250 175 25} deactivate
+        label {Black Pixels @<->} selected
+        xywh {495 280 175 25} labelcolor 1 deactivate
       }
       Fl_Spinner analog_blank {
         label {Analog Blank}
-        xywh {495 280 175 25}
-      }
-      Fl_Output pixel_aspect {
-        label {Pixel Aspect}
-        xywh {495 310 175 25} color 49
+        xywh {495 310 175 25} labelcolor 1
       }
       Fl_Return_Button {} {
         label {Save Custom Format}
@@ -1837,6 +1834,35 @@ o->window()->hide();}
         callback {o->window()->hide();}
         xywh {10 350 330 25}
       }
+      Fl_Input_Choice pixel_aspect_ratio {
+        label {Pixel Aspect Ratio} open
+        xywh {495 220 175 25}
+      } {
+        MenuItem {} {
+          label 1
+          xywh {0 0 100 20}
+        }
+        MenuItem {} {
+          label {0.9117 (NTSC)}
+          xywh {0 0 100 20}
+        }
+        MenuItem {} {
+          label {1.21557 (NTSC 16:9)}
+          xywh {0 0 100 20}
+        }
+        MenuItem {} {
+          label {1.094 (PAL)}
+          xywh {0 0 100 20}
+        }
+        MenuItem {} {
+          label {1.4587 (PAL 16:9)}
+          xywh {0 0 100 20}
+        }
+        MenuItem {} {
+          label {1.333 (HDV)}
+          xywh {0 0 100 20}
+        }
+      }
     }
     code {nle::setAudioCodecMenu( audio_codec_menu );
 nle::setVideoCodecMenu( video_codec_menu );
@@ -1852,7 +1878,8 @@ black_pixel_v->value(0);
 black_pixel_h->value(0);
 analog_blank->value(0);
 video_codec_menu->value(0);
-audio_codec_menu->value(0);} {}
+audio_codec_menu->value(2);
+pixel_aspect_ratio->value("1");} {}
   }
   Function {shown()} {return_type int
   } {
@@ -2098,7 +2125,7 @@ class DvgrabImportDialog {} {
   Function {DvgrabImportDialog()} {open
   } {
     Fl_Window dialog_window {open
-      xywh {906 20 100 100} type Double visible
+      xywh {1183 64 100 100} type Double visible
     } {}
   }
   Function {~DvgrabImportDialog()} {open

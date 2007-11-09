@@ -7056,6 +7056,16 @@ void CustomFormatDialog::cb_Cancel2(Fl_Button* o, void* v) {
   ((CustomFormatDialog*)(o->parent()->user_data()))->cb_Cancel2_i(o,v);
 }
 
+Fl_Menu_Item CustomFormatDialog::menu_pixel_aspect_ratio[] = {
+ {"1", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"0.9117 (NTSC)", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"1.21557 (NTSC 16:9)", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"1.094 (PAL)", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"1.4587 (PAL 16:9)", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"1.333 (HDV)", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {0,0,0,0,0,0,0,0,0}
+};
+
 CustomFormatDialog::CustomFormatDialog() {
   Fl_Double_Window* w;
   audio_codec = 0;
@@ -7101,7 +7111,9 @@ m_preset = new nle::EncodingPreset();
     }
     frame_size_w = new Fl_Spinner(495, 130, 85, 25, "Framesize");
     frame_size_h = new Fl_Spinner(585, 130, 85, 25);
-    aspect_w = new Fl_Spinner(495, 160, 85, 25, "Aspect Ratio");
+    { Fl_Spinner* o = aspect_w = new Fl_Spinner(495, 160, 85, 25, "Aspect Ratio");
+      o->labelcolor((Fl_Color)1);
+    }
     aspect_h = new Fl_Spinner(585, 160, 85, 25);
     { Fl_Box* o = new Fl_Box(10, 60, 330, 130, "Video");
       o->box(FL_ENGRAVED_FRAME);
@@ -7112,15 +7124,16 @@ m_preset = new nle::EncodingPreset();
       o->down_box(FL_BORDER_BOX);
       o->menu(menu_interlacing);
     }
-    { Fl_Spinner* o = black_pixel_v = new Fl_Spinner(495, 220, 175, 25, "Black Pixels @2<->");
+    { Fl_Spinner* o = black_pixel_v = new Fl_Spinner(495, 250, 175, 25, "Black Pixels @2<->");
+      o->labelcolor((Fl_Color)1);
       o->deactivate();
     }
-    { Fl_Spinner* o = black_pixel_h = new Fl_Spinner(495, 250, 175, 25, "Black Pixels @<->");
+    { Fl_Spinner* o = black_pixel_h = new Fl_Spinner(495, 280, 175, 25, "Black Pixels @<->");
+      o->labelcolor((Fl_Color)1);
       o->deactivate();
     }
-    analog_blank = new Fl_Spinner(495, 280, 175, 25, "Analog Blank");
-    { Fl_Output* o = pixel_aspect = new Fl_Output(495, 310, 175, 25, "Pixel Aspect");
-      o->color(FL_BACKGROUND_COLOR);
+    { Fl_Spinner* o = analog_blank = new Fl_Spinner(495, 310, 175, 25, "Analog Blank");
+      o->labelcolor((Fl_Color)1);
     }
     { Fl_Return_Button* o = new Fl_Return_Button(350, 350, 330, 25, "Save Custom Format");
       o->callback((Fl_Callback*)cb_Save1);
@@ -7143,6 +7156,9 @@ m_preset = new nle::EncodingPreset();
     { Fl_Button* o = new Fl_Button(10, 350, 330, 25, "Cancel");
       o->callback((Fl_Callback*)cb_Cancel2);
     }
+    { Fl_Input_Choice* o = pixel_aspect_ratio = new Fl_Input_Choice(495, 220, 175, 25, "Pixel Aspect Ratio");
+      o->menu(menu_pixel_aspect_ratio);
+    }
     o->set_modal();
     o->end();
   }
@@ -7160,7 +7176,8 @@ black_pixel_v->value(0);
 black_pixel_h->value(0);
 analog_blank->value(0);
 video_codec_menu->value(0);
-audio_codec_menu->value(0);
+audio_codec_menu->value(2);
+pixel_aspect_ratio->value("1");
 }
 
 int CustomFormatDialog::shown() {
