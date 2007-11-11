@@ -6813,7 +6813,7 @@ encoding_preset->m_readonly = true;
 format.w = 720;
 format.h = 576;
 format.pixel_aspect_ratio = 1.094;
-format.interlacing = 0;
+format.interlacing = 2;
 strcpy(format.name, "Quicktime DV");
 strcpy(format.video_codec, "dv_pal" );
 strcpy(format.audio_codec, "twos" );
@@ -6894,7 +6894,15 @@ if (!codec || !codec[0]) {
 }
 assert(codec);
 assert(codec[0]);
+
+
 lqt_set_video( qt, 1, fmt.w, fmt.h, fmt.framerate.frame_duration, fmt.framerate.timescale, codec[0] );
+int pixel_w = 1;
+int pixel_h = 1;
+nle::convert_pixel_aspect_to_pixel_w_h( fmt.pixel_aspect_ratio, pixel_w, pixel_h );
+lqt_set_pixel_aspect( qt, 0, pixel_w, pixel_h );
+
+
 lqt_destroy_codec_info( codec );
 
 switch ( fmt.interlacing ) {
@@ -7195,6 +7203,7 @@ fmt.w = (int)frame_size_w->value();
 fmt.h = (int)frame_size_h->value();
 fmt.interlacing = interlacing->value();
 fmt.samplerate = 48000;
+fmt.pixel_aspect_ratio = nle::string_to_pixel_aspect_ratio( pixel_aspect_ratio->value() );
 
 
 switch ( frame_rate_choice->value() ) {
@@ -7252,6 +7261,7 @@ name->value(fmt.name);
 frame_size_w->value(fmt.w);
 frame_size_h->value(fmt.h);
 interlacing->value(fmt.interlacing);
+pixel_aspect_ratio->value(nle::pixel_aspect_ratio_to_string(fmt.pixel_aspect_ratio));
 
 
 int len = video_codec_menu->size();

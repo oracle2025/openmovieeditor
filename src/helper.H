@@ -26,6 +26,10 @@
 namespace nle
 {
 
+void convert_pixel_aspect_to_pixel_w_h( float in, int& pw, int& ph );
+const char* pixel_aspect_ratio_to_string( float pixel_aspect_ratio );
+float string_to_pixel_aspect_ratio( const char* par_str );
+
 const char* timestamp_to_string( int64_t timestamp );
 int mkdirp( const char* pathname );
 void findpath( const char* filename, char* buffer, int bufferlen );

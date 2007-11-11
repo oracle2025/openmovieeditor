@@ -342,13 +342,14 @@ lqt_parameter_value_t EncodingPreset::getAudioParameter( const char* key )
 	assert( p );
 	return p->value;
 }
-void EncodingPreset::set( quicktime_t* qt, int w, int h, render_fps_chunks* framerate )
+void EncodingPreset::set( quicktime_t* qt )
 {
+	/*FIXME: Dead Code*/
 	lqt_add_audio_track( qt, 2, 48000, 16, m_currentAudioCodec->codecInfo );
-	lqt_add_video_track( qt, w, h, framerate->frame_duration, framerate->timescale, m_currentVideoCodec->codecInfo ); // 30000 / 1200 == 25
-	int pixel_w;
-	int pixel_h;
-	guess_aspect( w, h, 0, 0, 0, 0, &pixel_w, &pixel_h );
+	lqt_add_video_track( qt, m_format.w, m_format.h, m_format.framerate.frame_duration, m_format.framerate.timescale, m_currentVideoCodec->codecInfo ); // 30000 / 1200 == 25
+	int pixel_w = 1;
+	int pixel_h = 1;
+	convert_pixel_aspect_to_pixel_w_h( m_format.pixel_aspect_ratio, pixel_w, pixel_h );
 	lqt_set_pixel_aspect( qt, 0, pixel_w, pixel_h );
 	set2( qt );
 }

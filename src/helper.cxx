@@ -35,6 +35,26 @@
 namespace nle
 {
 
+const char* pixel_aspect_ratio_to_string( float pixel_aspect_ratio )
+{
+	static char buffer[255];
+	snprintf( buffer, 255, "%.5f", pixel_aspect_ratio );
+	buffer[254] = '\0';
+	return buffer;
+}
+float string_to_pixel_aspect_ratio( const char* par_str )
+{
+	char buffer[255];
+	strncpy( buffer, par_str, 255 );
+	buffer[254] = '\0';
+	char* p = buffer;
+	while ( *p != ' ' && *p != '\0' ) {
+		p++;
+	}
+	*p = '\0';
+	return atof( buffer );
+}
+
 const char* timestamp_to_string( int64_t timestamp )
 {
 	static char buffer[256];
@@ -119,11 +139,14 @@ PAR nach MPEG-4
 4:3     12/11   10/11
 16:9    16/11   40/33
 
-NTSC: 704x480
+NTSC: 704x480  ->  4320/4739
 PAL: 768x576
 See:
 http://en.wikipedia.org/wiki/ATSC_Standards
 http://en.wikipedia.org/wiki/Aspect_ratio_(image)
+Handy Reference Table:
+http://www.mir.com/DMG/aspect.html
+http://lipas.uwasa.fi/~f76998/video/conversion/#conversion_table
 */
 void guess_aspect( int w, int h, frame_struct* frame )
 {
@@ -136,6 +159,30 @@ void guess_aspect( int w, int h, frame_struct* frame )
 		frame->pixel_w = 4320;
 		frame->pixel_h = 4739;
 	}
+}
+void convert_pixel_aspect_to_pixel_w_h( float in, int& pw, int& ph )
+{
+	if ( in > 1.093 && in < 1.095 ) {
+		pw = 128;
+		ph = 117;
+	} else if ( in > 1.4586 && in < 1.4588 ) {
+		pw = 512;
+		ph = 351;
+	} else if ( in > 0.9116 && in < 0.9118 ) {
+		pw = 4320;
+		ph = 4739;
+	} else if ( in > 1.2154 && in < 1.2156 ) {
+		pw = 5760;
+		ph = 4739;
+	} 
+	pw = 1;
+	ph = 1;
+/*
+128/117  = 1.094
+512/351  = 1.4587
+4320/4739 = 0.9117
+5760/4739 = 1.21557
+*/
 }
 void guess_aspect( int w, int h, int* aspect_height, int* aspect_width, float* aspect_ratio, int* analog_blank, int* pixel_width, int* pixel_height )
 {

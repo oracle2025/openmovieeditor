@@ -111,7 +111,7 @@ class EncodingPreset
 		lqt_parameter_value_t getVideoParameter( const char* key );
 		lqt_parameter_value_t getAudioParameter( const char* key );
 		void set2( quicktime_t* qt );
-		void set( quicktime_t* qt, int w, int h, render_fps_chunks* framerate );
+		void set( quicktime_t* qt );
 		void construct_CodecParameters( lqt_codec_info_t** audio, lqt_codec_info_t** video );
 		void construct_CodecParameters( lqt_codec_info_t** audio, lqt_codec_info_t** video, EncodingPreset* copy );
 		/* ----copied from CodecParameters----*/
