@@ -108,7 +108,7 @@ VideoFileQT::VideoFileQT( string filename )
 	m_interlace_mode = m_framestruct.interlace_mode;
 
 	int aw, ah;
-	guess_aspect( m_framestruct.w, m_framestruct.h, &ah, &aw, &m_framestruct.aspect, &m_framestruct.analog_blank, 0, 0 );
+	guess_aspect( m_framestruct.w, m_framestruct.h, &m_framestruct );
 
 	m_filename = filename;
 	m_ok = true;

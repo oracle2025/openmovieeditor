@@ -21,6 +21,7 @@
 #define _HELPER_H_
 
 #include <stdint.h>
+#include "frame_struct.h"
 
 namespace nle
 {
@@ -35,6 +36,7 @@ const char* timestamp_to_smil_string( int64_t timestamp, int frame_length = 1 );
 unsigned long gcd (unsigned long a, unsigned long b);
 
 void guess_aspect( int w, int h, int* aspect_height, int* aspect_width, float* aspect_ratio, int* analog_blank, int* pixel_width, int* pixel_height );
+void guess_aspect( int w, int h, frame_struct* frame );
 
 } /* namespace nle */
 

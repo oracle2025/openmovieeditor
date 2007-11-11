@@ -570,13 +570,8 @@ EncodingPreset::EncodingPreset()
 	m_format.framerate.video_frames_per_chunk = 10;
 	m_format.w = 640;
 	m_format.h = 480;
-	m_format.aspect_w = 4;
-	m_format.aspect_h = 3;
-	m_format.aspect = ( 4.0 / 3.0 );
+	m_format.pixel_aspect_ratio = 1.0;
 	m_format.interlacing = 0;
-	m_format.analog_blank = 0;
-	m_format.black_pixel_h = 0;
-	m_format.black_pixel_v = 0;
 	m_format.samplerate = 48000;
 	strcpy( m_format.video_codec, "" );
 	strcpy( m_format.audio_codec, "" );
@@ -638,25 +633,16 @@ void EncodingPreset::writeXML( TiXmlElement* xml_node )
 	parameter = new TiXmlElement( "height" );
 	xml_node->LinkEndChild( parameter );
 	parameter->SetAttribute( "value", m_format.h );
-	parameter = new TiXmlElement( "aspect_w" );
+
+
+	parameter = new TiXmlElement( "pixel_aspect_ratio" );
 	xml_node->LinkEndChild( parameter );
-	parameter->SetAttribute( "value", m_format.aspect_w );
-	parameter = new TiXmlElement( "aspect_h" );
-	xml_node->LinkEndChild( parameter );
-	parameter->SetAttribute( "value", m_format.aspect_h );
+	parameter->SetDoubleAttribute( "value", m_format.pixel_aspect_ratio );
 	
 	parameter = new TiXmlElement( "interlacing" );
 	xml_node->LinkEndChild( parameter );
 	parameter->SetAttribute( "value", m_format.interlacing );
-	parameter = new TiXmlElement( "analog_blank" );
-	xml_node->LinkEndChild( parameter );
-	parameter->SetAttribute( "value", m_format.analog_blank );
-	parameter = new TiXmlElement( "black_pixel_h" );
-	xml_node->LinkEndChild( parameter );
-	parameter->SetAttribute( "value", m_format.black_pixel_h );
-	parameter = new TiXmlElement( "black_pixel_v" );
-	xml_node->LinkEndChild( parameter );
-	parameter->SetAttribute( "value", m_format.black_pixel_v );
+
 	parameter = new TiXmlElement( "samplerate" );
 	xml_node->LinkEndChild( parameter );
 	parameter->SetAttribute( "value", m_format.samplerate );
@@ -697,29 +683,15 @@ void EncodingPreset::readXML( TiXmlElement* xml_node )
 	if ( parameter ) {
 		parameter->Attribute( "value", &m_format.h );
 	}
-	parameter = TiXmlHandle( xml_node ).FirstChildElement( "aspect_w" ).Element();
-	if ( parameter ) {
-		parameter->Attribute( "value", &m_format.aspect_w );
-	}
-	parameter = TiXmlHandle( xml_node ).FirstChildElement( "aspect_h" ).Element();
-	if ( parameter ) {
-		parameter->Attribute( "value", &m_format.aspect_h );
-	}
 	parameter = TiXmlHandle( xml_node ).FirstChildElement( "interlacing" ).Element();
 	if ( parameter ) {
 		parameter->Attribute( "value", &m_format.interlacing );
 	}
-	parameter = TiXmlHandle( xml_node ).FirstChildElement( "analog_blank" ).Element();
+	parameter = TiXmlHandle( xml_node ).FirstChildElement( "pixel_aspect_ratio" ).Element();
 	if ( parameter ) {
-		parameter->Attribute( "value", &m_format.analog_blank );
-	}
-	parameter = TiXmlHandle( xml_node ).FirstChildElement( "black_pixel_h" ).Element();
-	if ( parameter ) {
-		parameter->Attribute( "value", &m_format.black_pixel_h );
-	}
-	parameter = TiXmlHandle( xml_node ).FirstChildElement( "black_pixel_v" ).Element();
-	if ( parameter ) {
-		parameter->Attribute( "value", &m_format.black_pixel_v );
+		double val = 1.0;
+		parameter->Attribute( "value", &val );
+		m_format.pixel_aspect_ratio = val;
 	}
 	parameter = TiXmlHandle( xml_node ).FirstChildElement( "samplerate" ).Element();
 	if ( parameter ) {

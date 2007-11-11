@@ -60,7 +60,6 @@ class VideoEffectClip : public IVideoReader
 		virtual int aspectHeight() = 0;
 		virtual int aspectWidth() = 0;
 		virtual float aspectRatio() = 0;
-		virtual int analogBlank() = 0;
 		//virtual int interlacing() = 0;
 		void unPrepareFormat();
 		void prepareFormat( video_format* fmt );

@@ -471,13 +471,8 @@ public:
   static Fl_Menu_Item menu_frame_rate_choice[];
   Fl_Spinner *frame_size_w;
   Fl_Spinner *frame_size_h;
-  Fl_Spinner *aspect_w;
-  Fl_Spinner *aspect_h;
   Fl_Choice *interlacing;
   static Fl_Menu_Item menu_interlacing[];
-  Fl_Spinner *black_pixel_v;
-  Fl_Spinner *black_pixel_h;
-  Fl_Spinner *analog_blank;
 private:
   void cb_Save1_i(Fl_Return_Button*, void*);
   static void cb_Save1(Fl_Return_Button*, void*);

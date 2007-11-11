@@ -7,8 +7,7 @@ decl {\#include <tinyxml.h>} {}
 decl {\#include "EncodingPreset.H"} {public
 } 
 
-class NleUI {open
-} {
+class NleUI {} {
   Function {NleUI()} {open
   } {
     Fl_Window mainWindow {
@@ -99,7 +98,7 @@ SrtExportDialog dlg;
 
 dlg.show();
 while (dlg.shown())
-  Fl::wait();} selected
+  Fl::wait();}
             xywh {0 0 100 20}
           }
           MenuItem {} {
@@ -1202,7 +1201,8 @@ Function {encoder_2_dlg()} {} {
   }
 } 
 
-class ExportDialog {} {
+class ExportDialog {open
+} {
   Function {ExportDialog()} {open
   } {
     Fl_Window dialog_window {
@@ -1283,7 +1283,7 @@ o->window()->hide();}
 	if (preset) {
 		nle::video_format fmt;
 		preset->getFormat(&fmt);
-		snprintf( buffer, 256, "\\n%dx%d, %d:%d, %.2f fps\\n", fmt.w, fmt.h, fmt.aspect_w, fmt.aspect_h, ((float)fmt.framerate.timescale/fmt.framerate.frame_duration) );
+		snprintf( buffer, 256, "\\n%dx%d, %.4f, %.2f fps\\n", fmt.w, fmt.h, fmt.pixel_aspect_ratio, ((float)fmt.framerate.timescale/fmt.framerate.frame_duration) );
 		information_display->buffer()->append(buffer);
 		snprintf(buffer, 256, "Video: %s\\nAudio: %s, %d\\n", fmt.video_codec, fmt.audio_codec, fmt.samplerate );
 		information_display->buffer()->append(buffer);
@@ -1364,7 +1364,7 @@ if ( preset_new ) {
 	
 	char buffer[256];
 	information_display->buffer()->text(fmt.name);
-	snprintf( buffer, 256, "\\n%dx%d, %d:%d, %.2f fps\\n", fmt.w, fmt.h, fmt.aspect_w, fmt.aspect_h, ((float)fmt.framerate.timescale/fmt.framerate.frame_duration) );
+	snprintf( buffer, 256, "\\n%dx%d, %.4f, %.2f fps\\n", fmt.w, fmt.h, fmt.pixel_aspect_ratio, ((float)fmt.framerate.timescale/fmt.framerate.frame_duration) );
 	information_display->buffer()->append(buffer);
 	snprintf(buffer, 256, "Video: %s\\nAudio: %s, %d\\n", fmt.video_codec, fmt.audio_codec, fmt.samplerate );
 	information_display->buffer()->append(buffer);
@@ -1376,7 +1376,7 @@ if ( preset_new ) {
 			information_display->buffer()->append("Bottom field first");
 			break;
 	}
-}}
+}} selected
                 xywh {90 320 190 25} deactivate resizable
               }
               Fl_Button remove_format_button {
@@ -1409,13 +1409,8 @@ nle::video_format format;
 encoding_preset->m_readonly = true;
 format.w = 768;
 format.h = 576;
-format.analog_blank = 0;
-format.aspect_w = 4;
-format.aspect_h = 3;
-format.aspect = (4.0 / 3.0);
+format.pixel_aspect_ratio = 1.0;
 format.interlacing = 0;
-format.black_pixel_h = 0;
-format.black_pixel_v = 0;
 strcpy(format.name, "Quicktime 7");
 strcpy(format.audio_codec, "faac" );
 strcpy(format.video_codec, "ffmpeg_mpg4" );
@@ -1453,13 +1448,8 @@ encoding_preset->m_readonly = true;
 encoding_preset->m_avi_odml = true;
 format.w = 768;
 format.h = 576;
-format.analog_blank = 0;
-format.aspect_w = 4;
-format.aspect_h = 3;
-format.aspect = (4.0 / 3.0);
+format.pixel_aspect_ratio = 1.0;
 format.interlacing = 0;
-format.black_pixel_h = 0;
-format.black_pixel_v = 0;
 strcpy(format.name, "MSMpeg 4v3, mp3 AVI (768x576)");
 strcpy(format.audio_codec, "lame" );
 strcpy(format.video_codec, "ffmpeg_msmpeg4v3" );
@@ -1496,13 +1486,8 @@ encoding_preset->getFormat(&format);
 encoding_preset->m_readonly = true;
 format.w = 720;
 format.h = 576;
-format.analog_blank = 10;
-format.aspect_w = 4;
-format.aspect_h = 3;
-format.aspect = (4.0 / 3.0);
+format.pixel_aspect_ratio = 1.094;
 format.interlacing = 0;
-format.black_pixel_h = 0;
-format.black_pixel_v = 0;
 strcpy(format.name, "Quicktime DV");
 strcpy(format.video_codec, "dv_pal" );
 strcpy(format.audio_codec, "twos" );
@@ -1661,7 +1646,8 @@ delete dialog_window;} {}
   }
 } 
 
-class CustomFormatDialog {} {
+class CustomFormatDialog {open
+} {
   decl {void *audio_codec;} {}
   decl {void* video_codec;} {}
   decl {nle::EncodingPreset* m_preset;} {}
@@ -1782,20 +1768,13 @@ m_preset->setAudioCodec( (lqt_codec_info_t*)audio_codec );} open
       Fl_Spinner frame_size_h {
         xywh {585 130 85 25}
       }
-      Fl_Spinner aspect_w {
-        label {Aspect Ratio}
-        xywh {495 160 85 25} labelcolor 1
-      }
-      Fl_Spinner aspect_h {
-        xywh {585 160 85 25}
-      }
       Fl_Box {} {
         label Video
         xywh {10 60 330 130} box ENGRAVED_FRAME labelfont 1 align 5
       }
       Fl_Choice interlacing {
         label Interlacing open
-        xywh {495 190 175 25} down_box BORDER_BOX
+        xywh {495 160 175 25} down_box BORDER_BOX
       } {
         MenuItem {} {
           label None
@@ -1809,18 +1788,6 @@ m_preset->setAudioCodec( (lqt_codec_info_t*)audio_codec );} open
           label {bottom field first}
           xywh {10 10 100 20}
         }
-      }
-      Fl_Spinner black_pixel_v {
-        label {Black Pixels @2<->}
-        xywh {495 250 175 25} labelcolor 1 deactivate
-      }
-      Fl_Spinner black_pixel_h {
-        label {Black Pixels @<->}
-        xywh {495 280 175 25} labelcolor 1 deactivate
-      }
-      Fl_Spinner analog_blank {
-        label {Analog Blank}
-        xywh {495 310 175 25} labelcolor 1
       }
       Fl_Return_Button {} {
         label {Save Custom Format}
@@ -1847,7 +1814,7 @@ o->window()->hide();}
       }
       Fl_Input_Choice pixel_aspect_ratio {
         label {Pixel Aspect Ratio} open
-        xywh {495 220 175 25}
+        xywh {495 190 175 25}
       } {
         MenuItem {} {
           label 1
@@ -1880,14 +1847,8 @@ nle::setVideoCodecMenu( video_codec_menu );
 go = false;
 frame_size_w->range(1,1024);
 frame_size_h->range(1,1024);
-analog_blank->range(0,99);
 frame_size_w->value(640);
 frame_size_h->value(480);
-aspect_w->value(4);
-aspect_h->value(3);
-black_pixel_v->value(0);
-black_pixel_h->value(0);
-analog_blank->value(0);
 video_codec_menu->value(0);
 audio_codec_menu->value(2);
 pixel_aspect_ratio->value("1");} {}
@@ -1899,7 +1860,8 @@ pixel_aspect_ratio->value("1");} {}
   Function {show()} {} {
     code {dialog_window->show();} {}
   }
-  Function {~CustomFormatDialog()} {} {
+  Function {~CustomFormatDialog()} {open
+  } {
     code {delete dialog_window;
 delete m_preset;} {}
   }
@@ -1925,13 +1887,7 @@ strcpy( fmt.audio_codec, codec_info->name );
 
 fmt.w = (int)frame_size_w->value();
 fmt.h = (int)frame_size_h->value();
-fmt.aspect_w = (int)aspect_w->value();
-fmt.aspect_h = (int)aspect_h->value();
-fmt.aspect = (aspect_w->value())/(aspect_h->value());
 fmt.interlacing = interlacing->value();
-fmt.analog_blank = (int)analog_blank->value();
-fmt.black_pixel_v = (int)black_pixel_v->value();
-fmt.black_pixel_h = (int)black_pixel_h->value();
 fmt.samplerate = 48000;
 
 
@@ -1990,12 +1946,8 @@ m_preset = new nle::EncodingPreset( preset );
 name->value(fmt.name);
 frame_size_w->value(fmt.w);
 frame_size_h->value(fmt.h);
-aspect_w->value(fmt.aspect_w);
-aspect_h->value(fmt.aspect_h);
 interlacing->value(fmt.interlacing);
-analog_blank->value(fmt.analog_blank);
-black_pixel_v->value(fmt.black_pixel_v);
-black_pixel_h->value(fmt.black_pixel_h);
+
 
 int len = video_codec_menu->size();
 for ( int i = 0; i < len; i++ ) {
@@ -2145,8 +2097,7 @@ class DvgrabImportDialog {} {
   }
 } 
 
-class SrtExportDialog {open
-} {
+class SrtExportDialog {} {
   Function {SrtExportDialog()} {open
   } {
     Fl_Window dialog_window {

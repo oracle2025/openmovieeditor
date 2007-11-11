@@ -6536,7 +6536,7 @@ void ExportDialog::cb_presets_browser_i(Fl_Hold_Browser* o, void*) {
 	if (preset) {
 		nle::video_format fmt;
 		preset->getFormat(&fmt);
-		snprintf( buffer, 256, "\n%dx%d, %d:%d, %.2f fps\n", fmt.w, fmt.h, fmt.aspect_w, fmt.aspect_h, ((float)fmt.framerate.timescale/fmt.framerate.frame_duration) );
+		snprintf( buffer, 256, "\n%dx%d, %.4f, %.2f fps\n", fmt.w, fmt.h, fmt.pixel_aspect_ratio, ((float)fmt.framerate.timescale/fmt.framerate.frame_duration) );
 		information_display->buffer()->append(buffer);
 		snprintf(buffer, 256, "Video: %s\nAudio: %s, %d\n", fmt.video_codec, fmt.audio_codec, fmt.samplerate );
 		information_display->buffer()->append(buffer);
@@ -6617,7 +6617,7 @@ if ( preset_new ) {
 	
 	char buffer[256];
 	information_display->buffer()->text(fmt.name);
-	snprintf( buffer, 256, "\n%dx%d, %d:%d, %.2f fps\n", fmt.w, fmt.h, fmt.aspect_w, fmt.aspect_h, ((float)fmt.framerate.timescale/fmt.framerate.frame_duration) );
+	snprintf( buffer, 256, "\n%dx%d, %.4f, %.2f fps\n", fmt.w, fmt.h, fmt.pixel_aspect_ratio, ((float)fmt.framerate.timescale/fmt.framerate.frame_duration) );
 	information_display->buffer()->append(buffer);
 	snprintf(buffer, 256, "Video: %s\nAudio: %s, %d\n", fmt.video_codec, fmt.audio_codec, fmt.samplerate );
 	information_display->buffer()->append(buffer);
@@ -6735,13 +6735,8 @@ nle::video_format format;
 encoding_preset->m_readonly = true;
 format.w = 768;
 format.h = 576;
-format.analog_blank = 0;
-format.aspect_w = 4;
-format.aspect_h = 3;
-format.aspect = (4.0 / 3.0);
+format.pixel_aspect_ratio = 1.0;
 format.interlacing = 0;
-format.black_pixel_h = 0;
-format.black_pixel_v = 0;
 strcpy(format.name, "Quicktime 7");
 strcpy(format.audio_codec, "faac" );
 strcpy(format.video_codec, "ffmpeg_mpg4" );
@@ -6779,13 +6774,8 @@ encoding_preset->m_readonly = true;
 encoding_preset->m_avi_odml = true;
 format.w = 768;
 format.h = 576;
-format.analog_blank = 0;
-format.aspect_w = 4;
-format.aspect_h = 3;
-format.aspect = (4.0 / 3.0);
+format.pixel_aspect_ratio = 1.0;
 format.interlacing = 0;
-format.black_pixel_h = 0;
-format.black_pixel_v = 0;
 strcpy(format.name, "MSMpeg 4v3, mp3 AVI (768x576)");
 strcpy(format.audio_codec, "lame" );
 strcpy(format.video_codec, "ffmpeg_msmpeg4v3" );
@@ -6822,13 +6812,8 @@ encoding_preset->getFormat(&format);
 encoding_preset->m_readonly = true;
 format.w = 720;
 format.h = 576;
-format.analog_blank = 10;
-format.aspect_w = 4;
-format.aspect_h = 3;
-format.aspect = (4.0 / 3.0);
+format.pixel_aspect_ratio = 1.094;
 format.interlacing = 0;
-format.black_pixel_h = 0;
-format.black_pixel_v = 0;
 strcpy(format.name, "Quicktime DV");
 strcpy(format.video_codec, "dv_pal" );
 strcpy(format.audio_codec, "twos" );
@@ -7126,29 +7111,14 @@ m_preset = new nle::EncodingPreset();
     }
     frame_size_w = new Fl_Spinner(495, 130, 85, 25, "Framesize");
     frame_size_h = new Fl_Spinner(585, 130, 85, 25);
-    { Fl_Spinner* o = aspect_w = new Fl_Spinner(495, 160, 85, 25, "Aspect Ratio");
-      o->labelcolor((Fl_Color)1);
-    }
-    aspect_h = new Fl_Spinner(585, 160, 85, 25);
     { Fl_Box* o = new Fl_Box(10, 60, 330, 130, "Video");
       o->box(FL_ENGRAVED_FRAME);
       o->labelfont(1);
       o->align(FL_ALIGN_TOP_LEFT);
     }
-    { Fl_Choice* o = interlacing = new Fl_Choice(495, 190, 175, 25, "Interlacing");
+    { Fl_Choice* o = interlacing = new Fl_Choice(495, 160, 175, 25, "Interlacing");
       o->down_box(FL_BORDER_BOX);
       o->menu(menu_interlacing);
-    }
-    { Fl_Spinner* o = black_pixel_v = new Fl_Spinner(495, 250, 175, 25, "Black Pixels @2<->");
-      o->labelcolor((Fl_Color)1);
-      o->deactivate();
-    }
-    { Fl_Spinner* o = black_pixel_h = new Fl_Spinner(495, 280, 175, 25, "Black Pixels @<->");
-      o->labelcolor((Fl_Color)1);
-      o->deactivate();
-    }
-    { Fl_Spinner* o = analog_blank = new Fl_Spinner(495, 310, 175, 25, "Analog Blank");
-      o->labelcolor((Fl_Color)1);
     }
     { Fl_Return_Button* o = new Fl_Return_Button(350, 350, 330, 25, "Save Custom Format");
       o->callback((Fl_Callback*)cb_Save1);
@@ -7171,7 +7141,7 @@ m_preset = new nle::EncodingPreset();
     { Fl_Button* o = new Fl_Button(10, 350, 330, 25, "Cancel");
       o->callback((Fl_Callback*)cb_Cancel2);
     }
-    { Fl_Input_Choice* o = pixel_aspect_ratio = new Fl_Input_Choice(495, 220, 175, 25, "Pixel Aspect Ratio");
+    { Fl_Input_Choice* o = pixel_aspect_ratio = new Fl_Input_Choice(495, 190, 175, 25, "Pixel Aspect Ratio");
       o->menu(menu_pixel_aspect_ratio);
     }
     o->set_modal();
@@ -7182,14 +7152,8 @@ nle::setVideoCodecMenu( video_codec_menu );
 go = false;
 frame_size_w->range(1,1024);
 frame_size_h->range(1,1024);
-analog_blank->range(0,99);
 frame_size_w->value(640);
 frame_size_h->value(480);
-aspect_w->value(4);
-aspect_h->value(3);
-black_pixel_v->value(0);
-black_pixel_h->value(0);
-analog_blank->value(0);
 video_codec_menu->value(0);
 audio_codec_menu->value(2);
 pixel_aspect_ratio->value("1");
@@ -7229,13 +7193,7 @@ strcpy( fmt.audio_codec, codec_info->name );
 
 fmt.w = (int)frame_size_w->value();
 fmt.h = (int)frame_size_h->value();
-fmt.aspect_w = (int)aspect_w->value();
-fmt.aspect_h = (int)aspect_h->value();
-fmt.aspect = (aspect_w->value())/(aspect_h->value());
 fmt.interlacing = interlacing->value();
-fmt.analog_blank = (int)analog_blank->value();
-fmt.black_pixel_v = (int)black_pixel_v->value();
-fmt.black_pixel_h = (int)black_pixel_h->value();
 fmt.samplerate = 48000;
 
 
@@ -7293,12 +7251,8 @@ m_preset = new nle::EncodingPreset( preset );
 name->value(fmt.name);
 frame_size_w->value(fmt.w);
 frame_size_h->value(fmt.h);
-aspect_w->value(fmt.aspect_w);
-aspect_h->value(fmt.aspect_h);
 interlacing->value(fmt.interlacing);
-analog_blank->value(fmt.analog_blank);
-black_pixel_v->value(fmt.black_pixel_v);
-black_pixel_h->value(fmt.black_pixel_h);
+
 
 int len = video_codec_menu->size();
 for ( int i = 0; i < len; i++ ) {

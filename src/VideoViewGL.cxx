@@ -383,7 +383,8 @@ void VideoViewGL::drawFrameStack( frame_struct** fs )
 		float gl_x, gl_y, gl_w, gl_h;
 		{
 			if ( fs[i]->render_strategy == RENDER_FIT ) {
-				float f_v = fs[i]->aspect;
+				float f_v = fs[i]->w * fs[i]->pixel_aspect_ratio / fs[i]->h;
+				//float f_v = fs[i]->aspect;
 				float _4_3 = g_16_9 ? ( 16.0 / 9.0 ) : ( 4.0 / 3.0 );
 				float _4_3_w, _4_3_h, _4_3_x, _4_3_y;
 				float f_w = ( (float)w() / (float)h() );
@@ -412,7 +413,8 @@ void VideoViewGL::drawFrameStack( frame_struct** fs )
 					gl_x = ( 10.0 - gl_w ) / 2;
 				}
 			} else if ( fs[i]->render_strategy == RENDER_CROP ) {
-				float f_v = fs[i]->aspect;
+				float f_v = fs[i]->w * fs[i]->pixel_aspect_ratio / fs[i]->h;
+				//float f_v = fs[i]->aspect;
 				float _4_3 = g_16_9 ? ( 16.0 / 9.0 ) : ( 4.0 / 3.0 );
 				float _4_3_w, _4_3_h, _4_3_x, _4_3_y;
 				float f_w = ( (float)w() / (float)h() );
@@ -494,8 +496,8 @@ void VideoViewGL::drawFrameStack( frame_struct** fs )
 			glEnable (GL_TEXTURE_2D);
 		}
 
-		float ww = ( fs[i]->w - 2 * fs[i]->analog_blank ) / TEXTURE_WIDTH;
-		float xx = ( fs[i]->analog_blank ) / TEXTURE_WIDTH;
+		float ww = ( fs[i]->w ) / TEXTURE_WIDTH;
+		float xx = 0;
 		float hh = fs[i]->h / TEXTURE_HEIGHT;
 		if ( g_INTERLACING && fs[i]->interlace_mode == INTERLACE_DEVIDED_FIELDS ) {
 			hh = fs[i]->h / TEXTURE_HEIGHT / 2;

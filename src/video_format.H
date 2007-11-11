@@ -37,13 +37,10 @@ typedef struct
 	video_framerate framerate;
 	int w;
 	int h;
-	int aspect_w;
-	int aspect_h;
-	float aspect;
+	int pixel_w;
+	int pixel_h;
+	float pixel_aspect_ratio;
 	int interlacing;
-	int analog_blank;
-	int black_pixel_h;
-	int black_pixel_v;
 	char video_codec[255];
 	char audio_codec[255];
 	int samplerate;

@@ -106,6 +106,37 @@ void secs2HMS( double secs, int &H, int &M, int &S )
   H = M / 60; M -= H*60;
 }
 
+/*
+http://encodingwissen.de/spezial/itur-bt601.html:
+Exaktes PAR nach ITU-R BT.601
+        PAL         NTSC
+4:3     128/117     4320/4739
+16:9    512/351     5760/4739
+        720×576     720x480
+
+PAR nach MPEG-4
+        PAL     NTSC
+4:3     12/11   10/11
+16:9    16/11   40/33
+
+NTSC: 704x480
+PAL: 768x576
+See:
+http://en.wikipedia.org/wiki/ATSC_Standards
+http://en.wikipedia.org/wiki/Aspect_ratio_(image)
+*/
+void guess_aspect( int w, int h, frame_struct* frame )
+{
+	if ( w == 720 && h == 576 ) {
+		frame->pixel_aspect_ratio = 1.094;
+		frame->pixel_w = 128;
+		frame->pixel_h = 117;
+	} else if ( w == 720 && h == 480) {
+		frame->pixel_aspect_ratio = 0.9117;
+		frame->pixel_w = 4320;
+		frame->pixel_h = 4739;
+	}
+}
 void guess_aspect( int w, int h, int* aspect_height, int* aspect_width, float* aspect_ratio, int* analog_blank, int* pixel_width, int* pixel_height )
 {
 	if ( w == 720 && h == 576 ) {

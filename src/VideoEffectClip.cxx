@@ -109,8 +109,6 @@ frame_struct* VideoEffectClip::getFrame( int64_t position )
 		f = effect->getFrame( f, position_in_file );
 	}
 	// TODO: Copy pixel aspect and analog_blank
-	f->aspect = aspectRatio();
-	f->analog_blank = analogBlank();
 	f->render_strategy = m_render_strategy;
 	return f;
 
@@ -195,8 +193,8 @@ void VideoEffectClip::prepareFormat( video_format* fmt )
 	format_src.interlace_mode = GAVL_INTERLACE_NONE;
 
 	if ( format_src.frame_width == 720 && format_src.frame_height == 576 ) {
-		format_src.pixel_width = 197;
-		format_src.pixel_height = 180;
+		format_src.pixel_width = 128;
+		format_src.pixel_height = 117;
 	}
 	if ( videoclip ) {
 		IVideoFile* videofile = videoclip->file();

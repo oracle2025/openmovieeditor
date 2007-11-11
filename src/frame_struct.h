@@ -50,10 +50,9 @@ typedef struct
 	bool has_alpha_channel;
 	bool cacheable;
 	render_strategy_t render_strategy;
-	float aspect;
+	float pixel_aspect_ratio;
 	int pixel_w;
 	int pixel_h;
-	int analog_blank; // Should be 10 pixels for 720x576
 	int interlace_mode;
 	bool first_field; // should be true if first field is to be displayed
 	int scale_x;
