@@ -48,24 +48,15 @@ static string random_file_name()
 	return filename;
 }
 
-static int copy_file( string source, string destination ) { //This sucks
-	string command = "cp ";
-	command += "\"";
-	command += source;
-	command += "\" ";
-	command += "\"";
-	command += destination;
-	command += "\"";
-	return system( command.c_str() );
-}
 static void detect_svg_update_callback( void* data );
 
-InkscapeClip::InkscapeClip( Track* track, int64_t position, int64_t length, int id, ClipData* data )
+InkscapeClip::InkscapeClip( Track* track, int64_t position, string filename, int64_t length, int id, ClipData* data )
 	: FilterClip( track, position, id ), VideoEffectClip( this )
 {
 	"/usr/share/openmovieeditor/svg-titles/0000.svg";
 	"720x576";
 	"inkscape --export-png=123.png /usr/share/openmovieeditor/svg-titles/0002.svg";
+	m_filename = filename;
 	/*
 
 	Clip Create: copy svg-template into Projects Folder $HOME/Video\ Projects/random_file_name().svg
@@ -77,9 +68,8 @@ InkscapeClip::InkscapeClip( Track* track, int64_t position, int64_t length, int 
 
 	*/
 	m_unique_id = random_file_name();
-	string svg_filename = string(getenv("HOME")) + "/" + "Video Projects/" + m_unique_id + ".svg";
+	string svg_filename = filename;
 	string png_filename = string(getenv("HOME")) + "/" + "Video Projects/" + m_unique_id + ".png";
-	copy_file( "/usr/share/openmovieeditor/svg-titles/0002.svg", svg_filename );
 	string inkscape_command = "inkscape --export-png=\"";
 	inkscape_command += png_filename;
 	inkscape_command += "\" \"";
@@ -111,6 +101,7 @@ InkscapeClip::InkscapeClip( Track* track, int64_t position, int64_t length, int 
 	m_frame.alpha = 1.0;
 	m_frame.dirty = true;
 	m_frame.cacheable = true;
+	m_frame.pixel_aspect_ratio = 1.0;
 	m_frame.interlace_mode = 0;
 	m_frame.first_field = true;
 	m_frame.scale_x = 0;
@@ -158,6 +149,11 @@ InkscapeClip::InkscapeClip( Track* track, int64_t position, int64_t length, int 
 	} else {
 		return;
 	}
+	if ( ( textp = xml_node->Attribute( "filename" ) ) ) {
+		m_filename = textp;
+	} else {
+		return;
+	}
 	string png_filename = string(getenv("HOME")) + "/" + "Video Projects/" + m_unique_id + ".png";
 	m_image = Fl_Shared_Image::get( png_filename.c_str() );
 	if ( !m_image ) {
@@ -175,6 +171,7 @@ InkscapeClip::InkscapeClip( Track* track, int64_t position, int64_t length, int 
 	m_frame.alpha = 1.0;
 	m_frame.cacheable = true;
 	m_frame.dirty = true;
+	m_frame.pixel_aspect_ratio = 1.0;
 	m_frame.interlace_mode = 0;
 	m_frame.first_field = true;
 	m_frame.scale_x = 0;
@@ -227,7 +224,7 @@ int64_t InkscapeClip::length()
 
 void InkscapeClip::doAction( int index )
 {
-	string svg_filename = string(getenv("HOME")) + "/" + "Video Projects/" + m_unique_id + ".svg";
+	string svg_filename = m_filename;
 	string inkscape_command = "inkscape \"";
 	inkscape_command += svg_filename;
 	inkscape_command += "\"";
@@ -245,7 +242,7 @@ static void detect_svg_update_callback( void* data ) {
 }
 void InkscapeClip::detectSvgUpdate()
 {
-	string svg_filename = string(getenv("HOME")) + "/" + "Video Projects/" + m_unique_id + ".svg";
+	string svg_filename = m_filename;
 	string png_filename = string(getenv("HOME")) + "/" + "Video Projects/" + m_unique_id + ".png";
 	struct stat statbuf1;
 	struct stat statbuf2;

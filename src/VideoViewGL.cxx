@@ -382,6 +382,7 @@ void VideoViewGL::drawFrameStack( frame_struct** fs )
 		glBindTexture( GL_TEXTURE_2D, video_canvas[i] );
 		float gl_x, gl_y, gl_w, gl_h;
 		{
+			cout << fs[i]->pixel_aspect_ratio << endl;
 			if ( fs[i]->render_strategy == RENDER_FIT ) {
 				float f_v = fs[i]->w * fs[i]->pixel_aspect_ratio / fs[i]->h;
 				//float f_v = fs[i]->aspect;

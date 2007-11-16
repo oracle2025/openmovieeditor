@@ -22,6 +22,8 @@
 #include <tinyxml.h>
 #include <fstream>
 
+#include <FL/filename.H>
+
 #include "Timeline.H"
 #include "VideoTrack.H"
 #include "AudioTrack.H"
@@ -532,6 +534,7 @@ int Timeline::read( string filename )
 				continue;
 			j->Attribute( "mute", &mute );
 			VideoEffectClip* vec = 0;
+			const char* ext = fl_filename_ext( filename );
 			if ( strcmp( filename, "TitleClip" ) == 0 ) {
 				TitleClip* c = new TitleClip( tr, position, length - trimA - trimB, -1 );
 				vec = c;
@@ -569,7 +572,7 @@ int Timeline::read( string filename )
 					}
 				}
 				this->addClip( trackId, c );
-			} else if ( strcmp( filename, "src:builtin:InkscapeClip" ) == 0 ) {
+			} else if ( strcmp( ext, ".svg" ) == 0 ||strcmp( ext, ".SVG" ) == 0 ) {
 				InkscapeClip* c = new InkscapeClip( tr, position, length - trimA - trimB, -1, j );
 				TiXmlElement* effectXml = TiXmlHandle( j ).FirstChildElement( "filter" ).Element();
 				for( ; effectXml; effectXml = effectXml->NextSiblingElement( "filter" ) ) {

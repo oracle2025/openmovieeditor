@@ -57,6 +57,7 @@ ImageClip::ImageClip( Track* track, int64_t position, string filename, int64_t l
 	m_frame.alpha = 1.0;
 	m_frame.cacheable = true;
 	m_frame.interlace_mode = 0;
+	m_frame.pixel_aspect_ratio = 1.0;
 	m_frame.first_field = true;
 	m_frame.scale_x = 0;
 	m_frame.scale_y = 0;

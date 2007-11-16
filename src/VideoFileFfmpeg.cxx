@@ -98,6 +98,7 @@ VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 	m_framestruct.alpha = 1.0;
 	m_framestruct.has_alpha_channel = false;
 	m_framestruct.cacheable = false;
+	m_framestruct.pixel_aspect_ratio = 1.0;
 	m_framestruct.interlace_mode = 0;
 	m_framestruct.first_field = true;
 	m_framestruct.scale_x = 0;

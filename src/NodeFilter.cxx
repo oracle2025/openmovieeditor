@@ -212,6 +212,7 @@ const char* NodeFilter::name()
 }
 frame_struct* NodeFilter::getFrame( frame_struct* frame, int64_t position )
 {
+	m_framestruct.pixel_aspect_ratio = frame->pixel_aspect_ratio;
 	m_framestruct.interlace_mode = frame->interlace_mode;
 	m_framestruct.first_field = frame->first_field;
 	if ( frame->has_alpha_channel ) {

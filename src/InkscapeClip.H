@@ -31,13 +31,13 @@ namespace nle
 class InkscapeClip : public FilterClip, public VideoEffectClip
 {
 	public:
-		InkscapeClip( Track* track, int64_t position, int64_t length = -1, int id = -1, ClipData* data = 0 );
+		InkscapeClip( Track* track, int64_t position, string filename, int64_t length = -1, int id = -1, ClipData* data = 0 );
 		InkscapeClip( Track* track, int64_t position, int64_t length, int id, TiXmlElement* xml_node );
 		~InkscapeClip();
 		int64_t length();
 		frame_struct* getRawFrame( int64_t position, int64_t &position_in_file );
 		bool ok() { return m_ok; }
-		string filename() { return "src:builtin:InkscapeClip"; }
+		string filename() { return m_filename; }
 		void reset() {}
 		int type() { return CLIP_TYPE_IMAGE; }
 		inline IClipArtist* getArtist() { return m_artist; }
