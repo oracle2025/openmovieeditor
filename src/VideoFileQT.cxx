@@ -87,6 +87,8 @@ VideoFileQT::VideoFileQT( string filename )
 	m_framestruct.crop_bottom = 0;
 	m_framestruct.tilt_x = 0;
 	m_framestruct.tilt_y = 0;
+	m_framestruct.interlace_mode = INTERLACE_PROGRESSIVE;
+#if (LQT_CODEC_API_VERSION & 0xffff) > 6
 //	if ( g_INTERLACING ) {
 		switch ( lqt_get_interlace_mode( m_qt, 0 ) ) {
 			case LQT_INTERLACE_NONE:
@@ -105,6 +107,7 @@ VideoFileQT::VideoFileQT( string filename )
 				break;
 		}
 //	}
+#endif
 	m_interlace_mode = m_framestruct.interlace_mode;
 
 	int aw, ah;

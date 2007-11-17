@@ -6905,6 +6905,7 @@ lqt_set_pixel_aspect( qt, 0, pixel_w, pixel_h );
 
 lqt_destroy_codec_info( codec );
 
+#if (LQT_CODEC_API_VERSION & 0xffff) > 6
 switch ( fmt.interlacing ) {
 	case nle::INTERLACE_TOP_FIELD_FIRST:
 		lqt_set_interlace_mode( qt, 0, LQT_INTERLACE_TOP_FIRST );
@@ -6916,6 +6917,7 @@ switch ( fmt.interlacing ) {
 		lqt_set_interlace_mode( qt, 0, LQT_INTERLACE_NONE );
 		break;
 }
+#endif
 
 codec = lqt_find_audio_codec_by_name( fmt.audio_codec );
 if (!codec || !codec[0]) {
