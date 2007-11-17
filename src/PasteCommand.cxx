@@ -44,10 +44,10 @@ PasteCommand::PasteCommand( Clip* clip )
 	m_position = clip->position();
 	m_length = clip->length();
 	m_audioClip = 0;
-/*	AudioClip* ac = dynamic_cast<AudioClip*>(clip);
+	AudioClip* ac = dynamic_cast<AudioClip*>(clip);
 	if ( ac ) {
 		m_audioClip = true;
-		auto_node* n = ac->getAutoPoints();
+	/*	auto_node* n = ac->getAutoPoints();
 		int i = 0;
 		while ( n ) {
 			n = n->next;
@@ -62,8 +62,8 @@ PasteCommand::PasteCommand( Clip* clip )
 			m_automationPoints[i].next = 0;
 			n = n->next;
 			i++;
-		}
-	} else*/ {
+		}*/
+	} else {
 		VideoClip* vc = dynamic_cast<VideoClip*>(clip);
 		if ( vc ) { m_mute = vc->m_mute; }
 	}
@@ -79,13 +79,13 @@ PasteCommand::PasteCommand( PasteCommand* command )
 	m_position = command->m_position;
 	m_length = command->m_length;
 	m_audioClip = command->m_audioClip;
-/*	if ( m_audioClip ) {
-		m_automationsCount = command->m_automationsCount;
+	if ( m_audioClip ) {
+/*		m_automationsCount = command->m_automationsCount;
 		m_automationPoints = new auto_node[m_automationsCount];
 		for ( int i = 0; i < m_automationsCount; i++ ) {
 			m_automationPoints[i] = command->m_automationPoints[i];
-		}
-	} else*/ {
+		}*/
+	} else {
 		m_mute = command->m_mute;
 	}
 }
