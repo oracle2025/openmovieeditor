@@ -60,6 +60,8 @@
 //#include "HistogramView.H"
 #include "AudioVolumeFilterFactory.H" //TODO: Remove these two includes
 #include "ColorCurveFactory.H"
+#include "AutoTrack.H"
+#include "AutoDragHandler.H"
 
 #include "audio.xpm"
 #include "video.xpm"
@@ -218,6 +220,21 @@ int TimelineView::handle( int event )
 						}
 					}
 				}
+				/*
+				If Mouse in AutoTrack, return an DragHandler for
+				the Automations.
+				if ( _x > TRACK_SPACING + x() && _x < TRACK_SPACING + x() + 64 )
+				*/
+				Track *tr = get_track( _x, _y );
+				AutoTrack* auttr = 0;
+				if ( tr ) {
+					auttr = dynamic_cast<AutoTrack*>(tr);
+				}
+				if ( auttr && ( Fl::event_button() == FL_LEFT_MOUSE ) ) {
+					Rect rect = get_track_rect( tr );
+					m_dragHandler = new AutoDragHandler( auttr, rect, _x, _y );
+					return 1;
+				}
 				cl = get_clip( _x, _y );
 				VideoClip* vcl = 0;
 				if ( cl ) {
@@ -353,11 +370,6 @@ int TimelineView::handle( int event )
 				if ( cl && g_ui->automationsMode() == 1 && audioClip ) {
 					Rect r = get_clip_rect( cl, true );
 					m_dragHandler = audioClip->onMouseDown( r, _x, _y, FL_SHIFT & Fl::event_state() );
-					/*if ( FL_SHIFT & Fl::event_state() ) {
-						m_dragHandler = new ShiftAutomationDragHandler( cl, get_clip_rect( cl, true ), _x, _y );
-					} else {
-						m_dragHandler = new AutomationDragHandler( cl, get_clip_rect( cl, true ), 0, _x, _y );
-					}*/
 					return 1;
 				} else if ( cl ) {
 					if ( _x < get_screen_position( cl->position(), cl->track()->stretchFactor() ) + 8 ) {
@@ -572,6 +584,43 @@ void TimelineView::draw()
 					fl_end_loop();
 				}
 			}
+		}
+
+		if ( AutoTrack* autt = dynamic_cast<AutoTrack*>(track) ) {
+			int64_t scr_clip_x = x_coord;
+			int64_t scr_clip_y = y_coord;
+			int64_t scr_clip_w = w_size;
+			int64_t scr_clip_h = track->h();
+			Rect rect( scr_clip_x, scr_clip_y, scr_clip_w, scr_clip_h );
+			auto_node* nodes = autt->getAutomationPoints();
+
+			float stretchF = (float)NLE_TIME_BASE;
+			fl_color( FL_RED );
+			if ( nodes ) {
+				int y =(int)( y_coord + ( ( track->h() - 10 ) * ( 1.0 - nodes->y ) ) + 5 );
+				fl_line( x_coord, y, g_timelineView->get_screen_position( nodes->x, stretchF ), y );
+			}
+			for ( ; nodes && nodes->next; nodes = nodes->next ) {
+				int y = (int)( rect.y + ( ( track->h() - 10 ) * ( 1.0 - nodes->y ) ) + 5 );
+				int y_next = (int)( rect.y + ( ( track->h() - 10 ) * ( 1.0 - nodes->next->y ) ) + 5 );
+				fl_line( g_timelineView->get_screen_position( nodes->x, stretchF ),
+						y,
+						g_timelineView->get_screen_position( nodes->next->x, stretchF ),
+						y_next );
+			}
+			if ( nodes ) {
+				int y =(int)( y_coord + ( ( track->h() - 10 ) * ( 1.0 - nodes->y ) ) + 5 );
+				fl_line( g_timelineView->get_screen_position( nodes->x, stretchF ), y, x_coord + w_size, y );
+			}
+			nodes = autt->getAutomationPoints();
+			for ( ; nodes; nodes = nodes->next ) {
+				//consider Trimming
+				int x;
+				int y = (int)( rect.y + ( ( track->h() - 10 ) * ( 1.0 - nodes->y ) ) );
+				x = g_timelineView->get_screen_position( nodes->x, stretchF );
+				fl_draw_box( FL_UP_BOX, x, y, 10, 10, FL_RED );
+			}
+
 		}
 
 		fl_pop_clip();

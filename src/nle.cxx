@@ -176,6 +176,13 @@ void NleUI::cb_Add1(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Add1_i(o,v);
 }
 
+void NleUI::cb_Add2_i(Fl_Menu_*, void*) {
+  m_timelineView->add_track( nle::TRACK_TYPE_AUTO );
+}
+void NleUI::cb_Add2(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_Add2_i(o,v);
+}
+
 void NleUI::cb_4_i(Fl_Menu_* o, void*) {
   g_16_9 = !(o->mvalue())->value();
 m_videoView->redraw();
@@ -331,6 +338,7 @@ Fl_Menu_Item NleUI::menu_Black[] = {
  {"&Tracks", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"Add Video Track", 0,  (Fl_Callback*)NleUI::cb_Add, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Add Audio Track", 0,  (Fl_Callback*)NleUI::cb_Add1, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Add Automation Track", 0,  (Fl_Callback*)NleUI::cb_Add2, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"P&references", 0,  0, 0, 80, FL_NORMAL_LABEL, 0, 14, 0},
  {"No SW Scaling", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
@@ -367,9 +375,9 @@ Fl_Menu_Item* NleUI::cut_item = NleUI::menu_Black + 11;
 Fl_Menu_Item* NleUI::copy_item = NleUI::menu_Black + 12;
 Fl_Menu_Item* NleUI::paste_item = NleUI::menu_Black + 13;
 Fl_Menu_Item* NleUI::delete_item = NleUI::menu_Black + 14;
-Fl_Menu_Item* NleUI::black_border_item = NleUI::menu_Black + 28;
-Fl_Menu_Item* NleUI::black_border_item_2_35 = NleUI::menu_Black + 29;
-Fl_Menu_Item* NleUI::jackMenu = NleUI::menu_Black + 32;
+Fl_Menu_Item* NleUI::black_border_item = NleUI::menu_Black + 29;
+Fl_Menu_Item* NleUI::black_border_item_2_35 = NleUI::menu_Black + 30;
+Fl_Menu_Item* NleUI::jackMenu = NleUI::menu_Black + 33;
 
 void NleUI::cb_zoom_slider_i(Fl_Slider* o, void*) {
   m_videoView->zoom( o->value() );

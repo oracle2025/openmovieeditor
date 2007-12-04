@@ -181,6 +181,11 @@ m_timelineView->redraw();}
             code0 {\#include "Timeline.H"}
             code1 {\#include "AudioTrack.H"}
           }
+          MenuItem {} {
+            label {Add Automation Track}
+            callback {m_timelineView->add_track( nle::TRACK_TYPE_AUTO );} selected
+            xywh {0 0 100 20}
+          }
         }
         Submenu {} {
           label {P&references}
@@ -1605,8 +1610,7 @@ lqt_set_cmodel( qt, 0, BC_RGB888 );
 
 preset->set2(qt);
 
-return new nle::VideoWriterQT( qt, fmt );} {selected
-    }
+return new nle::VideoWriterQT( qt, fmt );} {}
   }
   decl {bool go;} {public
   }

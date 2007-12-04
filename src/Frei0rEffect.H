@@ -34,6 +34,7 @@ namespace nle
 {
 
 class IEffectDialog;
+class AutoTrack;
 
 class Frei0rEffect : public IVideoEffect
 {
@@ -54,6 +55,7 @@ class Frei0rEffect : public IVideoEffect
 		FilterData* getFilterData();
 		void setFilterData( FilterData* );
 		const char* identifier();
+		void setAutomation( AutoTrack* track, int param_index );
 	private:
 		f0r_instance_t m_instance;
 		unsigned char *m_tmpFrame;
@@ -70,6 +72,7 @@ class Frei0rEffect : public IVideoEffect
 		f0r_plugin_info_t* m_info;
 		int m_w;
 		int m_h;
+		AutoTrack* m_auto_mappings[30];
 };
 
 } /* namespace nle */

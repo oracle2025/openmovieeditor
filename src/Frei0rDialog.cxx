@@ -24,6 +24,7 @@
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Slider.H>
 #include <FL/Fl_Pixmap.H>
+#include <cassert>
 
 #include "Frei0rDialog.H"
 #include "Frei0rEffect.H"
@@ -32,6 +33,9 @@
 #include "VideoViewGL.H"
 #include "global_includes.H"
 #include "frei0r.xpm"
+#include "Timeline.H"
+#include "AutoTrack.H"
+#include <FL/Fl_Menu_Item.H>
 
 namespace nle
 {
@@ -66,6 +70,57 @@ static void closeCallback( Fl_Widget*, void* data ) {
 //	i->window()->hide();
 	Frei0rDialog* dlg = (Frei0rDialog*)data;
 	delete dlg;
+}
+static void mapButtonCallback( Fl_Widget* w, void* data ) {
+	callback_info* info = (callback_info*)data;
+	Frei0rDialog* dlg = info->dialog;
+	track_node* tracks = g_timeline->getTracks();
+	int auttrk_count = 0;
+	while ( tracks ) {
+		if ( dynamic_cast<AutoTrack*>(tracks->track) ) {
+			auttrk_count++;
+		}
+		tracks = tracks->next;
+	}
+	Fl_Menu_Item map_menu[auttrk_count+1];
+	for ( int i = 0; i < auttrk_count; i++ ) {
+		map_menu[i].text = "Auto Track";
+		map_menu[i].shortcut_ = 0;
+		map_menu[i].callback_ = (Fl_Callback*)0;
+		map_menu[i].user_data_ = 0;
+		map_menu[i].flags = 0;
+		map_menu[i].labeltype_ = FL_NORMAL_LABEL;
+		map_menu[i].labelfont_ = FL_HELVETICA;
+		map_menu[i].labelsize_ = 14;
+		map_menu[i].labelcolor_ = FL_BLACK;
+	}
+	map_menu[auttrk_count].text = 0;
+	Fl_Menu_Item* r = (Fl_Menu_Item*)map_menu->popup( w->x(), w->y() + w->h() );
+	if ( r ) {
+		cout << "trying to find Auto Track" << endl;
+		int c = 0;
+		while( r != &map_menu[c] ) {
+			c++;
+		}
+		cout << "c " << c << endl;
+		tracks = g_timeline->getTracks();
+		auttrk_count = 0;
+		while ( tracks ) {
+			if ( dynamic_cast<AutoTrack*>(tracks->track) ) {
+				if ( auttrk_count == c ) {
+					break;
+				}
+				auttrk_count++;
+			}
+			tracks = tracks->next;
+		}
+		if ( tracks ) {
+			cout << "Auto Track associated" << endl;
+			AutoTrack* at = dynamic_cast<AutoTrack*>(tracks->track);
+			assert(at);
+			info->dialog->setAutomation( info->number, at );
+		}
+	}
 }
 
 Frei0rDialog::Frei0rDialog( Frei0rEffect* effect )
@@ -113,7 +168,7 @@ Frei0rDialog::Frei0rDialog( Frei0rEffect* effect )
 		switch ( pinfo.type ) {
 			case F0R_PARAM_DOUBLE: //Seems to be always between 0.0 and 1.0
 				{
-				Fl_Slider* o = new Fl_Slider( x, y, w, h, pinfo.name );
+				Fl_Slider* o = new Fl_Slider( x, y, w - 25, h, pinfo.name );
 				o->type( 5 );
 				o->callback( doubleCallback, &(m_infostack[i]) );
 				o->align(FL_ALIGN_LEFT);
@@ -121,6 +176,8 @@ Frei0rDialog::Frei0rDialog( Frei0rEffect* effect )
 				f0r_param_double dvalue;
 				m_effect->getValue( &dvalue, i );
 				o->value( dvalue );
+				Fl_Button* b = new Fl_Button( x + w - 25, y, 25, h, "@2>" );
+				b->callback( mapButtonCallback, &(m_infostack[i]) ); /* Where to specify the parameter? Create a custom button class */
 				break;
 				}
 			case F0R_PARAM_BOOL:
@@ -199,6 +256,10 @@ void Frei0rDialog::setPositionY( int num, double val )
 	m_effect->setValue( &pos, num );
 	g_videoView->redraw();
 }
-
+void Frei0rDialog::setAutomation( int num, AutoTrack* track )
+{
+	m_effect->setAutomation( track, num );
+	g_videoView->redraw();
+}
 
 } /* namespace nle */

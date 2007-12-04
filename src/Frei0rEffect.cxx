@@ -26,6 +26,7 @@
 #include "globals.H"
 #include "Frei0rDialog.H"
 #include "render_helper.H"
+#include "AutoTrack.H"
 
 namespace nle
 {
@@ -72,6 +73,9 @@ if ( g_INTERLACING ) {
 	m_framestruct.crop_right = 0;
 	m_framestruct.crop_top = 0;
 	m_framestruct.crop_bottom = 0;
+	for ( int i = 0; i < 30; i++ ) {
+		m_auto_mappings[i] = 0;
+	}
 
 }
 Frei0rEffect::~Frei0rEffect()
@@ -86,6 +90,16 @@ Frei0rEffect::~Frei0rEffect()
 }
 frame_struct* Frei0rEffect::getFrame( frame_struct* frame, int64_t position )
 {
+	//TODO: Check for Parameter Automations, and apply the current value
+	for ( int i = numParams() - 1; i >= 0; i-- ) {
+		if ( m_auto_mappings[i] ) {
+			double dval;
+			f0r_param_double dvalue;
+			dval = m_auto_mappings[i]->getValue( position );
+			dvalue = dval;
+			setValue( &dvalue, i );
+		}
+	}
 	//TODO: Check if interlaced and if Filter needs separate fields, then
 	//perform conversion
 	m_framestruct.pixel_aspect_ratio = frame->pixel_aspect_ratio;
@@ -295,6 +309,10 @@ const char* Frei0rEffect::identifier()
 	string result = "effect:frei0r:";
 	result += name();
 	return result.c_str(); //TODO: this is not OK?
+}
+void Frei0rEffect::setAutomation( AutoTrack* track, int param_index )
+{
+	m_auto_mappings[param_index] = track;
 }
 
 } /* namespace nle */

@@ -1,6 +1,6 @@
-/* Frei0rDialog.H
+/*  AutoDragHandler.H
  *
- *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,46 +17,43 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _FREI0R_DIALOG_H_
-#define _FREI0R_DIALOG_H_
+#ifndef _AUTO_DRAG_HANDLER_H_
+#define _AUTO_DRAG_HANDLER_H_
 
-#include "IEffectDialog.H"
-
-class Fl_Double_Window;
+#include "DragHandler.H"
+#include "Rect.H"
 
 namespace nle
 {
 
-class Frei0rDialog;
-
-typedef struct _callback_info {
-	Frei0rDialog* dialog;
-	int number;
-	double x, y;
-} callback_info;
-
-
-class Frei0rEffect;
+struct _auto_node;
 class AutoTrack;
+class Command;
 
-class Frei0rDialog : public IEffectDialog
+class AutoDragHandler : public DragHandler
 {
 	public:
-		Frei0rDialog( Frei0rEffect* effect );
-		~Frei0rDialog();
-		void show();
-		int shown();
-		void setDouble( int num, double val );
-		void setBool( int num, bool val );
-		void setPositionX( int num, double val );
-		void setPositionY( int num, double val );
-		void setAutomation( int num, AutoTrack* track );
+		AutoDragHandler( AutoTrack* track, const Rect& rect, int x_off, int y_off );
+		~AutoDragHandler();
+		void OnDrag( int x, int y );
+		void OnDrop( int x, int y );
 	private:
-		Fl_Double_Window* m_dialog;
-		Frei0rEffect* m_effect;
-		callback_info* m_infostack;
+		bool m_dragging;
+		Rect m_outline;
+		struct _auto_node* m_node;
+		struct _auto_node* m_node_before;
+		bool m_firstNode;
+		bool m_lastNode;
+		int m_x_off;
+		int m_y_off;
+		AutoTrack* m_autoTrack;
+		bool m_shift;
+		struct _auto_node* m_nodesCopy;
+		struct _auto_node* m_nodesOriginal;
+		bool m_removed;
+		int m_node_number;
 };
 
 } /* namespace nle */
+#endif /* _AUTO_DRAG_HANDLER_H_ */
 
-#endif /* _FREI0R_DIALOG_H_ */

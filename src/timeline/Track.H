@@ -41,7 +41,8 @@ typedef struct clip_node_ {
 
 enum Track_Types {
 	TRACK_TYPE_VIDEO = 0,
-	TRACK_TYPE_AUDIO = 1
+	TRACK_TYPE_AUDIO = 1,
+	TRACK_TYPE_AUTO = 2
 };
 
 class Track : public ClipIdProvider

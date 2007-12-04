@@ -261,7 +261,11 @@ openmovieeditor_SOURCES = nle.cxx\
 	Frei0rColorButton.H\
 	Frei0rColorButton.cxx\
 	Frei0rBoolButton.H\
-	Frei0rBoolButton.cxx
+	Frei0rBoolButton.cxx\
+	AutoTrack.H\
+	AutoTrack.cxx\
+	AutoDragHandler.H\
+	AutoDragHandler.cxx
 	
 
 

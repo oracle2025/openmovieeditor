@@ -24,6 +24,7 @@
 #include "Timeline.H"
 #include "VideoTrack.H"
 #include "AudioTrack.H"
+#include "AutoTrack.H"
 
 
 namespace nle
@@ -54,6 +55,9 @@ void AddTrackCommand::doo()
 			break;
 		case TRACK_TYPE_AUDIO:
 			track = new AudioTrack( g_timeline, m_track );
+			break;
+		case TRACK_TYPE_AUTO:
+			track = new AutoTrack( m_track );
 			break;
 	}
 	if ( track ) {

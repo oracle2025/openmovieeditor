@@ -96,6 +96,8 @@ private:
   static void cb_Add(Fl_Menu_*, void*);
   void cb_Add1_i(Fl_Menu_*, void*);
   static void cb_Add1(Fl_Menu_*, void*);
+  void cb_Add2_i(Fl_Menu_*, void*);
+  static void cb_Add2(Fl_Menu_*, void*);
   void cb_4_i(Fl_Menu_*, void*);
   static void cb_4(Fl_Menu_*, void*);
   void cb_16_i(Fl_Menu_*, void*);
