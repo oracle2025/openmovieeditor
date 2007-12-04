@@ -1085,7 +1085,7 @@ NleUI::NleUI() {
               clip_folder_out = new Fl_Output(150, 115, 205, 25, "Folder");
               clip_decoder_out = new Fl_Output(150, 145, 205, 25, "Decoder");
               clip_framerate_out = new Fl_Output(150, 175, 205, 25, "Framerate");
-              clip_aspect_out = new Fl_Output(150, 205, 205, 25, "Aspect");
+              clip_aspect_out = new Fl_Output(150, 205, 205, 25, "Pixel Aspect");
               clip_interlacing_out = new Fl_Output(150, 235, 205, 25, "Interlacing");
               { Fl_Box* o = new Fl_Box(155, 265, 80, 30);
                 Fl_Group::current()->resizable(o);

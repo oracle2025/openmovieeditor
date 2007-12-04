@@ -995,8 +995,10 @@ void TimelineView::updateEffectDisplay()
 			interlacing = "bottom field first";
 		}
 		string aspect;
+		frame_struct frame;
+		guess_aspect( vidclip->w(), vidclip->h(), &frame );
 		stringstream aspectstream;
-		aspectstream << vidclip->aspectRatio();
+		aspectstream << frame.pixel_aspect_ratio;
 		aspect = aspectstream.str();
 		string decoder = "none";
 		if ( dynamic_cast<VideoFileQT*>(vidclip->file()) ) {

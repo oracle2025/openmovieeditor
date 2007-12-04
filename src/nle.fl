@@ -600,7 +600,7 @@ m_timelineView->titles_text( titles_text->value() );} open
                   xywh {150 175 205 25}
                 }
                 Fl_Output clip_aspect_out {
-                  label Aspect
+                  label {Pixel Aspect} selected
                   xywh {150 205 205 25}
                 }
                 Fl_Output clip_interlacing_out {
@@ -923,8 +923,7 @@ clip_folder_out->value( folder );
 clip_decoder_out->value( decoder );
 clip_framerate_out->value( framerate );
 clip_aspect_out->value( aspect );
-clip_interlacing_out->value( interlacing );} {selected
-    }
+clip_interlacing_out->value( interlacing );} {}
   }
 } 
 

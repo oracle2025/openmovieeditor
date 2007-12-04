@@ -158,6 +158,10 @@ void guess_aspect( int w, int h, frame_struct* frame )
 		frame->pixel_aspect_ratio = 0.9117;
 		frame->pixel_w = 4320;
 		frame->pixel_h = 4739;
+	} else {
+		frame->pixel_aspect_ratio = 1.0;
+		frame->pixel_w = 1;
+		frame->pixel_h = 1;
 	}
 }
 void convert_pixel_aspect_to_pixel_w_h( float in, int& pw, int& ph )
