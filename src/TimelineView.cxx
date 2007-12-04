@@ -22,13 +22,14 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <cassert>
-
+#include <sstream>
 
 #include <FL/Fl.H>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Window.H>
 #include <FL/fl_draw.H>
 #include <FL/Fl_Help_Dialog.H>
+#include <FL/filename.H>
 
 #include "sl/sl.h"
 
@@ -62,6 +63,8 @@
 #include "ColorCurveFactory.H"
 #include "AutoTrack.H"
 #include "AutoDragHandler.H"
+#include "VideoFileQT.H"
+#include "VideoFileFfmpeg.H"
 
 #include "audio.xpm"
 #include "video.xpm"
@@ -980,6 +983,33 @@ void TimelineView::updateEffectDisplay()
 	if ( !m_selectedClips || m_selectedClips->next ) {
 		g_ui->m_effectMenu->deactivate();
 		return;
+	}
+	VideoClip* vidclip = dynamic_cast<VideoClip*>( m_selectedClips->clip );
+	if ( vidclip ) {
+		string interlacing = "none";
+		if ( vidclip->interlacing() == INTERLACE_PROGRESSIVE ) {
+			interlacing = "progressive";
+		} else if ( vidclip->interlacing() == INTERLACE_TOP_FIELD_FIRST ) {
+			interlacing = "top field first";
+		} else if ( vidclip->interlacing() == INTERLACE_BOTTOM_FIELD_FIRST ) {
+			interlacing = "bottom field first";
+		}
+		string aspect;
+		stringstream aspectstream;
+		aspectstream << vidclip->aspectRatio();
+		aspect = aspectstream.str();
+		string decoder = "none";
+		if ( dynamic_cast<VideoFileQT*>(vidclip->file()) ) {
+			decoder = "libquicktime";
+		} else if ( dynamic_cast<VideoFileFfmpeg*>(vidclip->file()) ) {
+			decoder = "ffmpeg";
+		}
+		string framerate;
+		stringstream frameratestream;
+		
+		frameratestream << ( (float)NLE_TIME_BASE / (float)vidclip->file()->ticksPerFrame() );
+		framerate = frameratestream.str();
+		g_ui->activate_clip( fl_filename_name(vidclip->filename().c_str()), vidclip->filename().c_str(), decoder.c_str(), framerate.c_str(), aspect.c_str(), interlacing.c_str() );
 	}
 	FilterClip* vc = dynamic_cast<FilterClip*>( m_selectedClips->clip );
 	if ( !vc ) {

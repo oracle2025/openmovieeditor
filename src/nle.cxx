@@ -1018,6 +1018,7 @@ NleUI::NleUI() {
               o->end();
             }
             { Fl_Group* o = titles_tab = new Fl_Group(0, 75, 365, 230, "Titles");
+              o->hide();
               o->deactivate();
               { Fl_Input* o = titles_text = new Fl_Input(205, 80, 155, 220);
                 o->type(4);
@@ -1076,6 +1077,18 @@ NleUI::NleUI() {
                 o->menu(menu_titles_font);
                 }
                 o->end();
+              }
+              o->end();
+            }
+            { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Clip");
+              clip_filename_out = new Fl_Output(150, 85, 205, 25, "Filename");
+              clip_folder_out = new Fl_Output(150, 115, 205, 25, "Folder");
+              clip_decoder_out = new Fl_Output(150, 145, 205, 25, "Decoder");
+              clip_framerate_out = new Fl_Output(150, 175, 205, 25, "Framerate");
+              clip_aspect_out = new Fl_Output(150, 205, 205, 25, "Aspect");
+              clip_interlacing_out = new Fl_Output(150, 235, 205, 25, "Interlacing");
+              { Fl_Box* o = new Fl_Box(155, 265, 80, 30);
+                Fl_Group::current()->resizable(o);
               }
               o->end();
             }
@@ -1395,6 +1408,15 @@ g_firstButton = firstButton;
 g_lastButton = lastButton;
 g_forwardButton = forwardButton;
 g_backButton = backButton;
+}
+
+void NleUI::activate_clip( const char* filename, const char* folder, const char* decoder, const char* framerate, const char* aspect, const char* interlacing ) {
+  clip_filename_out->value( filename );
+clip_folder_out->value( folder );
+clip_decoder_out->value( decoder );
+clip_framerate_out->value( framerate );
+clip_aspect_out->value( aspect );
+clip_interlacing_out->value( interlacing );
 }
 Flmm_Scalebar* g_scrollBar;
 
