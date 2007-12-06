@@ -50,6 +50,7 @@ class Frei0rDialog : public IEffectDialog
 		void setBool( int num, bool val );
 		void setPositionX( int num, double val );
 		void setPositionY( int num, double val );
+		void setString( int num, const char* val );
 		void setAutomation( int num, AutoTrack* track );
 	private:
 		Fl_Double_Window* m_dialog;

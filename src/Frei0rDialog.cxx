@@ -23,6 +23,7 @@
 #include <FL/Fl_Spinner.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Slider.H>
+#include <FL/Fl_Input.H>
 #include <FL/Fl_Pixmap.H>
 #include <cassert>
 
@@ -48,6 +49,14 @@ static void doubleCallback( Fl_Widget* i, void* v )
 	callback_info* info = (callback_info*)v;
 	info->dialog->setDouble( info->number, vi->value() );
 }
+static void stringCallback( Fl_Widget* i, void* v )
+{
+	Fl_Input* fi = dynamic_cast<Fl_Input*>(i);
+	callback_info* info = (callback_info*)v;
+	cout << fi->value() << endl;
+	info->dialog->setString( info->number, fi->value() );
+}
+
 static void boolCallback( Fl_Widget* i, void* v )
 {
 	Fl_Check_Button* vi = dynamic_cast<Fl_Check_Button*>(i);
@@ -194,10 +203,18 @@ Frei0rDialog::Frei0rDialog( Frei0rEffect* effect )
 				break;
 			case F0R_PARAM_POSITION:
 				{
-				Fl_Spinner* sx = new Fl_Spinner( x, y, 150, h, pinfo.name);
-				Fl_Spinner* sy = new Fl_Spinner( x + 150, y, 150, h );
+				Fl_Spinner* sx = new Fl_Spinner( x, y, 110, h, pinfo.name);
+				Fl_Spinner* sy = new Fl_Spinner( x + 115, y, 110, h );
 				sx->callback( xCallback, &(m_infostack[i]) );
 				sy->callback( yCallback, &(m_infostack[i]) );
+				break;
+				}
+			case F0R_PARAM_STRING:
+				{
+				Fl_Input* o = new Fl_Input( x, y, w, h, pinfo.name );
+				o->align(FL_ALIGN_LEFT);
+				o->tooltip( pinfo.explanation );
+				o->callback( stringCallback, &(m_infostack[i]) );
 				break;
 				}
 			default:
@@ -256,6 +273,14 @@ void Frei0rDialog::setPositionY( int num, double val )
 	m_effect->setValue( &pos, num );
 	g_videoView->redraw();
 }
+void Frei0rDialog::setString( int num, const char* val )
+{
+	f0r_param_string *fstr;
+	fstr = (char*)val;
+	m_effect->setValue( fstr, num );
+	g_videoView->redraw();
+}
+
 void Frei0rDialog::setAutomation( int num, AutoTrack* track )
 {
 	m_effect->setAutomation( track, num );

@@ -193,7 +193,6 @@ int main( int argc, char** argv )
 	Fl::background( 93, 93, 114 );
 	Fl::foreground( 255, 255, 255 );
 	Fl::set_color( FL_BLACK, 200, 200, 200 );
-
 //	Fl::lock();
 	
 	nle::g_audio_codec_info = lqt_query_registry( 1, 0, 1, 0 );
