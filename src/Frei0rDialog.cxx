@@ -215,6 +215,12 @@ Frei0rDialog::Frei0rDialog( Frei0rEffect* effect )
 				o->align(FL_ALIGN_LEFT);
 				o->tooltip( pinfo.explanation );
 				o->callback( stringCallback, &(m_infostack[i]) );
+				char *txt = new char[1024];
+				if ( txt != NULL ) {
+					m_effect->getValue( txt, i );
+					o->value( txt );
+					delete [] txt;
+				}
 				break;
 				}
 			default:
