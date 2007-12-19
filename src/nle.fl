@@ -600,7 +600,7 @@ m_timelineView->titles_text( titles_text->value() );} open
                   xywh {150 175 205 25}
                 }
                 Fl_Output clip_aspect_out {
-                  label {Pixel Aspect} selected
+                  label {Pixel Aspect}
                   xywh {150 205 205 25}
                 }
                 Fl_Output clip_interlacing_out {
@@ -1908,13 +1908,21 @@ frame_size_w->value(640);
 frame_size_h->value(480);
 video_codec_menu->value(0);
 audio_codec_menu->value(2);
-pixel_aspect_ratio->value("1");} {}
+pixel_aspect_ratio->value("1");
+
+audio_codec = audio_codec_menu->menu()[audio_codec_menu->value()].user_data();
+m_preset->setAudioCodec( (lqt_codec_info_t*)audio_codec );
+
+video_codec = video_codec_menu->menu()[video_codec_menu->value()].user_data();
+m_preset->setVideoCodec( (lqt_codec_info_t*)video_codec );} {selected
+    }
   }
   Function {shown()} {return_type int
   } {
     code {return dialog_window->shown();} {}
   }
-  Function {show()} {} {
+  Function {show()} {open
+  } {
     code {dialog_window->show();} {}
   }
   Function {~CustomFormatDialog()} {open

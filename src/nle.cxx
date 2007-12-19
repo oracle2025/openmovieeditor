@@ -7197,6 +7197,12 @@ frame_size_h->value(480);
 video_codec_menu->value(0);
 audio_codec_menu->value(2);
 pixel_aspect_ratio->value("1");
+
+audio_codec = audio_codec_menu->menu()[audio_codec_menu->value()].user_data();
+m_preset->setAudioCodec( (lqt_codec_info_t*)audio_codec );
+
+video_codec = video_codec_menu->menu()[video_codec_menu->value()].user_data();
+m_preset->setVideoCodec( (lqt_codec_info_t*)video_codec );
 }
 
 int CustomFormatDialog::shown() {
