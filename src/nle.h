@@ -491,6 +491,7 @@ private:
 public:
   Fl_Input_Choice *pixel_aspect_ratio;
   static Fl_Menu_Item menu_pixel_aspect_ratio[];
+  Fl_Value_Input *audio_bitrate;
   int shown();
   void show();
   ~CustomFormatDialog();

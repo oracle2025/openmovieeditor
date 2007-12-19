@@ -60,7 +60,10 @@ void setAudioCodecMenu( Fl_Choice* menu )
 	lqt_codec_info_t** info = g_audio_codec_info;
 	menu->clear();
 	for ( int i = 0; info[i]; i++ ) {
-		menu->add( escape_slash(info[i]->long_name).c_str(), 0, 0, info[i] );
+		string name = info[i]->long_name;
+		name += " - ";
+		name += info[i]->name;
+		menu->add( escape_slash(name).c_str(), 0, 0, info[i] );
 	}
 }
 void setVideoCodecMenu( Fl_Choice* menu )
@@ -68,7 +71,10 @@ void setVideoCodecMenu( Fl_Choice* menu )
 	lqt_codec_info_t** info = g_video_codec_info;
 	menu->clear();
 	for ( int i = 0; info[i]; i++ ) {
-		menu->add( escape_slash(info[i]->long_name).c_str(), 0, 0, info[i] );
+		string name = info[i]->long_name;
+		name += " - ";
+		name += info[i]->name;
+		menu->add( escape_slash(name).c_str(), 0, 0, info[i] );
 	}
 }
 

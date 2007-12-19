@@ -7168,12 +7168,12 @@ m_preset = new nle::EncodingPreset();
       o->labelfont(1);
       o->align(FL_ALIGN_TOP_LEFT);
     }
-    { Fl_Check_Button* o = new Fl_Check_Button(125, 130, 205, 25, "Render Video");
+    { Fl_Check_Button* o = new Fl_Check_Button(20, 100, 235, 25, "Render Video");
       o->down_box(FL_DOWN_BOX);
       o->value(1);
       o->deactivate();
     }
-    { Fl_Check_Button* o = new Fl_Check_Button(125, 310, 205, 25, "Render Audio");
+    { Fl_Check_Button* o = new Fl_Check_Button(20, 250, 230, 25, "Render Audio");
       o->down_box(FL_DOWN_BOX);
       o->value(1);
       o->deactivate();
@@ -7183,6 +7183,16 @@ m_preset = new nle::EncodingPreset();
     }
     { Fl_Input_Choice* o = pixel_aspect_ratio = new Fl_Input_Choice(495, 190, 175, 25, "Pixel Aspect Ratio");
       o->menu(menu_pixel_aspect_ratio);
+    }
+    { Fl_Value_Input* o = new Fl_Value_Input(255, 130, 75, 25, "Bitrate (kbps)");
+      o->maximum(10000);
+      o->step(1);
+      o->value(8192);
+    }
+    { Fl_Value_Input* o = audio_bitrate = new Fl_Value_Input(255, 310, 75, 25, "Bitrate (kbps)");
+      o->maximum(10000);
+      o->step(1);
+      o->value(128);
     }
     o->set_modal();
     o->end();

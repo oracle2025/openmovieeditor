@@ -1858,11 +1858,11 @@ o->window()->hide();}
       }
       Fl_Check_Button {} {
         label {Render Video}
-        xywh {125 130 205 25} down_box DOWN_BOX value 1 deactivate
+        xywh {20 100 235 25} down_box DOWN_BOX value 1 deactivate
       }
       Fl_Check_Button {} {
         label {Render Audio}
-        xywh {125 310 205 25} down_box DOWN_BOX value 1 deactivate
+        xywh {20 250 230 25} down_box DOWN_BOX value 1 deactivate
       }
       Fl_Button {} {
         label Cancel
@@ -1898,6 +1898,14 @@ o->window()->hide();}
           xywh {0 0 100 20}
         }
       }
+      Fl_Value_Input {} {
+        label {Bitrate (kbps)}
+        xywh {255 130 75 25} maximum 10000 step 1 value 8192
+      }
+      Fl_Value_Input audio_bitrate {
+        label {Bitrate (kbps)} selected
+        xywh {255 310 75 25} maximum 10000 step 1 value 128
+      }
     }
     code {nle::setAudioCodecMenu( audio_codec_menu );
 nle::setVideoCodecMenu( video_codec_menu );
@@ -1914,8 +1922,7 @@ audio_codec = audio_codec_menu->menu()[audio_codec_menu->value()].user_data();
 m_preset->setAudioCodec( (lqt_codec_info_t*)audio_codec );
 
 video_codec = video_codec_menu->menu()[video_codec_menu->value()].user_data();
-m_preset->setVideoCodec( (lqt_codec_info_t*)video_codec );} {selected
-    }
+m_preset->setVideoCodec( (lqt_codec_info_t*)video_codec );} {}
   }
   Function {shown()} {return_type int
   } {
