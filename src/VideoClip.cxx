@@ -49,7 +49,6 @@ VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A,
 
 
 	guess_aspect( w(), h(), &m_aspectHeight, &m_aspectWidth, &m_aspectRatio, &m_analogBlank, 0, 0 );
-	cout << m_aspectRatio<< endl;
 	setEffects( data );
 
 	if ( track->render_mode() ) { // Render mode
