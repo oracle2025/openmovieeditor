@@ -112,6 +112,24 @@ int TimelineView::handle( int event )
 	int _x = Fl::event_x();
 	int _y = Fl::event_y() - y();
 	switch ( event ) {
+		case FL_MOUSEWHEEL:
+			if ( Fl::event_shift() ) {
+				float new_zoom = SwitchBoard::i()->zoom() - ( Fl::event_dy() * SwitchBoard::i()->zoom() / 2 );
+				if ( new_zoom < 1.0 ) {
+					new_zoom = 1.0;
+				}
+				SwitchBoard::i()->zoom( new_zoom );
+			} else if ( Fl::event_ctrl() ) {
+				move_cursor( m_stylusPosition + ( Fl::event_dy() * 500000000 / SwitchBoard::i()->zoom() ) );
+			} else {
+				m_scrollPosition += Fl::event_dy();
+				if ( m_scrollPosition < 0 ) {
+					m_scrollPosition = 0;
+				}
+			}
+			adjustScrollbar();
+			redraw();
+			return 1;
 		case FL_PASTE:
 			{
 				Track* t = get_track( _x, _y );
