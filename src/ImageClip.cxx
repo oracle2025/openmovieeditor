@@ -41,8 +41,16 @@ ImageClip::ImageClip( Track* track, int64_t position, string filename, int64_t l
 		return;
 	}
 	if ( m_image->w() > 1024 || m_image->h() > 1024 ) {
-		ERROR_DETAIL( "This image is to big, maximum is 1024x1024" );
-		return;
+		int m_scaled_w, m_scaled_h;
+		if ( m_image->w() > m_image->h() ) {
+			m_scaled_w = 1024;
+			m_scaled_h = m_image->h() * 1024 / m_image->w();
+		} else {
+			m_scaled_w = m_image->w() * 1024 / m_image->h();
+			m_scaled_h = 1024;
+		}
+		m_image->release();
+		m_image = Fl_Shared_Image::get( filename.c_str(), m_scaled_w, m_scaled_h );
 	}
 
 
