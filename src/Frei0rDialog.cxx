@@ -177,7 +177,7 @@ Frei0rDialog::Frei0rDialog( Frei0rEffect* effect )
 		switch ( pinfo.type ) {
 			case F0R_PARAM_DOUBLE: //Seems to be always between 0.0 and 1.0
 				{
-				Fl_Slider* o = new Fl_Slider( x, y, w - 25, h, pinfo.name );
+				Fl_Slider* o = new Fl_Slider( x, y, w /*- 25*/, h, pinfo.name );
 				o->type( 5 );
 				o->callback( doubleCallback, &(m_infostack[i]) );
 				o->align(FL_ALIGN_LEFT);
@@ -185,8 +185,10 @@ Frei0rDialog::Frei0rDialog( Frei0rEffect* effect )
 				f0r_param_double dvalue;
 				m_effect->getValue( &dvalue, i );
 				o->value( dvalue );
+				
+				/*
 				Fl_Button* b = new Fl_Button( x + w - 25, y, 25, h, "@2>" );
-				b->callback( mapButtonCallback, &(m_infostack[i]) ); /* Where to specify the parameter? Create a custom button class */
+				b->callback( mapButtonCallback, &(m_infostack[i]) ); */ /* Where to specify the parameter? Create a custom button class */
 				break;
 				}
 			case F0R_PARAM_BOOL:

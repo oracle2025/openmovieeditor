@@ -23,7 +23,7 @@ if ( Fl::event()==FL_CLOSE ) {
       xywh {410 200 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
-        label {Black Borders} open
+        label {Black Borders} open selected
         xywh {0 0 530 25}
       } {
         Submenu {} {
@@ -185,7 +185,7 @@ m_timelineView->redraw();}
           MenuItem {} {
             label {Add Automation Track}
             callback {m_timelineView->add_track( nle::TRACK_TYPE_AUTO );}
-            xywh {0 0 100 20}
+            xywh {0 0 100 20} hide
           }
         }
         Submenu {} {
@@ -1324,7 +1324,7 @@ if ( r == 0 ) {
 
 
 go = true;
-o->window()->hide();} selected
+o->window()->hide();}
         xywh {290 365 245 25} hotspot
         code0 {\#include <sys/types.h>}
         code1 {\#include <sys/stat.h>}

@@ -338,7 +338,7 @@ Fl_Menu_Item NleUI::menu_Black[] = {
  {"&Tracks", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"Add Video Track", 0,  (Fl_Callback*)NleUI::cb_Add, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Add Audio Track", 0,  (Fl_Callback*)NleUI::cb_Add1, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"Add Automation Track", 0,  (Fl_Callback*)NleUI::cb_Add2, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Add Automation Track", 0,  (Fl_Callback*)NleUI::cb_Add2, 0, 16, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"P&references", 0,  0, 0, 80, FL_NORMAL_LABEL, 0, 14, 0},
  {"No SW Scaling", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},

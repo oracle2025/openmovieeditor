@@ -149,6 +149,7 @@ int main( int argc, char** argv )
 /*	nui.special_clips->add("Inkscape Title", nle::PL_VIDEO_SRC, "src:builtin:InkscapeClip" );*/
 	nui.special_clips->add("Volume Automations", nle::PL_AUDIO_FILTER, "filter:builtin:VolumeAutomations" );
 	nui.special_clips->add("Color Curves", nle::PL_VIDEO_EFFECT, "effect:builtin:ColorCurves" );
+	nui.special_clips->add("Node Compositing", nle::PL_VIDEO_EFFECT, "effect:builtin:NodeFilter" );
 
 /*	nle::ScaleCropTiltFilterFactory SCTFilterFactory;
 	nui.special_clips->add(SCTFilterFactory.name(), nle::PL_VIDEO_EFFECT, SCTFilterFactory.identifier() );*/
