@@ -118,7 +118,9 @@ int TimelineView::handle( int event )
 				if ( new_zoom < 1.0 ) {
 					new_zoom = 1.0;
 				}
+				int64_t new_scroll_position = llrint( ( ( float(_x - LEFT_TRACK_SPACING - x() ) / SwitchBoard::i()->zoom() ) + m_scrollPosition ) ) - llrint( ( ( float(_x - LEFT_TRACK_SPACING - x() ) / new_zoom ) ) );
 				SwitchBoard::i()->zoom( new_zoom );
+				m_scrollPosition = new_scroll_position;
 			} else if ( Fl::event_ctrl() ) {
 				move_cursor( m_stylusPosition + ( Fl::event_dy() * 500000000 / SwitchBoard::i()->zoom() ) );
 			} else {
