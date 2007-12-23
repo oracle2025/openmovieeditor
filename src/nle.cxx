@@ -6528,10 +6528,38 @@ void ExportDialog::cb_Encode_i(Fl_Return_Button* o, void*) {
 	fl_alert( "Please select a filename." );
 	return;
 }
+
+
+
+
 if ( presets_browser->value() == 0 ) {
 	fl_alert( "Please select a Format Preset." );
 	return;
 }
+
+
+char buffer[FL_PATH_MAX];
+strncpy( buffer, export_filename->value(), FL_PATH_MAX );
+buffer[FL_PATH_MAX-1] = '\0';
+
+nle::EncodingPreset* preset = (nle::EncodingPreset*)presets_browser->data(presets_browser->value());
+
+switch ( preset->m_file_type ) {
+	case LQT_FILE_QT:
+		fl_filename_setext( buffer, ".mov" );
+		break;
+	case LQT_FILE_AVI_ODML:
+		fl_filename_setext( buffer, ".avi" );
+		break;
+	case LQT_FILE_MP4:
+		fl_filename_setext( buffer, ".mp4" );
+		break;
+	case LQT_FILE_3GP:
+		fl_filename_setext( buffer, ".3gp" );
+		break;
+}
+export_filename->value( buffer );
+
 
 struct stat statbuf;
 int r = stat( export_filename->value(), &statbuf );
@@ -6911,8 +6939,12 @@ if ( preset->m_avi_odml ) {
 	quicktime_set_avi(qt, 1);
 	//qt = lqt_open_write ( export_filename->value(), LQT_FILE_AVI_ODML ); /* For new Libquicktime */
 } else {
+	
+#if (LQT_CODEC_API_VERSION & 0xffff) > 6
+	qt = lqt_open_write( export_filename->value(), preset->m_file_type ); /* For new Libquicktime */
+#else
 	qt = quicktime_open( (char*)export_filename->value(), 0, 1 );
-	//qt = lqt_open_write( export_filename->value(), LQT_FILE_QT ); /* For new Libquicktime */
+#endif
 }
 
 nle::video_format fmt;
@@ -7014,6 +7046,12 @@ void ExportDialog::show() {
 void CustomFormatDialog::cb_video_codec_menu_i(Fl_Choice* o, void*) {
   video_codec = o->menu()[o->value()].user_data();
 m_preset->setVideoCodec( (lqt_codec_info_t*)video_codec );
+video_bitrate->value( m_preset->bitrate() );
+if ( video_bitrate->value() < 0 ) {
+	video_bitrate->deactivate();
+} else {
+	video_bitrate->activate();
+};
 }
 void CustomFormatDialog::cb_video_codec_menu(Fl_Choice* o, void* v) {
   ((CustomFormatDialog*)(o->parent()->user_data()))->cb_video_codec_menu_i(o,v);
@@ -7029,6 +7067,7 @@ void CustomFormatDialog::cb_video_options_i(Fl_Button*, void*) {
 	dlg.codecOptions->show();
 	while (dlg.codecOptions->shown())
 		Fl::wait();
+	video_bitrate->value( m_preset->bitrate() );
 };
 }
 void CustomFormatDialog::cb_video_options(Fl_Button* o, void* v) {
@@ -7038,6 +7077,12 @@ void CustomFormatDialog::cb_video_options(Fl_Button* o, void* v) {
 void CustomFormatDialog::cb_audio_codec_menu_i(Fl_Choice* o, void*) {
   audio_codec = o->menu()[o->value()].user_data();
 m_preset->setAudioCodec( (lqt_codec_info_t*)audio_codec );
+audio_bitrate->value( m_preset->audiobitrate() );
+if ( audio_bitrate->value() < 0 ) {
+	audio_bitrate->deactivate();
+} else {
+	audio_bitrate->activate();
+};
 }
 void CustomFormatDialog::cb_audio_codec_menu(Fl_Choice* o, void* v) {
   ((CustomFormatDialog*)(o->parent()->user_data()))->cb_audio_codec_menu_i(o,v);
@@ -7053,6 +7098,7 @@ void CustomFormatDialog::cb_audio_options_i(Fl_Button*, void*) {
 	dlg.codecOptions->show();
 	while (dlg.codecOptions->shown())
 		Fl::wait();
+	audio_bitrate->value( m_preset->audiobitrate() );
 };
 }
 void CustomFormatDialog::cb_audio_options(Fl_Button* o, void* v) {
@@ -7103,6 +7149,28 @@ Fl_Menu_Item CustomFormatDialog::menu_pixel_aspect_ratio[] = {
  {"1.094 (PAL)", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"1.4587 (PAL 16:9)", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"1.333 (HDV 1440x1080)", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {0,0,0,0,0,0,0,0,0}
+};
+
+void CustomFormatDialog::cb_video_bitrate_i(Fl_Value_Input*, void*) {
+  m_preset->bitrate( video_bitrate->value() );
+}
+void CustomFormatDialog::cb_video_bitrate(Fl_Value_Input* o, void* v) {
+  ((CustomFormatDialog*)(o->parent()->user_data()))->cb_video_bitrate_i(o,v);
+}
+
+void CustomFormatDialog::cb_audio_bitrate_i(Fl_Value_Input*, void*) {
+  m_preset->audiobitrate( audio_bitrate->value() );
+}
+void CustomFormatDialog::cb_audio_bitrate(Fl_Value_Input* o, void* v) {
+  ((CustomFormatDialog*)(o->parent()->user_data()))->cb_audio_bitrate_i(o,v);
+}
+
+Fl_Menu_Item CustomFormatDialog::menu_lqt_container_menu[] = {
+ {"Quicktime (.mov)", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"AVI", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"MP4", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"3GP", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0}
 };
 
@@ -7184,15 +7252,21 @@ m_preset = new nle::EncodingPreset();
     { Fl_Input_Choice* o = pixel_aspect_ratio = new Fl_Input_Choice(495, 190, 175, 25, "Pixel Aspect Ratio");
       o->menu(menu_pixel_aspect_ratio);
     }
-    { Fl_Value_Input* o = new Fl_Value_Input(255, 130, 75, 25, "Bitrate (kbps)");
+    { Fl_Value_Input* o = video_bitrate = new Fl_Value_Input(255, 130, 75, 25, "Bitrate (kbps)");
       o->maximum(10000);
       o->step(1);
       o->value(8192);
+      o->callback((Fl_Callback*)cb_video_bitrate);
     }
     { Fl_Value_Input* o = audio_bitrate = new Fl_Value_Input(255, 310, 75, 25, "Bitrate (kbps)");
       o->maximum(10000);
       o->step(1);
       o->value(128);
+      o->callback((Fl_Callback*)cb_audio_bitrate);
+    }
+    { Fl_Choice* o = lqt_container_menu = new Fl_Choice(495, 220, 175, 25, "Container");
+      o->down_box(FL_BORDER_BOX);
+      o->menu(menu_lqt_container_menu);
     }
     o->set_modal();
     o->end();
@@ -7213,6 +7287,10 @@ m_preset->setAudioCodec( (lqt_codec_info_t*)audio_codec );
 
 video_codec = video_codec_menu->menu()[video_codec_menu->value()].user_data();
 m_preset->setVideoCodec( (lqt_codec_info_t*)video_codec );
+
+#if (LQT_CODEC_API_VERSION & 0xffff) <= 6
+lqt_container_menu->hide();
+#endif
 }
 
 int CustomFormatDialog::shown() {
@@ -7295,6 +7373,22 @@ switch ( frame_rate_choice->value() ) {
 
 preset->setFormat(&fmt);
 
+switch ( lqt_container_menu->value() ) {
+	case 0:
+		preset->m_file_type = LQT_FILE_QT;
+		break;
+	case 1:
+		preset->m_file_type = LQT_FILE_AVI_ODML;
+		break;
+	case 2:
+		preset->m_file_type = LQT_FILE_MP4;
+		break;
+	case 3:
+		preset->m_file_type = LQT_FILE_3GP;
+		break;
+	
+}
+
 return preset;
 }
 
@@ -7319,6 +7413,12 @@ for ( int i = 0; i < len; i++ ) {
 		video_codec_menu->value(i);
 		video_codec = codec_info;
 		m_preset->setVideoCodec( (lqt_codec_info_t*)video_codec );
+		video_bitrate->value( m_preset->bitrate() );
+		if ( video_bitrate->value() < 0 ) {
+			video_bitrate->deactivate();
+		} else {
+			video_bitrate->activate();
+		}
 		break;
 	}
 }
@@ -7331,6 +7431,12 @@ for ( int i = 0; i < len; i++ ) {
 		audio_codec_menu->value(i);
 		audio_codec = codec_info;
 		m_preset->setAudioCodec( (lqt_codec_info_t*)audio_codec );
+		audio_bitrate->value( m_preset->audiobitrate() );
+		if ( audio_bitrate->value() < 0 ) {
+			audio_bitrate->deactivate();
+		} else {
+			audio_bitrate->activate();
+		}
 		break;
 	}
 }
@@ -7354,6 +7460,21 @@ switch ( fmt.framerate.frame_duration ) {
 		break;
 	case 500: // 60
 		frame_rate_choice->value( 5 );
+		break;
+}
+
+switch ( m_preset->m_file_type ) {
+	case LQT_FILE_QT:
+		lqt_container_menu->value( 0 );
+		break;
+	case LQT_FILE_AVI_ODML:
+		lqt_container_menu->value( 1 );
+		break;
+	case LQT_FILE_MP4:
+		lqt_container_menu->value( 2 );
+		break;
+	case LQT_FILE_3GP:
+		lqt_container_menu->value( 3 );
 		break;
 }
 }

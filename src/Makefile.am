@@ -265,7 +265,8 @@ openmovieeditor_SOURCES = nle.cxx\
 	AutoTrack.H\
 	AutoTrack.cxx\
 	AutoDragHandler.H\
-	AutoDragHandler.cxx
+	AutoDragHandler.cxx\
+  lqt_bitrate_params.h
 	
 
 

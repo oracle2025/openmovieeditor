@@ -79,7 +79,8 @@ class ParameterValue
 
 #include "video_format.H"
 #include <string>
-
+#include <lqt.h>
+#include <lqt_version.h>
 
 
 namespace nle
@@ -100,7 +101,9 @@ class EncodingPreset
 		void clearCodecValues();
 		bool m_readonly;
 		bool m_avi_odml;
-		
+#if (LQT_CODEC_API_VERSION & 0xffff) > 6
+		lqt_file_type_t m_file_type;
+#endif
 		/* ----copied from CodecParameters----*/
 		void writeXML_CodecParameters( TiXmlElement* );
 		void readXML_CodecParameters( TiXmlElement* );
@@ -115,6 +118,10 @@ class EncodingPreset
 		void construct_CodecParameters( lqt_codec_info_t** audio, lqt_codec_info_t** video );
 		void construct_CodecParameters( lqt_codec_info_t** audio, lqt_codec_info_t** video, EncodingPreset* copy );
 		/* ----copied from CodecParameters----*/
+		int bitrate();
+		int audiobitrate();
+		void bitrate( int rate );
+		void audiobitrate( int rate );
 	private:
 		video_format m_format;
 		lqt_codec_info_t** lqt_audio_codecs;

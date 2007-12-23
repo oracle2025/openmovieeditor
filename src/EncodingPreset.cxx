@@ -342,6 +342,62 @@ lqt_parameter_value_t EncodingPreset::getVideoParameter( const char* key )
 	assert( p );
 	return p->value;
 }
+#include "lqt_bitrate_params.h"
+int EncodingPreset::bitrate()
+{
+	param_node* p = 0;
+	int i = 0;
+	while ( (!p) && lqt_bitrate_params[i][0] ) {
+		p = (param_node*)sl_map( m_currentVideoCodec->parameters, find_a_parameter, (void*)lqt_bitrate_params[i][1] );
+		i++;
+	}
+	if ( p ) {
+		return p->value.val_int;
+	} else {
+		return -1;
+	}
+}
+int EncodingPreset::audiobitrate()
+{
+	param_node* p = 0;
+	int i = 0;
+	while ( (!p) && lqt_bitrate_params[i][0] ) {
+		p = (param_node*)sl_map( m_currentAudioCodec->parameters, find_a_parameter, (void*)lqt_bitrate_params[i][1] );
+		i++;
+	}
+	if ( p ) {
+		return p->value.val_int;
+	} else {
+		return -1;
+	}
+}
+void EncodingPreset::bitrate( int rate )
+{
+	ParameterValue val( rate );
+	param_node* p = 0;
+	int i = 0;
+	while ( (!p) && lqt_bitrate_params[i][0] ) {
+		p = (param_node*)sl_map( m_currentVideoCodec->parameters, find_a_parameter, (void*)lqt_bitrate_params[i][1] );
+		i++;
+	}
+	if ( p ) {
+		return val.get( p->value );
+	}
+}
+void EncodingPreset::audiobitrate( int rate )
+{
+	ParameterValue val( rate );
+	param_node* p = 0;
+	int i = 0;
+	while ( (!p) && lqt_bitrate_params[i][0] ) {
+		p = (param_node*)sl_map( m_currentAudioCodec->parameters, find_a_parameter, (void*)lqt_bitrate_params[i][1] );
+		i++;
+	}
+	if ( p ) {
+		return val.get( p->value );
+	}
+}
+
 lqt_parameter_value_t EncodingPreset::getAudioParameter( const char* key )
 {
 	param_node* p = (param_node*)sl_map( m_currentAudioCodec->parameters, find_a_parameter, (void*)key );
@@ -571,6 +627,9 @@ EncodingPreset::EncodingPreset()
 	strcpy( m_format.name, "Default" );
 	m_readonly = false;
 	m_avi_odml = false;
+#if (LQT_CODEC_API_VERSION & 0xffff) > 6
+	m_file_type = LQT_FILE_QT;
+#endif
 	m_format.framerate.frame_duration = 1200;
 	m_format.framerate.timescale = 30000;
 	m_format.framerate.audio_frames_per_chunk = 19200;
@@ -590,6 +649,7 @@ EncodingPreset::EncodingPreset( EncodingPreset* preset )
 {
 	m_readonly = false;
 	m_avi_odml = false;
+	m_file_type = preset->m_file_type;
 	m_format = preset->m_format;
 	lqt_audio_codecs = g_audio_codec_info;//lqt_query_registry( 1, 0, 1, 0 );
 	lqt_video_codecs = g_video_codec_info;//lqt_query_registry( 0, 1, 1, 0 );
@@ -671,6 +731,30 @@ void EncodingPreset::writeXML( TiXmlElement* xml_node )
 	parameter = new TiXmlElement( "video_frames_per_chunk" );
 	xml_node->LinkEndChild( parameter );
 	parameter->SetAttribute( "value", m_format.framerate.video_frames_per_chunk );
+#if (LQT_CODEC_API_VERSION & 0xffff) > 6
+	switch ( m_file_type ) {
+		case LQT_FILE_QT:
+			parameter = new TiXmlElement( "file_type" );
+			xml_node->LinkEndChild( parameter );
+			parameter->SetAttribute( "value", "LQT_FILE_QT" );
+			break;
+		case LQT_FILE_AVI_ODML:
+			parameter = new TiXmlElement( "file_type" );
+			xml_node->LinkEndChild( parameter );
+			parameter->SetAttribute( "value", "LQT_FILE_AVI_ODML" );
+			break;
+		case LQT_FILE_MP4:
+			parameter = new TiXmlElement( "file_type" );
+			xml_node->LinkEndChild( parameter );
+			parameter->SetAttribute( "value", "LQT_FILE_MP4" );
+			break;
+		case LQT_FILE_3GP:
+			parameter = new TiXmlElement( "file_type" );
+			xml_node->LinkEndChild( parameter );
+			parameter->SetAttribute( "value", "LQT_FILE_3GP" );
+			break;
+	}
+#endif
 	writeXML_CodecParameters( xml_node );
 }
 void EncodingPreset::readXML( TiXmlElement* xml_node )
@@ -734,6 +818,21 @@ void EncodingPreset::readXML( TiXmlElement* xml_node )
 	if ( parameter ) {
 		parameter->Attribute( "value", &m_format.framerate.video_frames_per_chunk );
 	}
+#if (LQT_CODEC_API_VERSION & 0xffff) > 6
+	parameter = TiXmlHandle( xml_node ).FirstChildElement( "file_type" ).Element();
+	if ( parameter ) {
+		str = parameter->Attribute( "value" );
+		if ( strcmp( "LQT_FILE_QT", str ) == 0 ) {
+			m_file_type = LQT_FILE_QT;
+		} else if ( strcmp( "LQT_FILE_AVI_ODML", str ) == 0 ) {
+			m_file_type = LQT_FILE_AVI_ODML;
+		} else if ( strcmp( "LQT_FILE_MP4", str ) == 0 ) {
+			m_file_type = LQT_FILE_MP4;
+		} else if ( strcmp( "LQT_FILE_3GP", str ) == 0 ) {
+			m_file_type = LQT_FILE_3GP;
+		}
+	}
+#endif
 	readXML_CodecParameters( xml_node );
 	
 

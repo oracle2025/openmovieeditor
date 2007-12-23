@@ -491,7 +491,18 @@ private:
 public:
   Fl_Input_Choice *pixel_aspect_ratio;
   static Fl_Menu_Item menu_pixel_aspect_ratio[];
+  Fl_Value_Input *video_bitrate;
+private:
+  void cb_video_bitrate_i(Fl_Value_Input*, void*);
+  static void cb_video_bitrate(Fl_Value_Input*, void*);
+public:
   Fl_Value_Input *audio_bitrate;
+private:
+  void cb_audio_bitrate_i(Fl_Value_Input*, void*);
+  static void cb_audio_bitrate(Fl_Value_Input*, void*);
+public:
+  Fl_Choice *lqt_container_menu;
+  static Fl_Menu_Item menu_lqt_container_menu[];
   int shown();
   void show();
   ~CustomFormatDialog();
