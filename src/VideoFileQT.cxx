@@ -148,7 +148,11 @@ void VideoFileQT::read( unsigned char** rows, int w, int h )
 }
 void VideoFileQT::seek( int64_t position )
 {
-	quicktime_set_video_position( m_qt, position / m_ticksPerFrame, 0 );
+	int64_t p = position / m_ticksPerFrame;
+	if ( p >= quicktime_video_length( m_qt, 0 ) ) {
+		p = quicktime_video_length( m_qt, 0 ) - 1;
+	}
+	quicktime_set_video_position( m_qt, p, 0 );
 }
 int64_t VideoFileQT::ticksPerFrame()
 {
