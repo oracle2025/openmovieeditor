@@ -127,7 +127,7 @@ VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 	}*/
 
 	
-	int64_t len = m_formatContext->duration - m_formatContext->start_time;
+	int64_t len = m_formatContext->duration;
 	m_length = (int64_t)( len * NLE_TIME_BASE / AV_TIME_BASE ) - m_ticksPerFrame;
 #ifdef SWSCALE
 	pSWSCtx = sws_getContext(m_width, m_height, m_codecContext->pix_fmt, m_width, m_height, PIX_FMT_RGB24, SWS_BICUBIC, NULL, NULL, NULL);
@@ -206,7 +206,7 @@ void VideoFileFfmpeg::seek( int64_t position )
 {
 	avcodec_flush_buffers( m_codecContext );
 	int64_t timestamp = ( position * AV_TIME_BASE ) / (int64_t)NLE_TIME_BASE;
-	av_seek_frame( m_formatContext, -1, timestamp, 0 );
+	av_seek_frame( m_formatContext, -1, m_formatContext->start_time + timestamp, 0 );
 }
 void VideoFileFfmpeg::seekToFrame( int64_t frame )
 {
