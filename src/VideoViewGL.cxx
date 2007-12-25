@@ -64,12 +64,12 @@ VideoViewGL::~VideoViewGL()
 }
 
 static GLuint video_canvas[10];
-#define T_W_F 1024.0 
-#define T_H_F 1024.0
-#define T_W 1024 //368
-#define T_H 1024 //240
-#define TEXTURE_WIDTH 1024.0 
-#define TEXTURE_HEIGHT 1024.0
+#define T_W_F 2048.0 
+#define T_H_F 2048.0
+#define T_W 2048 //368
+#define T_H 2048 //240
+#define TEXTURE_WIDTH 2048.0 
+#define TEXTURE_HEIGHT 2048.0
 //static unsigned char pulldown_frame[3 * 1024 * 1024];
 
 void VideoViewGL::drawVideoBorder()
