@@ -202,11 +202,61 @@ void VideoFileFfmpeg::read( unsigned char** rows, int w, int h )
 	read();
 	scale_it( &m_framestruct, &fs );
 }
+/*
+http://lists.mplayerhq.hu/pipermail/ffmpeg-devel/2005-July/002320.html
+On Tuesday 2005 July 05 06:24, Steve Willis wrote:
+
+> I would also very much like some more information on this. I asked a
+> similar question last week, and am very grateful for the response. I am
+> a newcomer to avcodec/avformat, and could really use some tips or
+> example code on the best way to seek to a particular frame given its
+> time, even if that frame is not a keyframe. Could someone explain the
+> HURRY_UP mode that was suggested for quickly skipping from the nearest
+> keyframe to the actual frame I am seeking?
+>
+> Like Ian, I need some help understanding how to map a timestamp to a
+> framenumber as well.
+
+I don't know for sure is my answer.  However, I am having success treating the 
+units to av_seek_frame() as being in AV_TIME_BASE units (at present this is a 
+64 bit integer representing time in microseconds passed 
+AVFormatContext.start_time)
+
+As to seeking to a particular (non-key) frame, I believe the suggestion from 
+Rich Felker was that you seek to the nearest key frame using av_seek_frame() 
+then enable hurry_up mode until you hit the frame you want. e.g. (error 
+checking and initialisation ommitted)
+
+av_seek_frame( fmtCtx, -1, TARGET_PTS, AVSEEK_FLAG_BACKWARD );
+CodecCtx->hurry_up = 1;
+do {
+    av_read_frame( fmtCtx, &Packet );
+    // should really be checking that this is a video packet
+    MyPts = Packet.pts / Packet.duration *
+	AV_TIME_BASE / av_q2d( Stream->r_frame_rate);
+    if( MyPts > TARGET_PTS )
+        break;
+    avcodec_decode_video( CodecCtx, pFrame, &gotFrame, Packet.data,
+        Packet.size );
+    av_free_packet( &Packet );
+} while(1);
+CodecCtx->hurry_up = 0;
+// Now near TARGET_PTS with Packet ready for decode (and free)
+
+The calculation of MyPts is probably the answer to your question about frame 
+numbers and timestamp.  I am sure that I am not doing this in the correct 
+way, but it's working for me :-)
+
+Hope that's helped.
+
+
+
+*/
 void VideoFileFfmpeg::seek( int64_t position )
 {
 	avcodec_flush_buffers( m_codecContext );
 	int64_t timestamp = ( position * AV_TIME_BASE ) / (int64_t)NLE_TIME_BASE;
-	av_seek_frame( m_formatContext, -1, m_formatContext->start_time + timestamp, 0 );
+	av_seek_frame( m_formatContext, -1, m_formatContext->start_time + timestamp, AVSEEK_FLAG_BACKWARD );
 }
 void VideoFileFfmpeg::seekToFrame( int64_t frame )
 {
