@@ -65,6 +65,7 @@
 #include "AutoDragHandler.H"
 #include "VideoFileQT.H"
 #include "VideoFileFfmpeg.H"
+#include "VideoFileMpeg3.H"
 
 #include "audio.xpm"
 #include "video.xpm"
@@ -1025,6 +1026,8 @@ void TimelineView::updateEffectDisplay()
 			decoder = "libquicktime";
 		} else if ( dynamic_cast<VideoFileFfmpeg*>(vidclip->file()) ) {
 			decoder = "ffmpeg";
+		} else if ( dynamic_cast<VideoFileMpeg3*>(vidclip->file()) ) {
+			decoder = "libmpeg3";
 		}
 		string framerate;
 		stringstream frameratestream;

@@ -20,6 +20,7 @@
 #include "VideoFileQT.H"
 #include "VideoFileFfmpeg.H"
 #include "VideoFileFactory.H"
+#include "VideoFileMpeg3.H"
 #include <FL/filename.H>
 namespace nle
 {
@@ -30,7 +31,15 @@ IVideoFile* VideoFileFactory::get( string filename )
 	if ( strcmp( ext, ".JPEG" ) == 0 ||strcmp( ext, ".JPG" ) == 0 ||strcmp( ext, ".jpg" ) == 0 || strcmp( ext, ".png" ) == 0 || strcmp( ext, ".jpeg" ) == 0 ) {
 		return 0;
 	}
-	IVideoFile* vf = new VideoFileQT( filename );
+	IVideoFile* vf;
+	if ( strcmp( ext, ".TOC" ) == 0 || strcmp( ext, ".toc" ) == 0 ) {
+		vf = new VideoFileMpeg3( filename );
+		if ( vf->ok() ) {
+			return vf;
+		}
+		delete vf;
+	}
+	vf = new VideoFileQT( filename );
 	if ( vf->ok() ) {
 		return vf;
 	}
