@@ -32,6 +32,7 @@ IVideoFile* VideoFileFactory::get( string filename )
 		return 0;
 	}
 	IVideoFile* vf;
+#ifdef LIBMPEG3
 	if ( strcmp( ext, ".TOC" ) == 0 || strcmp( ext, ".toc" ) == 0 ) {
 		vf = new VideoFileMpeg3( filename );
 		if ( vf->ok() ) {
@@ -39,6 +40,7 @@ IVideoFile* VideoFileFactory::get( string filename )
 		}
 		delete vf;
 	}
+#endif /* LIBMPEG3 */
 	vf = new VideoFileQT( filename );
 	if ( vf->ok() ) {
 		return vf;

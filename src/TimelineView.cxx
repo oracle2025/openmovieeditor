@@ -1024,11 +1024,17 @@ void TimelineView::updateEffectDisplay()
 		string decoder = "none";
 		if ( dynamic_cast<VideoFileQT*>(vidclip->file()) ) {
 			decoder = "libquicktime";
-		} else if ( dynamic_cast<VideoFileFfmpeg*>(vidclip->file()) ) {
+		} 
+#ifdef AVCODEC
+		else if ( dynamic_cast<VideoFileFfmpeg*>(vidclip->file()) ) {
 			decoder = "ffmpeg";
-		} else if ( dynamic_cast<VideoFileMpeg3*>(vidclip->file()) ) {
+		}
+#endif /* AVCODEC */
+#ifdef LIBMPEG3
+		 else if ( dynamic_cast<VideoFileMpeg3*>(vidclip->file()) ) {
 			decoder = "libmpeg3";
 		}
+#endif /* LIBMPEG3 */
 		string framerate;
 		stringstream frameratestream;
 		
