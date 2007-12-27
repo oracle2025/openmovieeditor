@@ -111,7 +111,6 @@ VideoFileQT::VideoFileQT( string filename )
 #endif
 	m_interlace_mode = m_framestruct.interlace_mode;
 
-	int aw, ah;
 	guess_aspect( m_framestruct.w, m_framestruct.h, &m_framestruct );
 
 	m_filename = filename;
