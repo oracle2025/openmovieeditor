@@ -27,6 +27,7 @@ Frei0rNode::~Frei0rNode()
 		f0r_destruct( m_instance );
 	}
 	delete_widgets();
+	delete [] m_frame;
 }
 void Frei0rNode::setInput( int input, INode* node )
 {

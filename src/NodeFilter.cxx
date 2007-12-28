@@ -27,6 +27,7 @@
 #include "SrcNode.H"
 #include "timebase.H"
 #include <iostream>
+#include "BezierCurveNode.H"
 using namespace std;
 
 namespace nle {
@@ -98,6 +99,11 @@ void NodeFilter::writeXML( TiXmlElement* xml_node )
 			xml_filter->SetAttribute( "identifier", identifier.c_str() );
 			frei0r_node->writeXML( xml_filter );
 		}
+		BezierCurveNode* bezier_curve_node = dynamic_cast<BezierCurveNode*>(filter_node->node);
+		if ( bezier_curve_node ) {
+			xml_filter->SetAttribute( "identifier", bezier_curve_node->identifier() );
+			bezier_curve_node->writeXML( xml_filter );
+		}
 		xml_filter->SetAttribute( "id", filter_node->id );
 		for ( int i = 0; i < filter_node->input_count; i++ ) {
 			if ( filter_node->inputs[i] ) {
@@ -120,6 +126,7 @@ void NodeFilter::writeXML( TiXmlElement* xml_node )
 }
 void NodeFilter::readXML( TiXmlElement* xml_node )
 {
+	NodeFilterBezierCurveFactoryPlugin bezier_node_factory_plugin;
 	TiXmlElement* xml_filter = TiXmlHandle( xml_node ).FirstChild( "filter" ).Element();
 	for ( ; xml_filter; xml_filter = xml_filter->NextSiblingElement( "filter" ) ) {
 		int id;
@@ -146,30 +153,38 @@ void NodeFilter::readXML( TiXmlElement* xml_node )
 			if ( !filter_node ) {
 				//Create from Frei0r
 				const char* identifier = xml_filter->Attribute( "identifier" );
-				if ( identifier && g_node_filter_frei0r_factory ) {
+				INodeFilterFactoryPlugin* ffp = 0;
+				if ( identifier && strcmp("effect:builtin:BezierCurveFilter", identifier ) == 0 ) {
+					ffp = &bezier_node_factory_plugin;
+				} else if ( identifier && g_node_filter_frei0r_factory ) {
 					identifier += strlen("effect:frei0r:");
-					NodeFilterFrei0rFactoryPlugin* ffp = g_node_filter_frei0r_factory->get( identifier );
-						if ( ffp ) {
-							int x = 10;
-							int y = 10;
-							int w = 50;
-							int h = 50;
-							int id = -1;
-							xml_filter->Attribute( "x", &x );
-							xml_filter->Attribute( "y", &y );
-							xml_filter->Attribute( "w", &w );
-							xml_filter->Attribute( "h", &h );
-							xml_filter->Attribute( "id", &id );
-
-							m_filters = (filters*)sl_push( m_filters, filters_create( x, y, w, h, ffp->get( m_w, m_h ), ffp->name(), id ) );
-							Frei0rNode* frei0r_node = dynamic_cast<Frei0rNode*>(m_filters->node);
-							if ( frei0r_node ) {
-								frei0r_node->readXML( xml_filter );
-							}
-
-
-					}
+					ffp = g_node_filter_frei0r_factory->get( identifier );
 				}
+				if ( ffp ) {
+					int x = 10;
+					int y = 10;
+					int w = 50;
+					int h = 50;
+					int id = -1;
+					xml_filter->Attribute( "x", &x );
+					xml_filter->Attribute( "y", &y );
+					xml_filter->Attribute( "w", &w );
+					xml_filter->Attribute( "h", &h );
+					xml_filter->Attribute( "id", &id );
+
+					m_filters = (filters*)sl_push( m_filters, filters_create( x, y, w, h, ffp->get_i_node( m_w, m_h ), ffp->name(), id ) );
+					Frei0rNode* frei0r_node = dynamic_cast<Frei0rNode*>(m_filters->node);
+					if ( frei0r_node ) {
+						frei0r_node->readXML( xml_filter );
+					}
+					BezierCurveNode* bezier_curve_node = dynamic_cast<BezierCurveNode*>(m_filters->node);
+					if ( bezier_curve_node ) {
+						bezier_curve_node->readXML( xml_filter );
+					}
+
+
+				}
+
 			}
 		}
 	}

@@ -21,11 +21,11 @@ class CurveEditorBezier : public Fl_Widget
 		~CurveEditorBezier();
 		void draw();
 		int handle( int event );
-		void setValues( float* val ); // Size of array: 256
+		void setValues( unsigned char* val ); // Size of array: 256
+		point_list *m_points;
 	private:
 		void calc_lut();
 		void calc_curve_lut();
-		point_list *m_points;
 		point_list *m_grabbed_point;
 		point_list *m_grabbed_pre;
 		point_list *m_grabbed_post;

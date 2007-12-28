@@ -5,8 +5,10 @@
 #include "sl.h"
 #include <iostream>
 #include <math.h>
+#include "VideoViewGL.H"
 using namespace std;
 
+unsigned char scale_to_8bit( float value );
 
 CurveEditorBezier::CurveEditorBezier( int x, int y, int w, int h, const char* label )
 	: Fl_Widget( x, y, w, h, label )	
@@ -32,6 +34,10 @@ CurveEditorBezier::CurveEditorBezier( int x, int y, int w, int h, const char* la
 }
 CurveEditorBezier::~CurveEditorBezier()
 {
+	point_list* node;
+	while ( ( node = (point_list*)sl_pop( &m_points ) ) ) {
+		delete node;
+	}
 }
 void CurveEditorBezier::draw()
 {
@@ -51,13 +57,14 @@ void CurveEditorBezier::draw()
 	fl_push_matrix();
 	fl_translate( x() + 7, y() + 7 ); // 2px border 5 px point radius
 	fl_scale( w() - 14, h() - 14 );
-	fl_color( FL_RED );
+
+/*	fl_color( FL_RED );
 	fl_line_style( FL_SOLID, 2 );
 	fl_begin_line();
 	for ( point_list* n = m_points; n; n = n->next ) {
 		fl_vertex( n->x, 1.0 - n->y );
 	}
-	fl_end_line();
+	fl_end_line();*/
 	
 	fl_color( FL_BLACK );
 	fl_line_style( FL_SOLID, 1 );
@@ -97,12 +104,12 @@ void CurveEditorBezier::draw()
 
 	
 	//Debugging: Show LUT Points
-	fl_color( FL_GREEN );
+/*	fl_color( FL_GREEN );
 	fl_line_style( FL_SOLID, 1 );
 	for ( int i = 0; i < 256; i++ ) {
 		point_to_display( (float)(i) / 255.0, (float)m_values[i] / 255.0, x_display, y_display );
 		fl_draw_box( FL_BORDER_FRAME, x_display - 3, y_display - 3, 6, 6, FL_BLACK );
-	}
+	}*/
 	
 
 	fl_pop_clip();
@@ -123,6 +130,7 @@ int CurveEditorBezier::handle( int event )
 						calc_lut();
 						redraw();
 						m_deleted_point = true;
+						nle::g_videoView->redraw();
 						return 1;
 					}
 				}
@@ -196,6 +204,7 @@ int CurveEditorBezier::handle( int event )
 					if ( n->y > 1.0 ) { n->y = 1.0; }
 					calc_lut();
 					redraw();
+					nle::g_videoView->redraw();
 					return 1;
 				} else if ( m_grabbed_post ) {
 					point_list* n = m_grabbed_post;
@@ -214,6 +223,7 @@ int CurveEditorBezier::handle( int event )
 						if ( n->y > 1.0 ) { n->y = 1.0; }
 						calc_lut();
 						redraw();
+						nle::g_videoView->redraw();
 						return 1;
 					}
 					display_to_point( Fl::event_x(), Fl::event_y(), n->post_x, n->post_y );
@@ -225,6 +235,7 @@ int CurveEditorBezier::handle( int event )
 					}
 					calc_lut();
 					redraw();
+					nle::g_videoView->redraw();
 					return 1;
 				} else if ( m_grabbed_pre ) {
 					point_list* n = m_grabbed_pre;
@@ -243,6 +254,7 @@ int CurveEditorBezier::handle( int event )
 						if ( n->y > 1.0 ) { n->y = 1.0; }
 						calc_lut();
 						redraw();
+						nle::g_videoView->redraw();
 						return 1;
 					}
 					display_to_point( Fl::event_x(), Fl::event_y(), n->pre_x, n->pre_y );
@@ -254,6 +266,7 @@ int CurveEditorBezier::handle( int event )
 					}
 					calc_lut();
 					redraw();
+					nle::g_videoView->redraw();
 					return 1;
 				}
 				if ( m_deleted_point ) {
@@ -276,6 +289,7 @@ int CurveEditorBezier::handle( int event )
 					m_points = n;
 					calc_lut();
 					redraw();
+					nle::g_videoView->redraw();
 					return 1;
 				}
 				for ( p = m_points; p ; p = p->next ) {
@@ -292,6 +306,7 @@ int CurveEditorBezier::handle( int event )
 				
 				calc_lut();
 				redraw();
+				nle::g_videoView->redraw();
 				return 1;
 			}
 			break; // never reached!
@@ -309,6 +324,8 @@ int CurveEditorBezier::handle( int event )
 					if ( n->y < 0.0 ) { n->y = 0.0; }
 					if ( n->y > 1.0 ) { n->y = 1.0; }
 					redraw();
+					calc_lut();
+					nle::g_videoView->redraw();
 					return 1;
 				} else if ( m_grabbed_post ) {
 					point_list* n = m_grabbed_post;
@@ -325,6 +342,8 @@ int CurveEditorBezier::handle( int event )
 						if ( n->y < 0.0 ) { n->y = 0.0; }
 						if ( n->y > 1.0 ) { n->y = 1.0; }
 						redraw();
+						calc_lut();
+						nle::g_videoView->redraw();
 						return 1;
 					}
 					display_to_point( Fl::event_x(), Fl::event_y(), n->post_x, n->post_y );
@@ -335,6 +354,8 @@ int CurveEditorBezier::handle( int event )
 						n->pre_y = - n->post_y;
 					}
 					redraw();
+					calc_lut();
+					nle::g_videoView->redraw();
 					return 1;
 				} else if ( m_grabbed_pre ) {
 					point_list* n = m_grabbed_pre;
@@ -351,6 +372,8 @@ int CurveEditorBezier::handle( int event )
 						if ( n->y < 0.0 ) { n->y = 0.0; }
 						if ( n->y > 1.0 ) { n->y = 1.0; }
 						redraw();
+						calc_lut();
+						nle::g_videoView->redraw();
 						return 1;
 					}
 					display_to_point( Fl::event_x(), Fl::event_y(), n->pre_x, n->pre_y );
@@ -361,6 +384,8 @@ int CurveEditorBezier::handle( int event )
 						n->post_y = - n->pre_y;
 					}
 					redraw();
+					calc_lut();
+					nle::g_videoView->redraw();
 					return 1;
 				}
 
@@ -368,7 +393,7 @@ int CurveEditorBezier::handle( int event )
 	}
 	return Fl_Widget::handle( event );
 }
-void CurveEditorBezier::setValues( float* val )
+void CurveEditorBezier::setValues( unsigned char* val )
 {
 	m_values = val;
 	calc_lut();
@@ -448,8 +473,6 @@ float find_value_array( point_list* p, int len, float index ) {
 			return n->y - (index - n->x) * C;
 		}
 	}
-	cout << "i: " << i << endl;
-	cout << "n2->y: " << n2->y << endl;
 	return n2->y;
 
 }
@@ -486,9 +509,7 @@ void CurveEditorBezier::calc_curve_lut()
 		b = fabs((x-x3)*(y2-yy1)-(y-y3)*(x2-x1));
 		if (b > a) a = b;
 
-		cout << "a: " << a << endl;
 		c  = int(a*200);
-		cout << "c: " << c << endl;
 		if ( c > 1 ) {
 			if ( c > 100 ) { c = 100; }
 			n += c;
@@ -498,18 +519,15 @@ void CurveEditorBezier::calc_curve_lut()
 		n++;
 	}
 	n += 2;
-	cout << "n: " << n << endl;
 	point_list* all_points = new point_list[n+1];
 
 	int i = 0;
 	for ( point_list* p = m_points; p->next; p = p->next ) {
-		cout << "i: " << i << endl;
 		p2 = p->next;
 		all_points[i].x = p->x;
 		all_points[i].y = p->y;
 		i++;
 		if ( i >= n ) {
-			cout << "1 i("<<i<<") >= n("<<n<<") " << endl;
 			return;
 		}
 
@@ -527,7 +545,6 @@ void CurveEditorBezier::calc_curve_lut()
 		if (b > a) a = b;
 
 		n2  = int(a*200);
-		cout << "n2: " << n2 << endl;
 		if ( n2 > 1 ) {
 			if ( n2 > 100 ) { n2 = 100; }
 			double e = 1.0/n2;
@@ -563,7 +580,6 @@ void CurveEditorBezier::calc_curve_lut()
 				all_points[i].y = y;
 				i++;
 				if ( i >= n ) {
-					cout << "2 i("<<i<<") >= n("<<n<<") " << endl;
 					return;
 				}
 			}
@@ -573,7 +589,6 @@ void CurveEditorBezier::calc_curve_lut()
 			all_points[i].y = y+dy1;
 			i++;
 			if ( i >= n ) {
-				cout << "3 i("<<i<<") >= n("<<n<<") " << endl;
 				return;
 			}
 				//fl_transformed_vertex(x+dx1, y+dy1);
@@ -584,9 +599,7 @@ void CurveEditorBezier::calc_curve_lut()
 		all_points[i].x = x3;
 		all_points[i].y = y3;
 		i++;
-		cout << "i: " << i << " x3: " << x3 << " y3: " << y3 << endl;
 		if ( i >= n ) {
-			cout << "4 i("<<i<<") >= n("<<n<<") " << endl;
 			return;
 		}
 	}

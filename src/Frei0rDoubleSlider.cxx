@@ -1,5 +1,6 @@
 		
 #include "Frei0rDoubleSlider.H"
+#include "VideoViewGL.H"
 
 void frei0r_double_slider_callback( Frei0rDoubleSlider* o, void* data )
 {
@@ -22,6 +23,7 @@ void Frei0rDoubleSlider::apply_value()
 	double dval = value();
 	if ( m_instance ) {
 		f0r_set_param_value( m_instance, &dval, m_param_index );
+		nle::g_videoView->redraw();
 	}
 }
 void Frei0rDoubleSlider::set_instance( f0r_instance_t i, f0r_set_param_value_f s, f0r_get_param_value_f g, int param_index )

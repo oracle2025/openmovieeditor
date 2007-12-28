@@ -13,6 +13,9 @@ decl {\#include "NodeFilterFrei0rFactory.H"} {public
 
 decl {\#include "NodeFilterFrei0rFactoryPlugin.H"} {} 
 
+decl {\#include "NodeFilterBezierCurveFactoryPlugin.H"} {selected public
+} 
+
 class NodeFilterDialog {open : {public nle::IEffectDialog}
 } {
   Function {NodeFilterDialog( nle::NodeFilter* filter )} {open
@@ -27,7 +30,7 @@ class NodeFilterDialog {open : {public nle::IEffectDialog}
       } {
         Fl_Box graph_editor {
           callback {nle::g_videoView->redraw();
-nle::g_timeline->changing();} selected
+nle::g_timeline->changing();}
           xywh {285 55 360 375} box DOWN_BOX
           code0 {\#include "Frei0rGraphEditor.H"}
           code1 {\#include "VideoViewGL.H"}
@@ -38,7 +41,7 @@ nle::g_timeline->changing();} selected
           callback {if ( o->value() <= 0 ) {
 	return;
 }
-NodeFilterFrei0rFactoryPlugin* ffp = (NodeFilterFrei0rFactoryPlugin*)o->data(o->value());
+INodeFilterFactoryPlugin* ffp = (INodeFilterFactoryPlugin*)o->data(o->value());
 if ( ffp ) {
 	graph_editor->addNode( ffp );
 }}
@@ -65,6 +68,7 @@ if ( ffp ) {
       }
     }
     code {m_filter = filter;
+plugin_browser->add( m_bezier_curve_factory.name(), (void*)&m_bezier_curve_factory );
 for ( effect_node* p = m_factory->m_effects; p; p = p->next ) {
 	plugin_browser->add( p->effect->name(), (void*)p->effect );
 }
@@ -87,4 +91,5 @@ delete m_dialog;} {}
   }
   decl {nle::NodeFilter* m_filter;} {}
   decl {NodeFilterFrei0rFactory* m_factory;} {}
+  decl {NodeFilterBezierCurveFactoryPlugin m_bezier_curve_factory;} {}
 } 

@@ -15,7 +15,7 @@ void NodeFilterDialog::cb_plugin_browser_i(Fl_Hold_Browser* o, void*) {
   if ( o->value() <= 0 ) {
 	return;
 }
-NodeFilterFrei0rFactoryPlugin* ffp = (NodeFilterFrei0rFactoryPlugin*)o->data(o->value());
+INodeFilterFactoryPlugin* ffp = (INodeFilterFactoryPlugin*)o->data(o->value());
 if ( ffp ) {
 	graph_editor->addNode( ffp );
 };
@@ -107,6 +107,7 @@ NodeFilterDialog::NodeFilterDialog( nle::NodeFilter* filter ) {
     o->end();
   }
   m_filter = filter;
+plugin_browser->add( m_bezier_curve_factory.name(), (void*)&m_bezier_curve_factory );
 for ( effect_node* p = m_factory->m_effects; p; p = p->next ) {
 	plugin_browser->add( p->effect->name(), (void*)p->effect );
 }

@@ -270,7 +270,14 @@ openmovieeditor_SOURCES = nle.cxx\
 	AutoTrack.cxx\
 	AutoDragHandler.H\
 	AutoDragHandler.cxx\
-  lqt_bitrate_params.h
+  lqt_bitrate_params.h\
+  INodeFilterFactoryPlugin.H\
+  NodeFilterBezierCurveFactoryPlugin.H\
+  NodeFilterBezierCurveFactoryPlugin.cxx\
+  BezierCurveNode.H\
+  BezierCurveNode.cxx\
+  CurveEditorBezier.H\
+  CurveEditorBezier.cxx
 	
 
 

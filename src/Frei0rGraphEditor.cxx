@@ -2,6 +2,7 @@
 #include "NodeFilterFrei0rFactory.H"
 #include "NodeFilterFrei0rFactoryPlugin.H"
 #include "Frei0rNode.H"
+#include "BezierCurveNode.H"
 //#include "ImageNode.H"
 #include <FL/fl_draw.H>
 #include <FL/Fl.H>
@@ -82,6 +83,11 @@ Frei0rGraphEditor::~Frei0rGraphEditor()
 			if ( n ) {
 				n->delete_widgets();
 			}
+			BezierCurveNode* b = dynamic_cast<BezierCurveNode*>( i->node );
+			if ( b ) {
+				b->delete_widgets();
+			}
+
 		}
 	}
 }
@@ -129,7 +135,11 @@ void Frei0rGraphEditor::draw()
 		fl_measure( i->name.c_str(), text_w, text_h );
 		fl_draw( i->name.c_str(), x() + i->x + 3, y() + i->y + 3 + text_h );
 		for ( int k = 0; i->widgets[k]; k++ ) {
-			i->widgets[k]->resize(x()+i->x+i->w,y()+i->y+k*20,200,20);
+			if ( dynamic_cast<BezierCurveNode*>( i->node ) ) {
+				i->widgets[k]->resize(x()+i->x+i->w,y()+i->y+k*20,200,200);
+			} else {
+				i->widgets[k]->resize(x()+i->x+i->w,y()+i->y+k*20,200,20);
+			}
 		}
 
 	}
@@ -302,14 +312,19 @@ int Frei0rGraphEditor::handle( int event )
 	}
 	return Fl_Widget::handle( event );
 }
-void Frei0rGraphEditor::addNode( NodeFilterFrei0rFactoryPlugin* ffp )
+void Frei0rGraphEditor::addNode( INodeFilterFactoryPlugin* ffp )
 {
 	window()->begin();
-	m_filter->m_filters = (filters*)sl_push( m_filter->m_filters, filters_create( 10,10, 50, 50, ffp->get( m_filter->m_w, m_filter->m_h ), ffp->name() ) );
+	m_filter->m_filters = (filters*)sl_push( m_filter->m_filters, filters_create( 10,10, 50, 50, ffp->get_i_node( m_filter->m_w, m_filter->m_h ), ffp->name() ) );
 	Frei0rNode* n = dynamic_cast<Frei0rNode*>( m_filter->m_filters->node );
 	if ( n ) {
 			n->init_widgets();
 	}
+	BezierCurveNode* b = dynamic_cast<BezierCurveNode*>( m_filter->m_filters->node );
+	if ( b ) {
+		b->init_widgets();
+	}
+
 	window()->end();
 	redraw();
 }
@@ -322,6 +337,13 @@ void Frei0rGraphEditor::setFilter( nle::NodeFilter* filter )
 		if ( n ) {
 			window()->begin();
 			n->init_widgets();
+			window()->end();
+			redraw();
+		}
+		BezierCurveNode* b = dynamic_cast<BezierCurveNode*>( i->node );
+		if ( b ) {
+			window()->begin();
+			b->init_widgets();
 			window()->end();
 			redraw();
 		}

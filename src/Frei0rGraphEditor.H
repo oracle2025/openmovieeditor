@@ -6,7 +6,7 @@
 #include "NodeFilter.H"
 #include <string>
 
-class NodeFilterFrei0rFactoryPlugin;
+class INodeFilterFactoryPlugin;
 class NodeFilterFrei0rFactory;
 class INode;
 
@@ -20,7 +20,7 @@ class Frei0rGraphEditor : public Fl_Widget
 		void draw();
 		int handle( int event );
 	//	INode* getSink() { return m_sink_node; }
-		void addNode( NodeFilterFrei0rFactoryPlugin* ffp );
+		void addNode( INodeFilterFactoryPlugin* ffp );
 		Fl_Widget* m_trash;
 		void setFilter( nle::NodeFilter* filter );
 	private:
