@@ -2,6 +2,8 @@
 
 #include "nle.h"
 #include <tinyxml.h>
+#include <lqt.h>
+#include <lqt_version.h>
 
 void NleUI::cb_mainWindow_i(Fl_Double_Window*, void*) {
   if (Fl::event()==FL_SHORTCUT && Fl::event_key()==FL_Escape) 
@@ -6538,12 +6540,13 @@ if ( presets_browser->value() == 0 ) {
 }
 
 
-char buffer[FL_PATH_MAX];
-strncpy( buffer, export_filename->value(), FL_PATH_MAX );
-buffer[FL_PATH_MAX-1] = '\0';
 
 nle::EncodingPreset* preset = (nle::EncodingPreset*)presets_browser->data(presets_browser->value());
 
+#if (LQT_CODEC_API_VERSION & 0xffff) > 6
+char buffer[FL_PATH_MAX];
+strncpy( buffer, export_filename->value(), FL_PATH_MAX );
+buffer[FL_PATH_MAX-1] = '\0';
 switch ( preset->m_file_type ) {
 	case LQT_FILE_QT:
 		fl_filename_setext( buffer, ".mov" );
@@ -6559,7 +6562,7 @@ switch ( preset->m_file_type ) {
 		break;
 }
 export_filename->value( buffer );
-
+#endif
 
 struct stat statbuf;
 int r = stat( export_filename->value(), &statbuf );
@@ -7372,7 +7375,7 @@ switch ( frame_rate_choice->value() ) {
 }
 
 preset->setFormat(&fmt);
-
+#if (LQT_CODEC_API_VERSION & 0xffff) > 6
 switch ( lqt_container_menu->value() ) {
 	case 0:
 		preset->m_file_type = LQT_FILE_QT;
@@ -7388,7 +7391,7 @@ switch ( lqt_container_menu->value() ) {
 		break;
 	
 }
-
+#endif
 return preset;
 }
 
@@ -7462,7 +7465,7 @@ switch ( fmt.framerate.frame_duration ) {
 		frame_rate_choice->value( 5 );
 		break;
 }
-
+#if (LQT_CODEC_API_VERSION & 0xffff) > 6
 switch ( m_preset->m_file_type ) {
 	case LQT_FILE_QT:
 		lqt_container_menu->value( 0 );
@@ -7477,6 +7480,7 @@ switch ( m_preset->m_file_type ) {
 		lqt_container_menu->value( 3 );
 		break;
 }
+#endif
 }
 
 void SmilExportDialog::cb_File2_i(Fl_Button*, void*) {
