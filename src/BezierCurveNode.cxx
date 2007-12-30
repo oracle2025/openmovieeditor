@@ -26,6 +26,7 @@
 #include "sl.h"
 #include <tinyxml.h>
 #include <math.h>
+#include <iostream>
 
 BezierCurveNode::BezierCurveNode( int w, int h )
 {
@@ -67,7 +68,6 @@ uint32_t* BezierCurveNode::getFrame( int output, double position )
 void BezierCurveNode::init_widgets()
 {
 	CurveEditorBezier* curve = new CurveEditorBezier( 0, 0, 100, 100 );
-	curve->setValues( m_values );
 	node->widgets[0] = curve;
 	node->widgets[1] = 0;
 	if ( m_points ) {
@@ -78,6 +78,7 @@ void BezierCurveNode::init_widgets()
 		curve->m_points = m_points;
 		m_points = 0;
 	}
+	curve->setValues( m_values );
 }
 
 void BezierCurveNode::delete_widgets()

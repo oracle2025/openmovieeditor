@@ -14,7 +14,7 @@ CurveEditorBezier::CurveEditorBezier( int x, int y, int w, int h, const char* la
 	: Fl_Widget( x, y, w, h, label )	
 {
 	m_points = 0;
-	point_list* n = new point_list;
+	/*point_list* n = new point_list;
 	n->x = 1.0;
 	n->y = 1.0;
 	n->pre_x = n->pre_y = 0.0;
@@ -25,7 +25,7 @@ CurveEditorBezier::CurveEditorBezier( int x, int y, int w, int h, const char* la
 	m_points->y = 0.0;
 	m_points->pre_x = m_points->pre_y = 0.0;
 	m_points->post_x = m_points->post_y = 0.0;
-	m_points->next = n;
+	m_points->next = n;*/
 	m_grabbed_point = 0;
 	m_values = 0;
 	m_grabbed_pre = 0;
@@ -493,7 +493,7 @@ void CurveEditorBezier::calc_curve_lut()
 	int c;
 
 	point_list* p2;
-	for ( point_list* p = m_points; p->next; p = p->next ) {
+	for ( point_list* p = m_points; p && p->next; p = p->next ) {
 		p2 = p->next;
 
 		x = p->x;
@@ -522,7 +522,7 @@ void CurveEditorBezier::calc_curve_lut()
 	point_list* all_points = new point_list[n+1];
 
 	int i = 0;
-	for ( point_list* p = m_points; p->next; p = p->next ) {
+	for ( point_list* p = m_points; p && p->next; p = p->next ) {
 		p2 = p->next;
 		all_points[i].x = p->x;
 		all_points[i].y = p->y;
