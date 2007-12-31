@@ -14,7 +14,7 @@ CurveEditorBezier::CurveEditorBezier( int x, int y, int w, int h, const char* la
 	: Fl_Widget( x, y, w, h, label )	
 {
 	m_points = 0;
-	/*point_list* n = new point_list;
+	point_list* n = new point_list;
 	n->x = 1.0;
 	n->y = 1.0;
 	n->pre_x = n->pre_y = 0.0;
@@ -25,7 +25,7 @@ CurveEditorBezier::CurveEditorBezier( int x, int y, int w, int h, const char* la
 	m_points->y = 0.0;
 	m_points->pre_x = m_points->pre_y = 0.0;
 	m_points->post_x = m_points->post_y = 0.0;
-	m_points->next = n;*/
+	m_points->next = n;
 	m_grabbed_point = 0;
 	m_values = 0;
 	m_grabbed_pre = 0;
@@ -70,6 +70,9 @@ void CurveEditorBezier::draw()
 	fl_line_style( FL_SOLID, 1 );
 	fl_begin_line();
 	point_list* n_minus_1 = m_points;
+	if ( !n_minus_1 ) {
+		return;
+	}
 	for ( point_list* n = m_points->next; n; n = n->next ) {
 		fl_curve( n_minus_1->x, 1.0 - n_minus_1->y, n_minus_1->x + n_minus_1->post_x, 1.0 - n_minus_1->y - n_minus_1->post_y, n->x + n->pre_x, 1.0 - n->y - n->pre_y, n->x, 1.0 - n->y );
 		n_minus_1 = n_minus_1->next;
