@@ -20,6 +20,8 @@
 #ifndef _AUDIO_FILE_MPEG3_H_
 #define _AUDIO_FILE_MPEG3_H_
 
+#ifdef LIBMPEG3
+
 #include <stdint.h>
 
 #include <libmpeg3.h>
@@ -48,6 +50,8 @@ class AudioFileMpeg3 : public IAudioFile
 };
 
 }
+
+#endif /* LIBMPEG3 */
 
 #endif /* _AUDIO_FILE_MPEG3_H_ */
 

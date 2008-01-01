@@ -17,6 +17,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#ifdef LIBMPEG3
+
 #include <cstring>
 
 #include "AudioFileMpeg3.H"
@@ -111,3 +113,6 @@ int AudioFileMpeg3::fillBuffer( float* output, unsigned long frames )
 
 
 } /* namespace nle */
+
+#endif /* LIBMPEG3 */
+
