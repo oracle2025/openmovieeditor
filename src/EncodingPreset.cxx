@@ -649,7 +649,9 @@ EncodingPreset::EncodingPreset( EncodingPreset* preset )
 {
 	m_readonly = false;
 	m_avi_odml = false;
+#if (LQT_CODEC_API_VERSION & 0xffff) > 6
 	m_file_type = preset->m_file_type;
+#endif
 	m_format = preset->m_format;
 	lqt_audio_codecs = g_audio_codec_info;//lqt_query_registry( 1, 0, 1, 0 );
 	lqt_video_codecs = g_video_codec_info;//lqt_query_registry( 0, 1, 1, 0 );
