@@ -9,7 +9,7 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 AC_PREREQ(2.5)
-AC_INIT(openmovieeditor, [0.0.20080101], [richard.spindler@gmail.com])
+AC_INIT(openmovieeditor, [0.0.20080102], [richard.spindler@gmail.com])
 AC_CONFIG_HEADER([config.h])
 
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
@@ -117,10 +117,10 @@ fi
 HAVE_LIBMPEG3=false
 AC_CHECK_HEADERS(libmpeg3.h)
 if test $ac_cv_header_libmpeg3_h = "yes" ; then
-	AC_CHECK_LIB(mpeg3, mpeg3_check_sig, [HAVE_LIBMPEG3=true], [true])
+	AC_CHECK_LIB(mpeg3, mpeg3_set_mmx, [HAVE_LIBMPEG3=true], [true])
 fi
 if test x$HAVE_LIBMPEG3 = xfalse; then
-  AC_MSG_WARN([*** libmpeg3 not found])
+  AC_MSG_WARN([*** libmpeg3 1.5 not found])
 else
   CPPFLAGS="$CPPFLAGS -DLIBMPEG3"
   LDFLAGS="$LDFLAGS -lmpeg3"
