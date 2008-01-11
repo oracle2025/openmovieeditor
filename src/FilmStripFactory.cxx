@@ -19,7 +19,7 @@
 
 #include <cassert>
 
-#include <sl.h>
+#include "sl/sl.h"
 
 #include "FilmStripFactory.H"
 #include "IVideoFile.H"

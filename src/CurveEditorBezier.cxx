@@ -2,7 +2,7 @@
 #include "CurveEditorBezier.H"
 #include <FL/fl_draw.H>
 #include <FL/Fl_Window.H>
-#include "sl.h"
+#include "sl/sl.h"
 #include <iostream>
 #include <math.h>
 #include "VideoViewGL.H"

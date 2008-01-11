@@ -1,7 +1,7 @@
 
 #include "NodeFilterFrei0rFactory.H"
 #include "NodeFilterFrei0rFactoryPlugin.H"
-#include "sl.h"
+#include "sl/sl.h"
 
 #include <dirent.h>
 #include <sys/stat.h>

@@ -23,7 +23,7 @@
 #include "CurveEditorBezier.H"
 #include <FL/Fl_Group.H>
 #include <cassert>
-#include "sl.h"
+#include "sl/sl.h"
 #include <tinyxml.h>
 #include <math.h>
 #include <iostream>
