@@ -22,12 +22,12 @@ class CurveEditor2 : public Fl_Widget
 		unsigned char m_values[256];
 		void set( int x1, int y1, int x2, int y2 );
 		void get( int &x1, int &y1, int &x2, int &y2 );
+		void calculate_values();
 	private:
 		int _x();
 		int _y();
 		int _w();
 		int _h();
-		void calculate_values();
 		point m_points[2];
 		point* m_current;
 		Fl_Color m_lineColor;

@@ -16,6 +16,9 @@ class ColorWheel : public Fl_Widget
 		float len() { return m_len; }
 		float angle() { return m_angle; }
 		Fl_Color color_value() { return m_color; }
+		unsigned char m_r;
+		unsigned char m_g;
+		unsigned char m_b;
 	private:
 		Fl_Color m_color;
 		float m_angle;

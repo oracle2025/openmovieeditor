@@ -112,6 +112,7 @@ int CurveEditor2::handle( int event )
 				if ( m_current ) {
 					m_current = 0;
 					calculate_values();
+					do_callback();
 					redraw();
 					window()->cursor( FL_CURSOR_DEFAULT );
 					return 1;
@@ -139,6 +140,7 @@ int CurveEditor2::handle( int event )
 						m_points[0].y = m_current->y;
 					}
 					calculate_values();
+					do_callback();
 					redraw();
 					return 1;
 				}
@@ -182,7 +184,6 @@ void CurveEditor2::calculate_values()
 	for ( int i = m_points[1].x; i < 256; i++ ) {
 		m_values[i] = 255 - m_points[1].y;
 	}
-	do_callback();
 }
 
 

@@ -21,6 +21,9 @@ ColorWheel::ColorWheel( int x, int y, int w, int h, const char* label )
 
 ColorWheel::~ColorWheel()
 {
+	if ( m_image ) {
+		delete m_image;
+	}
 }
 int ColorWheel::handle( int event )
 {
@@ -52,6 +55,9 @@ int ColorWheel::handle( int event )
 		HSVtoRGB( &r, &g, &b, ( 450 - (int)( 360.0 * m_angle ) ) % 360, m_len, m_v );
 
 		m_color = fl_rgb_color( (uchar)(r * 255), (uchar)(g * 255), (uchar)(b * 255) );
+		m_r = (uchar)(r*255);
+		m_g = (uchar)(g*255);
+		m_b = (uchar)(b*255);
 
 
 		m_x /= 2.0;
@@ -130,7 +136,7 @@ void ColorWheel::draw()
 
 
 		fl_push_matrix();
-		fl_translate( x() + 2, y() + 2 );
+		fl_translate( 2, 2 );
 		fl_scale( ( w() - 4 ) / 256.0, ( h() - 4 ) / 256.0 );
 		for ( int h_ = 0; h_ < 360; h_++ ) {
 			for ( float s = 1.0; s > 0.0; s -= 0.01 ) {

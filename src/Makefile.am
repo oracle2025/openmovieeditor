@@ -277,7 +277,9 @@ openmovieeditor_SOURCES = nle.cxx\
   BezierCurveNode.H\
   BezierCurveNode.cxx\
   CurveEditorBezier.H\
-  CurveEditorBezier.cxx
+  CurveEditorBezier.cxx\
+	ColorWheel.H\
+	ColorWheel.cxx
 	
 
 
@@ -293,8 +295,6 @@ openmovieeditor_SOURCES = nle.cxx\
 #	EnvelopeClip.cxx\
 #	EnvelopeClip.H
 #	CurveViewRGB.cxx\
-#	CurveViewRGB.H\
-#	ColorWheel.H\
-#	ColorWheel.cxx
+#	CurveViewRGB.H
 
 
