@@ -21,7 +21,7 @@
 
 #include <FL/fl_draw.H>
 
-#include <sl.h>
+#include "sl/sl.h"
 
 #include "WavArtist.H"
 #include "IAudioFile.H"
