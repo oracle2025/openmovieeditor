@@ -31,12 +31,6 @@ namespace nle
 {
 
 
-inline void e_stylus_position( long stylus_pos )
-{
-	g_ruler->stylus( stylus_pos );
-}
-
-
 } /* namespace nle */
 #endif /* _EVENTS_H_ */
 

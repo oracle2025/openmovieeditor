@@ -671,7 +671,7 @@ void TimelineView::zoom( float zoom )
   bool insane = isinf(zoom) || isnan(zoom) || zoom >= 300.0;
   if (!insane) {SwitchBoard::i()->zoom( zoom );}
   redraw();
-  e_stylus_position( get_screen_position(m_stylusPosition) );
+  g_ruler->stylus( get_screen_position(m_stylusPosition) );
 }
 Track* TimelineView::get_track( int _x, int _y )
 {
@@ -1249,7 +1249,7 @@ void TimelineView::move_cursor( int64_t position )
 	} else {
 		fl_overlay_rect( get_screen_position(m_stylusPosition), parent()->y(), 1, parent()->h() );
 	}
-	e_stylus_position( get_screen_position(m_stylusPosition) );	
+	g_ruler->stylus( get_screen_position(m_stylusPosition) );	
 	g_videoView->seek( position );
 	g_timeline->seek( position );
 	
