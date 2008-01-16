@@ -43,7 +43,6 @@
 #include "SelectDragHandler.H"
 #include "TrimDragHandler.H"
 #include "Rect.H"
-#include "events.H"
 #include "FilmStrip.H"
 #include "helper.H"
 #include "ErrorDialog/IErrorHandler.H"

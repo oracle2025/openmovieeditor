@@ -84,7 +84,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	IAudioFile.H\
 	Prefs.H\
 	TimelineView.H\
-	events.H\
 	IAudioReader.H\
 	TrackBase.H\
 	Rect.H\
