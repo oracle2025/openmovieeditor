@@ -668,14 +668,10 @@ void TimelineView::scroll( int64_t position )
 }
 void TimelineView::zoom( float zoom )
 {
-	if ( isinf(zoom) || isnan(zoom) || zoom >= 300.0 ) {
-		redraw();
-		e_stylus_position( get_screen_position(m_stylusPosition) );
-		return;
-	}
-	SwitchBoard::i()->zoom( zoom );
-	redraw();
-	e_stylus_position( get_screen_position(m_stylusPosition) );
+  bool insane = isinf(zoom) || isnan(zoom) || zoom >= 300.0;
+  if (!insane) {SwitchBoard::i()->zoom( zoom );}
+  redraw();
+  e_stylus_position( get_screen_position(m_stylusPosition) );
 }
 Track* TimelineView::get_track( int _x, int _y )
 {
