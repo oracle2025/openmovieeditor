@@ -1249,8 +1249,10 @@ void TimelineView::move_cursor( int64_t position )
 	} else {
 		fl_overlay_rect( get_screen_position(m_stylusPosition), parent()->y(), 1, parent()->h() );
 	}
-	e_stylus_position( get_screen_position(m_stylusPosition) );
-	e_seek_position( m_stylusPosition );
+	e_stylus_position( get_screen_position(m_stylusPosition) );	
+	g_videoView->seek( position );
+	g_timeline->seek( position );
+	
 
 	// signal histogram view
 /*	if ( m_selectedClips && !m_selectedClips->next ) {

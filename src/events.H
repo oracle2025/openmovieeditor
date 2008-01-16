@@ -35,11 +35,6 @@ inline void e_stylus_position( long stylus_pos )
 {
 	g_ruler->stylus( stylus_pos );
 }
-inline void e_seek_position( int64_t position )
-{
-	g_videoView->seek( position );
-	g_timeline->seek( position );
-}
 
 
 } /* namespace nle */
