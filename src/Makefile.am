@@ -278,7 +278,9 @@ openmovieeditor_SOURCES = nle.cxx\
   CurveEditorBezier.H\
   CurveEditorBezier.cxx\
 	ColorWheel.H\
-	ColorWheel.cxx
+	ColorWheel.cxx\
+  XmlClipData.H\
+  XmlClipData.cxx
 	
 
 

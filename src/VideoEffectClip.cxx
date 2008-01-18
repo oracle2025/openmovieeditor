@@ -34,6 +34,9 @@
 #include "Frei0rFactory.H"
 #include "globals.H"
 #include "IVideoFile.H"
+#include "XmlClipData.H"
+#include "MainFilterFactory.H"
+#include <tinyxml.h>
 
 namespace nle
 {
@@ -77,9 +80,19 @@ VideoEffectClip::VideoEffectClip( FilterClip* filterClip )
 	m_frame_src = 0;
 	m_frame_dst = 0;
 }
-void VideoEffectClip::setEffects( ClipData* )
+void VideoEffectClip::setEffects( ClipData* clip_data )
 {
-	return;
+	if ( XmlClipData* xml = dynamic_cast<XmlClipData*>(clip_data) ) {
+		TiXmlElement* filterXml = TiXmlHandle( xml->m_xml ).FirstChildElement( "filter" ).Element();
+		for ( ; filterXml; filterXml = filterXml->NextSiblingElement( "filter" ) ) {
+			FilterFactory* ff = g_mainFilterFactory->get( filterXml->Attribute( "identifier" ) );
+			if ( ff ) {
+				FilterBase* filter = m_filterClip->appendFilter( ff );
+				filter->readXML( filterXml );
+			}
+		}
+	}
+
 }
 VideoEffectClip::~VideoEffectClip()
 {
@@ -302,7 +315,17 @@ frame_struct* VideoEffectClip::getFormattedFrame( frame_struct* tmp_frame, int64
 	
 ClipData* VideoEffectClip::vec_getClipData()
 {
-	return 0;
+	XmlClipData* xml = new XmlClipData;
+	xml->m_xml = new TiXmlElement( "clip_data" );
+	filter_stack* filters;
+	for ( filters = m_filterClip->getFilters(); filters; filters = filters->next ) {
+		TiXmlElement* filter_xml = new TiXmlElement( "filter" );
+		xml->m_xml->LinkEndChild( filter_xml );
+		filter_xml->SetAttribute( "name", filters->filter->name() );
+		filter_xml->SetAttribute( "identifier", filters->filter->identifier() );
+		filters->filter->writeXML( filter_xml );
+	}
+	return xml;
 }
 
 
