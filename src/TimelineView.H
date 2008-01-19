@@ -71,6 +71,7 @@ class TimelineView : public Fl_Widget
 		void move_cursor( int64_t position );
 		void stylus( long stylus_pos );
 		long stylus();
+		void draw_cursor();
 		void zoom( float zoom );
 		int64_t get_real_position( int p, float stretchFactor = NLE_TIME_BASE );
 		int64_t get_screen_position( int64_t p, float stretchFactor = NLE_TIME_BASE );

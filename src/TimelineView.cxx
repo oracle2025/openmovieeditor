@@ -650,7 +650,7 @@ void TimelineView::draw()
 		y_coord += TRACK_SPACING + i->track->h();
 	}
 	fl_pop_clip();
-	fl_overlay_rect( get_screen_position( m_stylusPosition ), parent()->y(), 1, parent()->h() );
+	draw_cursor();       
 }
 int64_t TimelineView::get_real_position( int p, float stretchFactor )
 {
@@ -1255,7 +1255,7 @@ void TimelineView::move_cursor( int64_t position )
 		adjustScrollbar();
 		redraw();
 	} else {
-		fl_overlay_rect( get_screen_position(m_stylusPosition), parent()->y(), 1, parent()->h() );
+	  draw_cursor();
 	}
 	g_ruler->stylus( get_screen_position(m_stylusPosition) );	
 	g_videoView->seek( position );
@@ -1275,6 +1275,15 @@ void TimelineView::move_cursor( int64_t position )
 void TimelineView::stylus( long stylus_pos )
 {
 	move_cursor( get_real_position( stylus_pos ) );
+}
+
+/**
+ * draw the cursor (vertical line) onto the timelineview
+ */
+void TimelineView::draw_cursor()
+{
+  fl_overlay_rect( get_screen_position( m_stylusPosition ), 
+		   parent()->y(), 1, parent()->h() );
 }
 void TimelineView::cut()
 {
