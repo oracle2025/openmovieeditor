@@ -1228,6 +1228,15 @@ void TimelineView::trim_clip( Clip* clip, int _x, bool trimRight )
 	g_docManager->submit( cmd );
 	adjustScrollbar();
 }
+
+/**
+ * move the cursor by a CHANGE amount
+ */
+void TimelineView::move_cursor_by(int64_t change)
+{
+  move_cursor(m_stylusPosition+change);
+}
+
 void TimelineView::move_cursor( int64_t position )
 {
 	m_stylusPosition = position;

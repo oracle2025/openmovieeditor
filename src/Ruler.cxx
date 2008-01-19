@@ -106,14 +106,11 @@ void Ruler::stylus( long stylus_pos )
 }
 void Ruler::skipForward()
 {
-	g_timelineView->move_cursor( g_timelineView->m_stylusPosition + 1 );
+	g_timelineView->move_cursor_by(1);
 }
 void Ruler::skipBackward()
 {
-	if ( g_timelineView->m_stylusPosition == 0 ) {
-		return;
-	}
-	g_timelineView->move_cursor( g_timelineView->m_stylusPosition - 1 );
+	g_timelineView->move_cursor_by(-1);
 }
 void Ruler::skipFirst()
 {

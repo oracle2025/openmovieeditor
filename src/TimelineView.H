@@ -67,6 +67,7 @@ class TimelineView : public Fl_Widget
 		void select_all_after_cursor();
 		void toggle_selection( Clip* clip );
 		void add_track( int type );
+		void move_cursor_by(int64_t change);
 		void move_cursor( int64_t position );
 		void stylus( long stylus_pos );
 		long stylus();
@@ -74,7 +75,6 @@ class TimelineView : public Fl_Widget
 		int64_t get_real_position( int p, float stretchFactor = NLE_TIME_BASE );
 		int64_t get_screen_position( int64_t p, float stretchFactor = NLE_TIME_BASE );
 		int64_t scrollPosition() { return m_scrollPosition; }
-		int64_t m_stylusPosition;
 		void end() {}
 		void adjustScrollbar();
 		void addEffect( FilterFactory* effectFactory );
@@ -103,6 +103,7 @@ class TimelineView : public Fl_Widget
 		void updateEffectDisplay();
 		DragHandler *m_dragHandler;
 		int64_t m_scrollPosition;
+		int64_t m_stylusPosition;
 		int m_vscroll;
 		clip_node* m_selectedClips;
 		PasteSelectionCommand* m_pasteCommand;
