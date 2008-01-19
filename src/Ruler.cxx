@@ -62,9 +62,7 @@ void Ruler::draw()
 		fl_draw( timestamp_to_string( g_timelineView->get_real_position( off ) ), off, y() + 14 );
 		fl_line( off, y() + 20, off, y() + h() );
 	}
-	
-	fl_draw_box( FL_DIAMOND_UP_BOX, m_stylus.x, y() + m_stylus.y, m_stylus.w, m_stylus.h, FL_BACKGROUND_COLOR );
-		
+	draw_stylus();
 	fl_pop_clip();
 }
 
@@ -105,6 +103,16 @@ void Ruler::stylus( long stylus_pos )
 	redraw(); //FIXME: OpenGL Window is redrawn
 	// Maybe it should be somehow draw from within VideoViewGL
 }
+
+/** 
+ * draw the stylus diamond to the ruler
+ */
+void Ruler::draw_stylus()
+{
+  fl_draw_box( FL_DIAMOND_UP_BOX, m_stylus.x, y() + m_stylus.y, 
+	       m_stylus.w, m_stylus.h, FL_BACKGROUND_COLOR );
+}
+
 void Ruler::skipForward()
 {
 	g_timelineView->move_cursor_by(1);
