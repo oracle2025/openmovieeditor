@@ -38,6 +38,7 @@ Ruler::Ruler( int x, int y, int w, int h, const char *label )
 	: Fl_Widget( x, y, w, h, label )
 {
 	m_stylus.x = LEFT_TRACK_SPACING - 12 + x;
+	m_stylus.x -= 25; /* adjust for snapping tool */
 	m_stylus.y = 0;
 	m_stylus.w = 25;
 	m_stylus.h = 25;
