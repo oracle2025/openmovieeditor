@@ -1248,18 +1248,15 @@ void TimelineView::move_cursor( int64_t position )
 	if ( screen_pos > w() + x() - 30 ) {
 		m_scrollPosition += (int64_t)( ( 30 - x() - w() + screen_pos ) / SwitchBoard::i()->zoom() );
 		adjustScrollbar();
-		redraw();
 	} else if ( screen_pos < x() + LEFT_TRACK_SPACING + 20 && m_scrollPosition > 0 ) {
 		m_scrollPosition -= (int64_t)( ( 20 - ( screen_pos - x() - LEFT_TRACK_SPACING ) ) / SwitchBoard::i()->zoom() );
 		if ( m_scrollPosition < 0 ) { m_scrollPosition = 0; }
 		adjustScrollbar();
-		redraw();
-	} else {
-	  draw_cursor();
 	}
 	g_ruler->stylus( get_screen_position(m_stylusPosition) );	
 	g_videoView->seek( position );
 	g_timeline->seek( position );
+	redraw();
 	
 
 	// signal histogram view
