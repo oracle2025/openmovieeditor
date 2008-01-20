@@ -36,7 +36,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %doc AUTHORS COPYING NEWS README TODO
-/usr/bin/openmovieeditor
+%{_bindir}/openmovieeditor
 
 
 %changelog
