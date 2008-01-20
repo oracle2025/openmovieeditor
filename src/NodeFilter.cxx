@@ -39,10 +39,10 @@ NodeFilter::NodeFilter( int w, int h )
 	m_h = h;
 	m_dialog = 0;
 	m_filters = 0;
-	m_filters = (filters*)sl_push( m_filters, filters_create( 10,200, 50, 50, new SinkNode(), "Output" ) );
+	m_filters = (filters*)sl_push( m_filters, filters_create( 10,200, 50, 50, new SinkNode(), "Output", 0 ) );
 	filters* C = m_filters;
 	m_sink_node = C->node;
-	m_filters = (filters*)sl_push( m_filters, filters_create( 10,100, 50, 50, new SrcNode( this ), "Input" ) );
+	m_filters = (filters*)sl_push( m_filters, filters_create( 10,100, 50, 50, new SrcNode( this ), "Input", 1 ) );
 	C = m_filters;
 	m_src_node = C->node;
 	m_frame_cache = 0;
