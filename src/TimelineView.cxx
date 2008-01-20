@@ -834,7 +834,8 @@ void TimelineView::add_track( int type )
 }
 void TimelineView::adjustScrollbar()
 {
-	g_scrollBar->value( m_scrollPosition, long( w() / SwitchBoard::i()->zoom() ),0, g_timeline->length() + long( w() / SwitchBoard::i()->zoom() ) );
+  long scale = long( w() / SwitchBoard::i()->zoom() );
+  g_scrollBar->value( m_scrollPosition, scale,0, g_timeline->length() + scale );
 }
 void TimelineView::split_clip( Clip* clip, int _x )
 {
