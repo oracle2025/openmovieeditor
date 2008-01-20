@@ -108,6 +108,8 @@ class TimelineView : public Fl_Widget
 		int m_vscroll;
 		clip_node* m_selectedClips;
 		PasteSelectionCommand* m_pasteCommand;
+		bool has_next_clip();
+
 };
 
 extern TimelineView* g_timelineView;

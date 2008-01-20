@@ -909,12 +909,22 @@ static int remove_clip_helper( void* p, void* data )
 		return 0;
 	}
 }
+
+/**
+ * Determine if there is a next clip, or not
+ */
+bool TimelineView::has_next_clip()
+{
+  /* relies on "short-curcuiting" */
+  return (!m_selectedClips || m_selectedClips->next);
+}
+
 void TimelineView::updateTitlesDisplay()
 {
-	if ( !m_selectedClips || m_selectedClips->next ) {
-		g_ui->deactivate_titles();
-		return;
-	}
+  if(has_next_clip()) {
+    g_ui->deactivate_titles();
+    return;
+  }
 	TitleClip* tc = dynamic_cast<TitleClip*>( m_selectedClips->clip );
 	if ( !tc ) {
 		g_ui->deactivate_titles();
@@ -984,20 +994,15 @@ void TimelineView::titles_color( Fl_Color color )
 }
 TitleClip* TimelineView::getTitleClip()
 {
-	if ( !m_selectedClips ) {
-		return 0;
-	}
-	if ( m_selectedClips->next ) {
-		return 0;
-	}
-	return dynamic_cast<TitleClip*>( m_selectedClips->clip );
+  if(has_next_clip()) { return 0; }
+  return dynamic_cast<TitleClip*>( m_selectedClips->clip );
 }
 
 void TimelineView::updateEffectDisplay()
 {
 	updateTitlesDisplay();
 	g_ui->effect_browser->clear();
-	if ( !m_selectedClips || m_selectedClips->next ) {
+	if (has_next_clip()) {
 		g_ui->m_effectMenu->deactivate();
 		return;
 	}
@@ -1093,13 +1098,9 @@ void TimelineView::setSelectionButtons()
 
 void TimelineView::moveEffectDown()
 {
-	//TODO copy and paste from editEffect
-	if ( !m_selectedClips ) {
-		return;
-	}
-	if ( m_selectedClips->next ) {
-		return;
-	}
+  //TODO copy and paste from editEffect
+  if(has_next_clip()) {return;}
+
 	VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>( m_selectedClips->clip );
 	if ( !vc ) {
 		return;
@@ -1116,13 +1117,9 @@ void TimelineView::moveEffectDown()
 }
 void TimelineView::moveEffectUp()
 {
-	//TODO copy and paste from editEffect
-	if ( !m_selectedClips ) {
-		return;
-	}
-	if ( m_selectedClips->next ) {
-		return;
-	}
+  //TODO copy and paste from editEffect
+  if(has_next_clip()) {return;}
+
 	VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>( m_selectedClips->clip );
 	if ( !vc ) {
 		return;
@@ -1146,12 +1143,8 @@ static FilterFactory* findFilterFactory( const char* name )
 
 void TimelineView::addEffect( FilterFactory* effectFactory )
 {
-	if ( !m_selectedClips ) {
-		return;
-	}
-	if ( m_selectedClips->next ) {
-		return;
-	}
+  if(has_next_clip()) {return;}
+
 	FilterClip* fc = dynamic_cast<FilterClip*>( m_selectedClips->clip );
 	if ( !fc ) {
 		return;
@@ -1174,12 +1167,7 @@ void TimelineView::addEffect( FilterFactory* effectFactory )
 }
 void TimelineView::removeEffect()
 {
-	if ( !m_selectedClips ) {
-		return;
-	}
-	if ( m_selectedClips->next ) {
-		return;
-	}
+  if(has_next_clip()) {return;}
 	FilterClip* fc = dynamic_cast<FilterClip*>( m_selectedClips->clip );
 	if ( !fc ) {
 		return;
@@ -1196,12 +1184,8 @@ void TimelineView::removeEffect()
 }
 void TimelineView::editEffect()
 {
-	if ( !m_selectedClips ) {
-		return;
-	}
-	if ( m_selectedClips->next ) {
-		return;
-	}
+  if(has_next_clip()) {return;}
+
 	FilterClip* vc = dynamic_cast<FilterClip*>( m_selectedClips->clip );
 	if ( !vc ) {
 		return;
