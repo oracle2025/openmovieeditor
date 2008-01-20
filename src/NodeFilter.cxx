@@ -47,25 +47,10 @@ NodeFilter::NodeFilter( int w, int h )
 	m_src_node = C->node;
 	m_frame_cache = 0;
 	m_frame = new unsigned char[w * h * 4];
-	m_framestruct.x = 0;
-	m_framestruct.y = 0;
-	m_framestruct.w = w;
-	m_framestruct.h = h;
+	init_frame_struct( &m_framestruct, w, h );
 	m_framestruct.RGB = m_frame;
-	m_framestruct.YUV = 0;
-	m_framestruct.rows = 0;
-	m_framestruct.alpha = 1.0;
 	m_framestruct.has_alpha_channel = true;
 	m_framestruct.cacheable = false;
-	m_framestruct.tilt_x = 0;
-	m_framestruct.tilt_y = 0;
-	m_framestruct.scale_x = 1.0;
-	m_framestruct.scale_y = 1.0;
-	m_framestruct.crop_left = 0;
-	m_framestruct.crop_right = 0;
-	m_framestruct.crop_top = 0;
-	m_framestruct.crop_bottom = 0;
-
 }
 NodeFilter::~NodeFilter()
 {

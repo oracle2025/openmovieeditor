@@ -46,14 +46,15 @@ void init_frame_struct( frame_struct* fs, int w, int h )
 	fs->interlace_mode = 0;
 	fs->pixel_aspect_ratio = 1.0;
 	fs->first_field = true;
-	fs->scale_x = 0;
+	fs->render_strategy = RENDER_DEFAULT;
+/*	fs->scale_x = 0;
 	fs->scale_y = 0;
 	fs->crop_left = 0;
 	fs->crop_right = 0;
 	fs->crop_top = 0;
 	fs->crop_bottom = 0;
 	fs->tilt_x = 0;
-	fs->tilt_y = 0;
+	fs->tilt_y = 0;*/
 	fs->dirty = true;
 	fs->RGB = 0;
 	fs->YUV = 0;
