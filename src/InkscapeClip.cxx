@@ -112,10 +112,6 @@ InkscapeClip::InkscapeClip( Track* track, int64_t position, string filename, int
 		m_artist = new ImageClipArtist( m_image );
 	}
 	
-	unsigned long gcd_wh = gcd( m_frame.w, m_frame.h );
-	m_aspectHeight = m_frame.h / gcd_wh; 
-	m_aspectWidth = m_frame.w /gcd_wh;
-	m_aspectRatio = (float)m_aspectWidth / (float)m_aspectHeight;
 	m_ok = true;
 	setEffects( data );
 	Fl::add_timeout(1.0, detect_svg_update_callback, this );
@@ -163,10 +159,6 @@ InkscapeClip::InkscapeClip( Track* track, int64_t position, int64_t length, int 
 		m_artist = new ImageClipArtist( m_image );
 	}
 
-	unsigned long gcd_wh = gcd( m_frame.w, m_frame.h );
-	m_aspectHeight = m_frame.h / gcd_wh; 
-	m_aspectWidth = m_frame.w /gcd_wh;
-	m_aspectRatio = (float)m_aspectWidth / (float)m_aspectHeight;
 	detectSvgUpdate();
 
 	Fl::add_timeout(1.0, detect_svg_update_callback, this );
@@ -252,10 +244,6 @@ void InkscapeClip::detectSvgUpdate()
 			m_artist = new ImageClipArtist( m_image );
 		}
 
-		unsigned long gcd_wh = gcd( m_frame.w, m_frame.h );
-		m_aspectHeight = m_frame.h / gcd_wh; 
-		m_aspectWidth = m_frame.w /gcd_wh;
-		m_aspectRatio = (float)m_aspectWidth / (float)m_aspectHeight;
 		m_frame.dirty = true;
 		g_videoView->redraw();
 	}

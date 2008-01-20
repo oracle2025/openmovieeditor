@@ -57,9 +57,6 @@ class VideoEffectClip : public IVideoReader
 //		effect_stack* getEffects() { return m_effects; }
 		virtual int w() = 0;
 		virtual int h() = 0;
-		virtual int aspectHeight() = 0;
-		virtual int aspectWidth() = 0;
-		virtual float aspectRatio() = 0;
 		//virtual int interlacing() = 0;
 		void unPrepareFormat();
 		void prepareFormat( video_format* fmt );

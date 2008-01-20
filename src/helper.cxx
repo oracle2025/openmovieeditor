@@ -211,26 +211,6 @@ void convert_pixel_aspect_to_pixel_w_h( float in, int& pw, int& ph )
 5760/4739 = 1.21557
 */
 }
-void guess_aspect( int w, int h, int* aspect_height, int* aspect_width, float* aspect_ratio, int* analog_blank, int* pixel_width, int* pixel_height )
-{
-	if ( w == 720 && h == 576 ) {
-		if ( aspect_height ) *aspect_height = 4;
-		if ( aspect_width ) *aspect_width = 3;
-		if ( aspect_ratio ) *aspect_ratio = ( 4.0 / 3.0 );
-		if ( analog_blank ) *analog_blank = 9;
-		if ( pixel_width ) *pixel_width = 128;
-		if ( pixel_height ) *pixel_height = 117;
-	} else {
-		unsigned long gcd_wh = gcd( w, h );
-		if ( aspect_height ) *aspect_height = h / gcd_wh; 
-		if ( aspect_width ) *aspect_width = w /gcd_wh;
-		if ( aspect_ratio ) *aspect_ratio = (float)(w /gcd_wh) / (float)(h / gcd_wh);
-		if ( analog_blank ) *analog_blank = 0;
-		if ( pixel_width ) *pixel_width = 1;
-		if ( pixel_height ) *pixel_height = 1;
-	}
-
-}
 
 
 

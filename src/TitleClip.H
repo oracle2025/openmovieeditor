@@ -62,10 +62,6 @@ class TitleClip : public FilterClip, public VideoEffectClip
 		int font() { return m_font; }
 		Fl_Color color() { return m_color; }
 		void touch() { m_dirty = true; }
-		int aspectHeight() { return 4; }
-		int aspectWidth() { return 3; }
-		float aspectRatio() { return ( 4.0 / 3.0 ); }
-		int analogBlank() { return 0; }
 		ClipData* getClipData();
 	private:
 		void init();
