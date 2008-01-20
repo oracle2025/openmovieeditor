@@ -59,22 +59,7 @@ ImageClip::ImageClip( Track* track, int64_t position, string filename, int64_t l
 	} else {
 		m_length = NLE_TIME_BASE * 10;
 	}
-	m_frame.x = m_frame.y = 0;
-	m_frame.w = m_image->w();
-	m_frame.h = m_image->h();
-	m_frame.alpha = 1.0;
-	m_frame.cacheable = true;
-	m_frame.interlace_mode = 0;
-	m_frame.pixel_aspect_ratio = 1.0;
-	m_frame.first_field = true;
-	m_frame.scale_x = 0;
-	m_frame.scale_y = 0;
-	m_frame.crop_left = 0;
-	m_frame.crop_right = 0;
-	m_frame.crop_top = 0;
-	m_frame.crop_bottom = 0;
-	m_frame.tilt_x = 0;
-	m_frame.tilt_y = 0;
+	init_frame_struct( &m_frame, m_image->w(), m_image->h() );
 	if ( m_image->d() == 4 ) {
 		m_frame.has_alpha_channel = true;
 	} else if ( m_image->d() == 3 ) {

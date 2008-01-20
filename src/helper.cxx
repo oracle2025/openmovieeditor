@@ -35,6 +35,36 @@
 namespace nle
 {
 
+void init_frame_struct( frame_struct* fs, int w, int h )
+{
+	fs->x = fs->y = 0;
+	fs->w = w;
+	fs->h = h;
+	fs->alpha = 1.0;
+	fs->has_alpha_channel = true;
+	fs->cacheable = true;
+	fs->interlace_mode = 0;
+	fs->pixel_aspect_ratio = 1.0;
+	fs->first_field = true;
+	fs->scale_x = 0;
+	fs->scale_y = 0;
+	fs->crop_left = 0;
+	fs->crop_right = 0;
+	fs->crop_top = 0;
+	fs->crop_bottom = 0;
+	fs->tilt_x = 0;
+	fs->tilt_y = 0;
+	fs->dirty = true;
+	fs->RGB = 0;
+	fs->YUV = 0;
+	fs->rows = 0;
+}
+void copy_frame_struct_props( frame_struct* src, frame_struct* dst )
+{
+	dst->pixel_aspect_ratio = src->pixel_aspect_ratio;
+	dst->interlace_mode     = src->interlace_mode;
+	dst->first_field        = src->first_field;
+}
 const char* pixel_aspect_ratio_to_string( float pixel_aspect_ratio )
 {
 	static char buffer[255];

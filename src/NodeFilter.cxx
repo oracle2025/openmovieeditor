@@ -28,6 +28,7 @@
 #include "timebase.H"
 #include <iostream>
 #include "BezierCurveNode.H"
+#include "helper.H"
 using namespace std;
 
 namespace nle {
@@ -227,9 +228,7 @@ const char* NodeFilter::name()
 }
 frame_struct* NodeFilter::getFrame( frame_struct* frame, int64_t position )
 {
-	m_framestruct.pixel_aspect_ratio = frame->pixel_aspect_ratio;
-	m_framestruct.interlace_mode = frame->interlace_mode;
-	m_framestruct.first_field = frame->first_field;
+	copy_frame_struct_props( frame, &m_framestruct );
 	if ( frame->has_alpha_channel ) {
 		m_frame_cache = (uint32_t*)frame->RGB;
 		m_framestruct.RGB = (unsigned char*)m_sink_node->getFrame( 0, position / (double)NLE_TIME_BASE );

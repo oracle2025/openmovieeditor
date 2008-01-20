@@ -65,13 +65,8 @@ TitleClip::TitleClip( Track* track, int64_t position, int64_t length, int id, Cl
 	} else {
 		m_length = NLE_TIME_BASE * 10;
 	}
-	m_frame.x = m_frame.y = 0;
-	m_frame.w = 768;
-	m_frame.h = 576;
-	m_frame.alpha = 1.0;
-	m_frame.cacheable = true;
+	init_frame_struct( &m_frame, 768, 576 );
 	m_frame.has_alpha_channel = true;
-	m_frame.dirty = true;
 	m_pixels = new unsigned char[ 768*576*4 ];
 	m_alpha = new unsigned char[ 768*576*3 ];
 	m_ok = true;

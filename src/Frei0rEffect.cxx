@@ -27,6 +27,7 @@
 #include "Frei0rDialog.H"
 #include "render_helper.H"
 #include "AutoTrack.H"
+#include "helper.H"
 
 namespace nle
 {
@@ -102,9 +103,7 @@ frame_struct* Frei0rEffect::getFrame( frame_struct* frame, int64_t position )
 	}
 	//TODO: Check if interlaced and if Filter needs separate fields, then
 	//perform conversion
-	m_framestruct.pixel_aspect_ratio = frame->pixel_aspect_ratio;
-	m_framestruct.interlace_mode = frame->interlace_mode;
-	m_framestruct.first_field = frame->first_field;
+	copy_frame_struct_props( frame, &m_framestruct );
 if ( g_INTERLACING ) {
 	//if ( frame->interlace_mode == 1 ) {
 	/*	if ( m_h > frame->h / 2 ) {

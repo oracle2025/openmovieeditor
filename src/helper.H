@@ -26,6 +26,9 @@
 namespace nle
 {
 
+void init_frame_struct( frame_struct* fs, int w, int h );
+void copy_frame_struct_props( frame_struct* src, frame_struct* dst );
+
 void convert_pixel_aspect_to_pixel_w_h( float in, int& pw, int& ph );
 const char* pixel_aspect_ratio_to_string( float pixel_aspect_ratio );
 float string_to_pixel_aspect_ratio( const char* par_str );

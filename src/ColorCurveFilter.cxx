@@ -21,6 +21,7 @@
 
 #include "ColorCurveFilter.H"
 #include "ColorCurveDialog.H"
+#include "helper.H"
 
 namespace nle
 {
@@ -80,8 +81,7 @@ frame_struct* ColorCurveFilter::getFrame( frame_struct* frame, int64_t )
 	if ( m_bypass ) {
 		return frame;
 	}
-	m_framestruct.pixel_aspect_ratio = frame->pixel_aspect_ratio;
-	m_framestruct.interlace_mode = frame->interlace_mode;
+	copy_frame_struct_props( frame, &m_framestruct );
 	unsigned int len = m_framestruct.w * m_framestruct.h;
 	unsigned char* dst = m_frame;
 	unsigned char* src = frame->RGB;
