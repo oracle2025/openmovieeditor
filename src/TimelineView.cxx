@@ -1101,15 +1101,15 @@ void TimelineView::moveEffectDown()
   //TODO copy and paste from editEffect
   if(has_next_clip()) {return;}
 
-	VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>( m_selectedClips->clip );
-	if ( !vc ) {
+	FilterClip* fc = dynamic_cast<FilterClip*>( m_selectedClips->clip );
+	if ( !fc ) {
 		return;
 	}
 	int c = g_ui->effect_browser->value();
 	if ( c == 0 ) {
 		return;
 	}
-	vc->moveEffectDown( c );
+	fc->moveFilterDown( c );
 	updateEffectDisplay();
 	g_ui->effect_browser->value( c + 1 );
 	g_ui->setEffectButtons();
@@ -1120,15 +1120,15 @@ void TimelineView::moveEffectUp()
   //TODO copy and paste from editEffect
   if(has_next_clip()) {return;}
 
-	VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>( m_selectedClips->clip );
-	if ( !vc ) {
+	FilterClip* fc = dynamic_cast<FilterClip*>( m_selectedClips->clip );
+	if ( !fc ) {
 		return;
 	}
 	int c = g_ui->effect_browser->value();
 	if ( c == 0 ) {
 		return;
 	}
-	vc->moveEffectUp( c );
+	fc->moveFilterUp( c );
 	updateEffectDisplay();
 	g_ui->effect_browser->value( c - 1 );
 	g_ui->setEffectButtons();

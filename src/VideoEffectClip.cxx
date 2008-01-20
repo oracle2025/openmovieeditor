@@ -118,26 +118,7 @@ frame_struct* VideoEffectClip::getFrame( int64_t position )
 	return f;
 
 }
-IVideoEffect* VideoEffectClip::appendEffect( FilterFactory* factory )
-{
-	return dynamic_cast<IVideoEffect*>( m_filterClip->appendFilter( factory ) );
-}
-IVideoEffect* VideoEffectClip::pushEffect( FilterFactory* factory )
-{
-	return dynamic_cast<IVideoEffect*>(m_filterClip->pushFilter( factory ));
-}
-void VideoEffectClip::moveEffectUp( int num )
-{
-	m_filterClip->moveFilterUp( num );
-}
-void VideoEffectClip::moveEffectDown( int num )
-{
-	m_filterClip->moveFilterDown( num );
-}
-void VideoEffectClip::removeEffect( int num )
-{
-	m_filterClip->removeFilter( num );
-}
+
 void VideoEffectClip::prepareFormat( video_format* fmt )
 {
 	VideoClip* videoclip = dynamic_cast<VideoClip*>(this);

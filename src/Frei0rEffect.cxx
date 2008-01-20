@@ -234,7 +234,6 @@ void Frei0rEffect::writeXML( TiXmlElement* xml_node )
 void Frei0rEffect::readXML( TiXmlElement* xml_node )
 {
 	
-//	Frei0rEffect* effectObj = dynamic_cast<Frei0rEffect*>( c->appendEffect( ef ) );
 	TiXmlElement* parameterXml = TiXmlHandle( xml_node ).FirstChildElement( "parameter" ).Element();
 	for ( ; parameterXml; parameterXml = parameterXml->NextSiblingElement( "parameter" ) ) {
 		string paramName = parameterXml->Attribute( "name" );

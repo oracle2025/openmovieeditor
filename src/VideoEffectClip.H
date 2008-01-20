@@ -37,24 +37,12 @@ class IVideoEffect;
 class ClipData;
 class FilterClip;
 
-/*typedef struct _effect_stack {
-	struct _effect_stack* next;
-	IVideoEffect* effect;
-} effect_stack;
-*/
-
 class VideoEffectClip : public IVideoReader
 {
 	public:
 		~VideoEffectClip();
 		frame_struct* getFrame( int64_t position );
 		virtual frame_struct* getRawFrame( int64_t position, int64_t &position_in_file ) = 0;
-		IVideoEffect* pushEffect( FilterFactory* factory );
-		IVideoEffect* appendEffect( FilterFactory* factory );
-		void moveEffectUp( int num );
-		void moveEffectDown( int num );
-		void removeEffect( int num );
-//		effect_stack* getEffects() { return m_effects; }
 		virtual int w() = 0;
 		virtual int h() = 0;
 		//virtual int interlacing() = 0;
@@ -79,7 +67,6 @@ class VideoEffectClip : public IVideoReader
 		render_strategy_t m_render_strategy;
 		ClipData* vec_getClipData();
 	private:
-//		effect_stack* m_effects;
 		gavl_video_converter_t *m_video_converter;
 		gavl_video_frame_t* m_frame_src;
 		gavl_video_frame_t* m_frame_dst;

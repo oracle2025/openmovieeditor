@@ -787,7 +787,7 @@ int Timeline::read_20061221_and_earlier( string filename )
 					//addClip would propably be a better Idea
 					FilterFactory* ef = g_frei0rFactory->get( effectXml->Attribute( "name" ) );
 					if ( ef ) {
-						Frei0rEffect* effectObj = dynamic_cast<Frei0rEffect*>( c->appendEffect( ef ) );
+						Frei0rEffect* effectObj = dynamic_cast<Frei0rEffect*>( c->appendFilter( ef ) );
 						TiXmlElement* parameterXml = TiXmlHandle( effectXml ).FirstChildElement( "parameter" ).Element();
 						for ( ; parameterXml; parameterXml = parameterXml->NextSiblingElement( "parameter" ) ) {
 							string paramName = parameterXml->Attribute( "name" );
@@ -830,7 +830,7 @@ int Timeline::read_20061221_and_earlier( string filename )
 						//addClip would propably be a better Idea
 						FilterFactory* ef = g_frei0rFactory->get( effectXml->Attribute( "name" ) );
 						if ( ef ) {
-							Frei0rEffect* effectObj = dynamic_cast<Frei0rEffect*>( c->appendEffect( ef ) );
+							Frei0rEffect* effectObj = dynamic_cast<Frei0rEffect*>( c->appendFilter( ef ) );
 							TiXmlElement* parameterXml = TiXmlHandle( effectXml ).FirstChildElement( "parameter" ).Element();
 							for ( ; parameterXml; parameterXml = parameterXml->NextSiblingElement( "parameter" ) ) {
 								string paramName = parameterXml->Attribute( "name" );
@@ -879,7 +879,7 @@ int Timeline::read_20061221_and_earlier( string filename )
 							//addClip would propably be a better Idea
 							FilterFactory* ef = g_frei0rFactory->get( effectXml->Attribute( "name" ) );
 							if ( ef ) {
-								Frei0rEffect* effectObj = dynamic_cast<Frei0rEffect*>( ic->appendEffect( ef ) );
+								Frei0rEffect* effectObj = dynamic_cast<Frei0rEffect*>( ic->appendFilter( ef ) );
 								TiXmlElement* parameterXml = TiXmlHandle( effectXml ).FirstChildElement( "parameter" ).Element();
 								for ( ; parameterXml; parameterXml = parameterXml->NextSiblingElement( "parameter" ) ) {
 									string paramName = parameterXml->Attribute( "name" );
