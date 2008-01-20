@@ -223,12 +223,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	FilterRemoveCommand.cxx\
 	timebase.H\
 	ShiftAutomationDragHandler.H\
-	ScaleCropTiltFilter.cxx\
-	ScaleCropTiltFilterFactory.cxx\
-	ScaleCropTiltFilterFactory.H\
-	ScaleCropTiltFilter.H\
-	ScaleCropTiltDialog.H\
-	ScaleCropTiltDialog.cxx\
 	int_float_scale.H\
 	ThreadedAudioFile.H\
 	ThreadedAudioFile.cxx\

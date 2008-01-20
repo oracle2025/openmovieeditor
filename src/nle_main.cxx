@@ -52,7 +52,6 @@ extern "C" {
 #include "FltkEffectMenu.H"
 #include "Frei0rFactory.H"
 #include "ColorCurveFactory.H"
-#include "ScaleCropTiltFilterFactory.H"
 #include "AudioVolumeFilterFactory.H"
 #include "NodeFilterFactory.H"
 #include "MainFilterFactory.H"
@@ -151,8 +150,6 @@ int main( int argc, char** argv )
 	nui.special_clips->add("Color Curves", nle::PL_VIDEO_EFFECT, "effect:builtin:ColorCurves" );
 	nui.special_clips->add("Node Compositing", nle::PL_VIDEO_EFFECT, "effect:builtin:NodeFilter" );
 
-/*	nle::ScaleCropTiltFilterFactory SCTFilterFactory;
-	nui.special_clips->add(SCTFilterFactory.name(), nle::PL_VIDEO_EFFECT, SCTFilterFactory.identifier() );*/
 
 	nle::MainFilterFactory fFactory;
 	nle::Frei0rFactory effectFactory( nui.m_effectMenu );
