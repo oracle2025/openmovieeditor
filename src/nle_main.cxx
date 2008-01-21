@@ -88,6 +88,7 @@ int main( int argc, char** argv )
 {
 	cout << "When submitting a BUG report, or SUPPORT request, please include the following information:" << endl;
 	cout << "----8<-----------------------" << endl;
+	cout << "Open Movie Editor Version: " << VERSION << endl;
 	cout << "Libquicktime Version: " << LQT_VERSION << endl;
 	cout << "Libquicktime API Version: " << (LQT_CODEC_API_VERSION & 0xffff) << endl;
 #ifdef AVCODEC
