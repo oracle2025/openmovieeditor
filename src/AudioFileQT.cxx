@@ -32,13 +32,11 @@ AudioFileQT::AudioFileQT( string filename )
 	m_qt = NULL;
 	m_oneShot = true;
 	m_filename = filename;
-	char *lqt_sucks_filename = strdup( filename.c_str() );
-	if ( !quicktime_check_sig( lqt_sucks_filename ) ) {
+	if ( !quicktime_check_sig( (char*)filename.c_str() ) ) {
 		ERROR_DETAIL( "This is not a Quicktime audio file" );
 		return;
 	}
-	m_qt = quicktime_open( lqt_sucks_filename, true, false );
-	free( lqt_sucks_filename );
+	m_qt = quicktime_open( (char*)filename.c_str(), true, false );
 	if ( !m_qt ) {
 		ERROR_DETAIL( "Could not open Quicktime file" );
 		return;
