@@ -195,7 +195,7 @@ TitleClip::~TitleClip()
 		delete m_image;
 	}
 	if ( m_alpha ) {
-		free( m_alpha );
+		delete m_alpha;
 	}
 	if ( m_offscreen ) {
 		fl_delete_offscreen(m_offscreen);
