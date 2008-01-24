@@ -20,7 +20,7 @@
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Check_Button.H>
 #include <FL/Fl_Return_Button.H>
-#include <FL/Fl_Spinner.H>
+#include <FL/Fl_Value_Input.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Slider.H>
 #include <FL/Fl_Input.H>
@@ -65,13 +65,13 @@ static void boolCallback( Fl_Widget* i, void* v )
 }
 static void xCallback( Fl_Widget* i, void* v )
 {
-	Fl_Spinner* vi = dynamic_cast<Fl_Spinner*>(i);
+	Fl_Value_Input* vi = dynamic_cast<Fl_Value_Input*>(i);
 	callback_info* info = (callback_info*)v;
 	info->dialog->setPositionX( info->number, vi->value() );
 }
 static void yCallback( Fl_Widget* i, void* v )
 {
-	Fl_Spinner* vi = dynamic_cast<Fl_Spinner*>(i);
+	Fl_Value_Input* vi = dynamic_cast<Fl_Value_Input*>(i);
 	callback_info* info = (callback_info*)v;
 	info->dialog->setPositionY( info->number, vi->value() );
 }
@@ -205,10 +205,20 @@ Frei0rDialog::Frei0rDialog( Frei0rEffect* effect )
 				break;
 			case F0R_PARAM_POSITION:
 				{
-				Fl_Spinner* sx = new Fl_Spinner( x, y, 110, h, pinfo.name);
-				Fl_Spinner* sy = new Fl_Spinner( x + 115, y, 110, h );
+				Fl_Value_Input* sx = new Fl_Value_Input( x, y, 110, h, pinfo.name);
+				Fl_Value_Input* sy = new Fl_Value_Input( x + 115, y, 110, h );
 				sx->callback( xCallback, &(m_infostack[i]) );
 				sy->callback( yCallback, &(m_infostack[i]) );
+				sx->range( 0.0, 1.0 );
+				sy->range( 0.0, 1.0 );
+				sx->step( 0.01 );
+				sy->step( 0.01 );
+				f0r_param_position_t pvalue;
+				m_effect->getValue( &pvalue, i );
+				sx->value( pvalue.x );
+				sy->value( pvalue.y );
+				m_infostack[i].x = pvalue.x;
+				m_infostack[i].y = pvalue.y;
 				break;
 				}
 			case F0R_PARAM_STRING:
@@ -270,6 +280,7 @@ void Frei0rDialog::setPositionX( int num, double val )
 	f0r_param_position_t pos;
 	pos.y = m_infostack[num].y;
 	pos.x = val;
+	m_infostack[num].x = val;
 	m_effect->setValue( &pos, num );
 	g_videoView->redraw();
 }
@@ -278,6 +289,7 @@ void Frei0rDialog::setPositionY( int num, double val )
 	f0r_param_position_t pos;
 	pos.x = m_infostack[num].x;
 	pos.y = val;
+	m_infostack[num].y = val;
 	m_effect->setValue( &pos, num );
 	g_videoView->redraw();
 }
