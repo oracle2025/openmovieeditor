@@ -49,7 +49,7 @@ extern bool USING_AUDIO;
 void Draw::triangle( float x, float y, bool direction )
 {
 	float _x;
-	float zoom = SwitchBoard::i()->zoom();
+	float zoom = GetZoom();
 	if ( USING_AUDIO ) {
 		_x = direction ? 8 * 48000 / NLE_TIME_BASE : - 8 * 48000 / NLE_TIME_BASE;
 	} else {
