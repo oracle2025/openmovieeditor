@@ -25,25 +25,27 @@
 namespace nle
 {
 
-  float *f_zoom; // private to this file
+  /* private variables of this file */
+  float f_zoom = 1.0; //0.2 -> 2.0
 
-  float GetZoom() { return *f_zoom; }
+
+  /**
+   * Perform any initialisation that we need to do to the switchboard
+   */
+  void InitSwitchboard()
+  {
+    // nothing required just now
+  }
+
+  float GetZoom() { return f_zoom; }
+
+  void SetZoom(float zoom){ f_zoom = zoom; }
 
 SwitchBoard::SwitchBoard()
 {
 
-	m_zoom = 1.0; //0.2 -> 2.0
-	f_zoom = &m_zoom;
 }
 
-void SwitchBoard::zoom( float zoom )
-{
-	m_zoom = zoom;
-}
-float SwitchBoard::zoom()
-{
-	return m_zoom;
-}
 void SwitchBoard::timelineView( TimelineView* tlv )
 {
 	m_tlv = tlv;

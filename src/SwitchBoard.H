@@ -22,7 +22,9 @@
 
 namespace nle
 {
+  void InitSwitchboard();
   float GetZoom();
+  void SetZoom(float zoom);
 
 class Timeline;
 class TimelineView;
@@ -35,8 +37,6 @@ class SwitchBoard
 			static SwitchBoard inst;
 			return &inst;
 		}
-		void zoom( float zoom );
-		float zoom();
 		void timelineView( TimelineView* tlv );
 		void move_cursor();
 	private:

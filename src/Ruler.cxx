@@ -53,7 +53,7 @@ void Ruler::draw()
 
 	fl_color( FL_FOREGROUND_COLOR );
 	fl_font( FL_HELVETICA, 11 );
-	int pixel_start = - (int)( g_timelineView->scrollPosition() * SwitchBoard::i()->zoom() ) - 100 + LEFT_TRACK_SPACING;
+	int pixel_start = - (int)( g_timelineView->scrollPosition() * GetZoom() ) - 100 + LEFT_TRACK_SPACING;
 	pixel_start = pixel_start % 100;
 	int pixel_step = 100;
 	int pixel_count = w() / 100 + 2;

@@ -114,15 +114,15 @@ int TimelineView::handle( int event )
 	switch ( event ) {
 		case FL_MOUSEWHEEL:
 			if ( Fl::event_shift() ) {
-				float new_zoom = SwitchBoard::i()->zoom() - ( Fl::event_dy() * SwitchBoard::i()->zoom() / 2 );
+				float new_zoom = GetZoom() - ( Fl::event_dy() * GetZoom() / 2 );
 				if ( new_zoom < 1.0 ) {
 					new_zoom = 1.0;
 				}
-				int64_t new_scroll_position = llrint( ( ( float(_x - LEFT_TRACK_SPACING - x() ) / SwitchBoard::i()->zoom() ) + m_scrollPosition ) ) - llrint( ( ( float(_x - LEFT_TRACK_SPACING - x() ) / new_zoom ) ) );
-				SwitchBoard::i()->zoom( new_zoom );
+				int64_t new_scroll_position = llrint( ( ( float(_x - LEFT_TRACK_SPACING - x() ) / GetZoom() ) + m_scrollPosition ) ) - llrint( ( ( float(_x - LEFT_TRACK_SPACING - x() ) / new_zoom ) ) );
+				SetZoom( new_zoom );
 				m_scrollPosition = new_scroll_position;
 			} else if ( Fl::event_ctrl() ) {
-				move_cursor( m_stylusPosition + ( Fl::event_dy() * 500000000 / SwitchBoard::i()->zoom() ) );
+				move_cursor( m_stylusPosition + ( Fl::event_dy() * 500000000 / GetZoom() ) );
 			} else {
 				m_scrollPosition += Fl::event_dy();
 				if ( m_scrollPosition < 0 ) {
@@ -516,7 +516,7 @@ void TimelineView::draw()
 			Clip* clip = j->clip;
 			int64_t scr_clip_x = get_screen_position( clip->position(), track->stretchFactor() );
 			int64_t scr_clip_y = y_coord;
-			int64_t scr_clip_w = llrint( (clip->length() + 1) * SwitchBoard::i()->zoom() / track->stretchFactor() );
+			int64_t scr_clip_w = llrint( (clip->length() + 1) * GetZoom() / track->stretchFactor() );
 			int64_t scr_clip_h = track->h();
 
 			if ( scr_clip_x + scr_clip_w < 0 )
@@ -579,7 +579,7 @@ void TimelineView::draw()
 			Clip* clip = j->clip;
 			int scr_clip_x = get_screen_position( clip->position(), track->stretchFactor() );
 			int scr_clip_y = y_coord;
-			int scr_clip_w = (int)( (clip->length()+1) * SwitchBoard::i()->zoom() / track->stretchFactor() );
+			int scr_clip_w = (int)( (clip->length()+1) * GetZoom() / track->stretchFactor() );
 			for ( int k = 0; k < 2; k++ ) {
 				if ( !k ) {
 					fl_color( FL_BLACK );
@@ -654,11 +654,11 @@ void TimelineView::draw()
 }
 int64_t TimelineView::get_real_position( int p, float stretchFactor )
 {
-	return llrint( ( ( float(p - LEFT_TRACK_SPACING - x() ) / SwitchBoard::i()->zoom() ) + m_scrollPosition ) * stretchFactor );
+	return llrint( ( ( float(p - LEFT_TRACK_SPACING - x() ) / GetZoom() ) + m_scrollPosition ) * stretchFactor );
 }
 int64_t TimelineView::get_screen_position( int64_t p, float stretchFactor )
 {
-	return llrint( float( float(p) - ( m_scrollPosition * stretchFactor ) ) * SwitchBoard::i()->zoom() / stretchFactor ) + LEFT_TRACK_SPACING + x();
+	return llrint( float( float(p) - ( m_scrollPosition * stretchFactor ) ) * GetZoom() / stretchFactor ) + LEFT_TRACK_SPACING + x();
 
 }
 void TimelineView::scroll( int64_t position )
@@ -668,7 +668,7 @@ void TimelineView::scroll( int64_t position )
 void TimelineView::zoom( float zoom )
 {
   bool insane = isinf(zoom) || isnan(zoom) || zoom >= 300.0;
-  if (!insane) {SwitchBoard::i()->zoom( zoom );}
+  if (!insane) {SetZoom( zoom );}
   redraw();
   g_ruler->stylus( get_screen_position(m_stylusPosition) );
 }
@@ -735,7 +735,7 @@ Rect TimelineView::get_clip_rect( Clip* clip, bool clipping )
 	Rect tmp(
 			get_screen_position( clip->position(), clip->track()->stretchFactor() ),
 			get_track_top( clip->track() ),
-			int( (clip->length()+1) * SwitchBoard::i()->zoom() / clip->track()->stretchFactor() ),
+			int( (clip->length()+1) * GetZoom() / clip->track()->stretchFactor() ),
 			clip->track()->h()
 		);
 	if ( clipping ) {
@@ -834,7 +834,7 @@ void TimelineView::add_track( int type )
 }
 void TimelineView::adjustScrollbar()
 {
-  long scale = long( w() / SwitchBoard::i()->zoom() );
+  long scale = long( w() / GetZoom() );
   g_scrollBar->value( m_scrollPosition, scale,0, g_timeline->length() + scale );
 }
 void TimelineView::split_clip( Clip* clip, int _x )
@@ -1231,10 +1231,10 @@ void TimelineView::move_cursor( int64_t position )
 	window()->make_current();
 	long screen_pos = get_screen_position(m_stylusPosition);
 	if ( screen_pos > w() + x() - 30 ) {
-		m_scrollPosition += (int64_t)( ( 30 - x() - w() + screen_pos ) / SwitchBoard::i()->zoom() );
+		m_scrollPosition += (int64_t)( ( 30 - x() - w() + screen_pos ) / GetZoom() );
 		adjustScrollbar();
 	} else if ( screen_pos < x() + LEFT_TRACK_SPACING + 20 && m_scrollPosition > 0 ) {
-		m_scrollPosition -= (int64_t)( ( 20 - ( screen_pos - x() - LEFT_TRACK_SPACING ) ) / SwitchBoard::i()->zoom() );
+		m_scrollPosition -= (int64_t)( ( 20 - ( screen_pos - x() - LEFT_TRACK_SPACING ) ) / GetZoom() );
 		if ( m_scrollPosition < 0 ) { m_scrollPosition = 0; }
 		adjustScrollbar();
 	}
