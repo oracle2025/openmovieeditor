@@ -20,30 +20,13 @@
 #ifndef _SWITCH_BOARD_H_
 #define _SWITCH_BOARD_H_
 
+
 namespace nle
 {
   void InitSwitchboard();
   float GetZoom();
   void SetZoom(float zoom);
-
-class Timeline;
-class TimelineView;
-
-class SwitchBoard
-{
-	public:
-		inline static SwitchBoard* i() //Singleton sucks, should be fixed,
-		{
-			static SwitchBoard inst;
-			return &inst;
-		}
-		void timelineView( TimelineView* tlv );
-		void move_cursor();
-	private:
-		SwitchBoard();
-		float m_zoom; // = 1.0;
-		TimelineView *m_tlv;
-};
+  void MoveCursor();
 
 } /* namespace nle */
 

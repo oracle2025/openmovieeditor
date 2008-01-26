@@ -86,7 +86,6 @@ TimelineView::TimelineView( int x, int y, int w, int, const char *label )
 
 	m_scrollPosition = 0;
 	m_stylusPosition = 0;
-	SwitchBoard::i()->timelineView(this);
 	current_cursor = FL_CURSOR_DEFAULT;
 	m_vscroll = 0;
 	m_selectedClips = 0;

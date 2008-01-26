@@ -200,9 +200,8 @@ void VideoViewGL::drawVideoBorder()
 
 void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 {
-	if ( move_cursor ) {
-		SwitchBoard::i()->move_cursor();
-	}
+  if ( move_cursor ) {MoveCursor(); }
+	
 	make_current();
 	if ( !valid() ) {
 		glLoadIdentity(); glViewport( 0, 0, w(), h() ); // glViewport( _x, _y, _w, _h );

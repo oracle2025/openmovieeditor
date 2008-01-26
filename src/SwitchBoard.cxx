@@ -17,6 +17,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <cassert>
+
 #include "SwitchBoard.H"
 #include "Timeline.H"
 #include "TimelineView.H"
@@ -41,18 +43,10 @@ namespace nle
 
   void SetZoom(float zoom){ f_zoom = zoom; }
 
-SwitchBoard::SwitchBoard()
-{
+  void MoveCursor() 
+  {
+    g_timelineView->move_cursor(g_timeline->m_playPosition );
+  }
 
-}
-
-void SwitchBoard::timelineView( TimelineView* tlv )
-{
-	m_tlv = tlv;
-}
-void SwitchBoard::move_cursor()
-{
-	m_tlv->move_cursor( g_timeline->m_playPosition );
-}
 
 } /* namespace nle */
