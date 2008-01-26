@@ -22,6 +22,8 @@
 
 namespace nle
 {
+  float GetZoom();
+
 class Timeline;
 class TimelineView;
 

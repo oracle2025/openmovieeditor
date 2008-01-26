@@ -25,13 +25,15 @@
 namespace nle
 {
 
-float *g_zoom;
+  float *f_zoom; // private to this file
+
+  float GetZoom() { return *f_zoom; }
 
 SwitchBoard::SwitchBoard()
 {
 
 	m_zoom = 1.0; //0.2 -> 2.0
-	g_zoom = &m_zoom;
+	f_zoom = &m_zoom;
 }
 
 void SwitchBoard::zoom( float zoom )
