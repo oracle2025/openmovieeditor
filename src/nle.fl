@@ -1066,7 +1066,7 @@ class AboutDialog {} {
         xywh {0 155 340 30} labelfont 1 labelsize 16
       }
       Fl_Box {} {
-        label {(C)opyright 2005-2007 Richard Spindler}
+        label {(C)opyright 2005-2008 Richard Spindler}
         xywh {0 210 340 40} labelsize 12
       }
       Fl_Box version_box {
