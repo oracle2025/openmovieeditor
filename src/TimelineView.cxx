@@ -828,6 +828,9 @@ void TimelineView::move_clip( Clip* clip, int _x, int _y, int offset )
 }
 void TimelineView::add_track( int type )
 {
+	if ( g_playbackCore->active() ) {
+		return;
+	}
 	Command* cmd = new AddTrackCommand( type );
 	submit( cmd );
 }
@@ -1097,7 +1100,10 @@ void TimelineView::setSelectionButtons()
 
 void TimelineView::moveEffectDown()
 {
-  //TODO copy and paste from editEffect
+	if ( g_playbackCore->active() ) {
+		return;
+	}
+	//TODO copy and paste from editEffect
   if(has_next_clip()) {return;}
 
 	FilterClip* fc = dynamic_cast<FilterClip*>( m_selectedClips->clip );
@@ -1116,6 +1122,9 @@ void TimelineView::moveEffectDown()
 }
 void TimelineView::moveEffectUp()
 {
+	if ( g_playbackCore->active() ) {
+		return;
+	}
   //TODO copy and paste from editEffect
   if(has_next_clip()) {return;}
 
@@ -1142,6 +1151,9 @@ static FilterFactory* findFilterFactory( const char* name )
 
 void TimelineView::addEffect( FilterFactory* effectFactory )
 {
+	if ( g_playbackCore->active() ) {
+		return;
+	}
   if(has_next_clip()) {return;}
 
 	FilterClip* fc = dynamic_cast<FilterClip*>( m_selectedClips->clip );
@@ -1166,6 +1178,9 @@ void TimelineView::addEffect( FilterFactory* effectFactory )
 }
 void TimelineView::removeEffect()
 {
+	if ( g_playbackCore->active() ) {
+		return;
+	}
   if(has_next_clip()) {return;}
 	FilterClip* fc = dynamic_cast<FilterClip*>( m_selectedClips->clip );
 	if ( !fc ) {
@@ -1268,6 +1283,9 @@ void TimelineView::draw_cursor()
 }
 void TimelineView::cut()
 {
+	if ( g_playbackCore->active() ) {
+		return;
+	}
 	if ( !m_selectedClips ) {
 		return;
 	}
@@ -1296,6 +1314,9 @@ void TimelineView::copy()
 }
 void TimelineView::paste()
 {
+	if ( g_playbackCore->active() ) {
+		return;
+	}
 	if ( !m_pasteCommand ) {
 		return;
 	}
@@ -1306,6 +1327,9 @@ void TimelineView::paste()
 }
 void TimelineView::remove()
 {
+	if ( g_playbackCore->active() ) {
+		return;
+	}
 	if ( !m_selectedClips ) {
 		return;
 	}
