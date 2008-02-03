@@ -202,7 +202,6 @@ static int track_length_helper( void* p, void* data )
 }
 int64_t TimelineBase::length()
 {
-	sort();
 	int64_t max = 0;
 	sl_map( m_allTracks, track_length_helper, &max );
 	return max;
