@@ -70,12 +70,10 @@ VideoViewGL::~VideoViewGL()
 }
 
 static GLuint video_canvas[10];
-#define T_W_F 2048.0 
-#define T_H_F 2048.0
-#define T_W 2048 //368
-#define T_H 2048 //240
-#define TEXTURE_WIDTH 2048.0 
-#define TEXTURE_HEIGHT 2048.0
+static int T_W = 2048;
+static int T_H = 2048;
+static float TEXTURE_WIDTH = 2048.0;
+static float TEXTURE_HEIGHT = 2048.0;
 //static unsigned char pulldown_frame[3 * 1024 * 1024];
 
 void VideoViewGL::drawVideoBorder()
@@ -217,7 +215,7 @@ void VideoViewGL::pushFrameStack( frame_struct** fs, bool move_cursor )
 	glBindTexture( GL_TEXTURE_2D, video_canvas[0] );
 
 	if ( !fs[0] ) {
-		static unsigned char p[3 * T_W * T_H] = { 0 };
+		static unsigned char p[3 * 2048 * 2048] = { 0 };
 		glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, T_W, T_H, GL_RGB, GL_UNSIGNED_BYTE, p );
 		swap_buffers();
 		return;
@@ -264,9 +262,17 @@ void VideoViewGL::draw()
 		glEnable (GL_TEXTURE_2D);
 	}
 	static bool once = true;
-	static unsigned char p[3 * T_W * T_H] = { 0 };
+	static unsigned char p[3 * 2048 * 2048] = { 0 };
 	if (once) {
+		GLint max[2];
+		glGetIntegerv(GL_MAX_TEXTURE_SIZE, max);
 		glGenTextures( 10, video_canvas );
+		if ( max[0] < T_W ) {
+			T_W = max[0];
+			T_H = max[0];
+			TEXTURE_WIDTH = max[0];
+			TEXTURE_HEIGHT = max[0];
+		}
 		for ( int i = 0; i < 10; i++ ) {
 			glBindTexture (GL_TEXTURE_2D, video_canvas[i] );
 			glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
@@ -277,8 +283,6 @@ void VideoViewGL::draw()
 			glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 			glTexImage2D (GL_TEXTURE_2D, 0, GL_RGBA, T_W, T_H, 0, GL_RGB, GL_UNSIGNED_BYTE, p);
 		}
-		GLint max[2];
-		glGetIntegerv(GL_MAX_TEXTURE_SIZE, max);
 		cout << "When submitting a BUG report, or SUPPORT request, please include the following information:" << endl;
 		cout << "----8<-----------------------" << endl;
 		cout << "OpenGL vendor string: " << ((const char*)glGetString(GL_VENDOR)) << endl;
