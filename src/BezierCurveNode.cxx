@@ -36,6 +36,7 @@ BezierCurveNode::BezierCurveNode( int w, int h )
 }
 BezierCurveNode::~BezierCurveNode()
 {
+	delete_widgets();
 	delete [] m_frame;
 	point_list* node;
 	while ( ( node = (point_list*)sl_pop( &m_points ) ) ) {
