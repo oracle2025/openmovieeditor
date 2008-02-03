@@ -16,6 +16,8 @@ gavl (gmerlin audio video library)
 libsndfile
 ffmpeg (optional but recommended)
 jack audio connection kit
+libmpeg3
+libsamplerate
 
 Installation Hints for Dependencies:
 
