@@ -44,6 +44,8 @@ class Prefs
 		int lastAudioCodec() { return m_lastAudioCodec; }
 		void lastRenderFilename( string filename ) { m_lastRenderFilename = filename; }
 		string lastRenderFilename() { return m_lastRenderFilename; }
+		void colorScheme( string name ) { m_colorScheme = name; }
+		string colorScheme() { return m_colorScheme; }
 		void lastFramesize( int fs ) { m_lastFramesize = fs; }
 		int lastFramesize() { return m_lastFramesize; }
 		void lastFramerate( int fr ) { m_lastFramerate = fr; }
@@ -53,6 +55,7 @@ class Prefs
 		string m_browserFolder;
 		string m_lastProject;
 		string m_lastRenderFilename;
+		string m_colorScheme;
 		int m_lastVideoCodec;
 		int m_lastAudioCodec;
 		int m_lastFramesize;

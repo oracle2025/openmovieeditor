@@ -73,6 +73,10 @@ Prefs::Prefs()
 	if ( text ) {
 		m_lastRenderFilename = text->Value();
 	}
+	text = docH.FirstChildElement( "colorScheme" ).Child( 0 ).Text();
+	if ( text ) {
+		m_colorScheme = text->Value();
+	}
 	TiXmlElement* j = docH.FirstChildElement( "lastVideoCodec" ).Element();
 	if ( j ) {
 		j->Attribute( "value", &m_lastVideoCodec );
@@ -124,6 +128,11 @@ Prefs::~Prefs()
 	item = new TiXmlElement( "lastRenderFilename" );
 	doc.LinkEndChild( item );
 	text = new TiXmlText( m_lastRenderFilename.c_str() );
+	item->LinkEndChild( text );
+
+	item = new TiXmlElement( "colorScheme" );
+	doc.LinkEndChild( item );
+	text = new TiXmlText( m_colorScheme.c_str() );
 	item->LinkEndChild( text );
 
 	item = new TiXmlElement( "lastVideoCodec" );

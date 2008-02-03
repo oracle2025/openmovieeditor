@@ -268,48 +268,24 @@ void NleUI::cb_Fullscreen(Fl_Menu_* o, void* v) {
 }
 
 void NleUI::cb_Normal_i(Fl_Menu_*, void*) {
-  Fl_Tooltip::color( fl_rgb_color( 0, 0, 1 ) );
-Fl::background2( 34, 52, 103 );
-Fl::background( 93, 93, 114 );
-Fl::foreground( 255, 255, 255 );
-Fl::set_color( FL_BLACK, 200, 200, 200 );
-Fl::scheme("none");
+  deep_purple();
+nle::g_preferences->colorScheme( get_current_scheme() );
 }
 void NleUI::cb_Normal(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Normal_i(o,v);
 }
 
 void NleUI::cb_Plastic_i(Fl_Menu_*, void*) {
-  Fl_Tooltip::color( fl_rgb_color( 255, 255, 191 ) );
-Fl::background2( 255, 255, 255 );
-Fl::background( 234, 234, 234 );
-Fl::foreground( 0, 0, 0 );
-Fl::set_color( FL_BLACK, 0, 0, 0 );
-Fl::scheme("plastic");
+  shiny_plastic();
+nle::g_preferences->colorScheme( get_current_scheme() );
 }
 void NleUI::cb_Plastic(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Plastic_i(o,v);
 }
 
-void NleUI::cb_Plastic1_i(Fl_Menu_*, void*) {
-  Fl_Tooltip::color( fl_rgb_color( 255, 255, 191 ) );
-Fl::background2( 248, 247, 240 );
-Fl::background( 248, 247, 240 );
-Fl::foreground( 0, 0, 0 );
-Fl::set_color( FL_BLACK, 0, 0, 0 );
-Fl::scheme("plastic");
-}
-void NleUI::cb_Plastic1(Fl_Menu_* o, void* v) {
-  ((NleUI*)(o->parent()->user_data()))->cb_Plastic1_i(o,v);
-}
-
 void NleUI::cb_Shark_i(Fl_Menu_*, void*) {
-  Fl_Tooltip::color( fl_rgb_color( 255, 255, 255 ) );
-Fl::background2( 153, 153, 153 );
-Fl::background( 102, 102, 102 );
-Fl::foreground( 255, 255, 255 );
-Fl::set_color( FL_BLACK, 51, 51, 51 );
-Fl::scheme("shark");
+  dark_shark();
+nle::g_preferences->colorScheme( get_current_scheme() );
 }
 void NleUI::cb_Shark(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Shark_i(o,v);
@@ -375,7 +351,6 @@ Fl_Menu_Item NleUI::menu_Black[] = {
  {"Track Overview", 0,  0, 0, 18, FL_NORMAL_LABEL, 0, 14, 0},
  {"Normal Style", 0,  (Fl_Callback*)NleUI::cb_Normal, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Plastic Style", 0,  (Fl_Callback*)NleUI::cb_Plastic, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"Plastic Colors", 0,  (Fl_Callback*)NleUI::cb_Plastic1, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Shark", 0,  (Fl_Callback*)NleUI::cb_Shark, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"&Help", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},

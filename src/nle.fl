@@ -294,43 +294,23 @@ if ( fullscreen_on ) {
           }
           MenuItem {} {
             label {Normal Style}
-            callback {Fl_Tooltip::color( fl_rgb_color( 0, 0, 1 ) );
-Fl::background2( 34, 52, 103 );
-Fl::background( 93, 93, 114 );
-Fl::foreground( 255, 255, 255 );
-Fl::set_color( FL_BLACK, 200, 200, 200 );
-Fl::scheme("none");}
+            callback {deep_purple();
+nle::g_preferences->colorScheme( get_current_scheme() );}
             xywh {0 0 100 20}
+            code0 {\#include "color_schemes.H"}
+            code1 {\#include "Prefs.H"}
           }
           MenuItem {} {
             label {Plastic Style}
-            callback {Fl_Tooltip::color( fl_rgb_color( 255, 255, 191 ) );
-Fl::background2( 255, 255, 255 );
-Fl::background( 234, 234, 234 );
-Fl::foreground( 0, 0, 0 );
-Fl::set_color( FL_BLACK, 0, 0, 0 );
-Fl::scheme("plastic");}
+            callback {shiny_plastic();
+nle::g_preferences->colorScheme( get_current_scheme() );}
             xywh {0 0 100 20}
             code0 {\#include <FL/Fl_Tooltip.H>}
           }
           MenuItem {} {
-            label {Plastic Colors}
-            callback {Fl_Tooltip::color( fl_rgb_color( 255, 255, 191 ) );
-Fl::background2( 248, 247, 240 );
-Fl::background( 248, 247, 240 );
-Fl::foreground( 0, 0, 0 );
-Fl::set_color( FL_BLACK, 0, 0, 0 );
-Fl::scheme("plastic");}
-            xywh {0 0 100 20}
-          }
-          MenuItem {} {
             label Shark
-            callback {Fl_Tooltip::color( fl_rgb_color( 255, 255, 255 ) );
-Fl::background2( 153, 153, 153 );
-Fl::background( 102, 102, 102 );
-Fl::foreground( 255, 255, 255 );
-Fl::set_color( FL_BLACK, 51, 51, 51 );
-Fl::scheme("shark");}
+            callback {dark_shark();
+nle::g_preferences->colorScheme( get_current_scheme() );}
             xywh {0 0 100 20}
           }
         }

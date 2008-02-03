@@ -274,7 +274,9 @@ openmovieeditor_SOURCES = nle.cxx\
 	ColorWheel.H\
 	ColorWheel.cxx\
   XmlClipData.H\
-  XmlClipData.cxx
+  XmlClipData.cxx\
+  color_schemes.cxx\
+  color_schemes.H
 	
 
 

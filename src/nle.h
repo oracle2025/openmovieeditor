@@ -14,6 +14,7 @@
 #include "Timeline.H"
 #include "VideoTrack.H"
 #include "AudioTrack.H"
+#include "color_schemes.H"
 #include <FL/Fl_Tooltip.H>
 #include <FL/Fl_Tile.H>
 #include <FL/Fl_Group.H>
@@ -128,8 +129,6 @@ private:
   static void cb_Normal(Fl_Menu_*, void*);
   void cb_Plastic_i(Fl_Menu_*, void*);
   static void cb_Plastic(Fl_Menu_*, void*);
-  void cb_Plastic1_i(Fl_Menu_*, void*);
-  static void cb_Plastic1(Fl_Menu_*, void*);
   void cb_Shark_i(Fl_Menu_*, void*);
   static void cb_Shark(Fl_Menu_*, void*);
   void cb_Tutorial_i(Fl_Menu_*, void*);
