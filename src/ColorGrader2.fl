@@ -4,7 +4,7 @@ header_name {.h}
 code_name {.cxx}
 widget_class ColorGrader2 {
   label {Color Curves} open
-  xywh {1101 87 605 350} type Double align 5 visible
+  xywh {772 305 605 200} type Double align 5 visible
 } {
   Fl_Box editor_red {
     label Red
@@ -37,7 +37,7 @@ widget_class ColorGrader2 {
   Fl_Check_Button bypass_check {
     label Bypass
     callback {m_dialog->read_values();}
-    xywh {5 320 85 25} down_box DOWN_BOX
+    xywh {5 170 85 25} down_box DOWN_BOX
   }
   decl {nle::ColorCurveDialog* m_dialog;} {public
   }
@@ -67,7 +67,7 @@ editor_red->redraw();
 editor_green->redraw();
 editor_blue->redraw();
 m_dialog->read_values();}
-    xywh {100 170 145 145} box DOWN_BOX
+    xywh {100 170 145 145} box DOWN_BOX hide
     code0 {\#include "ColorWheel.H"}
     class ColorWheel
   }
@@ -96,8 +96,8 @@ editor_blue->calculate_values();
 editor_red->redraw();
 editor_green->redraw();
 editor_blue->redraw();
-m_dialog->read_values();} selected
-    xywh {345 170 145 145} box DOWN_BOX
+m_dialog->read_values();}
+    xywh {345 170 145 145} box DOWN_BOX hide
     code0 {\#include "ColorWheel.H"}
     class ColorWheel
   }

@@ -150,7 +150,7 @@ o->align(FL_ALIGN_TOP_LEFT);
   o->align(FL_ALIGN_TOP_LEFT);
   o->when(FL_WHEN_RELEASE);
 }
-{ Fl_Check_Button* o = bypass_check = new Fl_Check_Button(5, 320, 85, 25, "Bypass");
+{ Fl_Check_Button* o = bypass_check = new Fl_Check_Button(5, 170, 85, 25, "Bypass");
   o->down_box(FL_DOWN_BOX);
   o->callback((Fl_Callback*)cb_bypass_check);
 }
@@ -165,6 +165,7 @@ o->align(FL_ALIGN_TOP_LEFT);
   o->callback((Fl_Callback*)cb_color_wheel_1);
   o->align(FL_ALIGN_CENTER);
   o->when(FL_WHEN_RELEASE);
+  o->hide();
 }
 { ColorWheel* o = color_wheel_2 = new ColorWheel(345, 170, 145, 145);
   o->box(FL_DOWN_BOX);
@@ -177,6 +178,7 @@ o->align(FL_ALIGN_TOP_LEFT);
   o->callback((Fl_Callback*)cb_color_wheel_2);
   o->align(FL_ALIGN_CENTER);
   o->when(FL_WHEN_RELEASE);
+  o->hide();
 }
 end();
 }
