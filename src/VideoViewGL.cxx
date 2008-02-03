@@ -17,7 +17,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <iostream.h>
+#include <iostream>
 
 #include <FL/gl.h>
 #include <FL/Fl_PNG_Image.H>
@@ -33,6 +33,8 @@
 extern bool g_16_9;
 extern bool g_black_borders;
 extern bool g_black_borders_2_35;
+
+using namespace std;
 
 namespace nle
 {
