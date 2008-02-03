@@ -130,6 +130,8 @@ private:
   static void cb_Plastic(Fl_Menu_*, void*);
   void cb_Plastic1_i(Fl_Menu_*, void*);
   static void cb_Plastic1(Fl_Menu_*, void*);
+  void cb_Shark_i(Fl_Menu_*, void*);
+  static void cb_Shark(Fl_Menu_*, void*);
   void cb_Tutorial_i(Fl_Menu_*, void*);
   static void cb_Tutorial(Fl_Menu_*, void*);
   void cb_About_i(Fl_Menu_*, void*);

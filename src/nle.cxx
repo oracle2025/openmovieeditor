@@ -303,6 +303,18 @@ void NleUI::cb_Plastic1(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Plastic1_i(o,v);
 }
 
+void NleUI::cb_Shark_i(Fl_Menu_*, void*) {
+  Fl_Tooltip::color( fl_rgb_color( 255, 255, 255 ) );
+Fl::background2( 153, 153, 153 );
+Fl::background( 102, 102, 102 );
+Fl::foreground( 255, 255, 255 );
+Fl::set_color( FL_BLACK, 51, 51, 51 );
+Fl::scheme("shark");
+}
+void NleUI::cb_Shark(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_Shark_i(o,v);
+}
+
 void NleUI::cb_Tutorial_i(Fl_Menu_*, void*) {
   m_timelineView->help();
 }
@@ -364,6 +376,7 @@ Fl_Menu_Item NleUI::menu_Black[] = {
  {"Normal Style", 0,  (Fl_Callback*)NleUI::cb_Normal, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Plastic Style", 0,  (Fl_Callback*)NleUI::cb_Plastic, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Plastic Colors", 0,  (Fl_Callback*)NleUI::cb_Plastic1, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Shark", 0,  (Fl_Callback*)NleUI::cb_Shark, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"&Help", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"Tutorial...", 0,  (Fl_Callback*)NleUI::cb_Tutorial, 0, 16, FL_NORMAL_LABEL, 0, 14, 0},
