@@ -22,6 +22,8 @@
 #include <FL/Fl_Slider.H>
 #include "IPlaybackCore.H"
 #include <FL/Fl_Button.H>
+#include <FL/Fl_Menu_Button.H>
+#include <FL/Fl_Box.H>
 #include <FL/Fl_Tabs.H>
 #include "FileBrowser.H"
 #include "MediaPanel.H"
@@ -32,7 +34,6 @@
 #include <FL/Fl_Value_Input.H>
 #include <math.h>
 #include <FL/fl_show_colormap.H>
-#include <FL/Fl_Box.H>
 #include "fl_font_browser.h"
 #include <FL/Fl_Choice.H>
 #include <FL/Fl_Output.H>
@@ -143,6 +144,7 @@ private:
   static void cb_zoom_slider(Fl_Slider*, void*);
   void cb__i(Fl_Button*, void*);
   static void cb_(Fl_Button*, void*);
+  static Fl_Menu_Item menu_fps[];
 public:
   Fl_Tabs *tab_view;
 private:

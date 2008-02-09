@@ -344,11 +344,11 @@ while (dlg.shown())
           } {
             Fl_Box m_videoView {
               label VideoView
-              xywh {365 25 310 320} box DOWN_BOX labelcolor 32 resizable
+              xywh {365 25 310 295} box DOWN_BOX labelcolor 32 resizable
               code0 {\#include "VideoViewGL.H"}
               class {nle::VideoViewGL}
             }
-            Fl_Group {} {open
+            Fl_Group {} {
               xywh {675 25 25 320}
             } {
               Fl_Slider zoom_slider {
@@ -366,6 +366,52 @@ m_videoView->zoom( 0 );
 m_videoView->invalidate();
 m_videoView->redraw();}
                 tooltip {Reset Zoom} xywh {675 320 25 25}
+              }
+            }
+            Fl_Group {} {open
+              xywh {365 320 310 25}
+            } {
+              Fl_Menu_Button {} {
+                label fps open
+                xywh {365 320 80 25}
+              } {
+                MenuItem {} {
+                  label {25 (PAL)}
+                  user_data {&fps25x48000}
+                  xywh {35 35 100 20}
+                }
+                MenuItem {} {
+                  label {29.97 (NTSC)}
+                  user_data {&fps29_97x48000}
+                  xywh {30 30 100 20}
+                }
+                MenuItem {} {
+                  label 24
+                  user_data {&fps24x48000}
+                  xywh {30 30 100 20}
+                }
+                MenuItem {} {
+                  label 15
+                  user_data {&fps15x48000}
+                  xywh {30 30 100 20}
+                }
+                MenuItem {} {
+                  label 50
+                  user_data {&fps50x48000}
+                  xywh {30 30 100 20}
+                }
+                MenuItem {} {
+                  label 60
+                  user_data {&fps60x48000}
+                  xywh {30 30 100 20}
+                }
+              }
+              Fl_Menu_Button {} {
+                label Aspect open
+                xywh {445 320 100 25}
+              } {}
+              Fl_Box {} {
+                xywh {545 320 130 25} resizable
               }
             }
           }

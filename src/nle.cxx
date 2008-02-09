@@ -390,6 +390,16 @@ void NleUI::cb_(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb__i(o,v);
 }
 
+Fl_Menu_Item NleUI::menu_fps[] = {
+ {"25 (PAL)", 0,  0, (void*)(&fps25x48000), 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"29.97 (NTSC)", 0,  0, (void*)(&fps29_97x48000), 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"24", 0,  0, (void*)(&fps24x48000), 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"15", 0,  0, (void*)(&fps15x48000), 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"50", 0,  0, (void*)(&fps50x48000), 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"60", 0,  0, (void*)(&fps60x48000), 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {0,0,0,0,0,0,0,0,0}
+};
+
 void NleUI::cb_1_i(nle::FileBrowser* o, void*) {
   nle::FileBrowser* fb = (nle::FileBrowser*)o;
 fb->load_rel();
@@ -867,7 +877,7 @@ NleUI::NleUI() {
     { Fl_Tile* o = new Fl_Tile(0, 25, 700, 575);
       { Fl_Tile* o = new Fl_Tile(0, 25, 700, 320);
         { Fl_Group* o = new Fl_Group(365, 25, 335, 320);
-          { nle::VideoViewGL* o = m_videoView = new nle::VideoViewGL(365, 25, 310, 320, "VideoView");
+          { nle::VideoViewGL* o = m_videoView = new nle::VideoViewGL(365, 25, 310, 295, "VideoView");
             o->box(FL_DOWN_BOX);
             o->color(FL_BACKGROUND_COLOR);
             o->selection_color(FL_BACKGROUND_COLOR);
@@ -890,6 +900,17 @@ NleUI::NleUI() {
             { Fl_Button* o = new Fl_Button(675, 320, 25, 25);
               o->tooltip("Reset Zoom");
               o->callback((Fl_Callback*)cb_);
+            }
+            o->end();
+          }
+          { Fl_Group* o = new Fl_Group(365, 320, 310, 25);
+            { Fl_Menu_Button* o = new Fl_Menu_Button(365, 320, 80, 25, "fps");
+              o->menu(menu_fps);
+            }
+            { Fl_Menu_Button* o = new Fl_Menu_Button(445, 320, 100, 25, "Aspect");
+            }
+            { Fl_Box* o = new Fl_Box(545, 320, 130, 25);
+              Fl_Group::current()->resizable(o);
             }
             o->end();
           }
