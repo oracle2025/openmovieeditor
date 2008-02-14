@@ -369,9 +369,9 @@ m_videoView->redraw();}
               }
             }
             Fl_Group {} {open
-              xywh {365 320 310 25}
+              xywh {365 320 310 25} box FLAT_BOX
             } {
-              Fl_Menu_Button {} {
+              Fl_Menu_Button fps_pb_menu {
                 label fps open
                 xywh {365 320 80 25}
               } {

@@ -39,6 +39,7 @@
 #include "globals.H"
 #include "SaveAsDialog.H"
 #include "TimelineView.H"
+#include "nle.h"
 
 namespace nle
 {
@@ -172,6 +173,10 @@ void LoadSaveManager::startup()
 	
 	/* vv  Put this in a function */
 	m_projectInput->label( m_currentName.c_str() );
+	g_ui->fps_pb_menu->value( g_timeline->m_playback_fps );
+	if ( g_ui->fps_pb_menu->mvalue() ) {
+		((Fl_Menu_Item*)g_ui->fps_pb_menu->mvalue())->setonly();
+	}
 	const Fl_Menu_Item* item;
 	item = m_projectChoice->find_item( m_currentName.c_str() );
 	if ( item ) {
@@ -275,6 +280,10 @@ void LoadSaveManager::load( string v )
 	g_timeline->read( m_video_projects + "/" + m_currentFilename );
 	const Fl_Menu_Item* item;
 	m_projectInput->label( m_currentName.c_str() );
+	g_ui->fps_pb_menu->value( g_timeline->m_playback_fps );
+	if ( g_ui->fps_pb_menu->mvalue() ) {
+		((Fl_Menu_Item*)g_ui->fps_pb_menu->mvalue())->setonly();
+	}
 	item = m_projectChoice->find_item( m_currentName.c_str() );
 	if ( item ) {
 		m_projectChoice->value( item );

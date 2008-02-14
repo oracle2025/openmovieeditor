@@ -145,7 +145,10 @@ private:
   static void cb_zoom_slider(Fl_Slider*, void*);
   void cb__i(Fl_Button*, void*);
   static void cb_(Fl_Button*, void*);
-  static Fl_Menu_Item menu_fps[];
+public:
+  Fl_Menu_Button *fps_pb_menu;
+  static Fl_Menu_Item menu_fps_pb_menu[];
+private:
   void cb_flexible_i(Fl_Menu_*, void*);
   static void cb_flexible(Fl_Menu_*, void*);
   void cb_25_i(Fl_Menu_*, void*);

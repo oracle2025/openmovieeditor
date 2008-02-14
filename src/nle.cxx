@@ -439,7 +439,7 @@ void NleUI::cb_60(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_60_i(o,v);
 }
 
-Fl_Menu_Item NleUI::menu_fps[] = {
+Fl_Menu_Item NleUI::menu_fps_pb_menu[] = {
  {"flexible", 0,  (Fl_Callback*)NleUI::cb_flexible, 0, 12, FL_NORMAL_LABEL, 0, 14, 0},
  {"25 (PAL)", 0,  (Fl_Callback*)NleUI::cb_25, (void*)(&fps25x48000), 8, FL_NORMAL_LABEL, 0, 14, 0},
  {"29.97 (NTSC)", 0,  (Fl_Callback*)NleUI::cb_29, (void*)(&fps29_97x48000), 8, FL_NORMAL_LABEL, 0, 14, 0},
@@ -961,8 +961,9 @@ NleUI::NleUI() {
             o->end();
           }
           { Fl_Group* o = new Fl_Group(365, 320, 310, 25);
-            { Fl_Menu_Button* o = new Fl_Menu_Button(365, 320, 80, 25, "fps");
-              o->menu(menu_fps);
+            o->box(FL_FLAT_BOX);
+            { Fl_Menu_Button* o = fps_pb_menu = new Fl_Menu_Button(365, 320, 80, 25, "fps");
+              o->menu(menu_fps_pb_menu);
             }
             { Fl_Menu_Button* o = new Fl_Menu_Button(445, 320, 100, 25, "Aspect");
               o->menu(menu_Aspect);

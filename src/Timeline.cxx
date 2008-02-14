@@ -392,6 +392,10 @@ int Timeline::write( string filename, string name )
 	item->SetAttribute( "value", 0 );
 	project->LinkEndChild( item );
 
+	item = new TiXmlElement( "playback_fps" );
+	item->SetAttribute( "value", m_playback_fps );
+	project->LinkEndChild( item );
+
 	TiXmlElement* video_tracks = new TiXmlElement( "video_tracks" );
 	project->LinkEndChild( video_tracks );
 	
@@ -490,7 +494,14 @@ int Timeline::read( string filename )
 		}
 	}
 
-	
+	TiXmlElement* item = docH.FirstChild( "open_movie_editor_project" ).FirstChild( "playback_fps" ).Element();
+	int i = PB_FPS_NONE;
+	if ( item ) {
+		item->Attribute( "value", &i );
+	}
+	m_playback_fps = (playback_fps)i;
+
+
 	TiXmlElement* track = docH.FirstChild( "open_movie_editor_project" ).FirstChild( "video_tracks" ).FirstChild( "track" ).Element();
 	
 	int trackId = 0;
