@@ -23,7 +23,7 @@
 #include "IPlaybackCore.H"
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Menu_Button.H>
-#include <FL/Fl_Box.H>
+#include <FL/Fl_Check_Button.H>
 #include <FL/Fl_Tabs.H>
 #include "FileBrowser.H"
 #include "MediaPanel.H"
@@ -34,6 +34,7 @@
 #include <FL/Fl_Value_Input.H>
 #include <math.h>
 #include <FL/fl_show_colormap.H>
+#include <FL/Fl_Box.H>
 #include "fl_font_browser.h"
 #include <FL/Fl_Choice.H>
 #include <FL/Fl_Output.H>
@@ -145,6 +146,7 @@ private:
   void cb__i(Fl_Button*, void*);
   static void cb_(Fl_Button*, void*);
   static Fl_Menu_Item menu_fps[];
+  static Fl_Menu_Item menu_Aspect[];
 public:
   Fl_Tabs *tab_view;
 private:
@@ -404,7 +406,7 @@ extern Fl_Menu_Item menu_Framerate[];
 extern Fl_Menu_Item menu_Framesize[];
 extern Fl_Menu_Item menu_Samplerate[];
 extern Fl_Menu_Item menu_Quality[];
-extern Fl_Menu_Item menu_Aspect[];
+extern Fl_Menu_Item menu_Aspect1[];
 #include "VideoWriterQT.H"
 #include <colormodels.h>
 #include <sys/types.h>
@@ -451,7 +453,6 @@ public:
 };
 #include <iostream>
 #include <FL/Fl_Spinner.H>
-#include <FL/Fl_Check_Button.H>
 #include <FL/Fl_Input_Choice.H>
 
 class CustomFormatDialog {

@@ -391,12 +391,20 @@ void NleUI::cb_(Fl_Button* o, void* v) {
 }
 
 Fl_Menu_Item NleUI::menu_fps[] = {
- {"25 (PAL)", 0,  0, (void*)(&fps25x48000), 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"29.97 (NTSC)", 0,  0, (void*)(&fps29_97x48000), 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"24", 0,  0, (void*)(&fps24x48000), 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"15", 0,  0, (void*)(&fps15x48000), 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"50", 0,  0, (void*)(&fps50x48000), 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"60", 0,  0, (void*)(&fps60x48000), 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"flexible", 0,  0, 0, 12, FL_NORMAL_LABEL, 0, 14, 0},
+ {"25 (PAL)", 0,  0, (void*)(&fps25x48000), 8, FL_NORMAL_LABEL, 0, 14, 0},
+ {"29.97 (NTSC)", 0,  0, (void*)(&fps29_97x48000), 8, FL_NORMAL_LABEL, 0, 14, 0},
+ {"24", 0,  0, (void*)(&fps24x48000), 8, FL_NORMAL_LABEL, 0, 14, 0},
+ {"15", 0,  0, (void*)(&fps15x48000), 8, FL_NORMAL_LABEL, 0, 14, 0},
+ {"50", 0,  0, (void*)(&fps50x48000), 8, FL_NORMAL_LABEL, 0, 14, 0},
+ {"60", 0,  0, (void*)(&fps60x48000), 8, FL_NORMAL_LABEL, 0, 14, 0},
+ {0,0,0,0,0,0,0,0,0}
+};
+
+Fl_Menu_Item NleUI::menu_Aspect[] = {
+ {"4:3", 0,  0, 0, 12, FL_NORMAL_LABEL, 0, 14, 0},
+ {"16:9", 0,  0, 0, 8, FL_NORMAL_LABEL, 0, 14, 0},
+ {"2.35:1", 0,  0, 0, 8, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0}
 };
 
@@ -908,8 +916,10 @@ NleUI::NleUI() {
               o->menu(menu_fps);
             }
             { Fl_Menu_Button* o = new Fl_Menu_Button(445, 320, 100, 25, "Aspect");
+              o->menu(menu_Aspect);
             }
-            { Fl_Box* o = new Fl_Box(545, 320, 130, 25);
+            { Fl_Check_Button* o = new Fl_Check_Button(545, 320, 130, 25, "interlaced");
+              o->down_box(FL_DOWN_BOX);
               Fl_Group::current()->resizable(o);
             }
             o->end();
@@ -6463,7 +6473,7 @@ Fl_Menu_Item menu_Quality[] = {
  {0,0,0,0,0,0,0,0,0}
 };
 
-Fl_Menu_Item menu_Aspect[] = {
+Fl_Menu_Item menu_Aspect1[] = {
  {"4:3", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"16:9", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0}
@@ -6514,7 +6524,7 @@ Fl_Double_Window* encoder_2_dlg() {
       }
       { Fl_Choice* o = new Fl_Choice(295, 160, 155, 25, "Aspect");
         o->down_box(FL_BORDER_BOX);
-        o->menu(menu_Aspect);
+        o->menu(menu_Aspect1);
       }
       export_filename_simple = new Fl_File_Input(140, 30, 205, 35, "Filename");
       { Fl_Button* o = new Fl_Button(350, 40, 75, 25, "File...");

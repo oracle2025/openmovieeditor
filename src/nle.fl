@@ -376,42 +376,60 @@ m_videoView->redraw();}
                 xywh {365 320 80 25}
               } {
                 MenuItem {} {
+                  label flexible
+                  xywh {0 0 100 20} type Radio value 1
+                }
+                MenuItem {} {
                   label {25 (PAL)}
                   user_data {&fps25x48000}
-                  xywh {35 35 100 20}
+                  xywh {35 35 100 20} type Radio
                 }
                 MenuItem {} {
                   label {29.97 (NTSC)}
                   user_data {&fps29_97x48000}
-                  xywh {30 30 100 20}
+                  xywh {30 30 100 20} type Radio
                 }
                 MenuItem {} {
                   label 24
                   user_data {&fps24x48000}
-                  xywh {30 30 100 20}
+                  xywh {30 30 100 20} type Radio
                 }
                 MenuItem {} {
                   label 15
                   user_data {&fps15x48000}
-                  xywh {30 30 100 20}
+                  xywh {30 30 100 20} type Radio
                 }
                 MenuItem {} {
                   label 50
                   user_data {&fps50x48000}
-                  xywh {30 30 100 20}
+                  xywh {30 30 100 20} type Radio
                 }
                 MenuItem {} {
                   label 60
                   user_data {&fps60x48000}
-                  xywh {30 30 100 20}
+                  xywh {30 30 100 20} type Radio
                 }
               }
               Fl_Menu_Button {} {
                 label Aspect open
                 xywh {445 320 100 25}
-              } {}
-              Fl_Box {} {
-                xywh {545 320 130 25} resizable
+              } {
+                MenuItem {} {
+                  label {4:3}
+                  xywh {10 10 100 20} type Radio value 1
+                }
+                MenuItem {} {
+                  label {16:9}
+                  xywh {10 10 100 20} type Radio
+                }
+                MenuItem {} {
+                  label {2.35:1}
+                  xywh {10 10 100 20} type Radio
+                }
+              }
+              Fl_Check_Button {} {
+                label interlaced
+                xywh {545 320 130 25} down_box DOWN_BOX resizable
               }
             }
           }
