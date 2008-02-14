@@ -82,6 +82,7 @@ Timeline::Timeline()
 	m_seekPosition = 0;
 	m_soundLength = 0;
 	m_changed = false;
+	m_playback_fps = PB_FPS_NONE;
 }
 
 Timeline::~Timeline()

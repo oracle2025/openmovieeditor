@@ -377,36 +377,43 @@ m_videoView->redraw();}
               } {
                 MenuItem {} {
                   label flexible
+                  callback {nle::g_timeline->m_playback_fps = nle::PB_FPS_NONE;}
                   xywh {0 0 100 20} type Radio value 1
                 }
                 MenuItem {} {
                   label {25 (PAL)}
                   user_data {&fps25x48000}
+                  callback {nle::g_timeline->m_playback_fps = nle::PB_FPS_25_PAL;}
                   xywh {35 35 100 20} type Radio
                 }
                 MenuItem {} {
                   label {29.97 (NTSC)}
                   user_data {&fps29_97x48000}
+                  callback {nle::g_timeline->m_playback_fps = nle::PB_FPS_2997_NTSC;}
                   xywh {30 30 100 20} type Radio
                 }
                 MenuItem {} {
                   label 24
                   user_data {&fps24x48000}
+                  callback {nle::g_timeline->m_playback_fps = nle::PB_FPS_24;}
                   xywh {30 30 100 20} type Radio
                 }
                 MenuItem {} {
                   label 15
                   user_data {&fps15x48000}
+                  callback {nle::g_timeline->m_playback_fps = nle::PB_FPS_15;}
                   xywh {30 30 100 20} type Radio
                 }
                 MenuItem {} {
                   label 50
                   user_data {&fps50x48000}
+                  callback {nle::g_timeline->m_playback_fps = nle::PB_FPS_50;}
                   xywh {30 30 100 20} type Radio
                 }
                 MenuItem {} {
                   label 60
                   user_data {&fps60x48000}
+                  callback {nle::g_timeline->m_playback_fps = nle::PB_FPS_60;}
                   xywh {30 30 100 20} type Radio
                 }
               }

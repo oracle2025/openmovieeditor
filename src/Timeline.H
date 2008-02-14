@@ -31,6 +31,16 @@
 namespace nle
 {
 
+typedef enum {
+	PB_FPS_NONE = 0,
+	PB_FPS_25_PAL,
+	PB_FPS_2997_NTSC,
+	PB_FPS_24,
+	PB_FPS_15,
+	PB_FPS_50,
+	PB_FPS_60
+} playback_fps;
+
 class Timeline : public TimelineBase, public IAudioReader, public IVideoReader
 {
 	public:
@@ -68,6 +78,7 @@ class Timeline : public TimelineBase, public IAudioReader, public IVideoReader
 		int write_srt( std::string filename, int track );
 		bool render_mode() { return m_render_mode; }
 		void render_mode( bool b ) { m_render_mode = b; }
+		playback_fps m_playback_fps;
 	private:
 		int read_20061221_and_earlier( std::string filename );
 		int64_t m_soundLength;

@@ -390,14 +390,63 @@ void NleUI::cb_(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb__i(o,v);
 }
 
+void NleUI::cb_flexible_i(Fl_Menu_*, void*) {
+  nle::g_timeline->m_playback_fps = nle::PB_FPS_NONE;
+}
+void NleUI::cb_flexible(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_flexible_i(o,v);
+}
+
+void NleUI::cb_25_i(Fl_Menu_*, void*) {
+  nle::g_timeline->m_playback_fps = nle::PB_FPS_25_PAL;
+}
+void NleUI::cb_25(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_25_i(o,v);
+}
+
+void NleUI::cb_29_i(Fl_Menu_*, void*) {
+  nle::g_timeline->m_playback_fps = nle::PB_FPS_2997_NTSC;
+}
+void NleUI::cb_29(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_29_i(o,v);
+}
+
+void NleUI::cb_24_i(Fl_Menu_*, void*) {
+  nle::g_timeline->m_playback_fps = nle::PB_FPS_24;
+}
+void NleUI::cb_24(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_24_i(o,v);
+}
+
+void NleUI::cb_15_i(Fl_Menu_*, void*) {
+  nle::g_timeline->m_playback_fps = nle::PB_FPS_15;
+}
+void NleUI::cb_15(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_15_i(o,v);
+}
+
+void NleUI::cb_50_i(Fl_Menu_*, void*) {
+  nle::g_timeline->m_playback_fps = nle::PB_FPS_50;
+}
+void NleUI::cb_50(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_50_i(o,v);
+}
+
+void NleUI::cb_60_i(Fl_Menu_*, void*) {
+  nle::g_timeline->m_playback_fps = nle::PB_FPS_60;
+}
+void NleUI::cb_60(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_60_i(o,v);
+}
+
 Fl_Menu_Item NleUI::menu_fps[] = {
- {"flexible", 0,  0, 0, 12, FL_NORMAL_LABEL, 0, 14, 0},
- {"25 (PAL)", 0,  0, (void*)(&fps25x48000), 8, FL_NORMAL_LABEL, 0, 14, 0},
- {"29.97 (NTSC)", 0,  0, (void*)(&fps29_97x48000), 8, FL_NORMAL_LABEL, 0, 14, 0},
- {"24", 0,  0, (void*)(&fps24x48000), 8, FL_NORMAL_LABEL, 0, 14, 0},
- {"15", 0,  0, (void*)(&fps15x48000), 8, FL_NORMAL_LABEL, 0, 14, 0},
- {"50", 0,  0, (void*)(&fps50x48000), 8, FL_NORMAL_LABEL, 0, 14, 0},
- {"60", 0,  0, (void*)(&fps60x48000), 8, FL_NORMAL_LABEL, 0, 14, 0},
+ {"flexible", 0,  (Fl_Callback*)NleUI::cb_flexible, 0, 12, FL_NORMAL_LABEL, 0, 14, 0},
+ {"25 (PAL)", 0,  (Fl_Callback*)NleUI::cb_25, (void*)(&fps25x48000), 8, FL_NORMAL_LABEL, 0, 14, 0},
+ {"29.97 (NTSC)", 0,  (Fl_Callback*)NleUI::cb_29, (void*)(&fps29_97x48000), 8, FL_NORMAL_LABEL, 0, 14, 0},
+ {"24", 0,  (Fl_Callback*)NleUI::cb_24, (void*)(&fps24x48000), 8, FL_NORMAL_LABEL, 0, 14, 0},
+ {"15", 0,  (Fl_Callback*)NleUI::cb_15, (void*)(&fps15x48000), 8, FL_NORMAL_LABEL, 0, 14, 0},
+ {"50", 0,  (Fl_Callback*)NleUI::cb_50, (void*)(&fps50x48000), 8, FL_NORMAL_LABEL, 0, 14, 0},
+ {"60", 0,  (Fl_Callback*)NleUI::cb_60, (void*)(&fps60x48000), 8, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0}
 };
 

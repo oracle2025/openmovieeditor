@@ -146,6 +146,20 @@ private:
   void cb__i(Fl_Button*, void*);
   static void cb_(Fl_Button*, void*);
   static Fl_Menu_Item menu_fps[];
+  void cb_flexible_i(Fl_Menu_*, void*);
+  static void cb_flexible(Fl_Menu_*, void*);
+  void cb_25_i(Fl_Menu_*, void*);
+  static void cb_25(Fl_Menu_*, void*);
+  void cb_29_i(Fl_Menu_*, void*);
+  static void cb_29(Fl_Menu_*, void*);
+  void cb_24_i(Fl_Menu_*, void*);
+  static void cb_24(Fl_Menu_*, void*);
+  void cb_15_i(Fl_Menu_*, void*);
+  static void cb_15(Fl_Menu_*, void*);
+  void cb_50_i(Fl_Menu_*, void*);
+  static void cb_50(Fl_Menu_*, void*);
+  void cb_60_i(Fl_Menu_*, void*);
+  static void cb_60(Fl_Menu_*, void*);
   static Fl_Menu_Item menu_Aspect[];
 public:
   Fl_Tabs *tab_view;
