@@ -441,13 +441,13 @@ int TimelineView::handle( int event )
 			{
 				int key = Fl::event_key();
 				if(key == FL_KP + '4')
-					move_cursor(m_stylusPosition - 1000000);
+					move_cursor_by(-1000000);
 				else if(key ==  FL_KP + '6')
-					move_cursor(m_stylusPosition + 1000000);
+					move_cursor_by(1000000);
 				else if(key == FL_KP + '2')
-					move_cursor(m_stylusPosition - 50000000);
+					move_cursor_by(-50000000);
 				else if(key == FL_KP + '8')
-					move_cursor(m_stylusPosition + 50000000);
+					move_cursor_by(50000000);
 				else
 					return Fl_Widget::handle( event );
 			}
