@@ -121,7 +121,7 @@ int TimelineView::handle( int event )
 				SetZoom( new_zoom );
 				m_scrollPosition = new_scroll_position;
 			} else if ( Fl::event_ctrl() ) {
-				move_cursor( m_stylusPosition + ( Fl::event_dy() * 500000000 / GetZoom() ) );
+				move_cursor_by(Fl::event_dy() * 500000000 / GetZoom());
 			} else {
 				m_scrollPosition += Fl::event_dy();
 				if ( m_scrollPosition < 0 ) {
