@@ -24,6 +24,7 @@
 #include "FileBrowser.H"
 #include "Prefs.H"
 #include "globals.H"
+#include <cstdlib>
 
 namespace nle
 {
@@ -33,13 +34,19 @@ FileBrowser::FileBrowser( int x, int y, int w, int h, const char *l )
 {
 	type( 1 );
 	m_path = g_preferences->getBrowserFolder();
+	if ( !fl_filename_isdir( m_path.c_str() ) ) {
+		m_path = getenv( "HOME" );
+		if ( !fl_filename_isdir( m_path.c_str() ) ) {
+			m_path = "/";
+		}
+	}
 	load( m_path.c_str() );
 	filter( "[!.]*" );
 }
 
 int FileBrowser::handle( int event )
 {
-	if ( event == FL_DRAG ) {
+	if ( event == FL_DRAG && text( value() ) ) {
 		string s = m_path;
 		if ( text( value() )[0] != '/' && m_path.length() > 1 )
 			s += '/';
