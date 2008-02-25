@@ -213,8 +213,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	AutomationDragHandler.cxx\
 	FilterClip.cxx\
 	FilterClip.H\
-	ThreadedAudioReader.H\
-	ThreadedAudioReader.cxx\
 	MainFilterFactory.cxx\
 	MainFilterFactory.H\
 	FilterAddCommand.H\
@@ -224,8 +222,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	timebase.H\
 	ShiftAutomationDragHandler.H\
 	int_float_scale.H\
-	ThreadedAudioFile.H\
-	ThreadedAudioFile.cxx\
 	video_format.H\
 	IVideoFileWriter.H\
 	VideoWriterQT.H\
