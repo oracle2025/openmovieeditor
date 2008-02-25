@@ -272,7 +272,9 @@ openmovieeditor_SOURCES = nle.cxx\
   XmlClipData.H\
   XmlClipData.cxx\
   color_schemes.cxx\
-  color_schemes.H
+  color_schemes.H\
+  AudioThreadedRingbuffer.H\
+  AudioThreadedRingbuffer.cxx
 	
 
 

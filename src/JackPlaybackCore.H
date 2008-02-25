@@ -22,7 +22,7 @@
 
 #include <stdint.h>
 #include <jack/jack.h>
-
+#include <jack/transport.h>
 #include "IPlaybackCore.H"
 
 namespace nle
@@ -30,7 +30,7 @@ namespace nle
 class IAudioReader;
 class IVideoReader;
 class IVideoWriter;
-
+class AudioThreadedRingbuffer;
 
 class JackPlaybackCore : public IPlaybackCore
 {
@@ -42,20 +42,16 @@ class JackPlaybackCore : public IPlaybackCore
 		void play();
 		void pause();
 		void stop();
-		void jackreadAudio( void *outL, void *outR, jack_transport_state_t ts, jack_nframes_t position, jack_nframes_t nframes );
+		void jackreadAudio( jack_nframes_t nframes );
 		void flipFrame();
-		void checkPlayButton();
 		void hardstop();
+		int sync( jack_transport_state_t state, jack_position_t *pos );
 	private:
 		IAudioReader* m_audioReader;
 		IVideoReader* m_videoReader;
 		IVideoWriter* m_videoWriter;
-		int64_t m_audioPosition;
 		int64_t m_currentFrame;
-		int64_t m_lastFrame;
-		int64_t m_nexttolastFrame;
-		int64_t m_prevSeek;
-		int64_t m_scrubpos,m_scrubmax;
+		AudioThreadedRingbuffer* m_threadedRingbuffer;
 };
 
 } /* namespace nle */

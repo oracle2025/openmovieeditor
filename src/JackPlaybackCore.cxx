@@ -37,6 +37,7 @@
 #include "IVideoWriter.H"
 #include "Timeline.H"
 #include "ErrorDialog/IErrorHandler.H"
+#include "AudioThreadedRingbuffer.H"
 #include <iostream>
 
 #define VIDEO_DRIFT_LIMIT 2 //Calculate this based on frame size
@@ -44,7 +45,6 @@
 
 extern bool g_use_jack_transport;
 extern bool g_scrub_audio;
-extern bool g_seek_audio;
 
 namespace nle
 {
@@ -58,18 +58,13 @@ static void video_idle_callback( void* data )
 	JackPlaybackCore* pc = (JackPlaybackCore*)data;
 	pc->flipFrame();
 }
-static void timer_callback( void* data )
-{
-	JackPlaybackCore* pc = (JackPlaybackCore*)data;
-	pc->checkPlayButton();
-}
 
 
 /*
  * private jack 
  */
 
-static jack_client_t *jack_client = NULL;
+static jack_client_t *jack_client = 0;
 static jack_port_t *output_port[2]; // stereo
 static char jackid[16];
 static jack_nframes_t jack_bufsiz = 64;
@@ -82,29 +77,21 @@ static jack_nframes_t jack_latency_comp = 0;
 int jack_callback (jack_nframes_t nframes, void *data)
 {
 	JackPlaybackCore* pc = (JackPlaybackCore*)data;
-	void *outL, *outR;
-	jack_position_t	jack_position;
-	jack_transport_state_t ts;
-	jack_nframes_t latencyL , latencyR;
-
-	latencyL = jack_port_get_total_latency(jack_client,output_port[0]);
-	latencyR = jack_port_get_total_latency(jack_client,output_port[1]);
-	jack_latency_comp = max(latencyL,latencyR);
-
-	outL = jack_port_get_buffer (output_port[0], nframes);
-	outR = jack_port_get_buffer (output_port[1], nframes);
-	jack_transport_query(jack_client, &jack_position);
-	ts = jack_transport_query(jack_client, NULL);
-
-	pc->jackreadAudio(outL, outR, ts, jack_position.frame, nframes);
+	pc->jackreadAudio( nframes );
 	return(0);
+}
+
+static int jack_sync_callback( jack_transport_state_t state, jack_position_t *pos, void *data )
+{
+	JackPlaybackCore* pc = (JackPlaybackCore*)data;
+	return pc->sync( state, pos );
 }
 
 
 /* when jack shuts down... */
-void jack_shutdown(void *data)
+void jack_shutdown( void *data )
 {
-	jack_client=NULL;
+	jack_client = 0;
 	std::cerr << "jack server shutdown." << std::endl;
 	JackPlaybackCore* pc = (JackPlaybackCore*)data;
 	pc->hardstop(); 
@@ -112,49 +99,50 @@ void jack_shutdown(void *data)
 
 void close_jack(void)
 {
-	if (jack_client)
-		jack_client_close (jack_client);
-	jack_client=NULL;
+	if ( jack_client ) {
+		jack_client_close( jack_client );
+	}
+	jack_client = 0;
 }
 
-int jack_connected()
+int64_t jack_poll_frame( void )
 {
-	if (jack_client) return(1);
-	return(0);
+	jack_position_t	jack_position;
+	double		jack_time;
+	int64_t		frame;
+
+	if ( !jack_client ) return ( -1 );
+	/* Calculate frame. */
+	jack_transport_query( jack_client, &jack_position );
+	jack_time = jack_position.frame / (double) jack_position.frame_rate;
+	frame = (int64_t)llrint( NLE_TIME_BASE * jack_time );
+	return ( frame );
 }
 
-void connect_jackports()
+void jack_reposition( int64_t vframe )
 {
-	if (!jack_client) return;
-	// TODO: skip auto-connect if user wishes so.
-	char * port_name = NULL; // TODO: get from preferences 
-	int port_flags = JackPortIsInput;
-	if (!port_name) port_flags |= JackPortIsPhysical;
-
-	const char **found_ports = jack_get_ports(jack_client, port_name, NULL, port_flags);
-	for (int i = 0; found_ports && found_ports[i] && i < 2; i++) {
-		if (jack_connect(jack_client, jack_port_name(output_port[i]), found_ports[i])) {
-			cerr << "can not connect to jack output" << endl;
-		}
+	jack_nframes_t frame = (jack_nframes_t)( vframe * 48000 / NLE_TIME_BASE );
+	if ( jack_client ) {
+		jack_transport_locate( jack_client, frame );
 	}
 }
 
-void open_jack(void *data) 
+JackPlaybackCore::JackPlaybackCore( IAudioReader* audioReader, IVideoReader* videoReader, IVideoWriter* videoWriter )
+	: m_audioReader(audioReader), m_videoReader(videoReader), m_videoWriter(videoWriter)
 {
-	if (jack_client) {
-		cerr << "already connected to jack." << endl;
-		return;
-	}
+	g_playbackCore = this;
+	m_active = false;
+	m_threadedRingbuffer = 0;
 
-	jack_client = jack_client_open( "ome", JackNullOption, 0 );
+	jack_client = jack_client_open( "openmovieeditor", JackNullOption, 0 );
 
 	if (!jack_client) {
 		cerr << "could not connect to jack." << endl;
 		return;
 	}	
 
-	jack_on_shutdown (jack_client, jack_shutdown, data);
-	jack_set_process_callback(jack_client,jack_callback,data);
+	jack_on_shutdown (jack_client, jack_shutdown, this);
+	jack_set_process_callback(jack_client,jack_callback,this);
 
 	output_port[0] = jack_port_register (jack_client, "output-L", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
 	output_port[1] = jack_port_register (jack_client, "output-R", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
@@ -176,80 +164,49 @@ void open_jack(void *data)
 
 	if (jack_bufsiz > FRAMES) { 
 		CLEAR_ERRORS();
-		ERROR_DETAIL( "please decrease jackd buffer size" );
+		ERROR_DETAIL( "please decrease jackd buffer size to 4096" );
 		SHOW_ERROR( "Jack Soundoutput failed" );
 		close_jack();
 		return;
 	}
 
-	 jack_activate(jack_client); 
-	 connect_jackports();
+	
+
+	m_threadedRingbuffer = new AudioThreadedRingbuffer( m_audioReader );
+	jack_set_sync_callback( jack_client, jack_sync_callback, this );
+	jack_activate( jack_client );
+
+	// TODO: skip auto-connect if user wishes so.
+	char * port_name = 0; // TODO: get from preferences 
+	int port_flags = JackPortIsInput;
+	if (!port_name) port_flags |= JackPortIsPhysical;
+
+	const char **found_ports = jack_get_ports( jack_client, port_name, 0, port_flags );
+	for ( int i = 0; found_ports && found_ports[i] && i < 2; i++ ) {
+		if ( jack_connect( jack_client, jack_port_name( output_port[i]), found_ports[i] ) ) {
+			cerr << "can not connect to jack output" << endl;
+		}
+	}
 }
 
-int64_t jack_poll_frame (void)
-{
-	jack_position_t	jack_position;
-	double		jack_time;
-	int64_t		frame;
-
-	if (!jack_client) return (-1);
-	/* Calculate frame. */
-	jack_transport_query(jack_client, &jack_position);
-	jack_time = jack_position.frame / (double) jack_position.frame_rate;
-	frame = (int64_t) llrint(NLE_TIME_BASE * jack_time );
-	return(frame);
-}
-
-void jack_reposition(int64_t vframe)
-{
-	jack_nframes_t frame= (jack_nframes_t)(vframe * 48000/NLE_TIME_BASE);
-	if (jack_client)
-		jack_transport_locate (jack_client, frame);
-}
-
-void jack_stop(void)
-{
-	if (jack_client)
-		jack_transport_stop (jack_client);
-}
-
-void jack_play(void)
-{
-	if (jack_client)
-		jack_transport_start (jack_client);
-}
-
-jack_transport_state_t jack_poll_ts(void) {
-	return (jack_transport_query(jack_client, NULL));
-}
-
-
-
-
-
-
-
-/*
- * simple playback core
- */
-
-//JackPlaybackCore* g_simplePlaybackCore;
-JackPlaybackCore::JackPlaybackCore( IAudioReader* audioReader, IVideoReader* videoReader, IVideoWriter* videoWriter )
-	: m_audioReader(audioReader), m_videoReader(videoReader), m_videoWriter(videoWriter)
-{
-	g_playbackCore = this;
-	m_active = false;
-	open_jack(this); 
-}
-
-bool JackPlaybackCore::ok() { return jack_connected(); }
+bool JackPlaybackCore::ok() { return jack_client; }
 
 /* hardstop() use only for error abort - else use stop */
-void JackPlaybackCore::hardstop() { m_active=false; } 
+void JackPlaybackCore::hardstop()
+{
+	m_active = false;
+} 
 
 JackPlaybackCore::~JackPlaybackCore()
 {
-	if (jack_connected()) close_jack(); 
+	if ( jack_client ) {
+		jack_client_close( jack_client );
+		jack_client = 0;
+	}
+	if ( m_threadedRingbuffer ) {
+		delete m_threadedRingbuffer;
+		m_threadedRingbuffer = 0;
+	}
 }
 
 void suspend_idle_handlers(); //defined in IdleHandlers.cxx
@@ -259,113 +216,93 @@ void resume_idle_handlers();
 
 void JackPlaybackCore::play()
 {
-	int64_t scrublen = 3*1920;  // TODO: get from preferences :  scrub_freq = sample_rate/scrublen   
-				// good values for scrub_freq are 1..50 Hz
-				// scrub length is rounded up to next multiple of jack buffer size.
-	if (m_active) return; 
+	if ( m_active ) return; 
 
-	if (!jack_connected()) open_jack(this); 
-	if (!jack_connected()) return;
+	if ( !jack_client ) return;
 
 	m_currentFrame = g_timeline->m_seekPosition;
-	m_lastFrame = g_timeline->m_seekPosition;
-	m_scrubpos = 0;
-	m_scrubmax = (jack_bufsiz!=0)?(int64_t)ceil((double)(scrublen/jack_bufsiz)):1;
 
-	if (!g_use_jack_transport) {
-		m_audioPosition = m_currentFrame * 48000 / NLE_TIME_BASE; 
-	} else {
-		jack_reposition(m_currentFrame);
+	jack_reposition( m_currentFrame );
 
-		/* workaround: possible backwards seek.
-		 *
-		 * if we do not wait for the reposition (seek)
-		 * to complete,  ome already sends few samples
-		 * at the latest jack transport time, 
-		 * before the seek reposition is done
-		 * possibly resulting in a backwards seek.
-		 */
-		int spin = 1000000;
-		while (::llabs(jack_poll_frame()-m_currentFrame) > 2 && spin-- > 0 );
-	}
-	if (g_use_jack_transport) jack_play();
+	jack_transport_start( jack_client );
 
 	suspend_idle_handlers();
 	m_active = true;
-	Fl::add_timeout( 0.1, timer_callback, this );
 	Fl::add_timeout( 0.04, video_idle_callback, this ); // looks like hardcoded 25fps 
 }
 
 void JackPlaybackCore::pause()
 {
-	if (!m_active) return;
-	if (!g_use_jack_transport) return; 
-	jack_transport_state_t ts = jack_poll_ts();
-	if (ts == JackTransportRolling) jack_stop();
-	else /* if (ts == JackTransportStopped) */ jack_play();
+	if ( !m_active ) {
+		return;
+	}
+	jack_transport_state_t ts = jack_transport_query( jack_client, 0 );
+	if ( ts == JackTransportRolling ) {
+		jack_transport_stop( jack_client );
+	} else {
+		jack_transport_start( jack_client );
+	}
 }
 
 void JackPlaybackCore::stop()
 {
-	if (!m_active) return;
+	if ( !m_active ) {
+		return;
+	}
 	resume_idle_handlers();
 	m_active = false;
-	if (jack_connected() && g_use_jack_transport) jack_stop();
+	if ( jack_client ) {
+		jack_transport_stop( jack_client );
+	}
+}
+int JackPlaybackCore::sync( jack_transport_state_t state, jack_position_t *pos )
+{
+	switch( state ) {
+		case JackTransportStarting:
+			if ( m_threadedRingbuffer->ready() ) {
+				m_threadedRingbuffer->seek( pos->frame );
+			}
+		case JackTransportRolling: // FALLTHROUGH
+		case JackTransportStopped:
+			return m_threadedRingbuffer->ready();
+	}
+	return 0;
 }
 
-void JackPlaybackCore::checkPlayButton()
+void JackPlaybackCore::jackreadAudio( jack_nframes_t nframes )
 {
-	if (!m_active) return;
-	Fl::repeat_timeout( 0.1, timer_callback, this );
-}
+	void *outL, *outR;
+	jack_position_t	jack_position;
+	jack_transport_state_t ts;
+	jack_nframes_t latencyL , latencyR;
 
-void JackPlaybackCore::jackreadAudio( void *outL, void *outR, jack_transport_state_t ts, jack_nframes_t position, jack_nframes_t nframes )
-{
-	if (!m_active)  {
+	latencyL = jack_port_get_total_latency(jack_client,output_port[0]);
+	latencyR = jack_port_get_total_latency(jack_client,output_port[1]);
+	jack_latency_comp = max(latencyL,latencyR);
+
+	outL = jack_port_get_buffer (output_port[0], nframes);
+	outR = jack_port_get_buffer (output_port[1], nframes);
+	ts = jack_transport_query( jack_client, &jack_position );
+	
+	switch( ts ) {
+		case JackTransportStarting:
+		case JackTransportStopped:
+			memset(outR,0, sizeof (jack_default_audio_sample_t) * nframes);
+			memset(outL,0, sizeof (jack_default_audio_sample_t) * nframes);
+			return;
+		case JackTransportRolling:
+			break;
+	}
+
+	if ( !m_active )  {
 		memset(outR,0, sizeof (jack_default_audio_sample_t) * nframes);
 		memset(outL,0, sizeof (jack_default_audio_sample_t) * nframes);
 		return;
 	}
-
-	if (g_use_jack_transport) {
-		if (position < jack_latency_comp || (!g_scrub_audio && ts != JackTransportRolling)) {
-			// if transport is not rolling - remain silent.
-			memset(outR,0, sizeof (jack_default_audio_sample_t) * nframes);
-			memset(outL,0, sizeof (jack_default_audio_sample_t) * nframes);
-
-			if (ts == JackTransportStarting) {
-				m_audioReader->sampleseek(1, position<jack_bufsiz?0:position-jack_latency_comp); 
-			}
-			return;
-		}
-
-		position-=jack_latency_comp;
-
-		if (g_scrub_audio && ts == JackTransportStopped) {
-			position+=(m_scrubpos) * jack_bufsiz;
-			m_scrubpos=(m_scrubpos+1)%(m_scrubmax);
-		} else m_scrubpos=0;
-		
-		m_audioReader->sampleseek(1, position); // set absolute audio sample position
-		m_audioPosition = position;
-	}
-
-	float stereobuf[(2*FRAMES)];  // combined stereo signals in one buffer from OME
-	unsigned long rv = m_audioReader->fillBuffer(stereobuf, nframes);
-
-	if (!g_use_jack_transport) {
-		m_audioReader->sampleseek(0,rv); // set relative sample position;
-		m_audioPosition += rv;
-	}
-
-	if (rv != nframes) {
-	//	cerr << "Soundoutput buffer underrun: " << rv << "/" << nframes << endl;
-		// FIXME: clear only the missing part of the buffer or better:
-		// fill in average missing piece...
-		memset(outR,0, sizeof (jack_default_audio_sample_t) * nframes);
-		memset(outL,0, sizeof (jack_default_audio_sample_t) * nframes);
-	}
 	
+	float stereobuf[(2*FRAMES)];  // combined stereo signals in one buffer from OME
+	unsigned long rv = m_threadedRingbuffer->fillBuffer(stereobuf, nframes);
+
 	// demux stereo buffer into the jack mono buffers.
 	jack_default_audio_sample_t *jackbufL, *jackbufR;
 	jackbufL= (jack_default_audio_sample_t*)outL;
@@ -382,39 +319,14 @@ void JackPlaybackCore::flipFrame()
 	if ( !m_active ) {
 		return;
 	}
-	if (jack_connected() && g_use_jack_transport ) {
-
-		jack_transport_state_t ts = jack_poll_ts();
-		m_currentFrame=jack_poll_frame();
-
-		if( g_seek_audio  && ts == JackTransportStopped) {
-			if (m_prevSeek != g_timeline->m_seekPosition && 
-		   	    m_currentFrame != g_timeline->m_seekPosition )   {
-		   		m_currentFrame=g_timeline->m_seekPosition;
-		   		jack_reposition (m_currentFrame);
-				g_timeline->m_playPosition = m_currentFrame ;
-				m_nexttolastFrame=m_lastFrame=-1;
-			}
-		}
-
-		m_prevSeek = g_timeline->m_seekPosition;
-		g_timeline->m_seekPosition = m_currentFrame;
-
-		if (m_nexttolastFrame==m_currentFrame) goto noflip;
-		m_nexttolastFrame=m_lastFrame; // first flip loads this frame into bg buffer
-		m_lastFrame=m_currentFrame; // this flip display this frame.
-
-	} else if (jack_connected()) { // jack audio with local transport
-		// FIXME: for larger jack buffer sizes, this can become inaccurate due to rounding
-		// issues. -> do something similar as the portaudio drift sync...
-		m_lastFrame = llrint(m_audioPosition * NLE_TIME_BASE / 48000);
-	} 
+	if ( jack_client ) {
+		m_currentFrame = jack_poll_frame();
+	}
 	static frame_struct** fs = 0;
 	if ( fs ) {
 		m_videoWriter->pushFrameStack( fs );
 	}
-	fs = m_videoReader->getFrameStack( m_lastFrame );
-noflip:	
+	fs = m_videoReader->getFrameStack( m_currentFrame );
 	Fl::repeat_timeout( 0.04, video_idle_callback, this ); // more hardcoded framerates.
 }
 

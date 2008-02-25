@@ -144,6 +144,12 @@ else
    AC_MSG_ERROR([*** You need JACK audio library (libjack-dev) installed.  http://jackit.sf.net/])
 fi
 
+PKG_CHECK_MODULES(GLIB2, glib-2.0 >= 2.10.3,,
+  AC_MSG_ERROR([*** glib-2.0 not found - this program requires glib >= 2.10.3 ***]))
+CPPFLAGS="$CPPFLAGS $GLIB2_CFLAGS"
+LDFLAGS="$LDFLAGS $GLIB2_LIBS"
+
+
  AC_CHECK_HEADER(GL/gl.h,,
   AC_MSG_ERROR([*** GL/gl.h not found - this program requires OpenGL or compatible (Mesa) Hint: install mesa-common-dev ***]))
 
