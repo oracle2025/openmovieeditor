@@ -146,11 +146,7 @@ void open_jack(void *data)
 		return;
 	}
 
-	int i = 0;
-	do {
-		snprintf(jackid,16,"ome-%i",i);
-		jack_client = jack_client_open( jackid, JackNullOption, 0 );
-	} while (jack_client == 0 && i++<16);
+	jack_client = jack_client_open( "ome", JackNullOption, 0 );
 
 	if (!jack_client) {
 		cerr << "could not connect to jack." << endl;
