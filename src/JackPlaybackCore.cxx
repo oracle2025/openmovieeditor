@@ -149,8 +149,7 @@ void open_jack(void *data)
 	int i = 0;
 	do {
 		snprintf(jackid,16,"ome-%i",i);
-		// TODO : jack_client_open(..)
-		jack_client = jack_client_new (jackid);
+		jack_client = jack_client_open( jackid, JackNullOption, 0 );
 	} while (jack_client == 0 && i++<16);
 
 	if (!jack_client) {
