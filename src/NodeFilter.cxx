@@ -45,6 +45,8 @@ NodeFilter::NodeFilter( int w, int h )
 	m_filters = (filters*)sl_push( m_filters, filters_create( 10,100, 50, 50, new SrcNode( this ), "Input", 1 ) );
 	C = m_filters;
 	m_src_node = C->node;
+	m_src_node->node->outputs[0] = m_sink_node->node;
+	m_sink_node->node->inputs[0] = m_src_node->node;
 	m_frame_cache = 0;
 	m_frame = new unsigned char[w * h * 4];
 	init_frame_struct( &m_framestruct, w, h );
