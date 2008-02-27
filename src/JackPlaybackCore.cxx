@@ -1,6 +1,6 @@
 /* JackPlaybackCore.cxx
  *
- *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2005-2008 Richard Spindler <richard.spindler AT gmail.com>
  * 
  *  patch to support jackit.sf.net audio out and transport sync
  *   05/2006 Robin Gareus <robin AT gareus.org>
