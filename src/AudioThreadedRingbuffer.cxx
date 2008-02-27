@@ -30,6 +30,7 @@ AudioThreadedRingbuffer::AudioThreadedRingbuffer( IAudioReader* reader )
 	m_ready = false;
 	m_seekPending = true;
 	m_sample = 0;
+	m_seekTarget = -1;
 	pthread_mutex_init( &m_readMutex, 0 );
 	pthread_cond_init( &m_readCondition, 0 );
 	pthread_create( &m_thread, NULL, start_audio_reader_thread, (void*)this );
@@ -58,6 +59,7 @@ int AudioThreadedRingbuffer::fillBuffer( float* buffer, unsigned long frames ) /
 		memset( buffer, 0, sizeof(float) * frames * 2 );
 		return 0;
 	}
+	m_seekTarget = -1;
 	int bytes_read;
 	unsigned int frames_read;
 	bytes_read = jack_ringbuffer_read( m_ringBuffer, (char*)buffer, frames * sizeof(float) * 2 );
@@ -75,7 +77,11 @@ void AudioThreadedRingbuffer::seek( int64_t sample ) /* Called from Realtime Thr
 		// ERROR, seek without waiting for pending seek
 		return;
 	}
+	if ( sample == m_seekTarget ) {
+		return;
+	}
 	m_sample = sample;
+	m_seekTarget = sample;
 	g_atomic_int_set( &m_ready, false );
 	g_atomic_int_set( &m_seekPending, true );
 	ping();

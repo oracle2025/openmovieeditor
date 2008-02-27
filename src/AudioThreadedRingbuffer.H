@@ -29,6 +29,7 @@ class AudioThreadedRingbuffer
 		float* m_buffer;
 		int m_ready;
 		int m_seekPending;
+		int64_t m_seekTarget;
 		int64_t m_sample;
 		IAudioReader* m_reader;
 };
