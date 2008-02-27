@@ -43,9 +43,6 @@
 #define VIDEO_DRIFT_LIMIT 2 //Calculate this based on frame size
 #define FRAMES 4096
 
-extern bool g_use_jack_transport;
-extern bool g_scrub_audio;
-
 namespace nle
 {
 

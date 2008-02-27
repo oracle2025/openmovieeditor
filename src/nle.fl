@@ -247,23 +247,6 @@ m_videoView->redraw();}
             xywh {0 0 100 20} type Toggle value 1 hide
           }
         }
-        Submenu jackMenu {
-          label {&JACK} open
-          xywh {5 5 100 20}
-        } {
-          MenuItem {} {
-            label {Transport connect}
-            callback {// FIXME: allow change only if not currently playing ?!
-// -> assign this value in SimplePlaybackCore "on play"
-g_use_jack_transport = (o->mvalue())->value();}
-            xywh {5 5 100 20} type Toggle value 1
-          }
-          MenuItem {} {
-            label {Scrub audio}
-            callback {g_scrub_audio = (o->mvalue())->value();}
-            xywh {5 5 100 20} type Toggle value 1
-          }
-        }
         Submenu {} {
           label {&View} open
           xywh {5 5 100 20}
@@ -875,9 +858,6 @@ scaleBar->slider_size_i(300);
 mainWindow->show(argc, argv);
 projectNameInput->label("Project 1");
 g_snap = true;
-g_use_jack_transport = true;
-g_scrub_audio = true;
-g_seek_audio = true;
 scroll_area->type(0);
 g_v_scrollbar = vScrollBar;
 g_16_9 = false;
@@ -939,7 +919,8 @@ titles_tab->activate();
 titles_color->color( color );
 tab_view->value( titles_tab );} {}
   }
-  Function {portaudio()} {} {
+  Function {portaudio()} {open
+  } {
     code {playButton->hide();
 lastButton->hide();
 firstButton->hide();
@@ -952,7 +933,6 @@ pa_lastButton->show();
 pa_firstButton->show();
 pa_backButton->show();
 pa_forwardButton->show();
-jackMenu->hide();
 g_playButton = pa_playButton;
 g_firstButton = pa_firstButton;
 g_lastButton = pa_lastButton;
@@ -973,7 +953,6 @@ lastButton->show();
 firstButton->show();
 backButton->show();
 forwardButton->show();
-jackMenu->show();
 g_playButton = playButton;
 g_firstButton = firstButton;
 g_lastButton = lastButton;
@@ -1182,15 +1161,6 @@ decl {bool g_snap;} {public
 } 
 
 decl {bool g_backseek;} {public
-} 
-
-decl {bool g_use_jack_transport;} {public
-} 
-
-decl {bool g_scrub_audio;} {public
-} 
-
-decl {bool g_seek_audio;} {public
 } 
 
 decl {Fl_Scrollbar* g_v_scrollbar;} {public

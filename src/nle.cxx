@@ -229,22 +229,6 @@ void NleUI::cb_Disable(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Disable_i(o,v);
 }
 
-void NleUI::cb_Transport_i(Fl_Menu_* o, void*) {
-  // FIXME: allow change only if not currently playing ?!
-// -> assign this value in SimplePlaybackCore "on play"
-g_use_jack_transport = (o->mvalue())->value();
-}
-void NleUI::cb_Transport(Fl_Menu_* o, void* v) {
-  ((NleUI*)(o->parent()->user_data()))->cb_Transport_i(o,v);
-}
-
-void NleUI::cb_Scrub_i(Fl_Menu_* o, void*) {
-  g_scrub_audio = (o->mvalue())->value();
-}
-void NleUI::cb_Scrub(Fl_Menu_* o, void* v) {
-  ((NleUI*)(o->parent()->user_data()))->cb_Scrub_i(o,v);
-}
-
 void NleUI::cb_Fullscreen_i(Fl_Menu_*, void*) {
   static bool fullscreen_on = false;
 static int x;
@@ -342,10 +326,6 @@ Fl_Menu_Item NleUI::menu_Black[] = {
  {"Black Borders 2.35:1", 0,  (Fl_Callback*)NleUI::cb_black_border_item_2_35, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
  {"Disable Interlacing", 0,  (Fl_Callback*)NleUI::cb_Disable, 0, 22, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
- {"&JACK", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
- {"Transport connect", 0,  (Fl_Callback*)NleUI::cb_Transport, 0, 6, FL_NORMAL_LABEL, 0, 14, 0},
- {"Scrub audio", 0,  (Fl_Callback*)NleUI::cb_Scrub, 0, 6, FL_NORMAL_LABEL, 0, 14, 0},
- {0,0,0,0,0,0,0,0,0},
  {"&View", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"Fullscreen", 0xffc8,  (Fl_Callback*)NleUI::cb_Fullscreen, 0, 128, FL_NORMAL_LABEL, 0, 14, 0},
  {"Track Overview", 0,  0, 0, 18, FL_NORMAL_LABEL, 0, 14, 0},
@@ -367,7 +347,6 @@ Fl_Menu_Item* NleUI::paste_item = NleUI::menu_Black + 13;
 Fl_Menu_Item* NleUI::delete_item = NleUI::menu_Black + 14;
 Fl_Menu_Item* NleUI::black_border_item = NleUI::menu_Black + 29;
 Fl_Menu_Item* NleUI::black_border_item_2_35 = NleUI::menu_Black + 30;
-Fl_Menu_Item* NleUI::jackMenu = NleUI::menu_Black + 33;
 
 void NleUI::cb_zoom_slider_i(Fl_Slider* o, void*) {
   m_videoView->zoom( o->value() );
@@ -1372,9 +1351,6 @@ scaleBar->slider_size_i(300);
 mainWindow->show(argc, argv);
 projectNameInput->label("Project 1");
 g_snap = true;
-g_use_jack_transport = true;
-g_scrub_audio = true;
-g_seek_audio = true;
 scroll_area->type(0);
 g_v_scrollbar = vScrollBar;
 g_16_9 = false;
@@ -1452,7 +1428,6 @@ pa_lastButton->show();
 pa_firstButton->show();
 pa_backButton->show();
 pa_forwardButton->show();
-jackMenu->hide();
 g_playButton = pa_playButton;
 g_firstButton = pa_firstButton;
 g_lastButton = pa_lastButton;
@@ -1473,7 +1448,6 @@ lastButton->show();
 firstButton->show();
 backButton->show();
 forwardButton->show();
-jackMenu->show();
 g_playButton = playButton;
 g_firstButton = firstButton;
 g_lastButton = lastButton;
@@ -6480,9 +6454,6 @@ Fl_Button* g_backButton;
 Fl_Button* g_forwardButton;
 bool g_snap;
 bool g_backseek;
-bool g_use_jack_transport;
-bool g_scrub_audio;
-bool g_seek_audio;
 Fl_Scrollbar* g_v_scrollbar;
 bool g_16_9;
 bool g_black_borders;

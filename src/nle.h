@@ -118,13 +118,6 @@ private:
   static void cb_black_border_item_2_35(Fl_Menu_*, void*);
   void cb_Disable_i(Fl_Menu_*, void*);
   static void cb_Disable(Fl_Menu_*, void*);
-public:
-  static Fl_Menu_Item *jackMenu;
-private:
-  void cb_Transport_i(Fl_Menu_*, void*);
-  static void cb_Transport(Fl_Menu_*, void*);
-  void cb_Scrub_i(Fl_Menu_*, void*);
-  static void cb_Scrub(Fl_Menu_*, void*);
   void cb_Fullscreen_i(Fl_Menu_*, void*);
   static void cb_Fullscreen(Fl_Menu_*, void*);
   void cb_Normal_i(Fl_Menu_*, void*);
@@ -404,9 +397,6 @@ extern Fl_Button* g_backButton;
 extern Fl_Button* g_forwardButton;
 extern bool g_snap;
 extern bool g_backseek;
-extern bool g_use_jack_transport;
-extern bool g_scrub_audio;
-extern bool g_seek_audio;
 extern Fl_Scrollbar* g_v_scrollbar;
 extern bool g_16_9;
 extern bool g_black_borders;
