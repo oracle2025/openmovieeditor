@@ -257,36 +257,6 @@ private:
   void cb_forwardButton_i(Fl_Button*, void*);
   static void cb_forwardButton(Fl_Button*, void*);
 public:
-  Fl_Button *pauseButton;
-private:
-  void cb_pauseButton_i(Fl_Button*, void*);
-  static void cb_pauseButton(Fl_Button*, void*);
-public:
-  Fl_Button *pa_playButton;
-private:
-  void cb_pa_playButton_i(Fl_Button*, void*);
-  static void cb_pa_playButton(Fl_Button*, void*);
-public:
-  Fl_Button *pa_lastButton;
-private:
-  void cb_pa_lastButton_i(Fl_Button*, void*);
-  static void cb_pa_lastButton(Fl_Button*, void*);
-public:
-  Fl_Button *pa_firstButton;
-private:
-  void cb_pa_firstButton_i(Fl_Button*, void*);
-  static void cb_pa_firstButton(Fl_Button*, void*);
-public:
-  Fl_Button *pa_backButton;
-private:
-  void cb_pa_backButton_i(Fl_Button*, void*);
-  static void cb_pa_backButton(Fl_Button*, void*);
-public:
-  Fl_Button *pa_forwardButton;
-private:
-  void cb_pa_forwardButton_i(Fl_Button*, void*);
-  static void cb_pa_forwardButton(Fl_Button*, void*);
-public:
   Fl_Button *projectNameInput;
 private:
   void cb_projectNameInput_i(Fl_Button*, void*);

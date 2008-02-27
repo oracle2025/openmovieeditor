@@ -40,7 +40,6 @@ class JackPlaybackCore : public IPlaybackCore
 		bool ok();
 
 		void play();
-		void pause();
 		void stop();
 		void jackreadAudio( jack_nframes_t nframes );
 		void flipFrame();

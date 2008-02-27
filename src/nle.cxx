@@ -607,62 +607,6 @@ void NleUI::cb_forwardButton(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_forwardButton_i(o,v);
 }
 
-void NleUI::cb_pauseButton_i(Fl_Button*, void*) {
-  m_videoView->pause();
-}
-void NleUI::cb_pauseButton(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_pauseButton_i(o,v);
-}
-
-void NleUI::cb_pa_playButton_i(Fl_Button* o, void*) {
-  if ( strcmp( o->label(), "@>" ) == 0 ) {
-	o->label( "@square" );
-	pa_lastButton->deactivate();
-	pa_firstButton->deactivate();
-	pa_forwardButton->deactivate();
-	pa_backButton->deactivate();
-	m_videoView->play();
-} else {
-	o->label( "@>" );
-	m_videoView->stop();
-	pa_lastButton->activate();
-	pa_firstButton->activate();
-	pa_forwardButton->activate();
-	pa_backButton->activate();
-};
-}
-void NleUI::cb_pa_playButton(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_pa_playButton_i(o,v);
-}
-
-void NleUI::cb_pa_lastButton_i(Fl_Button*, void*) {
-  nle::g_ruler->skipLast();
-}
-void NleUI::cb_pa_lastButton(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_pa_lastButton_i(o,v);
-}
-
-void NleUI::cb_pa_firstButton_i(Fl_Button*, void*) {
-  nle::g_ruler->skipFirst();
-}
-void NleUI::cb_pa_firstButton(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_pa_firstButton_i(o,v);
-}
-
-void NleUI::cb_pa_backButton_i(Fl_Button*, void*) {
-  nle::g_ruler->skipBackward();
-}
-void NleUI::cb_pa_backButton(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_pa_backButton_i(o,v);
-}
-
-void NleUI::cb_pa_forwardButton_i(Fl_Button*, void*) {
-  nle::g_ruler->skipForward();
-}
-void NleUI::cb_pa_forwardButton(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_pa_forwardButton_i(o,v);
-}
-
 void NleUI::cb_projectNameInput_i(Fl_Button*, void*) {
   const char* name = fl_input( "Please enter the project name.", projectNameInput->label() );
 if ( name ) {
@@ -1145,55 +1089,26 @@ NleUI::NleUI() {
             o->end();
             Fl_Group::current()->resizable(o);
           }
-          { Fl_Button* o = playButton = new Fl_Button(110, 305, 90, 40, "@>");
+          { Fl_Button* o = playButton = new Fl_Button(130, 305, 105, 40, "@>");
             o->tooltip("Play (F7)");
             o->shortcut(0xffc4);
             o->callback((Fl_Callback*)cb_playButton);
           }
-          { Fl_Button* o = lastButton = new Fl_Button(310, 305, 55, 40, "@>|");
+          { Fl_Button* o = lastButton = new Fl_Button(300, 305, 65, 40, "@>|");
             o->tooltip("Goto End");
             o->callback((Fl_Callback*)cb_lastButton);
           }
-          { Fl_Button* o = firstButton = new Fl_Button(0, 305, 55, 40, "@|<");
+          { Fl_Button* o = firstButton = new Fl_Button(0, 305, 65, 40, "@|<");
             o->tooltip("Goto Start");
             o->callback((Fl_Callback*)cb_firstButton);
           }
-          { Fl_Button* o = backButton = new Fl_Button(55, 305, 55, 40, "@<|");
+          { Fl_Button* o = backButton = new Fl_Button(65, 305, 65, 40, "@<|");
             o->tooltip("Skip Frame backwards");
             o->callback((Fl_Callback*)cb_backButton);
           }
-          { Fl_Button* o = forwardButton = new Fl_Button(255, 305, 55, 40, "@|>");
+          { Fl_Button* o = forwardButton = new Fl_Button(235, 305, 65, 40, "@|>");
             o->tooltip("Skip Frame forward");
             o->callback((Fl_Callback*)cb_forwardButton);
-          }
-          { Fl_Button* o = pauseButton = new Fl_Button(200, 305, 55, 40, "@||");
-            o->callback((Fl_Callback*)cb_pauseButton);
-          }
-          { Fl_Button* o = pa_playButton = new Fl_Button(130, 305, 105, 40, "@>");
-            o->tooltip("Play (F7)");
-            o->shortcut(0xffc4);
-            o->callback((Fl_Callback*)cb_pa_playButton);
-            o->hide();
-          }
-          { Fl_Button* o = pa_lastButton = new Fl_Button(300, 305, 65, 40, "@>|");
-            o->tooltip("Goto End");
-            o->callback((Fl_Callback*)cb_pa_lastButton);
-            o->hide();
-          }
-          { Fl_Button* o = pa_firstButton = new Fl_Button(0, 305, 65, 40, "@|<");
-            o->tooltip("Goto Start");
-            o->callback((Fl_Callback*)cb_pa_firstButton);
-            o->hide();
-          }
-          { Fl_Button* o = pa_backButton = new Fl_Button(65, 305, 65, 40, "@<|");
-            o->tooltip("Skip Frame backwards");
-            o->callback((Fl_Callback*)cb_pa_backButton);
-            o->hide();
-          }
-          { Fl_Button* o = pa_forwardButton = new Fl_Button(235, 305, 65, 40, "@|>");
-            o->tooltip("Skip Frame forward");
-            o->callback((Fl_Callback*)cb_pa_forwardButton);
-            o->hide();
           }
           { Fl_Group* o = new Fl_Group(0, 25, 365, 25);
             { Fl_Button* o = projectNameInput = new Fl_Button(0, 25, 25, 25, "Project Name");
@@ -1416,34 +1331,20 @@ tab_view->value( titles_tab );
 }
 
 void NleUI::portaudio() {
-  playButton->hide();
-lastButton->hide();
-firstButton->hide();
-backButton->hide();
-forwardButton->hide();
-pauseButton->hide();
-
-pa_playButton->show();
-pa_lastButton->show();
-pa_firstButton->show();
-pa_backButton->show();
-pa_forwardButton->show();
-g_playButton = pa_playButton;
-g_firstButton = pa_firstButton;
-g_lastButton = pa_lastButton;
-g_forwardButton = pa_forwardButton;
-g_backButton = pa_backButton;
+  playButton->show();
+lastButton->show();
+firstButton->show();
+backButton->show();
+forwardButton->show();
+g_playButton = playButton;
+g_firstButton = firstButton;
+g_lastButton = lastButton;
+g_forwardButton = forwardButton;
+g_backButton = backButton;
 }
 
 void NleUI::jack() {
-  pa_playButton->hide();
-pa_lastButton->hide();
-pa_firstButton->hide();
-pa_backButton->hide();
-pa_forwardButton->hide();
-pauseButton->show();
-
-playButton->show();
+  playButton->show();
 lastButton->show();
 firstButton->show();
 backButton->show();

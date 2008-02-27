@@ -333,12 +333,6 @@ void VideoViewGL::stop()
 	g_playbackCore->stop();
 }
 
-void VideoViewGL::pause()
-{
-	g_playbackCore->pause();
-}
-
-
 void VideoViewGL::drawFrameStack( frame_struct** fs )
 {
 	int count = 0;	

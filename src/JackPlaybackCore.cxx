@@ -228,19 +228,6 @@ void JackPlaybackCore::play()
 	Fl::add_timeout( 0.04, video_idle_callback, this ); // looks like hardcoded 25fps 
 }
 
-void JackPlaybackCore::pause()
-{
-	if ( !m_active ) {
-		return;
-	}
-	jack_transport_state_t ts = jack_transport_query( jack_client, 0 );
-	if ( ts == JackTransportRolling ) {
-		jack_transport_stop( jack_client );
-	} else {
-		jack_transport_start( jack_client );
-	}
-}
-
 void JackPlaybackCore::stop()
 {
 	if ( !m_active ) {

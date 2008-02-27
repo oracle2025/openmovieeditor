@@ -23,7 +23,7 @@ if ( Fl::event()==FL_CLOSE ) {
 	m_videoView->stop();
 	nle::g_loadSaveManager->shutdown();
 }} open
-      xywh {410 200 700 600} type Double resizable size_range {450 380 0 0} visible
+      xywh {650 234 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
         label {Black Borders} open selected
@@ -676,71 +676,27 @@ m_timelineView->titles_text( titles_text->value() );} open
 	forwardButton->activate();
 	backButton->activate();
 }}
-              tooltip {Play (F7)} xywh {110 305 90 40} shortcut 0xffc4
+              tooltip {Play (F7)} xywh {130 305 105 40} shortcut 0xffc4
             }
             Fl_Button lastButton {
               label {@>|}
               callback {nle::g_ruler->skipLast()}
-              tooltip {Goto End} xywh {310 305 55 40}
+              tooltip {Goto End} xywh {300 305 65 40}
             }
             Fl_Button firstButton {
               label {@|<}
               callback {nle::g_ruler->skipFirst();}
-              tooltip {Goto Start} xywh {0 305 55 40}
+              tooltip {Goto Start} xywh {0 305 65 40}
             }
             Fl_Button backButton {
               label {@<|}
               callback {nle::g_ruler->skipBackward();}
-              tooltip {Skip Frame backwards} xywh {55 305 55 40}
+              tooltip {Skip Frame backwards} xywh {65 305 65 40}
             }
             Fl_Button forwardButton {
               label {@|>}
               callback {nle::g_ruler->skipForward();}
-              tooltip {Skip Frame forward} xywh {255 305 55 40}
-            }
-            Fl_Button pauseButton {
-              label {@||}
-              callback {m_videoView->pause();}
-              xywh {200 305 55 40}
-            }
-            Fl_Button pa_playButton {
-              label {@>}
-              callback {if ( strcmp( o->label(), "@>" ) == 0 ) {
-	o->label( "@square" );
-	pa_lastButton->deactivate();
-	pa_firstButton->deactivate();
-	pa_forwardButton->deactivate();
-	pa_backButton->deactivate();
-	m_videoView->play();
-} else {
-	o->label( "@>" );
-	m_videoView->stop();
-	pa_lastButton->activate();
-	pa_firstButton->activate();
-	pa_forwardButton->activate();
-	pa_backButton->activate();
-}}
-              tooltip {Play (F7)} xywh {130 305 105 40} shortcut 0xffc4 hide
-            }
-            Fl_Button pa_lastButton {
-              label {@>|}
-              callback {nle::g_ruler->skipLast()}
-              tooltip {Goto End} xywh {300 305 65 40} hide
-            }
-            Fl_Button pa_firstButton {
-              label {@|<}
-              callback {nle::g_ruler->skipFirst();}
-              tooltip {Goto Start} xywh {0 305 65 40} hide
-            }
-            Fl_Button pa_backButton {
-              label {@<|}
-              callback {nle::g_ruler->skipBackward();}
-              tooltip {Skip Frame backwards} xywh {65 305 65 40} hide
-            }
-            Fl_Button pa_forwardButton {
-              label {@|>}
-              callback {nle::g_ruler->skipForward();}
-              tooltip {Skip Frame forward} xywh {235 305 65 40} hide
+              tooltip {Skip Frame forward} xywh {235 305 65 40}
             }
             Fl_Group {} {open
               xywh {0 25 365 25}
@@ -921,34 +877,20 @@ tab_view->value( titles_tab );} {}
   }
   Function {portaudio()} {open
   } {
-    code {playButton->hide();
-lastButton->hide();
-firstButton->hide();
-backButton->hide();
-forwardButton->hide();
-pauseButton->hide();
-
-pa_playButton->show();
-pa_lastButton->show();
-pa_firstButton->show();
-pa_backButton->show();
-pa_forwardButton->show();
-g_playButton = pa_playButton;
-g_firstButton = pa_firstButton;
-g_lastButton = pa_lastButton;
-g_forwardButton = pa_forwardButton;
-g_backButton = pa_backButton;} {}
+    code {playButton->show();
+lastButton->show();
+firstButton->show();
+backButton->show();
+forwardButton->show();
+g_playButton = playButton;
+g_firstButton = firstButton;
+g_lastButton = lastButton;
+g_forwardButton = forwardButton;
+g_backButton = backButton;} {}
   }
   Function {jack()} {open
   } {
-    code {pa_playButton->hide();
-pa_lastButton->hide();
-pa_firstButton->hide();
-pa_backButton->hide();
-pa_forwardButton->hide();
-pauseButton->show();
-
-playButton->show();
+    code {playButton->show();
 lastButton->show();
 firstButton->show();
 backButton->show();

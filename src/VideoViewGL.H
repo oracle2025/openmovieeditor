@@ -42,7 +42,6 @@ class VideoViewGL : public Fl_Gl_Window, public IVideoWriter
 		void nextFrame( int64_t frame );
 		void seek( int64_t position );
 		void play();
-		void pause();
 		void stop();
 		void zoom( float zoom ) { m_zoom = zoom; }
 	private:
