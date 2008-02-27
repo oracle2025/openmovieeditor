@@ -44,25 +44,8 @@ PasteCommand::PasteCommand( Clip* clip )
 	m_position = clip->position();
 	m_length = clip->length();
 	m_audioClip = 0;
-	AudioClip* ac = dynamic_cast<AudioClip*>(clip);
-	if ( ac ) {
+	if ( clip->type() == CLIP_TYPE_AUDIO ) {
 		m_audioClip = true;
-	/*	auto_node* n = ac->getAutoPoints();
-		int i = 0;
-		while ( n ) {
-			n = n->next;
-			i++;
-		}
-		m_automationsCount = i;
-		m_automationPoints = new auto_node[i];
-		n = ac->getAutoPoints();
-		i = 0;
-		while ( n ) {
-			m_automationPoints[i] = *n;
-			m_automationPoints[i].next = 0;
-			n = n->next;
-			i++;
-		}*/
 	} else {
 		VideoClip* vc = dynamic_cast<VideoClip*>(clip);
 		if ( vc ) { m_mute = vc->m_mute; }
@@ -79,23 +62,12 @@ PasteCommand::PasteCommand( PasteCommand* command )
 	m_position = command->m_position;
 	m_length = command->m_length;
 	m_audioClip = command->m_audioClip;
-	if ( m_audioClip ) {
-/*		m_automationsCount = command->m_automationsCount;
-		m_automationPoints = new auto_node[m_automationsCount];
-		for ( int i = 0; i < m_automationsCount; i++ ) {
-			m_automationPoints[i] = command->m_automationPoints[i];
-		}*/
-	} else {
+	if ( !m_audioClip ) {
 		m_mute = command->m_mute;
 	}
 }
 PasteCommand::~PasteCommand()
 {
-/*	if ( m_automationPoints ) {
-		delete [] m_automationPoints;
-		m_automationPoints = 0;
-	}
-	m_automationsCount = 0;*/
 }
 void PasteCommand::undo()
 {
@@ -114,20 +86,6 @@ void PasteCommand::doo()
 		if ( !af ) { return; }
 		AudioClip* ac = new AudioClip( t, m_position, af, m_trimA, m_trimB, m_clip );
 		c = ac;
-		/* add automations */
-	/*	auto_node* n = ac->getAutoPoints();
-		n->x = m_automationPoints[0].x;
-		n->y = m_automationPoints[0].y;
-		n = n->next;
-		n->x = m_automationPoints[1].x;
-		n->y = m_automationPoints[1].y;
-		for ( int i = 2; i < m_automationsCount; i++ ) {
-			n->next = new auto_node;
-			n->next->next = 0;
-			n->next->x = m_automationPoints[i].x;
-			n->next->y = m_automationPoints[i].y;
-			n = n->next;
-		}*/
 		g_timeline->addClip( m_track, c );
 	} else {
 		g_timeline->addFile( m_track, m_position, m_filename, m_trimA, m_trimB, m_mute, m_clip, m_length );

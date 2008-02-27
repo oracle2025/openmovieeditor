@@ -44,27 +44,7 @@ RemoveCommand::RemoveCommand( Clip* clip )
 	m_position = clip->position();
 	m_length = clip->length();
 	m_audioClip = 0;
-	/*AudioClipBase* ac = dynamic_cast<AudioClipBase*>(clip);
-	if ( ac ) {
-		auto_node* n = ac->getAutoPoints();
-		int i = 0;
-		while ( n ) {
-			n = n->next;
-			i++;
-		}
-		m_automationsCount = i;
-		m_automationPoints = new auto_node[i];
-		n = ac->getAutoPoints();
-		i = 0;
-		while ( n ) {
-			m_automationPoints[i] = *n;
-			m_automationPoints[i].next = 0;
-			n = n->next;
-			i++;
-		}
-	}*/
-	AudioClip* acc = dynamic_cast<AudioClip*>(clip);
-	if ( acc ) {
+	if ( clip->type() == CLIP_TYPE_AUDIO ) {
 		m_audioClip = true;
 	}
 	VideoClip* vc = dynamic_cast<VideoClip*>(clip);
@@ -73,11 +53,6 @@ RemoveCommand::RemoveCommand( Clip* clip )
 }
 RemoveCommand::~RemoveCommand()
 {
-/*	if ( m_automationPoints ) {
-		delete [] m_automationPoints;
-		m_automationPoints = 0;
-	}
-	m_automationsCount = 0;*/
 	if ( m_data ) {
 		delete m_data;
 	}
@@ -92,7 +67,6 @@ void RemoveCommand::doo()
 
 void RemoveCommand::undo()
 {
-	cout << "remove command" << endl;
 	Track* t = g_timeline->getTrack( m_track );
 	Clip* c;
 	if ( m_audioClip ) {
@@ -100,20 +74,6 @@ void RemoveCommand::undo()
 		if ( !af ) { return; }
 		AudioClip* ac = new AudioClip( t, m_position, af, m_trimA, m_trimB, m_clip );
 		c = ac;
-		/* add automations */
-/*		auto_node* n = ac->getAutoPoints();
-		n->x = m_automationPoints[0].x;
-		n->y = m_automationPoints[0].y;
-		n = n->next;
-		n->x = m_automationPoints[1].x;
-		n->y = m_automationPoints[1].y;
-		for ( int i = 2; i < m_automationsCount; i++ ) {
-			n->next = new auto_node;
-			n->next->next = 0;
-			n->next->x = m_automationPoints[i].x;
-			n->next->y = m_automationPoints[i].y;
-			n = n->next;
-		}*/
 		g_timeline->addClip( m_track, c );
 	} else {
 		g_timeline->addFile( m_track, m_position, m_filename, m_trimA, m_trimB, m_mute, m_clip, m_length, m_data );
