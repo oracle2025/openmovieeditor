@@ -63,7 +63,6 @@ static void video_idle_callback( void* data )
 
 static jack_client_t *jack_client = 0;
 static jack_port_t *output_port[2]; // stereo
-static char jackid[16];
 static jack_nframes_t jack_bufsiz = 64;
 static jack_nframes_t jack_latency_comp = 0;
 
