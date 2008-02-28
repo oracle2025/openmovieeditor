@@ -45,12 +45,16 @@ class JackPlaybackCore : public IPlaybackCore
 		void flipFrame();
 		void hardstop();
 		int sync( jack_transport_state_t state, jack_position_t *pos );
+		void play_ping( int fd );
+		void stop_ping( int fd );
 	private:
 		IAudioReader* m_audioReader;
 		IVideoReader* m_videoReader;
 		IVideoWriter* m_videoWriter;
 		int64_t m_currentFrame;
 		AudioThreadedRingbuffer* m_threadedRingbuffer;
+		int m_play_pipe[2];
+		int m_stop_pipe[2];
 };
 
 } /* namespace nle */

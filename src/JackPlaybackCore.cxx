@@ -22,6 +22,7 @@
 
 #include <unistd.h>
 #include <pthread.h>
+#include <fcntl.h>
 
 #include <jack/jack.h>
 #include <jack/transport.h>
@@ -45,6 +46,10 @@
 
 namespace nle
 {
+
+void suspend_idle_handlers(); //defined in IdleHandlers.cxx
+
+void resume_idle_handlers();
 
 /*
  * static functions
@@ -123,12 +128,64 @@ void jack_reposition( int64_t vframe )
 	}
 }
 
+void play_pipe_callback( int fd, void* data )
+{
+	JackPlaybackCore* pc = (JackPlaybackCore*)data;
+	pc->play_ping( fd );
+}
+
+void stop_pipe_callback( int fd, void* data )
+{
+	JackPlaybackCore* pc = (JackPlaybackCore*)data;
+	pc->stop_ping( fd );
+}
+void JackPlaybackCore::play_ping( int fd )
+{
+	unsigned char x;
+	read( fd, &x, 1 );
+	suspend_idle_handlers();
+	if ( m_active ) {
+		return;
+	}
+	m_active = true;
+	Fl::add_timeout( 0.04, video_idle_callback, this ); // looks like hardcoded 25fps 
+	g_playButton->label( "@square" );
+	g_firstButton->deactivate();
+	g_lastButton->deactivate();
+	g_forwardButton->deactivate();
+	g_backButton->deactivate();
+}
+void JackPlaybackCore::stop_ping( int fd )
+{
+	unsigned char x;
+	read( fd, &x, 1 );
+	if ( !m_active ) {
+		return;
+	}
+	resume_idle_handlers();
+	m_active = false;
+	g_playButton->label( "@>" );
+	g_firstButton->activate();
+	g_lastButton->activate();
+	g_forwardButton->activate();
+	g_backButton->activate();
+}
+
 JackPlaybackCore::JackPlaybackCore( IAudioReader* audioReader, IVideoReader* videoReader, IVideoWriter* videoWriter )
 	: m_audioReader(audioReader), m_videoReader(videoReader), m_videoWriter(videoWriter)
 {
 	g_playbackCore = this;
 	m_active = false;
 	m_threadedRingbuffer = 0;
+
+	if ( pipe(m_play_pipe) == -1 || pipe(m_stop_pipe) == -1 ) {
+		cerr << "could not create pipes." << endl;
+		return;
+	}
+	Fl::add_fd( m_play_pipe[0], play_pipe_callback, this );
+	Fl::add_fd( m_stop_pipe[0], stop_pipe_callback, this );
+	fcntl( m_play_pipe[1], F_SETFL, O_NONBLOCK );
+	fcntl( m_stop_pipe[1], F_SETFL, O_NONBLOCK );
 
 	jack_client = jack_client_open( "openmovieeditor", JackNullOption, 0 );
 
@@ -203,11 +260,13 @@ JackPlaybackCore::~JackPlaybackCore()
 		delete m_threadedRingbuffer;
 		m_threadedRingbuffer = 0;
 	}
+	Fl::remove_fd( m_play_pipe[0] );
+	Fl::remove_fd( m_stop_pipe[0] );
+	close( m_play_pipe[0] );
+	close( m_play_pipe[1] );
+	close( m_stop_pipe[0] );
+	close( m_stop_pipe[1] );
 }
-
-void suspend_idle_handlers(); //defined in IdleHandlers.cxx
-
-void resume_idle_handlers();
 
 
 void JackPlaybackCore::play()
@@ -254,6 +313,7 @@ int JackPlaybackCore::sync( jack_transport_state_t state, jack_position_t *pos )
 
 void JackPlaybackCore::jackreadAudio( jack_nframes_t nframes )
 {
+	static jack_transport_state_t last_jack_state = JackTransportStopped;
 	void *outL, *outR;
 	jack_position_t	jack_position;
 	jack_transport_state_t ts;
@@ -267,6 +327,20 @@ void JackPlaybackCore::jackreadAudio( jack_nframes_t nframes )
 	outR = jack_port_get_buffer (output_port[1], nframes);
 	ts = jack_transport_query( jack_client, &jack_position );
 	
+	if ( last_jack_state != ts ) {
+		unsigned char x = 0x0;
+		switch( ts ) {
+			case JackTransportRolling:
+				write( m_play_pipe[1], &x, 1 );
+				/* check for EAGAIN ? */
+				break;
+			case JackTransportStopped:
+				write( m_stop_pipe[1], &x, 1 );
+				/* check for EAGAIN ? */
+				break;
+		}
+		last_jack_state = ts;
+	}
 	switch( ts ) {
 		case JackTransportStarting:
 		case JackTransportStopped:
