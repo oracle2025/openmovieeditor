@@ -22,6 +22,7 @@
 #include "VideoFileFactory.H"
 #include "VideoFileMpeg3.H"
 #include <FL/filename.H>
+#include <cstring>
 namespace nle
 {
 

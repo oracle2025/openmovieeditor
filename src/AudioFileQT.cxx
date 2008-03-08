@@ -22,6 +22,8 @@
 #include "AudioFileQT.H"
 #include "ErrorDialog/IErrorHandler.H"
 
+#include <cstdlib>
+
 
 namespace nle
 {

@@ -25,6 +25,8 @@
 #include "Resampler.H"
 #include <FL/filename.H>
 
+#include <cstring>
+
 namespace nle
 {
 

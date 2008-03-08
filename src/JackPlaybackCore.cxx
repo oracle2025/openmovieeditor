@@ -41,6 +41,9 @@
 #include "AudioThreadedRingbuffer.H"
 #include <iostream>
 
+#include <cstdlib>
+#include <cstring>
+
 #define VIDEO_DRIFT_LIMIT 2 //Calculate this based on frame size
 #define FRAMES 4096
 

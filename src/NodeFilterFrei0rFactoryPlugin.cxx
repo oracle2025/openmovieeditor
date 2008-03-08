@@ -3,6 +3,7 @@
 #include "NodeFilterFrei0rFactoryPlugin.H"
 #include "Frei0rNode.H"
 #include <iostream>
+#include <cstring>
 
 
 NodeFilterFrei0rFactoryPlugin::NodeFilterFrei0rFactoryPlugin( std::string filename )

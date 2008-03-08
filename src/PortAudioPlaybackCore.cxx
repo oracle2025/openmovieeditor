@@ -38,6 +38,8 @@
 #include "ErrorDialog/IErrorHandler.H"
 #include <iostream>
 
+#include <cstdlib>
+
 #define VIDEO_DRIFT_LIMIT (2 * 1200) //Calculate this based on frame size
 #define FRAMES 4096
 

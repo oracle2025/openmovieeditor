@@ -25,6 +25,8 @@
 #include "IVideoFile.H"
 #include "FilmStrip.H"
 
+#include <cstring>
+
 
 namespace nle
 {

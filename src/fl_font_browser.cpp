@@ -28,6 +28,8 @@
 
 
 #include "fl_font_browser.h"
+#include <cstdlib>
+#include <cstring>
 using namespace std;
 
 void Fl_Font_Browser::callback(void (*cb)(Fl_Widget *, void *), void *d ) 
