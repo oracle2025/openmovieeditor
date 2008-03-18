@@ -23,11 +23,19 @@
 #ifdef AVCODEC
 
 extern "C" {
-#include <ffmpeg/avcodec.h>
-#include <ffmpeg/avformat.h>
-#ifdef SWSCALE
-	#include <ffmpeg/swscale.h>
-#endif /* SWSCALE */
+#ifdef OLD_FFMPEG
+  #include <ffmpeg/avcodec.h>
+  #include <ffmpeg/avformat.h>
+  #ifdef SWSCALE
+    #include <ffmpeg/swscale.h>
+  #endif /* SWSCALE */
+#else
+  #include <libavcodec/avcodec.h>
+  #include <libavformat/avformat.h>
+  #ifdef SWSCALE
+    #include <libswscale/swscale.h>
+  #endif /* SWSCALE */
+#endif
 }
 
 #include "global_includes.H"

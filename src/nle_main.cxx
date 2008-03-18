@@ -31,7 +31,11 @@
 
 #ifdef AVCODEC
 extern "C" {
+#ifdef OLD_FFMPEG
   #include <ffmpeg/avformat.h>
+#else
+  #include <libavformat/avformat.h>
+#endif
 }
 #endif
 
