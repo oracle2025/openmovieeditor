@@ -1,6 +1,6 @@
-/*  FilterAddCommand.H
+/*  EffectStackBrowser.cxx
  *
- *  Copyright (C) 2007 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2008 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,37 +17,31 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _FILTER_ADD_COMMAND_H_
-#define _FILTER_ADD_COMMAND_H_
-
-#include "global_includes.H"
-#include "Command.H"
+#include "EffectStackBrowser.H"
+#include "TimelineView.H"
 
 namespace nle
 {
 
-class Clip;
-class FilterBase;
-class XmlClipData;
-
-class FilterAddCommand : public Command
+EffectStackBrowser::EffectStackBrowser( int x, int y, int w, int h, const char *l )
+	: Fl_Hold_Browser( x, y, w, h, l )
 {
-	public:
-		FilterAddCommand( Clip* clip, const char* identifier, XmlClipData* filter_data = 0 );
-		~FilterAddCommand();
-		void doo();
-		void undo();
-		bool error();
-		FilterBase* m_filter;
-	private:
-		int m_clip;
-		int m_track;
-		int m_filterNr;
-		string m_identifier;
-		XmlClipData* m_filter_data;
-	
-};
+}
+
+int EffectStackBrowser::handle( int event )
+{
+	int x, y, w, h;
+	bbox( x, y, w, h );
+	if ( !Fl::event_inside( x, y, w, h ) ) {
+		return Fl_Hold_Browser::handle( event );
+	}
+	switch ( event ) {
+		case FL_DRAG:
+			g_timelineView->dragEffect();
+			return 1;
+	}
+	return Fl_Hold_Browser::handle( event );
+}
+
 
 } /* namespace nle */
-
-#endif /* _FILTER_ADD_COMMAND_H_ */

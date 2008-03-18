@@ -444,10 +444,10 @@ void NleUI::cb_1(nle::FileBrowser* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_1_i(o,v);
 }
 
-void NleUI::cb_effect_browser_i(Fl_Hold_Browser*, void*) {
+void NleUI::cb_effect_browser_i(nle::EffectStackBrowser*, void*) {
   setEffectButtons();
 }
-void NleUI::cb_effect_browser(Fl_Hold_Browser* o, void* v) {
+void NleUI::cb_effect_browser(nle::EffectStackBrowser* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_effect_browser_i(o,v);
 }
 
@@ -939,7 +939,6 @@ NleUI::NleUI() {
               o->end();
             }
             { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Clip Inspector");
-              o->hide();
               { nle::FltkEffectMenu* o = m_effectMenu = new nle::FltkEffectMenu(5, 80, 355, 25, "Add Effect");
                 o->box(FL_UP_BOX);
                 o->color(FL_BACKGROUND_COLOR);
@@ -952,7 +951,7 @@ NleUI::NleUI() {
                 o->when(FL_WHEN_RELEASE_ALWAYS);
                 o->deactivate();
               }
-              { Fl_Hold_Browser* o = effect_browser = new Fl_Hold_Browser(5, 105, 355, 170);
+              { nle::EffectStackBrowser* o = effect_browser = new nle::EffectStackBrowser(5, 105, 355, 170);
                 o->box(FL_NO_BOX);
                 o->color(FL_BACKGROUND2_COLOR);
                 o->selection_color(FL_SELECTION_COLOR);
@@ -1075,6 +1074,7 @@ NleUI::NleUI() {
               o->end();
             }
             { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Clip");
+              o->hide();
               clip_filename_out = new Fl_Output(150, 85, 205, 25, "Filename");
               clip_folder_out = new Fl_Output(150, 115, 205, 25, "Folder");
               clip_decoder_out = new Fl_Output(150, 145, 205, 25, "Decoder");

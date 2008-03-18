@@ -44,6 +44,7 @@ class DragHandler;
 class FilterFactory;
 class PasteSelectionCommand;
 class TitleClip;
+class FilterBase;
 	
 class TimelineView : public Fl_Widget
 {
@@ -83,6 +84,7 @@ class TimelineView : public Fl_Widget
 		void moveEffectUp();
 		void moveEffectDown();
 		void removeEffect();
+		void dragEffect();
 		void titles_text( const char* t );
 		void titles_x( float x );
 		void titles_y( float y );
@@ -109,6 +111,7 @@ class TimelineView : public Fl_Widget
 		clip_node* m_selectedClips;
 		PasteSelectionCommand* m_pasteCommand;
 		bool has_next_clip();
+		FilterBase* m_draggedFilter;
 
 };
 

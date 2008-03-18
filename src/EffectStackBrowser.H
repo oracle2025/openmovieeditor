@@ -1,6 +1,6 @@
-/*  FilterAddCommand.H
+/*  EffectStackBrowser.H
  *
- *  Copyright (C) 2007 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2008 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,37 +17,22 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _FILTER_ADD_COMMAND_H_
-#define _FILTER_ADD_COMMAND_H_
+#ifndef _EFFECT_STACK_BROWSER_H_
+#define _EFFECT_STACK_BROWSER_H_
 
-#include "global_includes.H"
-#include "Command.H"
+#include <FL/Fl_Hold_Browser.H>
 
 namespace nle
 {
 
-class Clip;
-class FilterBase;
-class XmlClipData;
-
-class FilterAddCommand : public Command
+class EffectStackBrowser : public Fl_Hold_Browser
 {
 	public:
-		FilterAddCommand( Clip* clip, const char* identifier, XmlClipData* filter_data = 0 );
-		~FilterAddCommand();
-		void doo();
-		void undo();
-		bool error();
-		FilterBase* m_filter;
-	private:
-		int m_clip;
-		int m_track;
-		int m_filterNr;
-		string m_identifier;
-		XmlClipData* m_filter_data;
-	
+		EffectStackBrowser( int x, int y, int w, int h, const char *l = 0 );
+		virtual ~EffectStackBrowser() {}
+		int handle( int event );
 };
 
 } /* namespace nle */
 
-#endif /* _FILTER_ADD_COMMAND_H_ */
+#endif /* _EFFECT_STACK_BROWSER_H_ */

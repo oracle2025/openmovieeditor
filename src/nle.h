@@ -29,6 +29,7 @@
 #include "MediaPanel.H"
 #include "FltkEffectMenu.H"
 #include "IVideoEffect.H"
+#include "EffectStackBrowser.H"
 #include "SpecialClipsBrowser.H"
 #include <FL/Fl_Input.H>
 #include <FL/Fl_Value_Input.H>
@@ -164,10 +165,10 @@ private:
   static void cb_1(nle::FileBrowser*, void*);
 public:
   nle::FltkEffectMenu *m_effectMenu;
-  Fl_Hold_Browser *effect_browser;
+  nle::EffectStackBrowser *effect_browser;
 private:
-  void cb_effect_browser_i(Fl_Hold_Browser*, void*);
-  static void cb_effect_browser(Fl_Hold_Browser*, void*);
+  void cb_effect_browser_i(nle::EffectStackBrowser*, void*);
+  static void cb_effect_browser(nle::EffectStackBrowser*, void*);
 public:
   Fl_Button *m_effect_up;
 private:

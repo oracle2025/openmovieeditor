@@ -23,22 +23,29 @@
 #include "FilterFactory.H"
 #include "MainFilterFactory.H"
 #include "Timeline.H"
+#include "XmlClipData.H"
+#include "FilterBase.H"
 
 #include <cassert>
 
 namespace nle
 {
 
-FilterAddCommand::FilterAddCommand( Clip* clip, const char* identifier )
+FilterAddCommand::FilterAddCommand( Clip* clip, const char* identifier, XmlClipData* filter_data )
 {
 	m_identifier = identifier;
 	m_clip = clip->id();
 	m_track = clip->track()->num();
 	m_filter = 0;
+	m_filter_data = filter_data;
 }
 
 FilterAddCommand::~FilterAddCommand()
 {
+	if ( m_filter_data ) {
+		delete m_filter_data;
+		m_filter_data = 0;
+	}
 }
 void FilterAddCommand::doo()
 {
@@ -51,6 +58,9 @@ void FilterAddCommand::doo()
 	FilterFactory* f = g_mainFilterFactory->get( m_identifier.c_str() );
 	assert( f );
 	m_filter = c->pushFilter( f );
+	if ( m_filter_data ) {
+		m_filter->readXML( m_filter_data->m_xml );
+	}
 }
 bool FilterAddCommand::error()
 {

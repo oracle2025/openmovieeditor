@@ -453,7 +453,7 @@ fb->load_rel();}
               }
               Fl_Group {} {
                 label {Clip Inspector}
-                xywh {0 75 365 230} hide
+                xywh {0 75 365 230}
               } {
                 Fl_Menu_Button m_effectMenu {
                   label {Add Effect} open
@@ -465,7 +465,8 @@ fb->load_rel();}
                   callback {setEffectButtons();}
                   xywh {5 105 355 170} resizable
                   code0 {\#include "IVideoEffect.H"}
-                  class Fl_Hold_Browser
+                  code1 {\#include "EffectStackBrowser.H"}
+                  class {nle::EffectStackBrowser}
                 }
                 Fl_Group {} {open
                   xywh {5 275 355 25}
@@ -628,7 +629,7 @@ m_timelineView->titles_text( titles_text->value() );} open
               }
               Fl_Group {} {
                 label Clip open
-                xywh {0 75 365 230}
+                xywh {0 75 365 230} hide
               } {
                 Fl_Output clip_filename_out {
                   label Filename

@@ -274,7 +274,9 @@ openmovieeditor_SOURCES = nle.cxx\
   color_schemes.cxx\
   color_schemes.H\
   AudioThreadedRingbuffer.H\
-  AudioThreadedRingbuffer.cxx
+  AudioThreadedRingbuffer.cxx\
+  EffectStackBrowser.H\
+  EffectStackBrowser.cxx
 	
 
 
