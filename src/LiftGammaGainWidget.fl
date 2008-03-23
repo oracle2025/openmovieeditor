@@ -1,0 +1,8 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0107 
+header_name {.H} 
+code_name {.cxx}
+widget_class LiftGammaGainWidget {
+  label {Lift Gamma Gain} open selected
+  xywh {860 516 395 175} type Double visible
+} {} 
