@@ -1,0 +1,84 @@
+/* LiftGammaGainFilter.H
+ *
+ *  Copyright (C) 2008 Richard Spindler <richard.spindler AT gmail.com>
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
+#ifndef _LIFT_GAMMA_GAIN_FILTER_H_
+#define _LIFT_GAMMA_GAIN_FILTER_H_
+
+#include "IVideoEffect.H"
+
+namespace nle
+{
+
+struct lift_gamma_gain_p {
+	double x;
+	double y;
+};
+struct lift_gamma_gain_data {
+	struct lift_gamma_gain_p lift;
+	struct lift_gamma_gain_p gamma;
+	struct lift_gamma_gain_p gain;
+};
+
+class LiftGammaGainFilter : public IVideoEffect
+{
+	public:
+		LiftGammaGainFilter( int w, int h );
+		~LiftGammaGainFilter();
+		frame_struct* getFrame( frame_struct* frame, int64_t position = -1 );
+		const char* name();
+		int numParams() { return 1; }
+		IEffectDialog* dialog();
+		IEffectDialog* m_dialog;
+
+		unsigned char m_red[256];
+		unsigned char m_green[256];
+		unsigned char m_blue[256];
+
+		const char* identifier() { return "effect:builtin:LiftGammaGain"; }
+
+		FilterData* getFilterData() { return 0; }
+		void setFilterData( FilterData* ) {}
+
+		struct lift_gamma_gain_data m_parameters;
+
+		void calculate_values();
+
+		void writeXML( TiXmlElement* );
+		void readXML( TiXmlElement* );
+
+		void bypass( bool b ) { m_bypass = b; }
+
+		void lift( float r, float g, float b );
+		void gamma( float r, float g, float b );
+		void gain( float r, float g, float b );
+
+	private:
+		unsigned char *m_frame;
+		unsigned char **m_rows;
+		frame_struct m_framestruct;
+		bool m_bypass;
+		float m_lift[3];
+		float m_gamma[3];
+		float m_gain[3];
+};
+
+	
+} /* namespace nle */
+
+#endif /* _LIFT_GAMMA_GAIN_FILTER_H_ */

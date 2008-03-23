@@ -9,7 +9,7 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 SUBDIRS = portaudio tinyxml timeline ProgressDialog sl LoadSaveManager ErrorDialog
-EXTRA_DIST = nle.fl
+EXTRA_DIST = nle.fl LiftGammaGainWidget.fl NodeFilterDialog.fl
 #AM_CPPFLAGS = -ggdb -Wall -Werror @CPPFLAGS@ -I$(top_srcdir)/icons -I$(top_srcdir)/src -I$(top_srcdir)/src/tinyxml -I$(top_srcdir)/src/sl
 AM_CPPFLAGS =  -D__STDC_CONSTANT_MACROS -ggdb @CPPFLAGS@ -DINSTALL_PREFIX="\"$(prefix)\"" -I$(top_srcdir)/icons -I$(top_srcdir)/src -I$(top_srcdir)/src/tinyxml -I$(top_srcdir)/src/sl
 
@@ -200,6 +200,14 @@ openmovieeditor_SOURCES = nle.cxx\
 	CurveEditor2.H\
 	ColorCurveDialog.cxx\
 	ColorCurveDialog.H\
+	LiftGammaGainFilter.H\
+	LiftGammaGainFilter.cxx\
+	LiftGammaGainFactory.H\
+	LiftGammaGainFactory.cxx\
+	LiftGammaGainDialog.H\
+	LiftGammaGainDialog.cxx\
+	LiftGammaGainWidget.H\
+	LiftGammaGainWidget.cxx\
 	ColorGrader2.h\
 	ColorGrader2.cxx\
 	FilterBase.H\

@@ -19,13 +19,18 @@ class ColorWheel : public Fl_Widget
 		unsigned char m_r;
 		unsigned char m_g;
 		unsigned char m_b;
+		float m_fcolor[3];
+		float m_x;
+		float m_y;
 	private:
 		Fl_Color m_color;
 		float m_angle;
 		float m_len;
 		float m_v;
-		float m_x;
-		float m_y;
+		float m_start_x;
+		float m_start_y;
+		float m_source_x;
+		float m_source_y;
 		Fl_Offscreen m_offscreen;
 		unsigned char* m_pixels;
 		Fl_Image* m_image;

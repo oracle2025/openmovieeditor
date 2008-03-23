@@ -17,6 +17,7 @@ ColorWheel::ColorWheel( int x, int y, int w, int h, const char* label )
 	m_len = 0;
 	m_angle = 0;
 	m_color = FL_WHITE;
+	m_fcolor[0] = m_fcolor[1] = m_fcolor[2] = 1.0;
 }
 
 ColorWheel::~ColorWheel()
@@ -25,50 +26,76 @@ ColorWheel::~ColorWheel()
 		delete m_image;
 	}
 }
+#define WHEEL_INPUT_SCALE 0.2 
 int ColorWheel::handle( int event )
 {
-	
+	float target_x;
+	float target_y;
 	switch ( event ) {
 		case FL_PUSH:
-		return 1;
+			m_source_x = m_x;
+			m_source_y = m_y;
+			m_source_x /= 256.0;
+			m_source_y /= 256.0;
+			m_source_x -= 0.5;
+			m_source_y -= 0.5;
+			m_source_x *= 2.0;
+			m_source_y *= 2.0;
+			
+			m_start_x = ( (float)Fl::event_x() - (float)x() ) / (float)w();
+			m_start_y = ( (float)Fl::event_y() - (float)y() ) / (float)h();
+			m_start_x -= 0.5;
+			m_start_y -= 0.5;
+			m_start_x *= WHEEL_INPUT_SCALE;
+			m_start_y *= WHEEL_INPUT_SCALE;
+			return 1;
 		case FL_DRAG:
 		case FL_RELEASE:
-		m_x = ( (float)Fl::event_x() - (float)x() ) / (float)w();
-		m_y = ( (float)Fl::event_y() - (float)y() ) / (float)h();
-		m_x -= 0.5;
-		m_y -= 0.5;
-		m_x *= 2.0;
-		m_y *= 2.0;
-		m_len = sqrt( pow( m_x, 2 ) + pow( m_y, 2) );
-		m_angle = (M_PI/2) + asin( m_y / m_len );
-		if ( m_len > 1.0 ) {
-			m_x = m_x / m_len;
-			m_y = m_y / m_len;
-			m_len = 1.0;
-		}
-		if ( m_x < 0.0 ) {
-			m_angle = (2*M_PI) - m_angle;
-		}
-		m_angle /= (2*M_PI);
+			target_x = ( (float)Fl::event_x() - (float)x() ) / (float)w();
+			target_y = ( (float)Fl::event_y() - (float)y() ) / (float)h();
+			target_x -= 0.5;
+			target_y -= 0.5;
+			target_x *= WHEEL_INPUT_SCALE;//2.0;
+			target_y *= WHEEL_INPUT_SCALE;//2.0;
 
-		float r, g, b;
-		HSVtoRGB( &r, &g, &b, ( 450 - (int)( 360.0 * m_angle ) ) % 360, m_len, m_v );
+			m_x = m_source_x + (target_x - m_start_x);
+			m_y = m_source_x + (target_y - m_start_y);
 
-		m_color = fl_rgb_color( (uchar)(r * 255), (uchar)(g * 255), (uchar)(b * 255) );
-		m_r = (uchar)(r*255);
-		m_g = (uchar)(g*255);
-		m_b = (uchar)(b*255);
+			m_len = sqrt( pow( m_x, 2 ) + pow( m_y, 2) );
+			m_angle = (M_PI/2) + asin( m_y / m_len );
+			if ( m_len > 1.0 ) {
+				m_x = m_x / m_len;
+				m_y = m_y / m_len;
+				m_len = 1.0;
+			}
+			if ( m_x < 0.0 ) {
+				m_angle = (2*M_PI) - m_angle;
+			}
+			m_angle /= (2*M_PI);
+
+			float r, g, b;
+			HSVtoRGB( &r, &g, &b, ( 450 - (int)( 360.0 * m_angle ) ) % 360, m_len, m_v );
+
+			m_fcolor[0] = r;
+			m_fcolor[1] = g;
+			m_fcolor[2] = b;
 
 
-		m_x /= 2.0;
-		m_y /= 2.0;
-		m_x += 0.5;
-		m_y += 0.5;
-		m_x *= 256.0;
-		m_y *= 256.0;
-		redraw();
-		do_callback();
-		return 1;
+			m_color = fl_rgb_color( (uchar)(r * 255), (uchar)(g * 255), (uchar)(b * 255) );
+			m_r = (uchar)(r*255);
+			m_g = (uchar)(g*255);
+			m_b = (uchar)(b*255);
+
+
+			m_x /= 2.0;
+			m_y /= 2.0;
+			m_x += 0.5;
+			m_y += 0.5;
+			m_x *= 256.0;
+			m_y *= 256.0;
+			redraw();
+			do_callback();
+			return 1;
 	}
 	Fl_Widget::handle( event );
 }

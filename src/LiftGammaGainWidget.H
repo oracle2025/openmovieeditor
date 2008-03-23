@@ -4,9 +4,33 @@
 #define LiftGammaGainWidget_H
 #include <FL/Fl.H>
 #include <FL/Fl_Group.H>
+#include "ColorWheel.H"
+#include "LiftGammaGainDialog.H"
+#include <FL/Fl_Box.H>
+#include <FL/Fl_Check_Button.H>
 
 class LiftGammaGainWidget : public Fl_Group {
 public:
   LiftGammaGainWidget(int X, int Y, int W, int H, const char *L = 0);
+  ColorWheel *lift;
+private:
+  void cb_lift_i(ColorWheel*, void*);
+  static void cb_lift(ColorWheel*, void*);
+public:
+  ColorWheel *gamma;
+private:
+  void cb_gamma_i(ColorWheel*, void*);
+  static void cb_gamma(ColorWheel*, void*);
+public:
+  ColorWheel *gain;
+private:
+  void cb_gain_i(ColorWheel*, void*);
+  static void cb_gain(ColorWheel*, void*);
+public:
+  nle::LiftGammaGainDialog* m_dialog;
+  Fl_Check_Button *bypass;
+private:
+  void cb_bypass_i(Fl_Check_Button*, void*);
+  static void cb_bypass(Fl_Check_Button*, void*);
 };
 #endif

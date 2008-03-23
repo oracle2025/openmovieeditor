@@ -56,6 +56,7 @@ extern "C" {
 #include "FltkEffectMenu.H"
 #include "Frei0rFactory.H"
 #include "ColorCurveFactory.H"
+#include "LiftGammaGainFactory.H"
 #include "AudioVolumeFilterFactory.H"
 #include "NodeFilterFactory.H"
 #include "MainFilterFactory.H"
@@ -154,6 +155,7 @@ int main( int argc, char** argv )
 /*	nui.special_clips->add("Inkscape Title", nle::PL_VIDEO_SRC, "src:builtin:InkscapeClip" );*/
 	nui.special_clips->add("Volume Automations", nle::PL_AUDIO_FILTER, "filter:builtin:VolumeAutomations" );
 	nui.special_clips->add("Color Curves", nle::PL_VIDEO_EFFECT, "effect:builtin:ColorCurves" );
+	nui.special_clips->add("Lift Gamma Gain", nle::PL_VIDEO_EFFECT, "effect:builtin:LiftGammaGain" );
 	nui.special_clips->add("Node Compositing", nle::PL_VIDEO_EFFECT, "effect:builtin:NodeFilter" );
 
 
@@ -163,6 +165,10 @@ int main( int argc, char** argv )
 	nle::ColorCurveFactory colorCurveFactory;
 	nui.m_effectMenu->addEffect( &colorCurveFactory );
 	fFactory.add( "effect:builtin:ColorCurves", &colorCurveFactory );
+
+	nle::LiftGammaGainFactory liftGammaGainFactory;
+	nui.m_effectMenu->addEffect( &liftGammaGainFactory );
+	fFactory.add( "effect:builtin:LiftGammaGain", &liftGammaGainFactory );
 
 	nle::NodeFilterFactory nodeFilterFactory;
 	nui.m_effectMenu->addEffect( &nodeFilterFactory );
