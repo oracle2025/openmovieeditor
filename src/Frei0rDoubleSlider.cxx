@@ -8,7 +8,7 @@ void frei0r_double_slider_callback( Frei0rDoubleSlider* o, void* data )
 }
 		
 Frei0rDoubleSlider::Frei0rDoubleSlider( int x, int y, int w, int h, const char *l )
-	: Fl_Slider( x, y, w, h, l )
+	: Fl_Value_Slider( x, y, w, h, l )
 {
 	m_instance = 0;
 	m_param_index = 0;
