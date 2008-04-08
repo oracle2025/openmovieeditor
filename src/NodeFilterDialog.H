@@ -9,10 +9,11 @@
 #include "NodeFilterBezierCurveFactoryPlugin.H"
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Tile.H>
+#include <FL/Fl_Hold_Browser.H>
+#include <FL/Fl_Scroll.H>
 #include "Frei0rGraphEditor.H"
 #include "VideoViewGL.H"
 #include "Timeline.H"
-#include <FL/Fl_Hold_Browser.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Return_Button.H>
 #include <FL/Fl_Check_Button.H>
@@ -22,15 +23,15 @@ class NodeFilterDialog : public nle::IEffectDialog {
 public:
   NodeFilterDialog( nle::NodeFilter* filter );
   Fl_Double_Window *m_dialog;
-  Frei0rGraphEditor *graph_editor;
-private:
-  void cb_graph_editor_i(Frei0rGraphEditor*, void*);
-  static void cb_graph_editor(Frei0rGraphEditor*, void*);
-public:
   Fl_Hold_Browser *plugin_browser;
 private:
   void cb_plugin_browser_i(Fl_Hold_Browser*, void*);
   static void cb_plugin_browser(Fl_Hold_Browser*, void*);
+public:
+  Frei0rGraphEditor *graph_editor;
+private:
+  void cb_graph_editor_i(Frei0rGraphEditor*, void*);
+  static void cb_graph_editor(Frei0rGraphEditor*, void*);
   void cb_Close_i(Fl_Return_Button*, void*);
   static void cb_Close(Fl_Return_Button*, void*);
 public:

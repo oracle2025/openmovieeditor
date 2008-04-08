@@ -3,14 +3,6 @@
 #include "NodeFilterDialog.H"
 #include "NodeFilterFrei0rFactoryPlugin.H"
 
-void NodeFilterDialog::cb_graph_editor_i(Frei0rGraphEditor*, void*) {
-  nle::g_videoView->redraw();
-nle::g_timeline->changing();
-}
-void NodeFilterDialog::cb_graph_editor(Frei0rGraphEditor* o, void* v) {
-  ((NodeFilterDialog*)(o->parent()->parent()->user_data()))->cb_graph_editor_i(o,v);
-}
-
 void NodeFilterDialog::cb_plugin_browser_i(Fl_Hold_Browser* o, void*) {
   if ( o->value() <= 0 ) {
 	return;
@@ -22,6 +14,14 @@ if ( ffp ) {
 }
 void NodeFilterDialog::cb_plugin_browser(Fl_Hold_Browser* o, void* v) {
   ((NodeFilterDialog*)(o->parent()->parent()->user_data()))->cb_plugin_browser_i(o,v);
+}
+
+void NodeFilterDialog::cb_graph_editor_i(Frei0rGraphEditor*, void*) {
+  nle::g_videoView->redraw();
+nle::g_timeline->changing();
+}
+void NodeFilterDialog::cb_graph_editor(Frei0rGraphEditor* o, void* v) {
+  ((NodeFilterDialog*)(o->parent()->parent()->parent()->user_data()))->cb_graph_editor_i(o,v);
 }
 
 void NodeFilterDialog::cb_Close_i(Fl_Return_Button*, void*) {
@@ -64,18 +64,6 @@ NodeFilterDialog::NodeFilterDialog( nle::NodeFilter* filter ) {
     w = o;
     o->user_data((void*)(this));
     { Fl_Tile* o = new Fl_Tile(5, 55, 640, 375);
-      { Frei0rGraphEditor* o = graph_editor = new Frei0rGraphEditor(285, 55, 360, 375);
-        o->box(FL_DOWN_BOX);
-        o->color(FL_BACKGROUND_COLOR);
-        o->selection_color(FL_BACKGROUND_COLOR);
-        o->labeltype(FL_NORMAL_LABEL);
-        o->labelfont(0);
-        o->labelsize(14);
-        o->labelcolor(FL_FOREGROUND_COLOR);
-        o->callback((Fl_Callback*)cb_graph_editor);
-        o->align(FL_ALIGN_CENTER);
-        o->when(FL_WHEN_RELEASE);
-      }
       { Fl_Hold_Browser* o = plugin_browser = new Fl_Hold_Browser(5, 55, 280, 375);
         o->box(FL_NO_BOX);
         o->color(FL_BACKGROUND2_COLOR);
@@ -87,6 +75,22 @@ NodeFilterDialog::NodeFilterDialog( nle::NodeFilter* filter ) {
         o->callback((Fl_Callback*)cb_plugin_browser);
         o->align(FL_ALIGN_BOTTOM);
         o->when(FL_WHEN_RELEASE_ALWAYS);
+      }
+      { Fl_Scroll* o = new Fl_Scroll(285, 55, 360, 375);
+        o->box(FL_DOWN_FRAME);
+        { Frei0rGraphEditor* o = graph_editor = new Frei0rGraphEditor(285, 55, 2000, 2000);
+          o->box(FL_FLAT_BOX);
+          o->color(FL_BACKGROUND_COLOR);
+          o->selection_color(FL_BACKGROUND_COLOR);
+          o->labeltype(FL_NORMAL_LABEL);
+          o->labelfont(0);
+          o->labelsize(14);
+          o->labelcolor(FL_FOREGROUND_COLOR);
+          o->callback((Fl_Callback*)cb_graph_editor);
+          o->align(FL_ALIGN_CENTER);
+          o->when(FL_WHEN_RELEASE);
+        }
+        o->end();
       }
       o->end();
       Fl_Group::current()->resizable(o);

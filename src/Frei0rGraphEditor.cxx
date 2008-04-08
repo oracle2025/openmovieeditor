@@ -96,7 +96,6 @@ void Frei0rGraphEditor::draw()
 	if ( !m_filter ) {
 		return;
 	}
-	fl_draw_box( FL_DOWN_BOX, x(), y(), w(), h(), FL_BACKGROUND_COLOR );
 	fl_push_clip( x() + 2, y() + 2,  w() - 4, h() - 4 );
 	fl_line_style( FL_SOLID, 1 );
 	for ( filters* i = m_filter->m_filters; i; i = i->next ) {
