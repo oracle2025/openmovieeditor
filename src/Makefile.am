@@ -284,7 +284,11 @@ openmovieeditor_SOURCES = nle.cxx\
   AudioThreadedRingbuffer.H\
   AudioThreadedRingbuffer.cxx\
   EffectStackBrowser.H\
-  EffectStackBrowser.cxx
+  EffectStackBrowser.cxx\
+  PreviewNode.cxx\
+  PreviewNode.H\
+  NodeFilterPreviewFactoryPlugin.H\
+  NodeFilterPreviewFactoryPlugin.cxx
 	
 
 

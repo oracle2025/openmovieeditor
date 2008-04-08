@@ -112,6 +112,7 @@ NodeFilterDialog::NodeFilterDialog( nle::NodeFilter* filter ) {
   }
   m_filter = filter;
 plugin_browser->add( m_bezier_curve_factory.name(), (void*)&m_bezier_curve_factory );
+plugin_browser->add( m_preview_factory.name(), (void*)&m_preview_factory );
 for ( effect_node* p = m_factory->m_effects; p; p = p->next ) {
 	plugin_browser->add( p->effect->name(), (void*)p->effect );
 }

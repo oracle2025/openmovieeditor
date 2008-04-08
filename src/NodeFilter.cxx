@@ -29,6 +29,9 @@
 #include <iostream>
 #include "BezierCurveNode.H"
 #include "helper.H"
+#include "NodeFilterPreviewFactoryPlugin.H"
+#include "PreviewNode.H"
+
 using namespace std;
 
 namespace nle {
@@ -92,6 +95,11 @@ void NodeFilter::writeXML( TiXmlElement* xml_node )
 			xml_filter->SetAttribute( "identifier", bezier_curve_node->identifier() );
 			bezier_curve_node->writeXML( xml_filter );
 		}
+		nle::PreviewNode* preview_node = dynamic_cast<nle::PreviewNode*>(filter_node->node);
+		if ( preview_node ) {
+			xml_filter->SetAttribute( "identifier", preview_node->identifier() );
+			preview_node->writeXML( xml_filter );
+		}
 		xml_filter->SetAttribute( "id", filter_node->id );
 		for ( int i = 0; i < filter_node->input_count; i++ ) {
 			if ( filter_node->inputs[i] ) {
@@ -115,6 +123,7 @@ void NodeFilter::writeXML( TiXmlElement* xml_node )
 void NodeFilter::readXML( TiXmlElement* xml_node )
 {
 	NodeFilterBezierCurveFactoryPlugin bezier_node_factory_plugin;
+	nle::NodeFilterPreviewFactoryPlugin preview_factory_plugin;
 	TiXmlElement* xml_filter = TiXmlHandle( xml_node ).FirstChild( "filter" ).Element();
 	for ( ; xml_filter; xml_filter = xml_filter->NextSiblingElement( "filter" ) ) {
 		int id;
@@ -144,6 +153,8 @@ void NodeFilter::readXML( TiXmlElement* xml_node )
 				INodeFilterFactoryPlugin* ffp = 0;
 				if ( identifier && strcmp("effect:builtin:BezierCurveFilter", identifier ) == 0 ) {
 					ffp = &bezier_node_factory_plugin;
+				} else if ( identifier && strcmp("effect:builtin:Preview", identifier ) == 0 ) {
+					ffp = &preview_factory_plugin;
 				} else if ( identifier && g_node_filter_frei0r_factory ) {
 					identifier += strlen("effect:frei0r:");
 					ffp = g_node_filter_frei0r_factory->get( identifier );
@@ -169,8 +180,10 @@ void NodeFilter::readXML( TiXmlElement* xml_node )
 					if ( bezier_curve_node ) {
 						bezier_curve_node->readXML( xml_filter );
 					}
-
-
+					nle::PreviewNode* preview_node = dynamic_cast<nle::PreviewNode*>(m_filters->node);
+					if ( preview_node ) {
+						preview_node->readXML( xml_filter );
+					}
 				}
 
 			}
@@ -235,6 +248,12 @@ frame_struct* NodeFilter::getFrame( frame_struct* frame, int64_t position )
 		}
 		m_frame_cache = (uint32_t*)m_frame;
 		m_framestruct.RGB = (unsigned char*)m_sink_node->getFrame( 0, position / (double)NLE_TIME_BASE );
+	}
+	for ( filters* filter_node = m_filters; filter_node; filter_node = filter_node->next ) {
+		nle::PreviewNode* preview_node = dynamic_cast<nle::PreviewNode*>(filter_node->node);
+		if ( preview_node ) {
+			preview_node->getFrame( 0, position / (double)NLE_TIME_BASE );
+		}
 	}
 	if ( m_framestruct.RGB ) {
 		return &m_framestruct;

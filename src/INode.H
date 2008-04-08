@@ -10,6 +10,8 @@ class INode
 		virtual void setInput( int input, INode* node ) = 0;
 		virtual int getInputCount() = 0;
 		virtual int getOutputCount() = 0;
+		virtual void init_widgets() {};
+		virtual void delete_widgets() {};
 		virtual uint32_t* getFrame( int output, double position ) = 0;
 		virtual void init() {}
 		filters* node;

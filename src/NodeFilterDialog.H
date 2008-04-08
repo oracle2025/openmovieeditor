@@ -7,6 +7,7 @@
 #include "IEffectDialog.H"
 #include "NodeFilterFrei0rFactory.H"
 #include "NodeFilterBezierCurveFactoryPlugin.H"
+#include "NodeFilterPreviewFactoryPlugin.H"
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Tile.H>
 #include <FL/Fl_Hold_Browser.H>
@@ -43,5 +44,6 @@ private:
   nle::NodeFilter* m_filter;
   NodeFilterFrei0rFactory* m_factory;
   NodeFilterBezierCurveFactoryPlugin m_bezier_curve_factory;
+  nle::NodeFilterPreviewFactoryPlugin m_preview_factory;
 };
 #endif
