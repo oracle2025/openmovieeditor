@@ -677,6 +677,66 @@ void NleUI::cb_scaleBar(Flmm_Scalebar* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_scaleBar_i(o,v);
 }
 
+static const char *idata_magnify_plus[] = {
+"16 16 9 1",
+" \tc None",
+".\tc #000000",
+"+\tc #282828",
+"@\tc #9C9C9C",
+"#\tc #E2E2E2",
+"$\tc #FCFCFC",
+"%\tc #565656",
+"&\tc #F9F9F9",
+"*\tc #FFFFFF",
+"    .....       ",
+"  .+@#$#@+.     ",
+" .%&*****&%.    ",
+" +&***.***&+    ",
+".@****.****@.   ",
+".#****.****#.   ",
+".$*.......*$.   ",
+".#****.****#.   ",
+".@****.****@.   ",
+" +&***.***&+    ",
+" .%&*****&%..   ",
+"  .+@#$#@+....  ",
+"    ..... ..... ",
+"           .....",
+"            ... ",
+"             .  "
+};
+static Fl_Pixmap image_magnify_plus(idata_magnify_plus);
+
+static const char *idata_magnify_minus[] = {
+"16 16 9 1",
+" \tc None",
+".\tc #000000",
+"+\tc #282828",
+"@\tc #9C9C9C",
+"#\tc #E2E2E2",
+"$\tc #FCFCFC",
+"%\tc #565656",
+"&\tc #F9F9F9",
+"*\tc #FFFFFF",
+"    .....       ",
+"  .+@#$#@+.     ",
+" .%&*****&%.    ",
+" +&*******&+    ",
+".@*********@.   ",
+".#*********#.   ",
+".$*.......*$.   ",
+".#*********#.   ",
+".@*********@.   ",
+" +&*******&+    ",
+" .%&*****&%..   ",
+"  .+@#$#@+....  ",
+"    ..... ..... ",
+"           .....",
+"            ... ",
+"             .  "
+};
+static Fl_Pixmap image_magnify_minus(idata_magnify_minus);
+
 static const char *idata_tool_positioning[] = {
 "32 32 2 1",
 " \tc None",
@@ -1183,7 +1243,7 @@ NleUI::NleUI() {
             Fl_Group::current()->resizable(o);
           }
           { Fl_Group* o = new Fl_Group(40, 580, 640, 20);
-            { Flmm_Scalebar* o = scaleBar = new Flmm_Scalebar(40, 580, 640, 20);
+            { Flmm_Scalebar* o = scaleBar = new Flmm_Scalebar(40, 580, 600, 20);
               o->type(1);
               o->box(FL_FLAT_BOX);
               o->color(FL_DARK2);
@@ -1198,6 +1258,12 @@ NleUI::NleUI() {
               o->align(FL_ALIGN_BOTTOM);
               o->when(FL_WHEN_CHANGED);
               Fl_Group::current()->resizable(o);
+            }
+            { Fl_Button* o = magnify_plus = new Fl_Button(640, 580, 20, 20);
+              o->image(image_magnify_plus);
+            }
+            { Fl_Button* o = magnify_minus = new Fl_Button(660, 580, 20, 20);
+              o->image(image_magnify_minus);
             }
             o->end();
           }

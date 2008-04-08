@@ -718,13 +718,13 @@ if ( name ) {
             }
           }
         }
-        Fl_Group {} {
+        Fl_Group {} {open
           xywh {0 345 700 255}
         } {
           Fl_Group {} {open
             xywh {40 345 660 255} resizable
           } {
-            Fl_Group {} {
+            Fl_Group {} {open
               xywh {40 345 660 25}
             } {
               Fl_Button {} {
@@ -764,11 +764,17 @@ float slider_size = sb->slider_size_i();
 float zoom = width / slider_size;
 m_timelineView->scroll( (int64_t)sb->value() );
 m_timelineView->zoom( zoom );}
-                private xywh {40 580 640 20} type Horizontal maximum 1024 slider_size 0.40404 resizable
+                private xywh {40 580 600 20} type Horizontal maximum 1024 slider_size 0.40404 resizable
                 code0 {\#include "Flmm_Scalebar.H"}
                 code1 {\#include "globals.H"}
                 code2 {using namespace std;}
                 class Flmm_Scalebar
+              }
+              Fl_Button magnify_plus {
+                image {../icons/magnify_plus.xpm} xywh {640 580 20 20}
+              }
+              Fl_Button magnify_minus {
+                image {../icons/magnify_minus.xpm} xywh {660 580 20 20}
               }
             }
           }

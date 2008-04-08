@@ -281,6 +281,8 @@ private:
   void cb_scaleBar_i(Flmm_Scalebar*, void*);
   static void cb_scaleBar(Flmm_Scalebar*, void*);
 public:
+  Fl_Button *magnify_plus;
+  Fl_Button *magnify_minus;
   Fl_Button *positioningButton;
   Fl_Button *automationsButton;
 private:
