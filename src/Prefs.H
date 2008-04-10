@@ -50,6 +50,8 @@ class Prefs
 		int lastFramesize() { return m_lastFramesize; }
 		void lastFramerate( int fr ) { m_lastFramerate = fr; }
 		int lastFramerate() { return m_lastFramerate; }
+		void setWindowPosition( int x, int y, int w, int h );
+		void getWindowPosition( int& x, int& y, int& w, int& h );
 	private:
 		string m_mediaFolder;
 		string m_browserFolder;
@@ -60,6 +62,10 @@ class Prefs
 		int m_lastAudioCodec;
 		int m_lastFramesize;
 		int m_lastFramerate;
+		int m_window_x;
+		int m_window_y;
+		int m_window_w;
+		int m_window_h;
 		
 };
 extern Prefs* g_preferences;

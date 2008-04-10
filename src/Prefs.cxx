@@ -48,6 +48,10 @@ Prefs::Prefs()
 	m_lastAudioCodec = 0;
 	m_lastFramesize = 0;
 	m_lastFramerate = 0;
+	m_window_x = -1;
+	m_window_y = -1;
+	m_window_w = -1;
+	m_window_h = -1;
 	TiXmlDocument doc( preferences_filename.c_str() );
 	if ( !doc.LoadFile() ) {
 		return;
@@ -93,6 +97,24 @@ Prefs::Prefs()
 	if ( j ) {
 		j->Attribute( "value", &m_lastFramerate );
 	}
+
+	j = docH.FirstChildElement( "windowX" ).Element();
+	if ( j ) {
+		j->Attribute( "value", &m_window_x );
+	}
+	j = docH.FirstChildElement( "windowY" ).Element();
+	if ( j ) {
+		j->Attribute( "value", &m_window_y );
+	}
+	j = docH.FirstChildElement( "windowW" ).Element();
+	if ( j ) {
+		j->Attribute( "value", &m_window_w );
+	}
+	j = docH.FirstChildElement( "windowH" ).Element();
+	if ( j ) {
+		j->Attribute( "value", &m_window_h );
+	}
+
 
 }
 
@@ -148,6 +170,20 @@ Prefs::~Prefs()
 	doc.LinkEndChild( item );
 	item->SetAttribute( "value", m_lastFramerate );
 
+	item = new TiXmlElement( "windowX" );
+	doc.LinkEndChild( item );
+	item->SetAttribute( "value", m_window_x );
+	item = new TiXmlElement( "windowY" );
+	doc.LinkEndChild( item );
+	item->SetAttribute( "value", m_window_y );
+	item = new TiXmlElement( "windowW" );
+	doc.LinkEndChild( item );
+	item->SetAttribute( "value", m_window_w );
+	item = new TiXmlElement( "windowH" );
+	doc.LinkEndChild( item );
+	item->SetAttribute( "value", m_window_h );
+
+
 	doc.SaveFile();
 }
 string Prefs::getBrowserFolder()
@@ -161,6 +197,20 @@ string Prefs::lastProject()
 
 void Prefs::lastProject( string filename )
 { m_lastProject = filename; }
+void Prefs::setWindowPosition( int x, int y, int w, int h )
+{
+	m_window_x = x;
+	m_window_y = y;
+	m_window_w = w;
+	m_window_h = h;
+}
+void Prefs::getWindowPosition( int& x, int& y, int& w, int& h )
+{
+	x = m_window_x;
+	y = m_window_y;
+	w = m_window_w;
+	h = m_window_h;
+}
 
 } /* namespace nle */
 

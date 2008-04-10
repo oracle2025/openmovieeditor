@@ -206,8 +206,15 @@ int main( int argc, char** argv )
 	nle::g_video_codec_info = lqt_query_registry( 0, 1, 1, 0 );
 
 	nui.show( argc, argv );
+	int x, y, w, h;
+	preferences.getWindowPosition( x, y, w, h );
+	if ( x > 0 && y > 0 && w > 0 && h > 0 ) {
+		nui.mainWindow->resize( x, y, w, h );
+	}
+
 	lsm.startup();
 	int r = Fl::run();
+	preferences.setWindowPosition( nui.mainWindow->x(), nui.mainWindow->y(), nui.mainWindow->w(), nui.mainWindow->h() );
 	//lsm.shutdown();
 	delete playbackCore;
 	return r;
