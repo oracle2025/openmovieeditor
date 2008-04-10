@@ -677,6 +677,19 @@ void NleUI::cb_scaleBar(Flmm_Scalebar* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_scaleBar_i(o,v);
 }
 
+void NleUI::cb_magnify_plus_i(Fl_Button*, void*) {
+  Flmm_Scalebar *sb = scaleBar;
+float width = sb->w();
+sb->slider_size_i( sb->slider_size_i() - 10.0 );
+float slider_size = sb->slider_size_i();
+float zoom = width / slider_size;
+
+m_timelineView->zoom( zoom );
+}
+void NleUI::cb_magnify_plus(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_magnify_plus_i(o,v);
+}
+
 static const char *idata_magnify_plus[] = {
 "16 16 9 1",
 " \tc None",
@@ -706,6 +719,19 @@ static const char *idata_magnify_plus[] = {
 "             .  "
 };
 static Fl_Pixmap image_magnify_plus(idata_magnify_plus);
+
+void NleUI::cb_magnify_minus_i(Fl_Button*, void*) {
+  Flmm_Scalebar *sb = scaleBar;
+float width = sb->w();
+sb->slider_size_i( sb->slider_size_i() + 10.0 );
+float slider_size = sb->slider_size_i();
+float zoom = width / slider_size;
+
+m_timelineView->zoom( zoom );
+}
+void NleUI::cb_magnify_minus(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_magnify_minus_i(o,v);
+}
 
 static const char *idata_magnify_minus[] = {
 "16 16 9 1",
@@ -1261,9 +1287,11 @@ NleUI::NleUI() {
             }
             { Fl_Button* o = magnify_plus = new Fl_Button(640, 580, 20, 20);
               o->image(image_magnify_plus);
+              o->callback((Fl_Callback*)cb_magnify_plus);
             }
             { Fl_Button* o = magnify_minus = new Fl_Button(660, 580, 20, 20);
               o->image(image_magnify_minus);
+              o->callback((Fl_Callback*)cb_magnify_minus);
             }
             o->end();
           }
