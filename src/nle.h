@@ -46,6 +46,7 @@
 #include "Flmm_Scalebar.H"
 #include "globals.H"
 using namespace std;
+#include "SwitchBoard.H"
 
 class NleUI {
 public:

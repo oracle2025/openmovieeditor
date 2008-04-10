@@ -771,23 +771,16 @@ m_timelineView->zoom( zoom );}
                 class Flmm_Scalebar
               }
               Fl_Button magnify_plus {
-                callback {Flmm_Scalebar *sb = scaleBar;
-float width = sb->w();
-sb->slider_size_i( sb->slider_size_i() - 10.0 );
-float slider_size = sb->slider_size_i();
-float zoom = width / slider_size;
-
-m_timelineView->zoom( zoom );}
+                callback {float new_zoom = nle::GetZoom() + ( nle::GetZoom() / 2 );
+m_timelineView->zoom( new_zoom );
+m_timelineView->adjustScrollbar();}
                 image {../icons/magnify_plus.xpm} xywh {640 580 20 20}
+                code0 {\#include "SwitchBoard.H"}
               }
               Fl_Button magnify_minus {
-                callback {Flmm_Scalebar *sb = scaleBar;
-float width = sb->w();
-sb->slider_size_i( sb->slider_size_i() + 10.0 );
-float slider_size = sb->slider_size_i();
-float zoom = width / slider_size;
-
-m_timelineView->zoom( zoom );}
+                callback {float new_zoom = nle::GetZoom() - ( nle::GetZoom() / 2 );
+m_timelineView->zoom( new_zoom );
+m_timelineView->adjustScrollbar();}
                 image {../icons/magnify_minus.xpm} xywh {660 580 20 20}
               }
             }
