@@ -18,6 +18,7 @@ ffmpeg (optional but recommended)
 jack audio connection kit
 libmpeg3
 libsamplerate
+portaudio (v19)
 
 Installation Hints for Dependencies:
 
