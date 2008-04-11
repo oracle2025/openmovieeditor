@@ -42,7 +42,7 @@ extern "C" {
 #include "nle.h"
 #include "Prefs.H"
 #include "WavArtist.H"
-#include "PortAudioPlaybackCore.H"
+#include "PortAudio19PlaybackCore.H"
 #include "JackPlaybackCore.H"
 #include "globals.H"
 #include "Timeline.H"
@@ -186,7 +186,7 @@ int main( int argc, char** argv )
 	nle::IPlaybackCore* playbackCore = new nle::JackPlaybackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
 	if ( !playbackCore->ok() ) {
 		delete playbackCore;
-		playbackCore = new nle::PortAudioPlaybackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
+		playbackCore = new nle::PortAudio19PlaybackCore( nle::g_timeline, nle::g_timeline, nle::g_videoView );
 		nui.portaudio();
 	} else {
 		nui.jack();

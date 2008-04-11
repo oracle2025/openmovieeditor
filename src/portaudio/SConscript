@@ -1,8 +1,0 @@
-env = Environment( CFLAGS = "-Wall" )
-
-src_list = Split("""pa_lib.c
-  pa_unix.c
-  pa_unix_oss.c""")
-
-portaudio = env.Library('portaudio', src_list)
-Return('portaudio')

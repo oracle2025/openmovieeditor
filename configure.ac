@@ -149,6 +149,10 @@ PKG_CHECK_MODULES(GLIB2, glib-2.0 >= 2.10.3,,
 CPPFLAGS="$CPPFLAGS $GLIB2_CFLAGS"
 LDFLAGS="$LDFLAGS $GLIB2_LIBS"
 
+PKG_CHECK_MODULES(PORTAUDIO19, portaudio-2.0 >= 19,,
+  AC_MSG_ERROR([*** portaudio-2.0 not found - this program requires portaudio >= 19 ***]))
+CPPFLAGS="$CPPFLAGS $PORTAUDIO19_CFLAGS"
+LDFLAGS="$LDFLAGS $PORTAUDIO19_LIBS"
 
  AC_CHECK_HEADER(GL/gl.h,,
   AC_MSG_ERROR([*** GL/gl.h not found - this program requires OpenGL or compatible (Mesa) Hint: install mesa-common-dev ***]))
@@ -198,7 +202,6 @@ AC_CONFIG_FILES([
    doc/images/Makefile
    icons/Makefile
    src/Makefile
-   src/portaudio/Makefile
    src/sl/Makefile
    src/tinyxml/Makefile
    src/ProgressDialog/Makefile

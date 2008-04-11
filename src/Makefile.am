@@ -8,14 +8,13 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-SUBDIRS = portaudio tinyxml timeline ProgressDialog sl LoadSaveManager ErrorDialog
+SUBDIRS = tinyxml timeline ProgressDialog sl LoadSaveManager ErrorDialog
 EXTRA_DIST = nle.fl LiftGammaGainWidget.fl NodeFilterDialog.fl
 #AM_CPPFLAGS = -ggdb -Wall -Werror @CPPFLAGS@ -I$(top_srcdir)/icons -I$(top_srcdir)/src -I$(top_srcdir)/src/tinyxml -I$(top_srcdir)/src/sl
 AM_CPPFLAGS =  -D__STDC_CONSTANT_MACROS -ggdb @CPPFLAGS@ -DINSTALL_PREFIX="\"$(prefix)\"" -I$(top_srcdir)/icons -I$(top_srcdir)/src -I$(top_srcdir)/src/tinyxml -I$(top_srcdir)/src/sl
 
 bin_PROGRAMS = openmovieeditor
-openmovieeditor_LDADD = portaudio/libportaudio.a\
-	tinyxml/libtinyxml.a timeline/libtimeline.a\
+openmovieeditor_LDADD = tinyxml/libtinyxml.a timeline/libtimeline.a\
 	ProgressDialog/libProgressDialog.a\
 	sl/libsl.a\
 	LoadSaveManager/libLoadSaveManager.a\
@@ -43,8 +42,8 @@ openmovieeditor_SOURCES = nle.cxx\
 	AudioClip.cxx\
 	AudioFileSnd.cxx\
 	AudioFileQT.cxx\
-	PortAudioPlaybackCore.cxx\
-	PortAudioPlaybackCore.H\
+	PortAudio19PlaybackCore.cxx\
+	PortAudio19PlaybackCore.H\
 	JackPlaybackCore.cxx\
 	JackPlaybackCore.H\
 	Renderer.cxx\
