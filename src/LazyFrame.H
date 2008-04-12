@@ -31,6 +31,24 @@ conversion possible
 namespace nle
 {
 
+class LazyFrame
+{
+	public:
+		LazyFrame();
+		~LazyFrame();
+		gavl_video_frame_t* RGBA();
+		gavl_video_frame_t* native();
+		gavl_video_frame_t* target();
+		gavl_video_format_t* format();
+		void set_target( gavl_video_format_t *format );
+		//compressed(); //for DV direct Rendering
+		float alpha();
+		void alpha( float value );
+	private:
+		float m_alpha;
+		gavl_video_converter_t *m_converter_RGBA;
+		gavl_video_converter_t *m_converter_target;
+};
 
 } /* namespace nle */
 
