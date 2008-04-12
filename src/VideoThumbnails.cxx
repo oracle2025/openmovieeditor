@@ -23,7 +23,6 @@
 #include "DiskCache.H"
 #include "IVideoFile.H"
 #include "VideoFileFactory.H"
-#include "ImageClip.H"
 
 #include <cstring>
 

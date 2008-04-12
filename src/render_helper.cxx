@@ -239,6 +239,32 @@ void blend_alpha( unsigned char* dst, unsigned char* rgb, unsigned char* rgba, f
 		pd += 3;
 	}
 }
+static unsigned char MAX( unsigned char a, unsigned char b )
+{
+	if ( a > b ) {
+		return a;
+	} else {
+		return b;
+	}
+}
+void blend_alpha2( unsigned char* dst, unsigned char* rgb, unsigned char* rgba, float alpha, int len )
+{
+	unsigned char *ps1, *ps2, *pd, *pd_end;
+	unsigned int a = (unsigned char)( alpha * 255 );
+	ps1 = rgba;
+	ps2 = rgb;
+	pd = dst;
+	pd_end = dst + ( len * 4 );
+	while ( pd < pd_end ) {
+		pd[0] = ( ( ( ps1[0] - ps2[0] ) * a * ps1[3] ) >> 16 ) + ps2[0];
+		pd[1] = ( ( ( ps1[1] - ps2[1] ) * a * ps1[3] ) >> 16 ) + ps2[1];
+		pd[2] = ( ( ( ps1[2] - ps2[2] ) * a * ps1[3] ) >> 16 ) + ps2[2];
+		pd[3] = MAX( ps1[3], ps2[3] );
+		ps1 += 4;
+		ps2 += 4;
+		pd += 4;
+	}
+}
 
 unsigned int mixChannels( float *A, float *B, float* out, unsigned int frames )
 {

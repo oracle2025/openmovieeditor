@@ -20,13 +20,14 @@
 #ifndef _I_VIDEO_FILE_H_
 #define _I_VIDEO_FILE_H_
 
-#include "frame_struct.h"
 #include "globals.H"
 #include "global_includes.H"
 #include "IVideoReader.H"
 
 namespace nle
 {
+
+class LazyFrame;
 
 class IVideoFile : public IVideoReader
 {
@@ -36,9 +37,9 @@ class IVideoFile : public IVideoReader
 		inline int width() { return m_width; }
 		inline int height() { return m_height; }
 //		virtual double fps() = 0; //TODO: remove this
-		virtual frame_struct* read() = 0;
+		virtual LazyFrame* read() = 0;
 		//======== From IVideoReader
-		frame_struct* getFrame( int64_t position ) {
+		LazyFrame* getFrame( int64_t position ) {
 			if ( m_interlace_mode && g_INTERLACING ) {
 				m_first_field = ( position % ticksPerFrame() < ticksPerFrame() / 2 );
 			}

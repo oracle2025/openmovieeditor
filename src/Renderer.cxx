@@ -30,6 +30,7 @@
 #include "Timeline.H"
 #include "ProgressDialog/IProgressListener.H"
 #include "render_helper.H"
+#include "LazyFrame.H"
 
 render_frame_size fs720x576 = { 720, 576, 4, 3, ( 4.0 / 3.0 ), 10 };
 render_frame_size fs768x576 = { 768, 576, 4, 3, ( 4.0 / 3.0 ), 0 };
@@ -131,23 +132,12 @@ void Renderer::go( IProgressListener* l )
 	int64_t length = (int64_t)( p_timeline->length() * ( (float)m_fps.timescale / (float)m_fps.frame_duration  ) );
 	int64_t current_frame = 0;
 
-	frame_struct enc_frame;
-	enc_frame.x = enc_frame.y = 0;
-	enc_frame.w = m_w;
-	enc_frame.h = m_h;
-	enc_frame.nr = 0;
-	enc_frame.YUV = 0;
-	enc_frame.RGB = new unsigned char[m_w * m_h * 3];
-	enc_frame.rows = new unsigned char*[m_h];
-	for (int i = 0; i < m_h; i++) {
-                enc_frame.rows[i] = enc_frame.RGB + m_w * 3 * i;
-	}
-
 
 /*
  * 12 * 1920 = 23040
  * This is the chunk of audio that will be written between 12 Frames
  */
+	LazyFrame* enc_frame;
 	int64_t position = 0;
 	int64_t frame_length = 35280000 / m_fps.timescale * m_fps.frame_duration;
 	bool run = true;
@@ -158,9 +148,9 @@ void Renderer::go( IProgressListener* l )
 		p_timeline->sampleseek( 0, m_fps.audio_frames_per_chunk );
 		m_writer->encodeAudioFrame( abuffer, res );
 		for ( int i = 0; i < m_fps.video_frames_per_chunk; i++ ) {
-			p_timeline->getBlendedFrame( position, &enc_frame );
+			enc_frame = p_timeline->getBlendedFrame( position );
 			position += frame_length;
-			m_writer->encodeVideoFrame( &enc_frame );
+			m_writer->encodeVideoFrame( enc_frame );
 			current_frame++;
 			if ( l ) {
 				if ( l->progress( (double)current_frame / length ) ) {
@@ -170,8 +160,6 @@ void Renderer::go( IProgressListener* l )
 			}
 		}
 	} while ( res == m_fps.audio_frames_per_chunk && run );
-	delete [] enc_frame.RGB;
-	delete [] enc_frame.rows;
 	if ( l ) {
 		l->end();
 	}

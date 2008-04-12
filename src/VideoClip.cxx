@@ -39,7 +39,6 @@ VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A,
 	m_trimB = B;
 	m_audioFile = 0;
 	m_videoFile = vf;
-	m_frame = 0;
 	m_lastFrame = -1;
 	m_audioReader = 0;
 	
@@ -117,14 +116,13 @@ void VideoClip::reset()
 	AudioClip::reset();
 	m_lastFrame = -1;
 }
-frame_struct* VideoClip::getRawFrame( int64_t position, int64_t &position_in_file )
+LazyFrame* VideoClip::getRawFrame( int64_t position, int64_t &position_in_file )
 {
 	if ( position < m_position || position > m_position + length() )
 		return NULL;
 	int64_t s_pos = position - m_position + m_trimA;
 	position_in_file = s_pos;
-	m_frame = m_videoFile->getFrame( s_pos );
-	return m_frame;
+	return m_videoFile->getFrame( s_pos );
 }
 int64_t VideoClip::fileLength()
 {

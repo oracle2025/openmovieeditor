@@ -49,8 +49,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	Renderer.cxx\
 	Flmm_Scalebar.cxx\
 	SaveAsDialog.cxx\
-	ImageClip.cxx\
-	ImageClip.H\
 	strlcpy.c\
 	strlcpy.h\
 	FilmStrip.H\
@@ -63,7 +61,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	Renderer.H\
 	VideoFileQT.H\
 	AudioFileQT.H\
-	frame_struct.h\
 	IVideoWriter.H\
 	Ruler.H\
 	VideoTrack.H\
@@ -96,8 +93,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	render_helper.H\
 	ImageClipArtist.H\
 	ImageClipArtist.cxx\
-	VideoFileFfmpeg.cxx\
-	VideoFileFfmpeg.H\
 	VideoFileFactory.cxx\
 	VideoFileFactory.H\
 	VideoFileMpeg3.cxx\
@@ -161,17 +156,9 @@ openmovieeditor_SOURCES = nle.cxx\
 	DummyClip.cxx\
 	DummyClipArtist.H\
 	DummyClipArtist.cxx\
-	Frei0rFactoryPlugin.cxx\
-	Frei0rFactoryPlugin.H\
-	Frei0rEffect.cxx\
-	Frei0rEffect.H\
-	Frei0rDialog.H\
-	Frei0rDialog.cxx\
 	IEffectMenu.H\
 	FltkEffectMenu.H\
 	FltkEffectMenu.cxx\
-	Frei0rFactory.cxx\
-	Frei0rFactory.H\
 	VideoEffectClip.cxx\
 	VideoEffectClip.H\
 	IVideoEffect.H\
@@ -199,16 +186,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	CurveEditor2.H\
 	ColorCurveDialog.cxx\
 	ColorCurveDialog.H\
-	LiftGammaGainFilter.H\
-	LiftGammaGainFilter.cxx\
-	LiftGammaGainFactory.H\
-	LiftGammaGainFactory.cxx\
-	LiftGammaGainDialog.H\
-	LiftGammaGainDialog.cxx\
-	LiftGammaGainWidget.H\
-	LiftGammaGainWidget.cxx\
-	ColorGrader2.h\
-	ColorGrader2.cxx\
 	FilterBase.H\
 	FilterFactory.H\
 	AudioFilter.H\
@@ -235,47 +212,11 @@ openmovieeditor_SOURCES = nle.cxx\
 	VideoWriterQT.cxx\
 	EncodingPreset.H\
 	EncodingPreset.cxx\
-	InkscapeClip.cxx\
-	InkscapeClip.H\
-	NodeFilterFactory.H\
-	NodeFilterFactory.cxx\
-	NodeFilter.H\
-	NodeFilter.cxx\
-	NodeFilterDialog.H\
-	NodeFilterDialog.cxx\
-	Frei0rGraphEditor.cxx\
-	Frei0rGraphEditor.H\
-	NodeFilterFrei0rFactory.H\
-	NodeFilterFrei0rFactory.cxx\
-	NodeFilterFrei0rFactoryPlugin.H\
-	NodeFilterFrei0rFactoryPlugin.cxx\
-	SinkNode.H\
-	SinkNode.cxx\
-	SrcNode.H\
-	SrcNode.cxx\
-	Frei0rNode.H\
-	Frei0rNode.cxx\
-	INode.H\
-	Frei0rDoubleSlider.H\
-	Frei0rDoubleSlider.cxx\
-	Frei0rColorButton.H\
-	Frei0rColorButton.cxx\
-	Frei0rBoolButton.H\
-	Frei0rBoolButton.cxx\
 	AutoTrack.H\
 	AutoTrack.cxx\
 	AutoDragHandler.H\
 	AutoDragHandler.cxx\
   lqt_bitrate_params.h\
-  INodeFilterFactoryPlugin.H\
-  NodeFilterBezierCurveFactoryPlugin.H\
-  NodeFilterBezierCurveFactoryPlugin.cxx\
-  BezierCurveNode.H\
-  BezierCurveNode.cxx\
-  CurveEditorBezier.H\
-  CurveEditorBezier.cxx\
-	ColorWheel.H\
-	ColorWheel.cxx\
   XmlClipData.H\
   XmlClipData.cxx\
   color_schemes.cxx\
@@ -284,10 +225,73 @@ openmovieeditor_SOURCES = nle.cxx\
   AudioThreadedRingbuffer.cxx\
   EffectStackBrowser.H\
   EffectStackBrowser.cxx\
-  PreviewNode.cxx\
-  PreviewNode.H\
-  NodeFilterPreviewFactoryPlugin.H\
-  NodeFilterPreviewFactoryPlugin.cxx
+	lqtgavl.h\
+	lqtgavl.c\
+	ColorGrader2.h\
+	ColorGrader2.cxx\
+	LazyFrame.H\
+	LazyFrame.cxx
+#	ImageClip.cxx\
+#	ImageClip.H\
+#  PreviewNode.cxx\
+#  PreviewNode.H\
+#  NodeFilterPreviewFactoryPlugin.H\
+#  NodeFilterPreviewFactoryPlugin.cxx\
+#	VideoFileFfmpeg.cxx\
+#	VideoFileFfmpeg.H\
+#	Frei0rFactoryPlugin.cxx\
+#	Frei0rFactoryPlugin.H\
+#	Frei0rEffect.cxx\
+#	Frei0rEffect.H\
+#	Frei0rDialog.H\
+#	Frei0rDialog.cxx\
+#	Frei0rFactory.cxx\
+#	Frei0rFactory.H\
+#	LiftGammaGainFilter.H\
+#	LiftGammaGainFilter.cxx\
+#	LiftGammaGainFactory.H\
+#	LiftGammaGainFactory.cxx\
+#	LiftGammaGainDialog.H\
+#	LiftGammaGainDialog.cxx\
+#	LiftGammaGainWidget.H\
+#	LiftGammaGainWidget.cxx\
+#	InkscapeClip.cxx\
+#	InkscapeClip.H\
+#	NodeFilterFactory.H\
+#	NodeFilterFactory.cxx\
+#	NodeFilter.H\
+#	NodeFilter.cxx\
+#	NodeFilterDialog.H\
+#	NodeFilterDialog.cxx\
+#	Frei0rGraphEditor.cxx\
+#	Frei0rGraphEditor.H\
+#	NodeFilterFrei0rFactory.H\
+#	NodeFilterFrei0rFactory.cxx\
+#	NodeFilterFrei0rFactoryPlugin.H\
+#	NodeFilterFrei0rFactoryPlugin.cxx\
+#	SinkNode.H\
+#	SinkNode.cxx\
+#	SrcNode.H\
+#	SrcNode.cxx\
+#	Frei0rNode.H\
+#	Frei0rNode.cxx\
+#	INode.H\
+#	Frei0rDoubleSlider.H\
+#	Frei0rDoubleSlider.cxx\
+#	Frei0rColorButton.H\
+#	Frei0rColorButton.cxx\
+#	Frei0rBoolButton.H\
+#	Frei0rBoolButton.cxx\
+#  INodeFilterFactoryPlugin.H\
+#  NodeFilterBezierCurveFactoryPlugin.H\
+#  NodeFilterBezierCurveFactoryPlugin.cxx\
+#  BezierCurveNode.H\
+#  BezierCurveNode.cxx\
+#  CurveEditorBezier.H\
+#  CurveEditorBezier.cxx\
+#	ColorWheel.H\
+#	ColorWheel.cxx\
+#	
 	
 
 
@@ -304,5 +308,6 @@ openmovieeditor_SOURCES = nle.cxx\
 #	EnvelopeClip.H
 #	CurveViewRGB.cxx\
 #	CurveViewRGB.H
+
 
 

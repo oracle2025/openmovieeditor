@@ -21,15 +21,17 @@
 #define _TIMELINE_H_
 
 #include <stdint.h>
+#include <gavl/gavl.h>
 
 #include "timeline/TimelineBase.H"
-#include "frame_struct.h"
 #include "video_format.H"
 #include "IAudioReader.H"
 #include "IVideoReader.H"
 
 namespace nle
 {
+
+class LazyFrame;
 
 typedef enum {
 	PB_FPS_NONE = 0,
@@ -51,14 +53,14 @@ class Timeline : public TimelineBase, public IAudioReader, public IVideoReader
 		int64_t m_playPosition;
 		int64_t m_samplePosition;
 		int64_t m_seekPosition;
-		frame_struct* nextFrame( int64_t position = -1 );
-		frame_struct* getFrame( int64_t position );
-		void getBlendedFrame( frame_struct* dst );
-		void getBlendedFrame( int64_t position, frame_struct* dst );
+		LazyFrame* nextFrame( int64_t position = -1 );
+		LazyFrame* getFrame( int64_t position );
+		LazyFrame* getBlendedFrame();
+		LazyFrame* getBlendedFrame( int64_t position );
 		void prepareFormat( video_format* fmt );
 		void unPrepareFormat();
-		frame_struct** getFormattedFrameStack( int64_t position );
-		frame_struct** getFrameStack( int64_t position );
+		LazyFrame** getFormattedFrameStack( int64_t position );
+		LazyFrame** getFrameStack( int64_t position );
 		int fillBuffer( float* output, unsigned long frames );
 		inline void seek( int64_t position ) { m_seekPosition = position; }
 		inline void sampleseek( int mode, int64_t position )
@@ -85,6 +87,10 @@ class Timeline : public TimelineBase, public IAudioReader, public IVideoReader
 		bool m_changed;
 		int m_trackId;
 		bool m_render_mode;
+
+		gavl_video_frame_t* m_blended_gavl_frame;
+		LazyFrame*          m_blended_lazy_frame;
+		
 };
 
 extern Timeline* g_timeline;

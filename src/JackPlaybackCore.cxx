@@ -382,7 +382,7 @@ void JackPlaybackCore::flipFrame()
 	if ( jack_client ) {
 		m_currentFrame = jack_poll_frame();
 	}
-	static frame_struct** fs = 0;
+	static LazyFrame** fs = 0;
 	if ( fs ) {
 		m_videoWriter->pushFrameStack( fs );
 	}

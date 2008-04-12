@@ -36,68 +36,6 @@ void ColorGrader2::cb_bypass_check_i(Fl_Check_Button*, void*) {
 void ColorGrader2::cb_bypass_check(Fl_Check_Button* o, void* v) {
   ((ColorGrader2*)(o->parent()))->cb_bypass_check_i(o,v);
 }
-
-void ColorGrader2::cb_color_wheel_1_i(ColorWheel*, void*) {
-  int x1, y1, x2, y2;
-int r = color_wheel_1->m_r;
-int g = color_wheel_1->m_g;
-int b = color_wheel_1->m_b;
-
-editor_red->get( x1, y1, x2, y2 );
-x2 = g;
-y2 = 255 - r;
-editor_red->set( x1, y1, x2, y2 );
-
-editor_green->set( 0, 255, 255, 0 );
-
-editor_blue->get( x1, y1, x2, y2 );
-y2 = 255 - b;
-x2 = g;
-editor_blue->set( x1, y1, x2, y2 );
-
-
-editor_red->calculate_values();
-editor_green->calculate_values();
-editor_blue->calculate_values();
-editor_red->redraw();
-editor_green->redraw();
-editor_blue->redraw();
-m_dialog->read_values();
-}
-void ColorGrader2::cb_color_wheel_1(ColorWheel* o, void* v) {
-  ((ColorGrader2*)(o->parent()))->cb_color_wheel_1_i(o,v);
-}
-
-void ColorGrader2::cb_color_wheel_2_i(ColorWheel*, void*) {
-  int x1, y1, x2, y2;
-int r = color_wheel_2->m_r;
-int g = color_wheel_2->m_g;
-int b = color_wheel_2->m_b;
-
-editor_red->get( x1, y1, x2, y2 );
-x1 = 255 - r;
-y1 = g;
-editor_red->set( x1, y1, x2, y2 );
-
-editor_green->set( 0, 255, 255, 0 );
-
-editor_blue->get( x1, y1, x2, y2 );
-y1 = g;
-x1 = 255 - b;
-editor_blue->set( x1, y1, x2, y2 );
-
-
-editor_red->calculate_values();
-editor_green->calculate_values();
-editor_blue->calculate_values();
-editor_red->redraw();
-editor_green->redraw();
-editor_blue->redraw();
-m_dialog->read_values();
-}
-void ColorGrader2::cb_color_wheel_2(ColorWheel* o, void* v) {
-  ((ColorGrader2*)(o->parent()))->cb_color_wheel_2_i(o,v);
-}
 ColorGrader2::ColorGrader2(int X, int Y, int W, int H, const char *L)
   : Fl_Group(X, Y, W, H, L) {
   ColorGrader2 *o = this;
@@ -153,32 +91,6 @@ o->align(FL_ALIGN_TOP_LEFT);
 { Fl_Check_Button* o = bypass_check = new Fl_Check_Button(5, 170, 85, 25, "Bypass");
   o->down_box(FL_DOWN_BOX);
   o->callback((Fl_Callback*)cb_bypass_check);
-}
-{ ColorWheel* o = color_wheel_1 = new ColorWheel(100, 170, 145, 145);
-  o->box(FL_DOWN_BOX);
-  o->color(FL_BACKGROUND_COLOR);
-  o->selection_color(FL_BACKGROUND_COLOR);
-  o->labeltype(FL_NORMAL_LABEL);
-  o->labelfont(0);
-  o->labelsize(14);
-  o->labelcolor(FL_FOREGROUND_COLOR);
-  o->callback((Fl_Callback*)cb_color_wheel_1);
-  o->align(FL_ALIGN_CENTER);
-  o->when(FL_WHEN_RELEASE);
-  o->hide();
-}
-{ ColorWheel* o = color_wheel_2 = new ColorWheel(345, 170, 145, 145);
-  o->box(FL_DOWN_BOX);
-  o->color(FL_BACKGROUND_COLOR);
-  o->selection_color(FL_BACKGROUND_COLOR);
-  o->labeltype(FL_NORMAL_LABEL);
-  o->labelfont(0);
-  o->labelsize(14);
-  o->labelcolor(FL_FOREGROUND_COLOR);
-  o->callback((Fl_Callback*)cb_color_wheel_2);
-  o->align(FL_ALIGN_CENTER);
-  o->when(FL_WHEN_RELEASE);
-  o->hide();
 }
 end();
 }

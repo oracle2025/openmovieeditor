@@ -63,7 +63,7 @@
 #include "AutoTrack.H"
 #include "AutoDragHandler.H"
 #include "VideoFileQT.H"
-#include "VideoFileFfmpeg.H"
+//#include "VideoFileFfmpeg.H"
 #include "VideoFileMpeg3.H"
 #include "XmlClipData.H"
 
@@ -1036,9 +1036,9 @@ void TimelineView::updateEffectDisplay()
 			decoder = "libquicktime";
 		} 
 #ifdef AVCODEC
-		else if ( dynamic_cast<VideoFileFfmpeg*>(vidclip->file()) ) {
+	/*	else if ( dynamic_cast<VideoFileFfmpeg*>(vidclip->file()) ) {
 			decoder = "ffmpeg";
-		}
+		}*/
 #endif /* AVCODEC */
 #ifdef LIBMPEG3
 		 else if ( dynamic_cast<VideoFileMpeg3*>(vidclip->file()) ) {

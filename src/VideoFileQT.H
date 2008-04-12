@@ -1,6 +1,6 @@
 /*  VideoFileQT.H
  *
- *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2005-2008 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,13 +21,15 @@
 #define _VIDEO_FILE_QT_H
 
 #include <lqt.h>
+#include <gavl/gavl.h>
 
 #include "global_includes.H"
 #include "IVideoFile.H"
-#include "frame_struct.h"
 
 namespace nle
 {
+
+class LazyFrame;
 
 class VideoFileQT : public IVideoFile
 {
@@ -36,8 +38,7 @@ class VideoFileQT : public IVideoFile
 		~VideoFileQT();
 		bool ok();
 		int64_t length();
-//		double fps();
-		frame_struct* read();
+		LazyFrame* read();
 		void read( unsigned char** rows, int w, int h );
 		void seek( int64_t position );
 	protected:
@@ -45,11 +46,12 @@ class VideoFileQT : public IVideoFile
 		void seekToFrame( int64_t frame );
 	private:
 		quicktime_t* m_qt;
-		unsigned char *m_frame;
-		unsigned char **m_rows;
-		frame_struct m_framestruct;
+		gavl_video_frame_t *m_frame;
+		uint8_t **m_rows;
 		bool m_ok;
 		int64_t m_ticksPerFrame;
+		LazyFrame* m_lazy_frame;
+		gavl_video_format_t m_video_format;
 };
 
 } /* namespace nle */

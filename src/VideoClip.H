@@ -24,7 +24,6 @@
 
 #include "global_includes.H"
 #include "AudioClip.H"
-#include "frame_struct.h"
 #include "VideoEffectClip.H"
 #include "timeline/Track.H"
 namespace nle
@@ -32,6 +31,7 @@ namespace nle
 class IVideoFile;
 class FilmStrip;
 class IClipArtist;
+class LazyFrame;
 class VideoClip : public AudioClip, public VideoEffectClip
 {
 	public:
@@ -39,7 +39,7 @@ class VideoClip : public AudioClip, public VideoEffectClip
 		~VideoClip();
 		int64_t length();
 		void reset();
-		frame_struct* getRawFrame( int64_t position, int64_t &position_in_file );
+		LazyFrame* getRawFrame( int64_t position, int64_t &position_in_file );
 		inline FilmStrip* getFilmStrip() { return m_filmStrip; }
 		string filename();
 		inline IVideoFile* file() { return m_videoFile; }
@@ -63,8 +63,6 @@ class VideoClip : public AudioClip, public VideoEffectClip
 	private:
 		IVideoFile* m_videoFile;
 		FilmStrip* m_filmStrip;
-		frame_struct m_previewFrame;
-		frame_struct* m_frame;
 		int64_t m_lastFrame;
 
 		int64_t m_audioPosition;

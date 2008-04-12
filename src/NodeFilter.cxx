@@ -50,15 +50,18 @@ NodeFilter::NodeFilter( int w, int h )
 	m_src_node = C->node;
 	m_src_node->node->outputs[0] = m_sink_node->node;
 	m_sink_node->node->inputs[0] = m_src_node->node;
-	m_frame_cache = 0;
-	m_frame = new unsigned char[w * h * 4];
-	init_frame_struct( &m_framestruct, w, h );
-	m_framestruct.RGB = m_frame;
-	m_framestruct.has_alpha_channel = true;
-	m_framestruct.cacheable = false;
+
+	m_lazy_frame = new LazyFrame( w, h );
+	m_frame = gavl_video_frame_create( m_lazy_frame->format() );
 }
 NodeFilter::~NodeFilter()
 {
+	if ( m_lazy_frame ) {
+		delete m_lazy_frame;
+	}
+	if ( m_frame ) {
+		gavl_video_frame_destroy( m_frame );
+	}
 	if ( m_dialog ) {
 		delete m_dialog;
 	}
@@ -226,11 +229,10 @@ const char* NodeFilter::name()
 {
 	return "Node Compositor";
 }
-frame_struct* NodeFilter::getFrame( frame_struct* frame, int64_t position )
+LazyFrame* NodeFilter::getFrame( LazyFrame* frame, int64_t position )
 {
 	copy_frame_struct_props( frame, &m_framestruct );
 	if ( frame->has_alpha_channel ) {
-		m_frame_cache = (uint32_t*)frame->RGB;
 		m_framestruct.RGB = (unsigned char*)m_sink_node->getFrame( 0, position / (double)NLE_TIME_BASE );
 	} else {
 		int len = frame->w * frame->h * 3;
@@ -246,7 +248,6 @@ frame_struct* NodeFilter::getFrame( frame_struct* frame, int64_t position )
 			dst += 4;
 			src += 3;
 		}
-		m_frame_cache = (uint32_t*)m_frame;
 		m_framestruct.RGB = (unsigned char*)m_sink_node->getFrame( 0, position / (double)NLE_TIME_BASE );
 	}
 	for ( filters* filter_node = m_filters; filter_node; filter_node = filter_node->next ) {

@@ -19,6 +19,7 @@
 
 #include "VideoWriterQT.H"
 #include <cassert>
+#include "LazyFrame.H"
 
 namespace nle
 {
@@ -27,14 +28,32 @@ VideoWriterQT::VideoWriterQT( quicktime_t *qt, video_format &format )
 	m_qt = qt;
 	m_format = format;
 	m_samplerate = quicktime_sample_rate( m_qt, 0 );
+	m_rows  = new unsigned char*[m_format.h];
 }
 VideoWriterQT::~VideoWriterQT()
 {
 	quicktime_close( m_qt );
 }
-void VideoWriterQT::encodeVideoFrame( frame_struct* frame )
+void VideoWriterQT::encodeVideoFrame( LazyFrame* frame )
 {
-	quicktime_encode_video( m_qt, frame->rows, 0 );
+	gavl_video_format_t gavl_format;
+	gavl_format.frame_width  = m_format.w;
+	gavl_format.frame_height = m_format.h;
+	gavl_format.image_width  = m_format.w;
+	gavl_format.image_height = m_format.h;
+	gavl_format.pixel_width = 1;
+	gavl_format.pixel_height = 1;
+	gavl_format.pixelformat = GAVL_RGB_24;
+	gavl_format.interlace_mode = GAVL_INTERLACE_NONE;
+	frame->set_target( &gavl_format );
+
+	gavl_video_frame_t* gavl_frame = frame->target();
+
+	for ( int j = 0; j < m_format.h; j++ ) {
+		m_rows[j] = ((unsigned char*)(gavl_frame->planes[0])) + m_format.w * 3 * j;
+	}
+
+	quicktime_encode_video( m_qt, m_rows, 0 );
 }
 void VideoWriterQT::encodeAudioFrame( float* buffer, int frames )
 {

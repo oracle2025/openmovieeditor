@@ -27,6 +27,7 @@
 #include "globals.H"
 #include "nle.h"
 #include "timeline/Track.H"
+#include "LazyFrame.H"
 
 namespace nle
 {
@@ -65,8 +66,10 @@ TitleClip::TitleClip( Track* track, int64_t position, int64_t length, int id, Cl
 	} else {
 		m_length = NLE_TIME_BASE * 10;
 	}
-	init_frame_struct( &m_frame, 768, 576 );
-	m_frame.has_alpha_channel = true;
+	m_lazy_frame = new LazyFrame( 768, 576 );
+	m_gavl_frame = gavl_video_frame_create( 0 );
+	m_lazy_frame->put_data( m_gavl_frame );
+	m_gavl_frame->strides[0] = 576 * 4;
 	m_pixels = new unsigned char[ 768*576*4 ];
 	m_alpha = new unsigned char[ 768*576*3 ];
 	m_ok = true;
@@ -172,7 +175,7 @@ void TitleClip::init()
 	}
 	//free(pixels);
 	char** d = (char**)m_image->data();
-	m_frame.RGB = (unsigned char *)d[0];
+	m_gavl_frame->planes[0] = (unsigned char *)d[0];
 	if ( !m_render_mode ) {
 		if ( m_artist ) {
 			ImageClipArtist* ica = dynamic_cast<ImageClipArtist*>(m_artist);
@@ -183,7 +186,6 @@ void TitleClip::init()
 		}
 	}
 	delete [] text;
-	m_frame.dirty = true;
 }
 
 TitleClip::~TitleClip()
@@ -206,7 +208,7 @@ int64_t TitleClip::length()
 	return m_length;
 }
 
-frame_struct* TitleClip::getRawFrame( int64_t position, int64_t &position_in_file )
+LazyFrame* TitleClip::getRawFrame( int64_t position, int64_t &position_in_file )
 {
 	if ( !m_image || m_dirty ) {
 		init();
@@ -214,10 +216,9 @@ frame_struct* TitleClip::getRawFrame( int64_t position, int64_t &position_in_fil
 	if ( !m_image ) {
 		return 0;
 	}
-	m_frame.alpha = 1.0;
 	position_in_file = position - m_position;
 	if ( position >= m_position && position <= m_position + m_length ) {
-		return &m_frame;
+		return m_lazy_frame;
 	} else {
 		return 0;
 	}

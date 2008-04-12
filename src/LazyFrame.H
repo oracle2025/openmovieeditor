@@ -1,6 +1,6 @@
 /*  LazyFrame.H
  *
- *  Copyright (C) 2007 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2008 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,13 +28,16 @@ conversion possible
 
 */
 
+#include <gavl/gavl.h>
+
 namespace nle
 {
 
 class LazyFrame
 {
 	public:
-		LazyFrame();
+		LazyFrame( gavl_video_format_t *format );
+		LazyFrame( int w, int h );
 		~LazyFrame();
 		gavl_video_frame_t* RGBA();
 		gavl_video_frame_t* native();
@@ -44,10 +47,16 @@ class LazyFrame
 		//compressed(); //for DV direct Rendering
 		float alpha();
 		void alpha( float value );
+		void put_data( gavl_video_frame_t* frame );
 	private:
 		float m_alpha;
 		gavl_video_converter_t *m_converter_RGBA;
 		gavl_video_converter_t *m_converter_target;
+		gavl_video_frame_t* m_frame;
+		gavl_video_frame_t* m_rgba_frame;
+		gavl_video_frame_t* m_target_frame;
+		gavl_video_format_t m_src_format;
+		gavl_video_format_t m_target_format;
 };
 
 } /* namespace nle */

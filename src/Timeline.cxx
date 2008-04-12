@@ -34,11 +34,9 @@
 #include "globals.H"
 #include "config.h"
 
-#include "ImageClip.H"
 #include "DummyClip.H"
 #include "VideoFileFactory.H"
 #include "TitleClip.H"
-#include "InkscapeClip.H"
 #include "MainFilterFactory.H"
 #include "FilterBase.H"
 #include "AudioFileFactory.H"
@@ -53,6 +51,7 @@
 #include "Frei0rFactory.H"
 #include "AudioVolumeFilter.H"
 #include "AudioVolumeFilterFactory.H"
+#include "LazyFrame.H"
 namespace nle
 {
 
@@ -83,11 +82,22 @@ Timeline::Timeline()
 	m_soundLength = 0;
 	m_changed = false;
 	m_playback_fps = PB_FPS_NONE;
+
+	m_blended_gavl_frame = 0;
+	m_blended_lazy_frame = 0;
 }
 
 Timeline::~Timeline()
 {
 	g_timeline = NULL;
+	if ( m_blended_gavl_frame ) {
+		gavl_video_frame_destroy( m_blended_gavl_frame );
+		m_blended_gavl_frame = 0;
+	}
+	if ( m_blended_lazy_frame ) {
+		delete m_blended_lazy_frame;
+		m_blended_lazy_frame = 0;
+	}
 }
 int Timeline::getTrackId() { return m_trackId++; }
 void reset_helper( Track* track ) { track->sort(); }
@@ -132,14 +142,14 @@ void Timeline::sort()
 		m_soundLength = video_max > audio_max ? video_max : audio_max;
 	}
 }
-frame_struct* Timeline::getFrame( int64_t position )
+LazyFrame* Timeline::getFrame( int64_t position )
 {
 	return nextFrame( position );
 }
-frame_struct* Timeline::nextFrame( int64_t position ) //only used from VideoViewGL
+LazyFrame* Timeline::nextFrame( int64_t position ) //only used from VideoViewGL
 {
 	static int64_t last_frame = -1;
-	frame_struct* res = NULL;
+	LazyFrame* res = NULL;
 	if ( position < 0 || last_frame < 0 || last_frame + 1200 == position ) {
 		m_playPosition += 1200;
 	} else {
@@ -157,9 +167,9 @@ frame_struct* Timeline::nextFrame( int64_t position ) //only used from VideoView
 	}
 	return res;
 }
-frame_struct** Timeline::getFormattedFrameStack( int64_t position )
+LazyFrame** Timeline::getFormattedFrameStack( int64_t position )
 {
-	static frame_struct* frameStack[8]; //At most 8 Frames, ought to be enough for everyone ;)
+	static LazyFrame* frameStack[8]; //At most 8 Frames, ought to be enough for everyone ;)
 	int cnt = 0;
 
 	if ( position < 0 ) {
@@ -174,7 +184,7 @@ frame_struct** Timeline::getFormattedFrameStack( int64_t position )
 		if ( !current ) {
 			continue;
 		}
-		frame_struct** fs = current->getFormattedFrameStack( position );
+		LazyFrame** fs = current->getFormattedFrameStack( position );
 		
 		for ( int i = 0; fs[i] && cnt <=7 ; i++ ) {
 			frameStack[cnt] = fs[i];
@@ -187,9 +197,9 @@ frame_struct** Timeline::getFormattedFrameStack( int64_t position )
 	frameStack[cnt] = 0;
 	return frameStack;
 }
-frame_struct** Timeline::getFrameStack( int64_t position )
+LazyFrame** Timeline::getFrameStack( int64_t position )
 {
-	static frame_struct* frameStack[8]; //At most 8 Frames, ought to be enough for everyone ;)
+	static LazyFrame* frameStack[8]; //At most 8 Frames, ought to be enough for everyone ;)
 	int cnt = 0;
 
 	if ( position < 0 ) {
@@ -204,7 +214,7 @@ frame_struct** Timeline::getFrameStack( int64_t position )
 		if ( !current ) {
 			continue;
 		}
-		frame_struct** fs = current->getFrameStack( position );
+		LazyFrame** fs = current->getFrameStack( position );
 		
 		for ( int i = 0; fs[i] && cnt <=7 ; i++ ) {
 			frameStack[cnt] = fs[i];
@@ -265,68 +275,50 @@ int Timeline::fillBuffer( float* output, unsigned long frames )
 
 	return max_frames;
 }
-void Timeline::getBlendedFrame( frame_struct* dst )
+LazyFrame* Timeline::getBlendedFrame()
 {
-	getBlendedFrame( -1, dst );
+	return getBlendedFrame( -1 );
 }
-void Timeline::getBlendedFrame( int64_t position, frame_struct* dst )
+LazyFrame* Timeline::getBlendedFrame( int64_t position )
 {
-	frame_struct** fs = getFormattedFrameStack( position );
-	frame_struct tmp_frame;
-	tmp_frame.x = tmp_frame.y = 0;
-	tmp_frame.w = dst->w;
-	tmp_frame.h = dst->h;
-	tmp_frame.RGB = new unsigned char[dst->w * dst->h * 4];
-	memset( tmp_frame.RGB, 0, dst->w * dst->h * 4 );
-	memset( dst->RGB, 0, dst->w * dst->h * 3 );
-	
+	LazyFrame** fs = getFormattedFrameStack( position );
+	int len = m_blended_lazy_frame->format()->frame_width * m_blended_lazy_frame->format()->frame_height;
+	unsigned char* dst_buffer = m_blended_gavl_frame->planes[0];
+	gavl_video_frame_clear( m_blended_gavl_frame, m_blended_lazy_frame->format() );
 
 	int start = 0;
 	int stop = 0;
 	
 	for ( int i = 0; fs[i]; i++ ) {
-		if ( fs[i]->has_alpha_channel || fs[i]->alpha < 1.0 ) {
-			start = i + 1;
-		} else {
-			break;
-		}
+		start = i + 1;
 	}
 	if ( !fs[start] ) {
 		start--;
 		if ( start >= 0 ) {
-			int len = fs[start]->w * fs[start]->h * 4;
 			unsigned char *src, *dest, *end;
-			src = fs[start]->RGB;
-			dest = dst->RGB;
-			end = fs[start]->RGB + len;
+			src = fs[start]->RGBA()->planes[0];
+			dest = dst_buffer;
+			end = fs[start]->RGBA()->planes[0] + ( len * 4 );
 			while ( src < end ) {
 				dest[0] = src[0];
 				dest[1] = src[1];
 				dest[2] = src[2];
-				dest += 3;
+				dest += 4;
 				src += 4;
 			}
-		}
-	} else {
-		memcpy( dst->RGB, fs[start]->RGB, dst->w * dst->h * 3 );
-		if ( fs[start]->has_alpha_channel || fs[start]->alpha < 1.0 ) {
-			cout << "NO ALPHA CHANNEL FOR start" << endl;
 		}
 	}
 	start--;
 	for ( int i = start; i >= stop; i-- ) {
-		if ( fs[i]->has_alpha_channel ) {
-			blend_alpha( dst->RGB, dst->RGB, fs[i]->RGB, fs[i]->alpha, dst->w * dst->h );
-			continue;
-		}
-		blend( dst->RGB, fs[i]->RGB, dst->RGB, fs[i]->alpha, dst->w * dst->h );
+		blend_alpha2( dst_buffer, dst_buffer, fs[i]->RGBA()->planes[0], fs[i]->alpha(), len );
 	}
+
+	return m_blended_lazy_frame;
 	
 	// 0: ganz oben
 	// 1: 
 	// 2: ganz unten, zuerst blitten
 
-	delete tmp_frame.RGB;
 }
 void Timeline::prepareFormat( video_format* fmt )
 {
@@ -337,7 +329,9 @@ void Timeline::prepareFormat( video_format* fmt )
 		}
 		current->prepareFormat( fmt );
 	}
-
+	m_blended_lazy_frame = new LazyFrame( fmt->w, fmt->h );
+	m_blended_gavl_frame = gavl_video_frame_create( m_blended_lazy_frame->format() );
+	m_blended_lazy_frame->put_data( m_blended_gavl_frame );
 }
 void Timeline::unPrepareFormat()
 {
@@ -347,6 +341,14 @@ void Timeline::unPrepareFormat()
 			continue;
 		}
 		current->unPrepareFormat();
+	}
+	if ( m_blended_gavl_frame ) {
+		gavl_video_frame_destroy( m_blended_gavl_frame );
+		m_blended_gavl_frame = 0;
+	}
+	if ( m_blended_lazy_frame ) {
+		delete m_blended_lazy_frame;
+		m_blended_lazy_frame = 0;
 	}
 }
 void Timeline::clear()
@@ -460,9 +462,9 @@ int Timeline::write( string filename, string name )
 					clip->SetAttribute( "font", tc->font() );
 					clip->SetAttribute( "color", tc->color() );
 				}
-				if ( InkscapeClip* inc = dynamic_cast<InkscapeClip*>(cn->clip) ) {
+				/*if ( InkscapeClip* inc = dynamic_cast<InkscapeClip*>(cn->clip) ) {
 					clip->SetAttribute( "unique_id", inc->UniqueId() );
-				}
+				}*/
 			}
 			cn = cn->next;
 		}
@@ -584,7 +586,7 @@ int Timeline::read( string filename )
 					}
 				}
 				this->addClip( trackId, c );
-			} else if ( strcmp( ext, ".svg" ) == 0 ||strcmp( ext, ".SVG" ) == 0 ) {
+			} /*else if ( strcmp( ext, ".svg" ) == 0 ||strcmp( ext, ".SVG" ) == 0 ) {
 				InkscapeClip* c = new InkscapeClip( tr, position, length - trimA - trimB, -1, j );
 				TiXmlElement* effectXml = TiXmlHandle( j ).FirstChildElement( "filter" ).Element();
 				for( ; effectXml; effectXml = effectXml->NextSiblingElement( "filter" ) ) {
@@ -596,7 +598,7 @@ int Timeline::read( string filename )
 					}
 				}
 				this->addClip( trackId, c );
-			}else {
+			}*/else {
 				IVideoFile* vf = VideoFileFactory::get( filename );
 				if ( vf ) {
 					VideoClip* c = new VideoClip( tr, position, vf, trimA, trimB, -1 );
@@ -611,7 +613,7 @@ int Timeline::read( string filename )
 						}
 					}
 					this->addClip( trackId, c );
-				} else {
+				} /*else {
 					ImageClip* ic = new ImageClip( tr, position, filename, length - trimA - trimB, -1 );
 					if ( !ic->ok() ) {
 						delete ic;
@@ -633,7 +635,7 @@ int Timeline::read( string filename )
 
 						this->addClip( trackId, ic );
 					}
-				}
+				}*/
 			}
 			if ( vec ) {
 				const char* render;
@@ -723,6 +725,7 @@ extern Frei0rFactory* g_frei0rFactory;
 #define CONVERT_TIMEBASE(x) ((int64_t)x)*(NLE_TIME_BASE/25)
 int Timeline::read_20061221_and_earlier( string filename )
 {
+#if 0
 //define NLE_TIME_BASE 35280000
 	TiXmlDocument doc( filename.c_str() );
 	if ( !doc.LoadFile() ) {
@@ -875,7 +878,7 @@ int Timeline::read_20061221_and_earlier( string filename )
 					}
 					this->addClip( trackId, c );
 				} else {
-					ImageClip* ic = new ImageClip( tr, CONVERT_TIMEBASE(position), filename, CONVERT_TIMEBASE(length - trimA - trimB), -1 );
+				/*	ImageClip* ic = new ImageClip( tr, CONVERT_TIMEBASE(position), filename, CONVERT_TIMEBASE(length - trimA - trimB), -1 );
 					vec = ic;
 					if ( !ic->ok() ) {
 						delete ic;
@@ -924,7 +927,7 @@ int Timeline::read_20061221_and_earlier( string filename )
 						}
 
 						this->addClip( trackId, ic );
-					}
+					}*/
 				}
 			}
 			if ( vec ) {
@@ -997,6 +1000,7 @@ int Timeline::read_20061221_and_earlier( string filename )
 	g_timelineView->redraw();
 	g_timelineView->adjustScrollbar();
 	return 1;
+#endif
 
 }
 

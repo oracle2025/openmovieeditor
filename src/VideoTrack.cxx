@@ -23,14 +23,13 @@
 
 #include "VideoTrack.H"
 #include "VideoClip.H"
-#include "ImageClip.H"
 #include "ErrorDialog/IErrorHandler.H"
 #include "render_helper.H"
 #include "VideoFileFactory.H"
 #include "globals.H"
 #include "DummyClip.H"
 #include "TitleClip.H"
-#include "InkscapeClip.H"
+#include "LazyFrame.H"
 
 namespace nle
 {
@@ -41,8 +40,6 @@ VideoTrack::VideoTrack( ClipIdProvider* idProvider, int num, string name )
 	m_vidCurrent = 0;
 	m_fade_overs = 0;
 	m_currentAudioFadeOver = 0;
-	m_preparedFrame1.RGB = 0;
-	m_preparedFrame2.RGB = 0;
 	m_idProvider = idProvider;
 }
 VideoTrack::~VideoTrack()
@@ -73,11 +70,11 @@ void VideoTrack::addFile( int64_t position, string filename, int64_t trimA, int6
 		return;
 	}
 	const char* ext = fl_filename_ext( filename.c_str() );
-	if ( strcmp( ext, ".svg" ) == 0 ||strcmp( ext, ".SVG" ) == 0 ) {
+/*	if ( strcmp( ext, ".svg" ) == 0 ||strcmp( ext, ".SVG" ) == 0 ) {
 		InkscapeClip* c = new InkscapeClip( this, position, filename, length - trimA - trimB, id, data );
 		addClip( c );
 		return;
-	}
+	}*/
 	IVideoFile* vf = VideoFileFactory::get( filename );
 	
 	if ( vf ) {
@@ -86,9 +83,9 @@ void VideoTrack::addFile( int64_t position, string filename, int64_t trimA, int6
 		addClip( c );
 		return;
 	} else {
-		ImageClip* ic = new ImageClip( this, position, filename, length - trimA - trimB, id, data );
+	/*	ImageClip* ic = new ImageClip( this, position, filename, length - trimA - trimB, id, data );
 		if ( !ic->ok() ) {
-			delete ic;
+			delete ic;*/
 			if ( length > 0 ) {
 				Clip* c = new DummyClip( this, filename, position, length+trimA+trimB, trimA, trimB );
 				addClip( c );
@@ -96,21 +93,19 @@ void VideoTrack::addFile( int64_t position, string filename, int64_t trimA, int6
 			}
 			SHOW_ERROR( string( "Video file failed to load:\n" ) + fl_filename_name( filename.c_str() ) );
 			return;
-		}
-		addClip( ic );
+		//}
+		//addClip( ic );
 	}
 }
-frame_struct* VideoTrack::getFrame( int64_t position )
+LazyFrame* VideoTrack::getFrame( int64_t position )
 {
-	frame_struct* res = NULL;
+	LazyFrame* res = NULL;
 	if ( g_SEEKING ) {
 		for ( clip_node *p = m_clips; p; p = p->next ) {
 			IVideoReader* current;
 			if ( p->clip->type() == CLIP_TYPE_VIDEO ) {
 				current = dynamic_cast<VideoClip*>(p->clip);
-			} else if ( p->clip->type() == CLIP_TYPE_IMAGE ) {
-				current = dynamic_cast<ImageClip*>(p->clip);
-			} else {
+			}  else {
 				continue;
 			}
 			res = current->getFrame( position );
@@ -125,9 +120,7 @@ frame_struct* VideoTrack::getFrame( int64_t position )
 			IVideoReader* current = 0;
 			if ( m_vidCurrent->clip->type() == CLIP_TYPE_VIDEO ) {
 				current = dynamic_cast<VideoClip*>(m_vidCurrent->clip);
-			} else if ( m_vidCurrent->clip->type() == CLIP_TYPE_IMAGE ) {
-				current = dynamic_cast<ImageClip*>(m_vidCurrent->clip);
-			}
+			} 
 			if ( current ) {
 				res = current->getFrame( position );
 				return res;
@@ -148,9 +141,9 @@ static int find_fade_over_helper( void* p, void* data )
 	int64_t position = *((int64_t*)data);
 	return ( fade_over_start( node ) <= position && fade_over_end( node ) > position );
 }
-frame_struct** VideoTrack::getFrameStack( int64_t position )
+LazyFrame** VideoTrack::getFrameStack( int64_t position )
 {
-	static frame_struct* frameStack[3];
+	static LazyFrame* frameStack[3];
 	frameStack[0] = 0;
 	frameStack[1] = 0;
 	frameStack[2] = 0;
@@ -166,10 +159,14 @@ frame_struct** VideoTrack::getFrameStack( int64_t position )
 		frameStack[0] = A->getFrame( position );
 		frameStack[1] = B->getFrame( position );
 		if ( frameStack[0] && frameStack[1] ) {
-			get_alpha_values( o, frameStack[0]->alpha, frameStack[1]->alpha, position );
-			if ( !frameStack[0]->has_alpha_channel ) {
+			float alpha_a = frameStack[0]->alpha();
+			float alpha_b = frameStack[1]->alpha();
+			get_alpha_values( o, alpha_a, alpha_b, position );
+			frameStack[0]->alpha( alpha_a );
+			frameStack[1]->alpha( alpha_b );
+			/*if ( !frameStack[0]->has_alpha_channel ) {
 				frameStack[1]->alpha = 1.0;
-			}
+			}*/
 		}
 		return frameStack;
 	} else {
@@ -181,7 +178,7 @@ frame_struct** VideoTrack::getFrameStack( int64_t position )
 			}
 			frameStack[0] = current->getFrame( position );
 			if ( frameStack[0] ) {
-				frameStack[0]->alpha = 1.0;
+				frameStack[0]->alpha( 1.0 );
 				return frameStack;
 			}
 		}
@@ -190,22 +187,6 @@ frame_struct** VideoTrack::getFrameStack( int64_t position )
 }
 void VideoTrack::prepareFormat( video_format* fmt )
 {
-	m_preparedFrame1.RGB = new unsigned char[fmt->w * fmt->h * 4];
-	m_preparedFrame2.RGB = new unsigned char[fmt->w * fmt->h * 4];
-	//TODO: anders initialisieren?
-	m_preparedFrame1.x = 0;
-	m_preparedFrame1.y = 0;
-	m_preparedFrame1.w = fmt->w;
-	m_preparedFrame1.h = fmt->h;
-	m_preparedFrame1.alpha = 1.0;
-	m_preparedFrame1.has_alpha_channel = true;
-	m_preparedFrame2.x = 0;
-	m_preparedFrame2.y = 0;
-	m_preparedFrame2.w = fmt->w;
-	m_preparedFrame2.h = fmt->h;
-	m_preparedFrame2.alpha = 1.0;
-	m_preparedFrame2.has_alpha_channel = true;
-
 	for ( clip_node* j = getClips(); j; j = j->next ) {
 		VideoEffectClip* vec = dynamic_cast<VideoEffectClip*>(j->clip);
 		if ( vec ) {
@@ -216,18 +197,10 @@ void VideoTrack::prepareFormat( video_format* fmt )
 }
 void VideoTrack::unPrepareFormat()
 {
-	if ( m_preparedFrame1.RGB ) {
-		delete [] m_preparedFrame1.RGB;
-		m_preparedFrame1.RGB = 0;
-	}
-	if ( m_preparedFrame2.RGB ) {
-		delete [] m_preparedFrame2.RGB;
-		m_preparedFrame2.RGB = 0;
-	}
 }
-frame_struct** VideoTrack::getFormattedFrameStack( int64_t position )
+LazyFrame** VideoTrack::getFormattedFrameStack( int64_t position )
 {
-	static frame_struct* frameStack[3];
+	static LazyFrame* frameStack[3];
 	frameStack[0] = 0;
 	frameStack[1] = 0;
 	frameStack[2] = 0;
@@ -240,13 +213,17 @@ frame_struct** VideoTrack::getFormattedFrameStack( int64_t position )
 		B = dynamic_cast<VideoEffectClip*>(o->clipB);
 		assert( A );
 		assert( B );
-		frameStack[0] = A->getFormattedFrame( &m_preparedFrame1, position );
-		frameStack[1] = B->getFormattedFrame( &m_preparedFrame2, position );
+		frameStack[0] = A->getFormattedFrame( 0, position );
+		frameStack[1] = B->getFormattedFrame( 0, position );
 		if ( frameStack[0] && frameStack[1] ) {
-			get_alpha_values( o, frameStack[0]->alpha, frameStack[1]->alpha, position );
-			if ( !frameStack[0]->has_alpha_channel ) {
+			float alpha_a = frameStack[0]->alpha();
+			float alpha_b = frameStack[1]->alpha();
+			get_alpha_values( o, alpha_a, alpha_b, position );
+			frameStack[0]->alpha( alpha_a );
+			frameStack[1]->alpha( alpha_b );
+			/*if ( !frameStack[0]->has_alpha_channel ) {
 				frameStack[1]->alpha = 1.0;
-			}
+			}*/
 		}
 		return frameStack;
 	} else {
@@ -256,9 +233,9 @@ frame_struct** VideoTrack::getFormattedFrameStack( int64_t position )
 			if ( !current ) {
 				continue;
 			}
-			frameStack[0] = current->getFormattedFrame( &m_preparedFrame1, position );
+			frameStack[0] = current->getFormattedFrame( 0, position );
 			if ( frameStack[0] ) {
-				frameStack[0]->alpha = 1.0;
+				frameStack[0]->alpha( 1.0 );
 				return frameStack;
 			}
 		}

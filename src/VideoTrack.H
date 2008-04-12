@@ -21,7 +21,6 @@
 #define _VIDEO_TRACK_H_
 
 #include "TrackBase.H"
-#include "frame_struct.h"
 #include "global_includes.H"
 #include "timebase.H"
 #include "video_format.H"
@@ -43,6 +42,7 @@ fade_over* create_fade_over( Clip* a, Clip* b );
 void get_alpha_values( fade_over* o, float& a, float& b, int64_t position );
 
 class VideoClip;
+class LazyFrame;
 
 class VideoTrack : public TrackBase
 {
@@ -53,11 +53,11 @@ class VideoTrack : public TrackBase
 		void addFile( int64_t position, string filename, int64_t trimA = 0, int64_t trimB = 0, int mute = 0, int id = -1, int64_t length = -1, ClipData* data = 0 );
 		int type() { return TRACK_TYPE_VIDEO; }
 		float stretchFactor() { return (float)NLE_TIME_BASE; }
-		frame_struct* getFrame( int64_t position );
-		frame_struct** getFrameStack( int64_t position );
+		LazyFrame* getFrame( int64_t position );
+		LazyFrame** getFrameStack( int64_t position );
 		void prepareFormat( video_format* fmt );
 		void unPrepareFormat();
-		frame_struct** getFormattedFrameStack( int64_t position );
+		LazyFrame** getFormattedFrameStack( int64_t position );
 		void sort();
 		void reconsiderFadeOver();
 		void removeClip( Clip* clip );
@@ -71,8 +71,6 @@ class VideoTrack : public TrackBase
 		clip_node* m_vidCurrent;
 		fade_over* m_fade_overs;
 		fade_over* m_currentAudioFadeOver;
-		frame_struct m_preparedFrame1;
-		frame_struct m_preparedFrame2;
 		ClipIdProvider* m_idProvider;
 };
 	

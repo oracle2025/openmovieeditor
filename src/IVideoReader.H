@@ -20,17 +20,17 @@
 #ifndef _I_VIDEO_READER_H_
 #define _I_VIDEO_READER_H_
 
-#include "frame_struct.h"
-
 namespace nle
 {
+
+class LazyFrame;
 
 class IVideoReader
 {
 	public:
 		virtual ~IVideoReader() {}
-		virtual frame_struct* getFrame( int64_t position ) = 0;
-		virtual frame_struct** getFrameStack( int64_t ) { return 0; }
+		virtual LazyFrame* getFrame( int64_t position ) = 0;
+		virtual LazyFrame** getFrameStack( int64_t ) { return 0; }
 };
 
 } /* namespace nle */

@@ -22,23 +22,26 @@
 #include "ColorCurveFilter.H"
 #include "ColorCurveDialog.H"
 #include "helper.H"
+#include "LazyFrame.H"
 
 namespace nle
 {
 
 ColorCurveFilter::ColorCurveFilter( int w, int h )
 {
+	m_w = w;
+	m_h = h;
 	m_frame = new unsigned char[w * h * 4];
-	m_rows = new unsigned char*[h];
-	for (int i = 0; i < h; i++) {
-                m_rows[i] = m_frame + w * 4 * i;
-	}
-	init_frame_struct( &m_framestruct, w, h );
-	m_framestruct.RGB = m_frame;
-	m_framestruct.YUV = 0;
-	m_framestruct.rows = m_rows;
-	m_framestruct.has_alpha_channel = true;
-	m_framestruct.cacheable = false;
+
+	m_lazy_frame = new LazyFrame( w, h );
+
+	m_gavl_frame = gavl_video_frame_create( 0 );
+
+	m_gavl_frame->planes[0] = m_frame;
+	m_gavl_frame->strides[0] = w * 4;
+
+	m_lazy_frame->put_data( m_gavl_frame );
+
 	for ( unsigned int i = 0; i < 256; i++ ) {
 		m_values[i] = i;
 		m_values_r[i] = i;
@@ -58,40 +61,33 @@ ColorCurveFilter::ColorCurveFilter( int w, int h )
 
 ColorCurveFilter::~ColorCurveFilter()
 {
-	delete m_rows;
 	delete m_frame;
 	if ( m_dialog ) {
 		delete m_dialog;
 	}
+	if ( m_lazy_frame ) {
+		delete m_lazy_frame;
+	}
+	if ( m_gavl_frame ) {
+		gavl_video_frame_null( m_gavl_frame );
+		gavl_video_frame_destroy( m_gavl_frame );
+	}
 }
-frame_struct* ColorCurveFilter::getFrame( frame_struct* frame, int64_t )
+LazyFrame* ColorCurveFilter::getFrame( LazyFrame* frame, int64_t )
 {
 	if ( m_bypass ) {
 		return frame;
 	}
-	copy_frame_struct_props( frame, &m_framestruct );
-	unsigned int len = m_framestruct.w * m_framestruct.h;
+	unsigned int len = m_w * m_h;
 	unsigned char* dst = m_frame;
-	unsigned char* src = frame->RGB;
-	if ( frame->has_alpha_channel ) {
-		m_framestruct.has_alpha_channel = true;
-		while (len--)
-		{
-			*dst++ = m_values_r[*src++];
-			*dst++ = m_values_g[*src++];
-			*dst++ = m_values_b[*src++];
-			*dst++ = *src++; // copy alpha
-		}
-	} else {
-		m_framestruct.has_alpha_channel = false;
-		while (len--)
-		{
-			*dst++ = m_values_r[*src++];
-			*dst++ = m_values_g[*src++];
-			*dst++ = m_values_b[*src++];
-		}
+	unsigned char* src = frame->RGBA()->planes[0];
+	while ( len-- ) {
+		*dst++ = m_values_r[*src++];
+		*dst++ = m_values_g[*src++];
+		*dst++ = m_values_b[*src++];
+		*dst++ = *src++; // copy alpha
 	}
-	return &m_framestruct;
+	return m_lazy_frame;
 }
 const char* ColorCurveFilter::name()
 {

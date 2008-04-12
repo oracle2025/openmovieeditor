@@ -36,7 +36,7 @@ class TitleClip : public FilterClip, public VideoEffectClip
 		TitleClip( Track* track, int64_t position, int64_t length = -1, int id = -1, ClipData* data = 0 );
 		~TitleClip();
 		int64_t length();
-		frame_struct* getRawFrame( int64_t position, int64_t &position_in_file );
+		LazyFrame* getRawFrame( int64_t position, int64_t &position_in_file );
 		bool ok() { return m_ok; }
 		string filename() { return "TitleClip"; }
 		void reset() {}
@@ -67,7 +67,8 @@ class TitleClip : public FilterClip, public VideoEffectClip
 		void init();
 		Fl_Image* m_image;
 		int64_t m_length;
-		frame_struct m_frame;
+		gavl_video_frame_t* m_gavl_frame;
+		LazyFrame* m_lazy_frame;
 		bool m_ok;
 		IClipArtist* m_artist;
 		string m_text;

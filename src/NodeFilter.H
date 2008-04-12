@@ -23,6 +23,7 @@
 #include "IVideoEffect.H"
 #include <string>
 #include <stdint.h>
+#include <gavl/gavl.h>
 
 const int MAX_FILTER_OUT = 20;
 const int MAX_FILTER_IN = 20;
@@ -61,18 +62,17 @@ class NodeFilter : public IVideoEffect
 		void readXML( TiXmlElement* );
 		const char* identifier() { return "effect:builtin:NodeFilter"; }
 		const char* name();
-		frame_struct* getFrame( frame_struct* frame, int64_t position = -1 );
+		LazyFrame* getFrame( LazyFrame* frame, int64_t position = -1 );
 		int numParams() { return 1; }
 		IEffectDialog* dialog();
 		IEffectDialog* m_dialog;
 		filters* m_filters;
 		INode* m_sink_node;
 		INode* m_src_node;
-		uint32_t* m_frame_cache;
 		int m_w;
 		int m_h;
-		frame_struct m_framestruct;
-		unsigned char *m_frame;
+		LazyFrame* m_lazy_frame;
+		gavl_video_frame_t* m_frame;
 };
 	
 } /* namespace nle */

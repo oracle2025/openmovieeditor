@@ -24,12 +24,12 @@
 #include <FL/Fl_Gl_Window.H>
 
 #include "IVideoWriter.H"
-#include "frame_struct.h"
 
 namespace nle
 {
 
 class Timeline;
+class LazyFrame;
 
 class VideoViewGL : public Fl_Gl_Window, public IVideoWriter
 {
@@ -37,15 +37,15 @@ class VideoViewGL : public Fl_Gl_Window, public IVideoWriter
 		VideoViewGL( int x, int y, int w, int h, const char *l = 0 );
 		~VideoViewGL();
 		void draw();
-		void pushFrameStack( frame_struct** fs, bool move_cursor = true );
-		void pushFrame( frame_struct* fs, bool move_cursor = true );
+		void pushFrameStack( LazyFrame** fs, bool move_cursor = true );
+		void pushFrame( LazyFrame* fs, bool move_cursor = true );
 		void nextFrame( int64_t frame );
 		void seek( int64_t position );
 		void play();
 		void stop();
 		void zoom( float zoom ) { m_zoom = zoom; }
 	private:
-		void drawFrameStack( frame_struct** fs );
+		void drawFrameStack( LazyFrame** fs );
 		int64_t m_seekPosition;
 		void drawVideoBorder();
 		float m_zoom;

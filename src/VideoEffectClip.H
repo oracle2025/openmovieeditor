@@ -22,10 +22,10 @@
 
 #include <stdint.h>
 
-#include "frame_struct.h"
 #include "video_format.H"
 #include "IVideoReader.H"
 #include <gavl/gavl.h>
+#include "frame_struct.h"
 
 typedef struct gavl_video_converter_s gavl_video_converter_t;
 typedef struct gavl_video_frame_s gavl_video_frame_t;
@@ -36,27 +36,28 @@ class FilterFactory;
 class IVideoEffect;
 class ClipData;
 class FilterClip;
+class LazyFrame;
 
 class VideoEffectClip : public IVideoReader
 {
 	public:
 		~VideoEffectClip();
-		frame_struct* getFrame( int64_t position );
-		virtual frame_struct* getRawFrame( int64_t position, int64_t &position_in_file ) = 0;
+		LazyFrame* getFrame( int64_t position );
+		virtual LazyFrame* getRawFrame( int64_t position, int64_t &position_in_file ) = 0;
 		virtual int w() = 0;
 		virtual int h() = 0;
 		//virtual int interlacing() = 0;
 		void unPrepareFormat();
 		void prepareFormat( video_format* fmt );
-		frame_struct* getFormattedFrame( frame_struct* tmp_frame, int64_t position );
+		LazyFrame* getFormattedFrame( LazyFrame* tmp_frame, int64_t position );
 		bool crop() { return m_crop; }
 		bool fit() { return m_fit; }
 		bool stretch() { return m_stretch; }
 		bool def() { return m_default; }
-		void crop( bool v ) { if ( v ) { m_fit = m_stretch = m_default = !(m_crop = true); m_render_strategy = RENDER_CROP;} }
-		void fit( bool v ) { if ( v ) { m_crop = m_stretch = m_default = !(m_fit = true); m_render_strategy = RENDER_FIT;} }
-		void stretch( bool v ) { if ( v ) { m_fit = m_crop = m_default = !(m_stretch = true); m_render_strategy = RENDER_STRETCH;} }
-		void def( bool v ) { if ( v ) { m_fit = m_crop = m_stretch = !(m_default = true); m_render_strategy = RENDER_DEFAULT;} }
+		void crop( bool v ) { if ( v ) { m_fit = m_stretch = m_default = !(m_crop = true); } }
+		void fit( bool v ) { if ( v ) { m_crop = m_stretch = m_default = !(m_fit = true); } }
+		void stretch( bool v ) { if ( v ) { m_fit = m_crop = m_default = !(m_stretch = true); } }
+		void def( bool v ) { if ( v ) { m_fit = m_crop = m_stretch = !(m_default = true); } }
 	protected:
 		void setEffects( ClipData* data = 0 );
 		VideoEffectClip( FilterClip* filterClip );
@@ -64,12 +65,8 @@ class VideoEffectClip : public IVideoReader
 		bool m_fit;
 		bool m_stretch;
 		bool m_default;
-		render_strategy_t m_render_strategy;
 		ClipData* vec_getClipData();
 	private:
-		gavl_video_converter_t *m_video_converter;
-		gavl_video_frame_t* m_frame_src;
-		gavl_video_frame_t* m_frame_dst;
 		gavl_video_format_t m_format_dst;
 		int m_bits;
 		FilterClip* m_filterClip;

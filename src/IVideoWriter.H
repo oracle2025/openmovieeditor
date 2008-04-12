@@ -20,17 +20,18 @@
 #ifndef _I_VIDEO_WRITER_H_
 #define _I_VIDEO_WRITER_H_
 
-#include "frame_struct.h"
 
 namespace nle
 {
+
+class LazyFrame;
 
 class IVideoWriter
 {
 	public:
 		virtual ~IVideoWriter() {}
-		virtual void pushFrame( frame_struct* frame, bool move_cursor = true ) = 0;
-		virtual void pushFrameStack( frame_struct** fs, bool move_cursor = true ) = 0;
+		virtual void pushFrame( LazyFrame* frame, bool move_cursor = true ) = 0;
+		virtual void pushFrameStack( LazyFrame** fs, bool move_cursor = true ) = 0;
 };
 
 } /* namespace nle */

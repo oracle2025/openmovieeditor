@@ -20,18 +20,18 @@
 #define _I_VIDEO_EFFECT_H_
 
 
-#include "frame_struct.h"
 #include "FilterBase.H"
 namespace nle
 {
 
 class IEffectDialog;
+class LazyFrame;
 
 class IVideoEffect : public FilterBase
 {
 	public:
 		virtual ~IVideoEffect() {}
-		virtual frame_struct* getFrame( frame_struct* frame, int64_t position = -1 ) = 0;
+		virtual LazyFrame* getFrame( LazyFrame* frame, int64_t position = -1 ) = 0;
 		virtual const char* name() = 0;
 		virtual int numParams() = 0;
 		virtual IEffectDialog* dialog() = 0;

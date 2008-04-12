@@ -9,7 +9,6 @@
 #include "VideoViewGL.H"
 #include "ColorCurveDialog.H"
 #include <FL/Fl_Check_Button.H>
-#include "ColorWheel.H"
 
 class ColorGrader2 : public Fl_Group {
 public:
@@ -40,14 +39,5 @@ private:
   static void cb_bypass_check(Fl_Check_Button*, void*);
 public:
   nle::ColorCurveDialog* m_dialog;
-  ColorWheel *color_wheel_1;
-private:
-  void cb_color_wheel_1_i(ColorWheel*, void*);
-  static void cb_color_wheel_1(ColorWheel*, void*);
-public:
-  ColorWheel *color_wheel_2;
-private:
-  void cb_color_wheel_2_i(ColorWheel*, void*);
-  static void cb_color_wheel_2(ColorWheel*, void*);
 };
 #endif

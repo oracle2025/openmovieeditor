@@ -21,6 +21,7 @@
 #define _COLOR_CURVE_FILTER_H_
 
 #include "IVideoEffect.H"
+#include <gavl/gavl.h>
 
 namespace nle
 {
@@ -45,7 +46,7 @@ class ColorCurveFilter : public IVideoEffect
 	public:
 		ColorCurveFilter( int w, int h );
 		~ColorCurveFilter();
-		frame_struct* getFrame( frame_struct* frame, int64_t position = -1 );
+		LazyFrame* getFrame( LazyFrame* frame, int64_t position = -1 );
 		const char* name();
 		int numParams() { return 1; }
 		IEffectDialog* dialog();
@@ -65,9 +66,11 @@ class ColorCurveFilter : public IVideoEffect
 	private:
 		void calculate_values( unsigned char* value, struct color_curve_desc* desc );
 		unsigned char *m_frame;
-		unsigned char **m_rows;
-		frame_struct m_framestruct;
+		gavl_video_frame_t* m_gavl_frame;
+		LazyFrame* m_lazy_frame;
 		bool m_bypass;
+		int m_w;
+		int m_h;
 };
 
 	

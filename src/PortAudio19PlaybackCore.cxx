@@ -206,7 +206,7 @@ void PortAudio19PlaybackCore::flipFrame()
 	}
 	pthread_mutex_unlock( &condition_mutex );
 
-	static frame_struct** fs = 0;
+	static LazyFrame** fs = 0;
 	if ( fs ) {
 		m_videoWriter->pushFrameStack( fs );
 	}

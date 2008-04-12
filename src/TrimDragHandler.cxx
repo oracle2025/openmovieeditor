@@ -90,7 +90,7 @@ void TrimDragHandler::preview()
 	} else {
 		cl->file()->seek( pos );
 	}
-	frame_struct* fs = cl->file()->read();
+	LazyFrame* fs = cl->file()->read();
 	
 	g_videoView->pushFrame( fs, false );
 }

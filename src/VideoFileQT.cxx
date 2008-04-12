@@ -1,6 +1,6 @@
 /*  VideoFileQT.cxx
  *
- *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2005-2008 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,6 +26,8 @@
 #include "VideoFileQT.H"
 #include "ErrorDialog/IErrorHandler.H"
 #include "helper.H"
+#include "lqtgavl.h"
+#include "LazyFrame.H"
 
 namespace nle
 {
@@ -37,6 +39,7 @@ VideoFileQT::VideoFileQT( string filename )
 	m_qt = NULL;
 	m_frame = NULL;
 	m_rows = NULL;
+	m_lazy_frame = 0;
 	char *lqt_filename = const_cast<char *>( filename.c_str() );
 	if ( !quicktime_check_sig( lqt_filename ) ) {
 		ERROR_DETAIL( "This is not a Quicktime video file" );
@@ -60,44 +63,17 @@ VideoFileQT::VideoFileQT( string filename )
 	int64_t time_scale = lqt_video_time_scale( m_qt, 0 );
 	m_ticksPerFrame = ( frame_duration * NLE_TIME_BASE ) / time_scale;
 	
-	lqt_set_cmodel( m_qt, 0, BC_RGB888);
 	m_width = quicktime_video_width( m_qt, 0 );
 	m_height = quicktime_video_height( m_qt, 0 );
-	m_frame = new unsigned char[m_width * m_height * 3];
-	m_rows = new unsigned char*[m_height];
-	for (int i = 0; i < m_height; i++) {
-                m_rows[i] = m_frame + m_width * 3 * i;
-	}
-	init_frame_struct( &m_framestruct, m_width, m_height );
-	m_framestruct.RGB = m_frame;
-	m_framestruct.YUV = 0;
-	m_framestruct.rows = m_rows;
-	m_framestruct.has_alpha_channel = false;
-	m_framestruct.cacheable = false;
-	m_framestruct.interlace_mode = INTERLACE_PROGRESSIVE;
-#if (LQT_CODEC_API_VERSION & 0xffff) > 6
-//	if ( g_INTERLACING ) {
-		switch ( lqt_get_interlace_mode( m_qt, 0 ) ) {
-			case LQT_INTERLACE_NONE:
-				m_framestruct.interlace_mode = INTERLACE_PROGRESSIVE;
-				break;
-			case LQT_INTERLACE_TOP_FIRST:
-				m_framestruct.interlace_mode = INTERLACE_TOP_FIELD_FIRST;
-				break;
-			case LQT_INTERLACE_BOTTOM_FIRST:
-				m_framestruct.interlace_mode = INTERLACE_BOTTOM_FIELD_FIRST;
-				/*for (int i = 0; i < m_height/2; i++) {
-					m_rows[i*2 + 1] = m_frame + m_width * 3 * i;
-					m_rows[i*2] = m_frame + m_width * 3 * i + m_width * 3 * m_height / 2;
-				}
-				m_framestruct.interlace_mode = INTERLACE_DEVIDED_FIELDS; */
-				break;
-		}
-//	}
-#endif
-	m_interlace_mode = m_framestruct.interlace_mode;
 
-	guess_aspect( m_framestruct.w, m_framestruct.h, &m_framestruct );
+	lqt_gavl_get_video_format ( m_qt, 0, &m_video_format, 0 );
+
+	m_frame = gavl_video_frame_create( &m_video_format );
+	m_rows = lqt_gavl_rows_create( m_qt, 0 );
+
+	m_lazy_frame = new LazyFrame( &m_video_format );
+
+	//guess_aspect( m_framestruct.w, m_framestruct.h, &m_framestruct );
 
 	m_filename = filename;
 	m_ok = true;
@@ -105,11 +81,13 @@ VideoFileQT::VideoFileQT( string filename )
 VideoFileQT::~VideoFileQT()
 {
 	if ( m_frame )
-		delete [] m_frame;
+		gavl_video_frame_destroy( m_frame );
 	if ( m_rows )
-		delete [] m_rows;
+		lqt_gavl_rows_destroy( m_rows );
 	if ( m_qt )
 		quicktime_close( m_qt );
+	if ( m_lazy_frame )
+		delete m_lazy_frame;
 }
 bool VideoFileQT::ok() { return m_ok; }
 int64_t VideoFileQT::length()
@@ -120,13 +98,14 @@ int64_t VideoFileQT::length()
 {
 	return quicktime_frame_rate( m_qt, 0 ); 
 }*/
-frame_struct* VideoFileQT::read()
+LazyFrame* VideoFileQT::read()
 {
-	quicktime_decode_video( m_qt, m_rows, 0);
-	m_framestruct.alpha = 1.0;
-	m_framestruct.first_field = m_first_field;
-	return &m_framestruct;
+	lqt_gavl_decode_video( m_qt, 0, m_frame, m_rows );
+	m_lazy_frame->put_data( m_frame );
+	m_lazy_frame->alpha( 1.0 );
+	return m_lazy_frame;
 }
+
 void VideoFileQT::read( unsigned char** rows, int w, int h )
 {
 	quicktime_decode_scaled( m_qt, 0, 0, m_width, m_height, w, h, BC_RGB888, rows, 0 );
