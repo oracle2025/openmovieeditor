@@ -31,15 +31,9 @@ ColorCurveFilter::ColorCurveFilter( int w, int h )
 {
 	m_w = w;
 	m_h = h;
-	m_frame = new unsigned char[w * h * 4];
-
 	m_lazy_frame = new LazyFrame( w, h );
-
-	m_gavl_frame = gavl_video_frame_create( 0 );
-
-	m_gavl_frame->planes[0] = m_frame;
-	m_gavl_frame->strides[0] = w * 4;
-
+	m_gavl_frame = gavl_video_frame_create( m_lazy_frame->format() );
+	m_frame = m_gavl_frame->planes[0];
 	m_lazy_frame->put_data( m_gavl_frame );
 
 	for ( unsigned int i = 0; i < 256; i++ ) {
@@ -61,7 +55,6 @@ ColorCurveFilter::ColorCurveFilter( int w, int h )
 
 ColorCurveFilter::~ColorCurveFilter()
 {
-	delete m_frame;
 	if ( m_dialog ) {
 		delete m_dialog;
 	}
@@ -69,7 +62,6 @@ ColorCurveFilter::~ColorCurveFilter()
 		delete m_lazy_frame;
 	}
 	if ( m_gavl_frame ) {
-		gavl_video_frame_null( m_gavl_frame );
 		gavl_video_frame_destroy( m_gavl_frame );
 	}
 }

@@ -2,24 +2,24 @@
 
 #include "LiftGammaGainWidget.H"
 
-void LiftGammaGainWidget::cb_lift_i(ColorWheel*, void*) {
+void LiftGammaGainWidget::cb_lift_i(Fl_Color_Chooser*, void*) {
   m_dialog->read_values();
 }
-void LiftGammaGainWidget::cb_lift(ColorWheel* o, void* v) {
+void LiftGammaGainWidget::cb_lift(Fl_Color_Chooser* o, void* v) {
   ((LiftGammaGainWidget*)(o->parent()))->cb_lift_i(o,v);
 }
 
-void LiftGammaGainWidget::cb_gamma_i(ColorWheel*, void*) {
+void LiftGammaGainWidget::cb_gamma_i(Fl_Color_Chooser*, void*) {
   m_dialog->read_values();
 }
-void LiftGammaGainWidget::cb_gamma(ColorWheel* o, void* v) {
+void LiftGammaGainWidget::cb_gamma(Fl_Color_Chooser* o, void* v) {
   ((LiftGammaGainWidget*)(o->parent()))->cb_gamma_i(o,v);
 }
 
-void LiftGammaGainWidget::cb_gain_i(ColorWheel*, void*) {
+void LiftGammaGainWidget::cb_gain_i(Fl_Color_Chooser*, void*) {
   m_dialog->read_values();
 }
-void LiftGammaGainWidget::cb_gain(ColorWheel* o, void* v) {
+void LiftGammaGainWidget::cb_gain(Fl_Color_Chooser* o, void* v) {
   ((LiftGammaGainWidget*)(o->parent()))->cb_gain_i(o,v);
 }
 
@@ -32,7 +32,7 @@ void LiftGammaGainWidget::cb_bypass(Fl_Check_Button* o, void* v) {
 LiftGammaGainWidget::LiftGammaGainWidget(int X, int Y, int W, int H, const char *L)
   : Fl_Group(X, Y, W, H, L) {
   LiftGammaGainWidget *o = this;
-{ ColorWheel* o = lift = new ColorWheel(0, 25, 140, 140);
+{ Fl_Color_Chooser* o = lift = new Fl_Color_Chooser(0, 25, 195, 115);
   o->box(FL_THIN_DOWN_BOX);
   o->color(FL_BACKGROUND_COLOR);
   o->selection_color(FL_BACKGROUND_COLOR);
@@ -44,7 +44,7 @@ LiftGammaGainWidget::LiftGammaGainWidget(int X, int Y, int W, int H, const char 
   o->align(FL_ALIGN_CENTER);
   o->when(FL_WHEN_RELEASE);
 }
-{ ColorWheel* o = gamma = new ColorWheel(140, 25, 140, 140);
+{ Fl_Color_Chooser* o = gamma = new Fl_Color_Chooser(195, 25, 195, 115);
   o->box(FL_THIN_DOWN_BOX);
   o->color(FL_BACKGROUND_COLOR);
   o->selection_color(FL_BACKGROUND_COLOR);
@@ -56,7 +56,7 @@ LiftGammaGainWidget::LiftGammaGainWidget(int X, int Y, int W, int H, const char 
   o->align(FL_ALIGN_CENTER);
   o->when(FL_WHEN_RELEASE);
 }
-{ ColorWheel* o = gain = new ColorWheel(280, 25, 140, 140);
+{ Fl_Color_Chooser* o = gain = new Fl_Color_Chooser(390, 25, 195, 115);
   o->box(FL_THIN_DOWN_BOX);
   o->color(FL_BACKGROUND_COLOR);
   o->selection_color(FL_BACKGROUND_COLOR);
@@ -68,16 +68,16 @@ LiftGammaGainWidget::LiftGammaGainWidget(int X, int Y, int W, int H, const char 
   o->align(FL_ALIGN_CENTER);
   o->when(FL_WHEN_RELEASE);
 }
-{ Fl_Box* o = new Fl_Box(0, 0, 140, 25, "Lift");
+{ Fl_Box* o = new Fl_Box(0, 0, 195, 25, "Lift");
   o->box(FL_THIN_UP_BOX);
 }
-{ Fl_Box* o = new Fl_Box(140, 0, 140, 25, "Gamma");
+{ Fl_Box* o = new Fl_Box(195, 0, 195, 25, "Gamma");
   o->box(FL_THIN_UP_BOX);
 }
-{ Fl_Box* o = new Fl_Box(280, 0, 140, 25, "Gain");
+{ Fl_Box* o = new Fl_Box(390, 0, 195, 25, "Gain");
   o->box(FL_THIN_UP_BOX);
 }
-{ Fl_Check_Button* o = bypass = new Fl_Check_Button(0, 165, 420, 25, "Bypass");
+{ Fl_Check_Button* o = bypass = new Fl_Check_Button(0, 140, 585, 25, "Bypass");
   o->down_box(FL_DOWN_BOX);
   o->callback((Fl_Callback*)cb_bypass);
 }

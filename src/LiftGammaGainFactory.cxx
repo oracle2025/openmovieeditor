@@ -19,10 +19,8 @@
 
 #include "LiftGammaGainFactory.H"
 #include "LiftGammaGainFilter.H"
-#include "VideoClip.H"
-#include "ImageClip.H"
-#include "TitleClip.H"
-#include "InkscapeClip.H"
+#include "VideoEffectClip.H"
+#include "timeline/Clip.H"
 
 
 namespace nle
@@ -38,22 +36,7 @@ LiftGammaGainFactory::~LiftGammaGainFactory()
 }
 FilterBase* LiftGammaGainFactory::get( Clip* clip )
 {
-	VideoEffectClip* effectClip = 0;
-	VideoClip* c1;
-	ImageClip* c2;
-	TitleClip* c3;
-	InkscapeClip* c4;
-	c1 = dynamic_cast<VideoClip*>(clip);
-	if ( c1 ) {
-		effectClip = c1;
-	} else if ( (c2 = dynamic_cast<ImageClip*>(clip)) ) {
-		effectClip = c2;
-	} else if ( (c3 = dynamic_cast<TitleClip*>(clip)) ) {
-		effectClip = c3;
-	} else if ( (c4 = dynamic_cast<InkscapeClip*>(clip)) ) {
-		effectClip = c4;
-	}
-
+	VideoEffectClip* effectClip = dynamic_cast<VideoEffectClip*>(clip);
 	if ( !effectClip ) {
 		return 0;
 	}

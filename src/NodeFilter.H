@@ -71,8 +71,10 @@ class NodeFilter : public IVideoEffect
 		INode* m_src_node;
 		int m_w;
 		int m_h;
+		uint32_t* m_frame_cache;
+	private:
 		LazyFrame* m_lazy_frame;
-		gavl_video_frame_t* m_frame;
+		gavl_video_frame_t* m_gavl_frame;
 };
 	
 } /* namespace nle */

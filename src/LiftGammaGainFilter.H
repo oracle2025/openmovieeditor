@@ -21,26 +21,17 @@
 #define _LIFT_GAMMA_GAIN_FILTER_H_
 
 #include "IVideoEffect.H"
+#include <gavl/gavl.h>
 
 namespace nle
 {
-
-struct lift_gamma_gain_p {
-	double x;
-	double y;
-};
-struct lift_gamma_gain_data {
-	struct lift_gamma_gain_p lift;
-	struct lift_gamma_gain_p gamma;
-	struct lift_gamma_gain_p gain;
-};
 
 class LiftGammaGainFilter : public IVideoEffect
 {
 	public:
 		LiftGammaGainFilter( int w, int h );
 		~LiftGammaGainFilter();
-		frame_struct* getFrame( frame_struct* frame, int64_t position = -1 );
+		LazyFrame* getFrame( LazyFrame* frame, int64_t position = -1 );
 		const char* name();
 		int numParams() { return 1; }
 		IEffectDialog* dialog();
@@ -55,8 +46,6 @@ class LiftGammaGainFilter : public IVideoEffect
 		FilterData* getFilterData() { return 0; }
 		void setFilterData( FilterData* ) {}
 
-		struct lift_gamma_gain_data m_parameters;
-
 		void calculate_values();
 
 		void writeXML( TiXmlElement* );
@@ -67,11 +56,16 @@ class LiftGammaGainFilter : public IVideoEffect
 		void lift( float r, float g, float b );
 		void gamma( float r, float g, float b );
 		void gain( float r, float g, float b );
+		const float* lift() { return m_lift; }
+		const float* gamma() { return m_gamma; }
+		const float* gain() { return m_gain; }
 
 	private:
+		int m_w;
+		int m_h;
 		unsigned char *m_frame;
-		unsigned char **m_rows;
-		frame_struct m_framestruct;
+		gavl_video_frame_t* m_gavl_frame;
+		LazyFrame* m_lazy_frame;
 		bool m_bypass;
 		float m_lift[3];
 		float m_gamma[3];

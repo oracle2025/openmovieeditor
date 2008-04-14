@@ -20,6 +20,7 @@
 #include "LiftGammaGainFilter.H"
 #include "LiftGammaGainDialog.H"
 #include "helper.H"
+#include "LazyFrame.H"
 
 #include <tinyxml.h>
 #include <cmath>
@@ -29,17 +30,12 @@ namespace nle
 
 LiftGammaGainFilter::LiftGammaGainFilter( int w, int h )
 {
-	m_frame = new unsigned char[w * h * 4];
-	m_rows = new unsigned char*[h];
-	for (int i = 0; i < h; i++) {
-                m_rows[i] = m_frame + w * 4 * i;
-	}
-	init_frame_struct( &m_framestruct, w, h );
-	m_framestruct.RGB = m_frame;
-	m_framestruct.YUV = 0;
-	m_framestruct.rows = m_rows;
-	m_framestruct.has_alpha_channel = true;
-	m_framestruct.cacheable = false;
+	m_w = w;
+	m_h = h;
+	m_lazy_frame = new LazyFrame( w, h );
+	m_gavl_frame = gavl_video_frame_create( m_lazy_frame->format() );
+	m_lazy_frame->put_data( m_gavl_frame );
+	m_frame = m_gavl_frame->planes[0];
 	for ( unsigned int i = 0; i < 256; i++ ) {
 		m_red[i] = i;
 		m_green[i] = i;
@@ -50,47 +46,31 @@ LiftGammaGainFilter::LiftGammaGainFilter( int w, int h )
 	m_gain[0]  = m_gain[1]  = m_gain[2]  = 1.0;
 	m_dialog = 0;
 	m_bypass = false;
-
-	m_parameters.lift.x  = m_parameters.lift.y  = 128.0;
-	m_parameters.gamma.x = m_parameters.gamma.y = 128.0;
-	m_parameters.gain.x  = m_parameters.gain.y  = 128.0;
 }
 LiftGammaGainFilter::~LiftGammaGainFilter()
 {
-	delete m_rows;
-	delete m_frame;
+	delete m_lazy_frame;
+	gavl_video_frame_destroy( m_gavl_frame );
 	if ( m_dialog ) {
 		delete m_dialog;
 	}
 }
-frame_struct* LiftGammaGainFilter::getFrame( frame_struct* frame, int64_t position )
+LazyFrame* LiftGammaGainFilter::getFrame( LazyFrame* frame, int64_t position )
 {
 	if ( m_bypass ) {
 		return frame;
 	}
-	copy_frame_struct_props( frame, &m_framestruct );
-	unsigned int len = m_framestruct.w * m_framestruct.h;
+	unsigned int len = m_w * m_h;
 	unsigned char* dst = m_frame;
-	unsigned char* src = frame->RGB;
-	if ( frame->has_alpha_channel ) {
-		m_framestruct.has_alpha_channel = true;
-		while (len--)
-		{
-			*dst++ = m_red[*src++];
-			*dst++ = m_green[*src++];
-			*dst++ = m_blue[*src++];
-			*dst++ = *src++; // copy alpha
-		}
-	} else {
-		m_framestruct.has_alpha_channel = false;
-		while (len--)
-		{
-			*dst++ = m_red[*src++];
-			*dst++ = m_green[*src++];
-			*dst++ = m_blue[*src++];
-		}
+	unsigned char* src = frame->RGBA()->planes[0];
+	while (len--)
+	{
+		*dst++ = m_red[*src++];
+		*dst++ = m_green[*src++];
+		*dst++ = m_blue[*src++];
+		*dst++ = *src++; // copy alpha
 	}
-	return &m_framestruct;
+	return m_lazy_frame;
 }
 const char* LiftGammaGainFilter::name()
 {
@@ -106,21 +86,37 @@ IEffectDialog* LiftGammaGainFilter::dialog()
 }
 void LiftGammaGainFilter::writeXML( TiXmlElement* xml_node )
 {
-	xml_node->SetDoubleAttribute( "lift_x", m_parameters.lift.x );
-	xml_node->SetDoubleAttribute( "lift_y", m_parameters.lift.y );
-	xml_node->SetDoubleAttribute( "gamma_x", m_parameters.gamma.x );
-	xml_node->SetDoubleAttribute( "gamma_y", m_parameters.gamma.y );
-	xml_node->SetDoubleAttribute( "gain_x", m_parameters.gain.x );
-	xml_node->SetDoubleAttribute( "gain_y", m_parameters.gain.y );
+	xml_node->SetDoubleAttribute( "lift_r", m_lift[0] );
+	xml_node->SetDoubleAttribute( "lift_g", m_lift[1] );
+	xml_node->SetDoubleAttribute( "lift_b", m_lift[2] );
+	xml_node->SetDoubleAttribute( "gamma_r", m_gamma[0] );
+	xml_node->SetDoubleAttribute( "gamma_g", m_gamma[1] );
+	xml_node->SetDoubleAttribute( "gamma_b", m_gamma[2] );
+	xml_node->SetDoubleAttribute( "gain_r", m_gain[0] );
+	xml_node->SetDoubleAttribute( "gain_g", m_gain[1] );
+	xml_node->SetDoubleAttribute( "gain_b", m_gain[2] );
 }
 void LiftGammaGainFilter::readXML( TiXmlElement* xml_node )
 {
-	xml_node->Attribute( "lift_x", &m_parameters.lift.x );
-	xml_node->Attribute( "lift_y", &m_parameters.lift.y );
-	xml_node->Attribute( "gamma_x", &m_parameters.gamma.x );
-	xml_node->Attribute( "gamma_y", &m_parameters.gamma.y );
-	xml_node->Attribute( "gain_x", &m_parameters.gain.x );
-	xml_node->Attribute( "gain_y", &m_parameters.gain.y );
+	double r, g, b;
+	xml_node->Attribute( "lift_r", &r );
+	xml_node->Attribute( "lift_g", &g );
+	xml_node->Attribute( "lift_b", &b );
+	m_lift[0] = r;
+	m_lift[1] = g;
+	m_lift[2] = b;
+	xml_node->Attribute( "gamma_r", &r );
+	xml_node->Attribute( "gamma_g", &g );
+	xml_node->Attribute( "gamma_b", &b );
+	m_gamma[0] = r;
+	m_gamma[1] = g;
+	m_gamma[2] = b;
+	xml_node->Attribute( "gain_r", &r );
+	xml_node->Attribute( "gain_g", &g );
+	xml_node->Attribute( "gain_b", &b );
+	m_gain[0] = r;
+	m_gain[1] = g;
+	m_gain[2] = b;
 }
 
 void LiftGammaGainFilter::lift( float r, float g, float b )

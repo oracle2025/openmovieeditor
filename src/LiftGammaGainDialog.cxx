@@ -37,13 +37,16 @@ static void closeCallback( Fl_Widget*, void* data ) {
 LiftGammaGainDialog::LiftGammaGainDialog( LiftGammaGainFilter* filter )
 	: m_filter( filter )
 {
-	m_dialog = new Fl_Double_Window( 430, 195 + 25 + 10, "Lift Gamma Gain" );
+	m_dialog = new Fl_Double_Window( 585, 165 + 25 + 10, "Lift Gamma Gain" );
 
-	m_widget = new LiftGammaGainWidget( 5, 5, 420, 190 );
+	m_widget = new LiftGammaGainWidget( 0, 0, 585, 165 );
+	m_widget->lift->rgb( m_filter->lift()[0], m_filter->lift()[1], m_filter->lift()[2] );
+	m_widget->gamma->rgb( m_filter->gamma()[0], m_filter->gamma()[1], m_filter->gamma()[2] );
+	m_widget->gain->rgb( m_filter->gain()[0], m_filter->gain()[1], m_filter->gain()[2] );
 	m_widget->m_dialog = this;
 
 	{
-		Fl_Return_Button* o = new Fl_Return_Button( 5, 200, 420, 25, "Close" );
+		Fl_Return_Button* o = new Fl_Return_Button( 5, 170, 575, 25, "Close" );
 		o->callback( closeCallback, this );
 		m_dialog->hotspot( o );
 	}
@@ -68,19 +71,9 @@ int LiftGammaGainDialog::shown()
 }
 void LiftGammaGainDialog::read_values()
 {
-	//pass values from dialog to filter
-	struct lift_gamma_gain_data* lggd = &(m_filter->m_parameters);
-
-	lggd->lift.x = m_widget->lift->m_x;
-	lggd->lift.y = m_widget->lift->m_y;
-	lggd->gamma.x = m_widget->gamma->m_x;
-	lggd->gamma.y = m_widget->gamma->m_y;
-	lggd->gain.x = m_widget->gain->m_x;
-	lggd->gain.y = m_widget->gain->m_y;
-
-	m_filter->lift( m_widget->lift->m_fcolor[0], m_widget->lift->m_fcolor[1], m_widget->lift->m_fcolor[2] );
-	m_filter->gamma( m_widget->gamma->m_fcolor[0], m_widget->gamma->m_fcolor[1], m_widget->gamma->m_fcolor[2] );
-	m_filter->gain( m_widget->gain->m_fcolor[0], m_widget->gain->m_fcolor[1], m_widget->gain->m_fcolor[2] );
+	m_filter->lift( m_widget->lift->r(), m_widget->lift->g(), m_widget->lift->b() );
+	m_filter->gamma( m_widget->gamma->r(), m_widget->gamma->g(), m_widget->gamma->b() );
+	m_filter->gain( m_widget->gain->r(), m_widget->gain->g(), m_widget->gain->b() );
 	m_filter->calculate_values();
 	m_filter->bypass( m_widget->bypass->value() );
 

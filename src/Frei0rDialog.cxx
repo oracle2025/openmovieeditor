@@ -81,7 +81,7 @@ static void closeCallback( Fl_Widget*, void* data ) {
 	delete dlg;
 }
 static void mapButtonCallback( Fl_Widget* w, void* data ) {
-	callback_info* info = (callback_info*)data;
+/*	callback_info* info = (callback_info*)data;
 	Frei0rDialog* dlg = info->dialog;
 	track_node* tracks = g_timeline->getTracks();
 	int auttrk_count = 0;
@@ -129,7 +129,7 @@ static void mapButtonCallback( Fl_Widget* w, void* data ) {
 			assert(at);
 			info->dialog->setAutomation( info->number, at );
 		}
-	}
+	}*/
 }
 
 Frei0rDialog::Frei0rDialog( Frei0rEffect* effect )
@@ -303,7 +303,7 @@ void Frei0rDialog::setString( int num, const char* val )
 
 void Frei0rDialog::setAutomation( int num, AutoTrack* track )
 {
-	m_effect->setAutomation( track, num );
+	//m_effect->setAutomation( track, num );
 	g_videoView->redraw();
 }
 

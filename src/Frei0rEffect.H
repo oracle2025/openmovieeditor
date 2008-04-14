@@ -22,6 +22,7 @@
 
 #include "IVideoEffect.H"
 #include "frei0r.h"
+#include <gavl/gavl.h>
 
 typedef f0r_instance_t (*f0r_construct_f)(unsigned int, unsigned int);
 typedef void (*f0r_destruct_f)(f0r_instance_t);
@@ -34,14 +35,13 @@ namespace nle
 {
 
 class IEffectDialog;
-class AutoTrack;
 
 class Frei0rEffect : public IVideoEffect
 {
 	public:
 		Frei0rEffect( f0r_plugin_info_t* info, void* handle, int w, int h);
 		~Frei0rEffect();
-		frame_struct* getFrame( frame_struct* frame, int64_t position );
+		LazyFrame* getFrame( LazyFrame* frame, int64_t position );
 		f0r_plugin_info_t *getPluginInfo() { return m_info; }
 		void getParamInfo( f0r_param_info_t *info, int param_index );
 		void getValue( f0r_param_t param, int param_index );
@@ -55,13 +55,11 @@ class Frei0rEffect : public IVideoEffect
 		FilterData* getFilterData();
 		void setFilterData( FilterData* );
 		const char* identifier();
-		void setAutomation( AutoTrack* track, int param_index );
 	private:
 		f0r_instance_t m_instance;
-		unsigned char *m_tmpFrame;
 		unsigned char *m_frame;
-		unsigned char **m_rows;
-		frame_struct m_framestruct;
+		gavl_video_frame_t* m_gavl_frame;
+		LazyFrame* m_lazy_frame;
 		// Function Pointers:
 		f0r_construct_f f0r_construct;
 		f0r_destruct_f f0r_destruct;
@@ -72,7 +70,6 @@ class Frei0rEffect : public IVideoEffect
 		f0r_plugin_info_t* m_info;
 		int m_w;
 		int m_h;
-		AutoTrack* m_auto_mappings[30];
 };
 
 } /* namespace nle */

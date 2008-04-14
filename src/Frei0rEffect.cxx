@@ -28,6 +28,7 @@
 #include "render_helper.H"
 #include "AutoTrack.H"
 #include "helper.H"
+#include "LazyFrame.H"
 
 namespace nle
 {
@@ -44,107 +45,26 @@ Frei0rEffect::Frei0rEffect( f0r_plugin_info_t* info, void* handle, int w, int h 
 	f0r_get_param_info = (f0r_get_param_info_f)dlsym( handle, "f0r_get_param_info" );
 	f0r_set_param_value = (f0r_set_param_value_f)dlsym( handle, "f0r_set_param_value" );
 	f0r_get_param_value = (f0r_get_param_value_f)dlsym( handle, "f0r_get_param_value" );
-if ( g_INTERLACING ) {
-	m_instance = f0r_construct( w, h/2 );
-} else {
 	m_instance = f0r_construct( w, h );
-}
 	//create frame
-	m_tmpFrame = new unsigned char[w * h * 4];
-	m_frame = new unsigned char[w * h * 4];
-	m_rows = new unsigned char*[h];
-	for (int i = 0; i < h; i++) {
-                m_rows[i] = m_frame + w * 4 * i;
-	}
-	init_frame_struct( &m_framestruct, w, h );
-	m_framestruct.RGB = m_frame;
-	m_framestruct.YUV = 0;
-	m_framestruct.rows = m_rows;
-	m_framestruct.has_alpha_channel = true;
-	m_framestruct.cacheable = false;
-	for ( int i = 0; i < 30; i++ ) {
-		m_auto_mappings[i] = 0;
-	}
-
+	m_lazy_frame = new LazyFrame( w, h );
+	m_gavl_frame = gavl_video_frame_create( m_lazy_frame->format() );
+	m_lazy_frame->put_data( m_gavl_frame );
+	m_frame = m_gavl_frame->planes[0];
 }
 Frei0rEffect::~Frei0rEffect()
 {
+	delete m_lazy_frame;
+	gavl_video_frame_destroy( m_gavl_frame );
 	f0r_destruct( m_instance );
 	if ( m_dialog ) {
 		delete m_dialog;
 	}
-	delete m_tmpFrame;
-	delete m_frame;
-	delete m_rows;
 }
-frame_struct* Frei0rEffect::getFrame( frame_struct* frame, int64_t position )
+LazyFrame* Frei0rEffect::getFrame( LazyFrame* frame, int64_t position )
 {
-	//TODO: Check for Parameter Automations, and apply the current value
-	for ( int i = numParams() - 1; i >= 0; i-- ) {
-		if ( m_auto_mappings[i] ) {
-			double dval;
-			f0r_param_double dvalue;
-			dval = m_auto_mappings[i]->getValue( position );
-			dvalue = dval;
-			setValue( &dvalue, i );
-		}
-	}
-	//TODO: Check if interlaced and if Filter needs separate fields, then
-	//perform conversion
-	copy_frame_struct_props( frame, &m_framestruct );
-if ( g_INTERLACING ) {
-	//if ( frame->interlace_mode == 1 ) {
-	/*	if ( m_h > frame->h / 2 ) {
-			m_h = m_h / 2;
-			f0r_destruct( m_instance );
-			m_instance = f0r_construct( m_w, m_h );
-		}*/
-	//}
-	//This is seriously degrading performance!!
-	//frame_to_fields( 1, frame->RGB, m_frame, frame->w, frame->h, frame->has_alpha_channel );
-	if ( frame->has_alpha_channel ) {
-		f0r_update( m_instance, position / (float)NLE_TIME_BASE, (uint32_t*)frame->RGB, (uint32_t*)m_frame );
-		f0r_update( m_instance, position / (float)NLE_TIME_BASE,(uint32_t*)(frame->RGB+m_w*m_h*2), (uint32_t*)(m_frame+m_w*m_h*2) );
-	} else {
-		int len = frame->w * frame->h * 3;
-		unsigned char *src, *dst, *end;
-		src = frame->RGB;
-		dst = m_tmpFrame;
-		end = frame->RGB + len;
-		while ( src < end ) {
-			dst[0] = src[0];
-			dst[1] = src[1];
-			dst[2] = src[2];
-			dst[3] = 255;
-			dst += 4;
-			src += 3;
-		}
-		f0r_update( m_instance, position / (float)NLE_TIME_BASE, (uint32_t*)m_tmpFrame, (uint32_t*)m_frame );
-		f0r_update( m_instance, position / (float)NLE_TIME_BASE, (uint32_t*)(m_tmpFrame+m_w*m_h*2), (uint32_t*)(m_frame+m_w*m_h*2) );
-	}
-	//fields_to_frames( 1, m_tmpFrame, m_frame, frame->w, frame->h );
-} else {
-//   vv Old Code without deinterlaceing and interlacing
-	if ( frame->has_alpha_channel ) {
-		f0r_update( m_instance, position / (float)NLE_TIME_BASE, (uint32_t*)frame->RGB, (uint32_t*)m_frame );
-	} else {
-		int len = frame->w * frame->h * 3;
-		unsigned char *src, *dst, *end;
-		src = frame->RGB;
-		dst = m_tmpFrame;
-		end = frame->RGB + len;
-		while ( src < end ) {
-			dst[0] = src[0];
-			dst[1] = src[1];
-			dst[2] = src[2];
-			dst[3] = 255;
-			dst += 4;
-			src += 3;
-		}
-		f0r_update( m_instance, position / (float)NLE_TIME_BASE, (uint32_t*)m_tmpFrame, (uint32_t*)m_frame );
-	}
-}
-	return &m_framestruct;
+	f0r_update( m_instance, position / (float)NLE_TIME_BASE, (uint32_t*)frame->RGBA()->planes[0], (uint32_t*)m_frame );
+	return m_lazy_frame;
 }
 
 void Frei0rEffect::getParamInfo( f0r_param_info_t *info, int param_index )
@@ -179,9 +99,7 @@ IEffectDialog* Frei0rEffect::dialog()
 void Frei0rEffect::writeXML( TiXmlElement* xml_node )
 {
 	TiXmlElement* parameter;
-	TiXmlElement* effect = xml_node;/*new TiXmlElement( "effect" );
-	xml_node->LinkEndChild( effect );
-	effect->SetAttribute( "name", name() );*/
+	TiXmlElement* effect = xml_node;
 	f0r_plugin_info_t* finfo;
 	f0r_param_info_t pinfo;
 	finfo = getPluginInfo();
@@ -295,10 +213,6 @@ const char* Frei0rEffect::identifier()
 	string result = "effect:frei0r:";
 	result += name();
 	return result.c_str(); //TODO: this is not OK?
-}
-void Frei0rEffect::setAutomation( AutoTrack* track, int param_index )
-{
-	m_auto_mappings[param_index] = track;
 }
 
 } /* namespace nle */

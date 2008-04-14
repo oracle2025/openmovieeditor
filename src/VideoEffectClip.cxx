@@ -92,7 +92,6 @@ void VideoEffectClip::setEffects( ClipData* clip_data )
 }
 VideoEffectClip::~VideoEffectClip()
 {
-	unPrepareFormat();
 }
 LazyFrame* VideoEffectClip::getFrame( int64_t position )
 {
@@ -144,7 +143,10 @@ void VideoEffectClip::prepareFormat( video_format* fmt )
 }
 void VideoEffectClip::unPrepareFormat()
 {
+	assert( this );
+	assert( dynamic_cast<Clip*>(this) );
 	LazyFrame* f = getFrame( dynamic_cast<Clip*>(this)->position() );
+	assert( f );
 	f->set_target( 0 );
 }
 

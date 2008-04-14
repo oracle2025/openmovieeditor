@@ -36,16 +36,7 @@ ColorCurveFactory::~ColorCurveFactory()
 }
 FilterBase* ColorCurveFactory::get( Clip* clip )
 {
-	VideoEffectClip* effectClip = 0;
-	VideoClip* c1;
-	TitleClip* c3;
-	c1 = dynamic_cast<VideoClip*>(clip);
-	if ( c1 ) {
-		effectClip = c1;
-	} else if ( (c3 = dynamic_cast<TitleClip*>(clip)) ) {
-		effectClip = c3;
-	} 
-
+	VideoEffectClip* effectClip = dynamic_cast<VideoEffectClip*>(clip);
 	if ( !effectClip ) {
 		return 0;
 	}

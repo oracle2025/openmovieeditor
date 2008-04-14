@@ -136,8 +136,11 @@ uint32_t* PreviewNode::getFrame( int output, double position )
 	if ( !m_view ) {
 		return 0;
 	}
-	if ( !m_view->shown() ) {
+	if ( !m_view->shown() && m_view->window()->shown() ) {
 		m_view->show();
+	}
+	if ( !m_view->window()->shown() ) {
+		return 0;
 	}
 	uint32_t* input_frame;
 	if ( node->inputs[0] == 0 || !node->inputs[0]->node ) {

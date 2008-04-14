@@ -31,6 +31,7 @@
 #include "helper.H"
 #include "NodeFilterPreviewFactoryPlugin.H"
 #include "PreviewNode.H"
+#include "LazyFrame.H"
 
 using namespace std;
 
@@ -52,15 +53,19 @@ NodeFilter::NodeFilter( int w, int h )
 	m_sink_node->node->inputs[0] = m_src_node->node;
 
 	m_lazy_frame = new LazyFrame( w, h );
-	m_frame = gavl_video_frame_create( m_lazy_frame->format() );
+	m_gavl_frame = gavl_video_frame_create( 0 );
+	m_gavl_frame->strides[0] = w * 4;
+	m_lazy_frame->put_data( m_gavl_frame );
+	m_frame_cache = 0;
 }
 NodeFilter::~NodeFilter()
 {
 	if ( m_lazy_frame ) {
 		delete m_lazy_frame;
 	}
-	if ( m_frame ) {
-		gavl_video_frame_destroy( m_frame );
+	if ( m_gavl_frame ) {
+		gavl_video_frame_null( m_gavl_frame );
+		gavl_video_frame_destroy( m_gavl_frame );
 	}
 	if ( m_dialog ) {
 		delete m_dialog;
@@ -231,33 +236,17 @@ const char* NodeFilter::name()
 }
 LazyFrame* NodeFilter::getFrame( LazyFrame* frame, int64_t position )
 {
-	copy_frame_struct_props( frame, &m_framestruct );
-	if ( frame->has_alpha_channel ) {
-		m_framestruct.RGB = (unsigned char*)m_sink_node->getFrame( 0, position / (double)NLE_TIME_BASE );
-	} else {
-		int len = frame->w * frame->h * 3;
-		unsigned char *src, *dst, *end;
-		src = frame->RGB;
-		dst = m_frame;
-		end = frame->RGB + len;
-		while ( src < end ) {
-			dst[0] = src[0];
-			dst[1] = src[1];
-			dst[2] = src[2];
-			dst[3] = 255;
-			dst += 4;
-			src += 3;
-		}
-		m_framestruct.RGB = (unsigned char*)m_sink_node->getFrame( 0, position / (double)NLE_TIME_BASE );
-	}
+	m_frame_cache = (uint32_t*)frame->RGBA()->planes[0];
+	m_gavl_frame->planes[0] = (unsigned char*)m_sink_node->getFrame( 0, position / (double)NLE_TIME_BASE );
+
 	for ( filters* filter_node = m_filters; filter_node; filter_node = filter_node->next ) {
 		nle::PreviewNode* preview_node = dynamic_cast<nle::PreviewNode*>(filter_node->node);
 		if ( preview_node ) {
 			preview_node->getFrame( 0, position / (double)NLE_TIME_BASE );
 		}
 	}
-	if ( m_framestruct.RGB ) {
-		return &m_framestruct;
+	if ( m_gavl_frame->planes[0] ) {
+		return m_lazy_frame;
 	} else {
 		return frame;
 	}
