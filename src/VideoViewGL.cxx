@@ -64,6 +64,7 @@ VideoViewGL::VideoViewGL( int x, int y, int w, int h, const char *l )
 	m_zoom = 0.0;
 	m_seekPosition = 0;
 	reset_cache();
+	m_once = true;
 }
 
 VideoViewGL::~VideoViewGL()
@@ -201,14 +202,17 @@ void VideoViewGL::drawVideoBorder()
 
 void VideoViewGL::pushFrameStack( LazyFrame** fs, bool move_cursor )
 {
-  if ( move_cursor ) {MoveCursor(); }
+ // if ( move_cursor ) {MoveCursor(); }
+ // TODO: Cursor not Moving when playback
+ // When this redraws the TimelineView,
+ // it causes redraws of the opengl window, which interferes with the playback,
+ // because then swap_buffers is called after draw, and then pushFrameStack
+ // _always_ draws into the second buffer which cases _severe_ screenflicker,
+ // BAH 
 	
 	make_current();
 	if ( !valid() ) {
-		glLoadIdentity(); glViewport( 0, 0, w(), h() ); // glViewport( _x, _y, _w, _h );
-		glOrtho( 0, 10, 10, 0, -20000, 10000 ); glEnable( GL_BLEND );
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		glEnable (GL_TEXTURE_2D);
+		not_valid();
 	}
 
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -234,37 +238,29 @@ void VideoViewGL::pushFrame( LazyFrame* fs, bool move_cursor )
 	fstack[0] = fs;
 	pushFrameStack( fstack, move_cursor );
 }
+void VideoViewGL::not_valid()
+{
+	float glo1, glo2;
+	if ( m_zoom < 0.0 ) {
+		glo1 = 10.0 * m_zoom;
+		glo2 = 10.0 - 10.0 * m_zoom;
+	} else {
+		glo1 = 0.0 + m_zoom * 5.0; // -> 5.0
+		glo2 = 10.0 - m_zoom * 5.0; // -> 5.0
+	}
+	glLoadIdentity(); glViewport( 0, 0, w(), h() ); // glViewport( _x, _y, _w, _h );
+	glOrtho( glo1, glo2, glo2, glo1, -20000, 10000 ); glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glEnable (GL_TEXTURE_2D);
+}
 /*
  *  GL_NVX_ycrcb
  */
 void VideoViewGL::draw()
 {
 	if (g_backseek) { reset_cache(); g_backseek=false; }
-	if ( !valid() ) {
-		float glo1, glo2;
-		if ( m_zoom < 0.0 ) {
-			glo1 = 10.0 * m_zoom;
-			glo2 = 10.0 - 10.0 * m_zoom;
-			/*
-			0.0:
-				0.0;
-				10.0;
-			-1.0:
-				-10.0
-				20.0;
-			*/
-		} else {
-			glo1 = 0.0 + m_zoom * 5.0; // -> 5.0
-			glo2 = 10.0 - m_zoom * 5.0; // -> 5.0
-		}
-		glLoadIdentity(); glViewport( 0, 0, w(), h() ); // glViewport( _x, _y, _w, _h );
-		glOrtho( glo1, glo2, glo2, glo1, -20000, 10000 ); glEnable( GL_BLEND );
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		glEnable (GL_TEXTURE_2D);
-	}
-	static bool once = true;
 	static unsigned char p[3 * 2048 * 2048] = { 0 };
-	if (once) {
+	if (m_once) {
 		GLint max[2];
 		glGetIntegerv(GL_MAX_TEXTURE_SIZE, max);
 		glGenTextures( 10, video_canvas );
@@ -291,9 +287,12 @@ void VideoViewGL::draw()
 		cout << "OpenGL version string: " << ((const char*)glGetString(GL_VERSION)) << endl;
 		cout << "GL_MAX_TEXTURE_SIZE = " << max[0] << endl;
 		cout << "----8<-----------------------" << endl;
-		once = false;
+		m_once = false;
 	}
 	if ( g_playbackCore->active() ) { return; }
+	if ( !valid() ) {
+		not_valid();
+	}
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	glBindTexture( GL_TEXTURE_2D, video_canvas[0] );
 	if ( m_seekPosition >= 0 ) {

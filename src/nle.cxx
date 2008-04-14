@@ -369,6 +369,21 @@ void NleUI::cb_(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb__i(o,v);
 }
 
+void NleUI::cb_9_i(Fl_Button* o, void*) {
+  //Make a window and reparent gl_window into it.
+o->deactivate();
+m_videoView->parent()->remove(m_videoView);
+delete m_videoView;
+Fl_Window *window = new Fl_Window(300,180);
+m_videoView = new nle::VideoViewGL(0, 0, 300, 180);
+window->end();
+window->resizable(m_videoView);
+window->show();
+}
+void NleUI::cb_9(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_9_i(o,v);
+}
+
 void NleUI::cb_flexible_i(Fl_Menu_*, void*) {
   nle::g_timeline->m_playback_fps = nle::PB_FPS_NONE;
 }
@@ -948,7 +963,7 @@ NleUI::NleUI() {
             Fl_Group::current()->resizable(o);
           }
           { Fl_Group* o = new Fl_Group(675, 25, 25, 320);
-            { Fl_Slider* o = zoom_slider = new Fl_Slider(675, 25, 25, 295);
+            { Fl_Slider* o = zoom_slider = new Fl_Slider(675, 50, 25, 270);
               o->tooltip("Zoom");
               o->type(4);
               o->minimum(-1);
@@ -958,6 +973,10 @@ NleUI::NleUI() {
             { Fl_Button* o = new Fl_Button(675, 320, 25, 25);
               o->tooltip("Reset Zoom");
               o->callback((Fl_Callback*)cb_);
+            }
+            { Fl_Button* o = new Fl_Button(675, 25, 25, 25, "@9->");
+              o->tooltip("Detach Preview");
+              o->callback((Fl_Callback*)cb_9);
             }
             o->end();
           }

@@ -26,7 +26,7 @@ if ( Fl::event()==FL_CLOSE ) {
       xywh {650 234 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
-        label {Black Borders} open selected
+        label {Black Borders} open
         xywh {0 0 530 25}
       } {
         Submenu {} {
@@ -331,7 +331,7 @@ while (dlg.shown())
               code0 {\#include "VideoViewGL.H"}
               class {nle::VideoViewGL}
             }
-            Fl_Group {} {
+            Fl_Group {} {open
               xywh {675 25 25 320}
             } {
               Fl_Slider zoom_slider {
@@ -340,7 +340,7 @@ m_videoView->invalidate();
 if (!nle::g_playbackCore->active()) {
 	m_videoView->redraw();
 }}
-                tooltip Zoom xywh {675 25 25 295} type {Vert Knob} minimum -1 resizable
+                tooltip Zoom xywh {675 50 25 270} type {Vert Knob} minimum -1 resizable
                 code0 {\#include "IPlaybackCore.H"}
               }
               Fl_Button {} {
@@ -349,6 +349,19 @@ m_videoView->zoom( 0 );
 m_videoView->invalidate();
 m_videoView->redraw();}
                 tooltip {Reset Zoom} xywh {675 320 25 25}
+              }
+              Fl_Button {} {
+                label {@9->}
+                callback {//Make a window and reparent gl_window into it.
+o->deactivate();
+m_videoView->parent()->remove(m_videoView);
+delete m_videoView;
+Fl_Window *window = new Fl_Window(300,180);
+m_videoView = new nle::VideoViewGL(0, 0, 300, 180);
+window->end();
+window->resizable(m_videoView);
+window->show();} selected
+                tooltip {Detach Preview} xywh {675 25 25 25}
               }
             }
             Fl_Group {} {open
