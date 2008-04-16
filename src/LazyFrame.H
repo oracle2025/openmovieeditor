@@ -48,7 +48,13 @@ class LazyFrame
 		float alpha();
 		void alpha( float value );
 		void put_data( gavl_video_frame_t* frame );
+		bool cacheable() { return m_cacheable; }
+		void dirty( bool val ) { m_dirty = val; }
+		bool dirty() { return m_dirty; }
+		void this_frame_wont_change() { m_cacheable = true; }
 	private:
+		bool m_cacheable;
+		bool m_dirty;
 		float m_alpha;
 		gavl_video_converter_t *m_converter_RGBA;
 		gavl_video_converter_t *m_converter_target;

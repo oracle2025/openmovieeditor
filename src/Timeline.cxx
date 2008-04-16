@@ -37,6 +37,7 @@
 #include "DummyClip.H"
 #include "VideoFileFactory.H"
 #include "TitleClip.H"
+#include "ImageClip.H"
 #include "MainFilterFactory.H"
 #include "FilterBase.H"
 #include "AudioFileFactory.H"
@@ -613,7 +614,7 @@ int Timeline::read( string filename )
 						}
 					}
 					this->addClip( trackId, c );
-				} /*else {
+				} else {
 					ImageClip* ic = new ImageClip( tr, position, filename, length - trimA - trimB, -1 );
 					if ( !ic->ok() ) {
 						delete ic;
@@ -635,7 +636,7 @@ int Timeline::read( string filename )
 
 						this->addClip( trackId, ic );
 					}
-				}*/
+				}
 			}
 			if ( vec ) {
 				const char* render;
@@ -878,7 +879,7 @@ int Timeline::read_20061221_and_earlier( string filename )
 					}
 					this->addClip( trackId, c );
 				} else {
-				/*	ImageClip* ic = new ImageClip( tr, CONVERT_TIMEBASE(position), filename, CONVERT_TIMEBASE(length - trimA - trimB), -1 );
+					ImageClip* ic = new ImageClip( tr, CONVERT_TIMEBASE(position), filename, CONVERT_TIMEBASE(length - trimA - trimB), -1 );
 					vec = ic;
 					if ( !ic->ok() ) {
 						delete ic;
@@ -927,7 +928,7 @@ int Timeline::read_20061221_and_earlier( string filename )
 						}
 
 						this->addClip( trackId, ic );
-					}*/
+					}
 				}
 			}
 			if ( vec ) {

@@ -24,6 +24,7 @@ namespace nle
 
 LazyFrame::LazyFrame( gavl_video_format_t *format )
 {
+	m_cacheable = false;
 	m_converter_RGBA = 0;
 	m_rgba_frame = 0;
 	m_converter_target = 0;
@@ -50,6 +51,7 @@ LazyFrame::LazyFrame( gavl_video_format_t *format )
 }
 LazyFrame::LazyFrame( int w, int h )
 {
+	m_cacheable = false;
 	m_converter_RGBA = 0;
 	m_rgba_frame = 0;
 	m_converter_target = 0;

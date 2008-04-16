@@ -91,6 +91,7 @@ TitleClip::TitleClip( Track* track, int64_t position, int64_t length, int id, Cl
 		m_color = FL_WHITE;
 		m_text = "A Movie by";
 	}
+	m_lazy_frame->this_frame_wont_change();
 }
 void TitleClip::init()
 {
@@ -176,6 +177,7 @@ void TitleClip::init()
 	//free(pixels);
 	char** d = (char**)m_image->data();
 	m_gavl_frame->planes[0] = (unsigned char *)d[0];
+	m_lazy_frame->dirty( true );
 	if ( !m_render_mode ) {
 		if ( m_artist ) {
 			ImageClipArtist* ica = dynamic_cast<ImageClipArtist*>(m_artist);

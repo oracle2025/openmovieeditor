@@ -29,6 +29,7 @@
 #include "globals.H"
 #include "DummyClip.H"
 #include "TitleClip.H"
+#include "ImageClip.H"
 #include "LazyFrame.H"
 
 namespace nle
@@ -83,9 +84,9 @@ void VideoTrack::addFile( int64_t position, string filename, int64_t trimA, int6
 		addClip( c );
 		return;
 	} else {
-	/*	ImageClip* ic = new ImageClip( this, position, filename, length - trimA - trimB, id, data );
+		ImageClip* ic = new ImageClip( this, position, filename, length - trimA - trimB, id, data );
 		if ( !ic->ok() ) {
-			delete ic;*/
+			delete ic;
 			if ( length > 0 ) {
 				Clip* c = new DummyClip( this, filename, position, length+trimA+trimB, trimA, trimB );
 				addClip( c );
@@ -93,8 +94,8 @@ void VideoTrack::addFile( int64_t position, string filename, int64_t trimA, int6
 			}
 			SHOW_ERROR( string( "Video file failed to load:\n" ) + fl_filename_name( filename.c_str() ) );
 			return;
-		//}
-		//addClip( ic );
+		}
+		addClip( ic );
 	}
 }
 LazyFrame* VideoTrack::getFrame( int64_t position )

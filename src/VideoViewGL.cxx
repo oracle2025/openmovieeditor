@@ -342,18 +342,22 @@ void VideoViewGL::drawFrameStack( LazyFrame** fs )
 	//TODO: i < 10
 	for ( int i = count; i>=0; i-- ) {
 		glBindTexture( GL_TEXTURE_2D, video_canvas[i] );
-/*		if ( fs[i]->cacheable ) {
-			if ( tcache[i].p == fs[i] && !tcache[i].dirty && !fs[i]->dirty ) {
+		if ( fs[i]->cacheable() ) {
+			if ( tcache[i].p == fs[i] && !tcache[i].dirty && !fs[i]->dirty() ) {
 				continue;
 			} else {
 				tcache[i].p = fs[i];
 				tcache[i].dirty = false;
-				fs[i]->dirty = false;
+				fs[i]->dirty( false );
 			}
 		} else {
 			tcache[i].dirty = true;
-		}*/
-		glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->format()->frame_width, fs[i]->format()->frame_height, GL_RGBA, GL_UNSIGNED_BYTE, fs[i]->RGBA()->planes[0] );
+		}
+		if ( fs[i]->format()->pixelformat == GAVL_RGB_24 ) {
+			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->format()->frame_width, fs[i]->format()->frame_height, GL_RGB, GL_UNSIGNED_BYTE, fs[i]->native()->planes[0] );
+		} else {
+			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, fs[i]->format()->frame_width, fs[i]->format()->frame_height, GL_RGBA, GL_UNSIGNED_BYTE, fs[i]->RGBA()->planes[0] );
+		}
 	}
 	for ( int i = count; i>=0; i-- ) {
 		glBindTexture( GL_TEXTURE_2D, video_canvas[i] );

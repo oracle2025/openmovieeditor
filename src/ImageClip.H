@@ -24,6 +24,7 @@
 #include "IVideoReader.H"
 #include "global_includes.H"
 #include "VideoEffectClip.H"
+#include <gavl/gavl.h>
 class Fl_Shared_Image;
 
 namespace nle
@@ -35,8 +36,8 @@ class ImageClip : public FilterClip, public VideoEffectClip
 		ImageClip( Track* track, int64_t position, string filename, int64_t length = -1, int id = -1, ClipData* data = 0 );
 		~ImageClip();
 		int64_t length();
-		frame_struct* getRawFrame( int64_t position, int64_t &position_in_file );
-		frame_struct* getFirstFrame();
+		LazyFrame* getRawFrame( int64_t position, int64_t &position_in_file );
+		LazyFrame* getFirstFrame();
 		bool ok() { return m_ok; }
 		string filename() { return m_filename; }
 		void reset() {}
@@ -57,6 +58,8 @@ class ImageClip : public FilterClip, public VideoEffectClip
 		bool m_ok;
 		string m_filename;
 		IClipArtist* m_artist;
+		gavl_video_frame_t *m_gavl_frame;
+		LazyFrame* m_lazy_frame;
 };
 
 } /* namespace nle */
