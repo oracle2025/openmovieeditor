@@ -22,6 +22,7 @@
 
 #include "InkscapeClip.H"
 #include "ErrorDialog/IErrorHandler.H"
+#include "ImageClip.H"
 #include "ImageClipArtist.H"
 #include "helper.H"
 #include "globals.H"
@@ -32,21 +33,9 @@
 #include <unistd.h>
 #include "VideoViewGL.H"
 #include <cassert>
-
+#define BUFFER_LEN 1024
 namespace nle
 {
-static string random_file_name()
-{
-	char random_end[17];
-	string filename = "";
-	for ( int i = 0; i < 16; i++ ) {
-		random_end[i] = '0' + rand() % 10;
-	}
-	random_end[16] = '\0';
-	
-	filename += random_end;
-	return filename;
-}
 
 static void detect_svg_update_callback( void* data );
 
@@ -57,6 +46,15 @@ InkscapeClip::InkscapeClip( Track* track, int64_t position, string filename, int
 	"720x576";
 	"inkscape --export-png=123.png /usr/share/openmovieeditor/svg-titles/0002.svg";
 	m_filename = filename;
+
+
+	char buffer[BUFFER_LEN];
+	findpath( filename.c_str(), buffer, BUFFER_LEN );
+	string cachepath = string(g_homefolder) + ("/.openme/cache" PREF_FILE_ADD)+ buffer;
+	string cachefile = string(g_homefolder) + ("/.openme/cache" PREF_FILE_ADD) + filename + ".png";
+
+
+
 	/*
 
 	Clip Create: copy svg-template into Projects Folder $HOME/Video\ Projects/random_file_name().svg
@@ -67,115 +65,30 @@ InkscapeClip::InkscapeClip( Track* track, int64_t position, string filename, int
 	Extend the context Menü of the clip, for editing
 
 	*/
-	m_unique_id = random_file_name();
 	string svg_filename = filename;
-	string png_filename = string(getenv("HOME")) + "/" + "Video Projects/" + m_unique_id + ".png";
 	string inkscape_command = "inkscape --export-png=\"";
-	inkscape_command += png_filename;
+	inkscape_command += cachefile;
 	inkscape_command += "\" \"";
 	inkscape_command += svg_filename;
 	inkscape_command += "\"";
 	system( inkscape_command.c_str() );
 
-	m_ok = false;
-	m_artist = 0;
-	m_image = Fl_Shared_Image::get( png_filename.c_str() );
-	if ( !m_image ) {
-		ERROR_DETAIL( "This is not an image file" );
-		return;
-	}
-	if ( m_image->w() > 1024 || m_image->h() > 1024 ) {
-		ERROR_DETAIL( "This image is to big, maximum is 1024x1024" );
-		return;
-	}
-
-
 	if ( length > 0 ) {
 		m_length = length;
 	} else {
 		m_length = NLE_TIME_BASE * 10;
 	}
-	init_frame_struct( &m_frame, m_image->w(), m_image->h() );
-	if ( m_image->d() == 4 ) {
-		m_frame.has_alpha_channel = true;
-	} else if ( m_image->d() == 3 ) {
-		m_frame.has_alpha_channel = false;
-	} else {
-		ERROR_DETAIL( "This image file has a wrong color depth,\nonly RGB and RGBA images are supported" );
-		return;
-	}
-	//m_frame.RGB = new (unsigned char)[m_frame.w * m_frame.h * 4];
-	char** d = (char**)m_image->data();
-	m_frame.RGB = (unsigned char *)d[0];
-	
-	if ( !track->render_mode() ) {
-		m_artist = new ImageClipArtist( m_image );
-	}
-	
-	m_ok = true;
+	m_image_clip = new ImageClip( track, position, cachefile, length, id );
+
 	setEffects( data );
 	Fl::add_timeout(1.0, detect_svg_update_callback, this );
 }
-InkscapeClip::InkscapeClip( Track* track, int64_t position, int64_t length, int id, TiXmlElement* xml_node )
-	: FilterClip( track, position, id ), VideoEffectClip( this )
-{
-	assert( xml_node );
-	m_image = 0;
-	m_artist = 0;
-	m_ok = false;
-	const char* textp;
-	if ( ( textp = xml_node->Attribute( "unique_id" ) ) ) {
-		m_unique_id = textp;
-	} else {
-		return;
-	}
-	if ( ( textp = xml_node->Attribute( "filename" ) ) ) {
-		m_filename = textp;
-	} else {
-		return;
-	}
-	string png_filename = string(getenv("HOME")) + "/" + "Video Projects/" + m_unique_id + ".png";
-	m_image = Fl_Shared_Image::get( png_filename.c_str() );
-	if ( !m_image ) {
-		cerr << "Inkscape Clip: Not an Image" << endl;
-		return;
-	}
-	if ( length > 0 ) {
-		m_length = length;
-	} else {
-		m_length = NLE_TIME_BASE * 10;
-	}
-	init_frame_struct( &m_frame, m_image->w(), m_image->h() );	
-	m_frame.cacheable = true;
-	if ( m_image->d() == 4 ) {
-		m_frame.has_alpha_channel = true;
-	} else if ( m_image->d() == 3 ) {
-		m_frame.has_alpha_channel = false;
-	}
-	char** d = (char**)m_image->data();
-	m_frame.RGB = (unsigned char *)d[0];
 
-	if ( !track->render_mode() ) {
-		m_artist = new ImageClipArtist( m_image );
-	}
-
-	detectSvgUpdate();
-
-	Fl::add_timeout(1.0, detect_svg_update_callback, this );
-	m_ok = true;
-}
 
 InkscapeClip::~InkscapeClip()
 {
 	Fl::remove_timeout( detect_svg_update_callback, this );
-	if ( m_image ) {
-		m_image->release();
-		m_image = 0;
-	}
-	if ( m_artist ) {
-		delete m_artist;
-	}
-	
+	delete m_image_clip;
 }
 int64_t InkscapeClip::length()
 {
@@ -203,7 +116,11 @@ static void detect_svg_update_callback( void* data ) {
 void InkscapeClip::detectSvgUpdate()
 {
 	string svg_filename = m_filename;
-	string png_filename = string(getenv("HOME")) + "/" + "Video Projects/" + m_unique_id + ".png";
+	char buffer[BUFFER_LEN];
+	findpath( m_filename.c_str(), buffer, BUFFER_LEN );
+	string cachepath = string(g_homefolder) + ("/.openme/cache" PREF_FILE_ADD)+ buffer;
+	string cachefile = string(g_homefolder) + ("/.openme/cache" PREF_FILE_ADD) + m_filename + ".png";
+	string png_filename = cachefile;
 	struct stat statbuf1;
 	struct stat statbuf2;
 	int r = stat( svg_filename.c_str(), &statbuf1 );
@@ -217,55 +134,28 @@ void InkscapeClip::detectSvgUpdate()
 		inkscape_command += svg_filename;
 		inkscape_command += "\"";
 		system( inkscape_command.c_str() );
-		if ( m_image ) {
-			m_image->release();
-			m_image = 0;
-		}
-		if ( m_artist ) {
-			delete m_artist;
-		}
-		m_artist = 0;
-		m_image = Fl_Shared_Image::get( png_filename.c_str() );
-		if ( !m_image ) {
-			cerr << "Inkscape Clip: Not an Image" << endl;
-			return;
-		}
-		m_frame.w = m_image->w();
-		m_frame.h = m_image->h();
-		if ( m_image->d() == 4 ) {
-			m_frame.has_alpha_channel = true;
-		} else if ( m_image->d() == 3 ) {
-			m_frame.has_alpha_channel = false;
-		}
-		char** d = (char**)m_image->data();
-		m_frame.RGB = (unsigned char *)d[0];
-
-		if ( !track()->render_mode() ) {
-			m_artist = new ImageClipArtist( m_image );
-		}
-
-		m_frame.dirty = true;
+		delete m_image_clip;
+		m_image_clip = new ImageClip( track(), position(), png_filename, length(), m_id );
 		g_videoView->redraw();
 	}
 }
 
-frame_struct* InkscapeClip::getRawFrame( int64_t position, int64_t &position_in_file )
+LazyFrame* InkscapeClip::getRawFrame( int64_t position, int64_t &position_in_file )
 {
-	m_frame.alpha = 1.0;
 	position_in_file = position - m_position;
 	if ( position >= m_position && position <= m_position + m_length ) {
-		return &m_frame;
+		return m_image_clip->getRawFrame( m_image_clip->position(), position_in_file );
 	} else {
 		return 0;
 	}
 }
 int InkscapeClip::w()
 {
-	return m_image->w();
+	return m_image_clip->w();
 }
 int InkscapeClip::h()
 {
-	return m_image->h();
+	return m_image_clip->h();
 }
 int64_t InkscapeClip::trimA( int64_t trim )
 {
@@ -289,7 +179,15 @@ int64_t InkscapeClip::trimB( int64_t trim )
 }
 int64_t InkscapeClip::fileLength()
 {
-	return -1;
+	return m_image_clip->fileLength();
+}
+bool InkscapeClip::ok()
+{
+	return m_image_clip->ok();
+}
+IClipArtist* InkscapeClip::getArtist()
+{
+	return m_image_clip->getArtist();
 }
 
 } /* namespace nle */

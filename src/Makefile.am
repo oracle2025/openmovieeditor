@@ -284,13 +284,13 @@ openmovieeditor_SOURCES = nle.cxx\
 	CurveEditorBezier.H\
 	CurveEditorBezier.cxx\
 	ImageClip.cxx\
-	ImageClip.H
+	ImageClip.H\
+	InkscapeClip.cxx\
+	InkscapeClip.H
 #	ColorWheel.H\
 #	ColorWheel.cxx\
 #	VideoFileFfmpeg.cxx\
 #	VideoFileFfmpeg.H\
-#	InkscapeClip.cxx\
-#	InkscapeClip.H\
 #	
 
 

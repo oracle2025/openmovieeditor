@@ -45,6 +45,8 @@
 #include <cstring>
 #include "strlcpy.h"
 #include "TimelineView.H"
+#include "InkscapeClip.H"
+#include "LazyFrame.H"
 
 // v-- for old Projects
 
@@ -52,7 +54,6 @@
 #include "Frei0rFactory.H"
 #include "AudioVolumeFilter.H"
 #include "AudioVolumeFilterFactory.H"
-#include "LazyFrame.H"
 namespace nle
 {
 
@@ -463,9 +464,6 @@ int Timeline::write( string filename, string name )
 					clip->SetAttribute( "font", tc->font() );
 					clip->SetAttribute( "color", tc->color() );
 				}
-				/*if ( InkscapeClip* inc = dynamic_cast<InkscapeClip*>(cn->clip) ) {
-					clip->SetAttribute( "unique_id", inc->UniqueId() );
-				}*/
 			}
 			cn = cn->next;
 		}
@@ -587,8 +585,8 @@ int Timeline::read( string filename )
 					}
 				}
 				this->addClip( trackId, c );
-			} /*else if ( strcmp( ext, ".svg" ) == 0 ||strcmp( ext, ".SVG" ) == 0 ) {
-				InkscapeClip* c = new InkscapeClip( tr, position, length - trimA - trimB, -1, j );
+			} else if ( strcmp( ext, ".svg" ) == 0 ||strcmp( ext, ".SVG" ) == 0 ) {
+				InkscapeClip* c = new InkscapeClip( tr, position, filename, length - trimA - trimB, -1 );
 				TiXmlElement* effectXml = TiXmlHandle( j ).FirstChildElement( "filter" ).Element();
 				for( ; effectXml; effectXml = effectXml->NextSiblingElement( "filter" ) ) {
 					FilterFactory* ef = g_mainFilterFactory->get( effectXml->Attribute( "identifier" ) );
@@ -599,7 +597,7 @@ int Timeline::read( string filename )
 					}
 				}
 				this->addClip( trackId, c );
-			}*/else {
+			} else {
 				IVideoFile* vf = VideoFileFactory::get( filename );
 				if ( vf ) {
 					VideoClip* c = new VideoClip( tr, position, vf, trimA, trimB, -1 );

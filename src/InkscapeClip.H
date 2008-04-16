@@ -28,19 +28,20 @@ class Fl_Shared_Image;
 namespace nle
 {
 
+class ImageClip;
+
 class InkscapeClip : public FilterClip, public VideoEffectClip
 {
 	public:
 		InkscapeClip( Track* track, int64_t position, string filename, int64_t length = -1, int id = -1, ClipData* data = 0 );
-		InkscapeClip( Track* track, int64_t position, int64_t length, int id, TiXmlElement* xml_node );
 		~InkscapeClip();
 		int64_t length();
-		frame_struct* getRawFrame( int64_t position, int64_t &position_in_file );
-		bool ok() { return m_ok; }
+		LazyFrame* getRawFrame( int64_t position, int64_t &position_in_file );
+		bool ok();
 		string filename() { return m_filename; }
 		void reset() {}
 		int type() { return CLIP_TYPE_IMAGE; }
-		inline IClipArtist* getArtist() { return m_artist; }
+		inline IClipArtist* getArtist();
 		using Clip::trimA;
 		using Clip::trimB;
 		int64_t trimA( int64_t trim );
@@ -55,15 +56,10 @@ class InkscapeClip : public FilterClip, public VideoEffectClip
 			{ if ( index == 0 ) { return "Edit with Inkscape"; } return 0; }
 		void doAction( int index );
 		void detectSvgUpdate();
-		const char* UniqueId() { return m_unique_id.c_str(); }
 	private:
-		Fl_Shared_Image* m_image;
-		int64_t m_length;
-		frame_struct m_frame;
-		bool m_ok;
+		ImageClip* m_image_clip;
 		string m_filename;
-		IClipArtist* m_artist;
-		string m_unique_id;
+		int64_t m_length;
 };
 
 } /* namespace nle */

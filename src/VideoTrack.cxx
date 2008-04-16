@@ -30,6 +30,7 @@
 #include "DummyClip.H"
 #include "TitleClip.H"
 #include "ImageClip.H"
+#include "InkscapeClip.H"
 #include "LazyFrame.H"
 
 namespace nle
@@ -71,11 +72,11 @@ void VideoTrack::addFile( int64_t position, string filename, int64_t trimA, int6
 		return;
 	}
 	const char* ext = fl_filename_ext( filename.c_str() );
-/*	if ( strcmp( ext, ".svg" ) == 0 ||strcmp( ext, ".SVG" ) == 0 ) {
+	if ( strcmp( ext, ".svg" ) == 0 ||strcmp( ext, ".SVG" ) == 0 ) {
 		InkscapeClip* c = new InkscapeClip( this, position, filename, length - trimA - trimB, id, data );
 		addClip( c );
 		return;
-	}*/
+	}
 	IVideoFile* vf = VideoFileFactory::get( filename );
 	
 	if ( vf ) {
