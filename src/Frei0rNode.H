@@ -30,6 +30,7 @@ class Frei0rNode : public INode
 		void delete_widgets();
 		void readXML( TiXmlElement* xml_node );
 		void writeXML( TiXmlElement* xml_node );
+		const char* identifier();
 	private:
 		f0r_instance_t m_instance;
 		f0r_construct_f f0r_construct;

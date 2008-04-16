@@ -286,7 +286,11 @@ openmovieeditor_SOURCES = nle.cxx\
 	ImageClip.cxx\
 	ImageClip.H\
 	InkscapeClip.cxx\
-	InkscapeClip.H
+	InkscapeClip.H\
+	ImageNode.H\
+	ImageNode.cxx\
+	NodeFilterImageFactoryPlugin.H\
+	NodeFilterImageFactoryPlugin.cxx
 #	ColorWheel.H\
 #	ColorWheel.cxx\
 #	VideoFileFfmpeg.cxx\

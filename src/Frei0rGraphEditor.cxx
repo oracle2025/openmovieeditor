@@ -4,10 +4,12 @@
 #include "Frei0rNode.H"
 #include "BezierCurveNode.H"
 #include "PreviewNode.H"
+#include "ImageNode.H"
 //#include "ImageNode.H"
 #include <FL/fl_draw.H>
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
+#include <FL/filename.H>
 #include "sl/sl.h"
 #include <cassert>
 #include <iostream>
@@ -178,6 +180,31 @@ int Frei0rGraphEditor::handle( int event )
 		return Fl_Widget::handle( event );
 	}
 	switch ( event ) {
+		case FL_DND_DRAG:
+		case FL_DND_RELEASE:
+		case FL_DND_ENTER:
+		case FL_DND_LEAVE:
+			return 1;
+		case FL_PASTE:
+			{
+				char *fn,*filename=strdup(Fl::event_text());
+				int i=strlen(filename);
+				while (i>0 && (iscntrl(filename[i]) || isspace(filename[i])) ) filename[i--]=0;
+				if (!strncmp(filename,"file://",7)) {
+					fn=&(filename[7]); 
+				} else {
+					fn=filename;
+				}
+				if ( !fl_filename_isdir(fn)) {
+					window()->begin();
+					nle::ImageNode *in = new nle::ImageNode( fn, m_filter->m_w, m_filter->m_h );
+					m_filter->m_filters = (filters*)sl_push( m_filter->m_filters, filters_create( Fl::event_x() - x(),Fl::event_y() - y(), 50, 50, in, in->name() ) );
+					m_filter->m_filters->node->init_widgets();
+					window()->end();
+					redraw();
+				}
+			}
+			return 1;
 		case FL_PUSH:
 			for ( filters* i = m_filter->m_filters; i; i = i->next ) {
 				if ( inside_filter( i, Fl::event_x() - x(), Fl::event_y() - y() ) ) {

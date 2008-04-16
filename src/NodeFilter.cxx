@@ -30,6 +30,7 @@
 #include "BezierCurveNode.H"
 #include "helper.H"
 #include "NodeFilterPreviewFactoryPlugin.H"
+#include "NodeFilterImageFactoryPlugin.H"
 #include "PreviewNode.H"
 #include "LazyFrame.H"
 
@@ -91,24 +92,14 @@ void NodeFilter::writeXML( TiXmlElement* xml_node )
 		xml_filter->SetAttribute( "h", filter_node->h );
 		xml_filter->SetAttribute( "name", filter_node->name.c_str() );
 		xml_filter->SetAttribute( "id", filter_node->id );
+		xml_filter->SetAttribute( "identifier", filter_node->node->identifier() );
+		filter_node->node->writeXML( xml_filter );
 		Frei0rNode* frei0r_node = dynamic_cast<Frei0rNode*>(filter_node->node);
 		if ( frei0r_node ) {
 			string identifier( "effect:frei0r:" );
 			identifier += filter_node->name;
 			xml_filter->SetAttribute( "identifier", identifier.c_str() );
-			frei0r_node->writeXML( xml_filter );
 		}
-		BezierCurveNode* bezier_curve_node = dynamic_cast<BezierCurveNode*>(filter_node->node);
-		if ( bezier_curve_node ) {
-			xml_filter->SetAttribute( "identifier", bezier_curve_node->identifier() );
-			bezier_curve_node->writeXML( xml_filter );
-		}
-		nle::PreviewNode* preview_node = dynamic_cast<nle::PreviewNode*>(filter_node->node);
-		if ( preview_node ) {
-			xml_filter->SetAttribute( "identifier", preview_node->identifier() );
-			preview_node->writeXML( xml_filter );
-		}
-		xml_filter->SetAttribute( "id", filter_node->id );
 		for ( int i = 0; i < filter_node->input_count; i++ ) {
 			if ( filter_node->inputs[i] ) {
 				TiXmlElement* xml_input = new TiXmlElement( "input" );
@@ -132,6 +123,7 @@ void NodeFilter::readXML( TiXmlElement* xml_node )
 {
 	NodeFilterBezierCurveFactoryPlugin bezier_node_factory_plugin;
 	nle::NodeFilterPreviewFactoryPlugin preview_factory_plugin;
+	nle::NodeFilterImageFactoryPlugin image_factory_plugin;
 	TiXmlElement* xml_filter = TiXmlHandle( xml_node ).FirstChild( "filter" ).Element();
 	for ( ; xml_filter; xml_filter = xml_filter->NextSiblingElement( "filter" ) ) {
 		int id;
@@ -163,7 +155,9 @@ void NodeFilter::readXML( TiXmlElement* xml_node )
 					ffp = &bezier_node_factory_plugin;
 				} else if ( identifier && strcmp("effect:builtin:Preview", identifier ) == 0 ) {
 					ffp = &preview_factory_plugin;
-				} else if ( identifier && g_node_filter_frei0r_factory ) {
+				} else if ( identifier && strcmp("effect:builtin:Image", identifier ) == 0 ) {
+					ffp = &image_factory_plugin;
+				} else if ( identifier && strncmp("effect:frei0r:", identifier, strlen("effect:frei0r:") ) == 0 && g_node_filter_frei0r_factory ) {
 					identifier += strlen("effect:frei0r:");
 					ffp = g_node_filter_frei0r_factory->get( identifier );
 				}
@@ -180,18 +174,7 @@ void NodeFilter::readXML( TiXmlElement* xml_node )
 					xml_filter->Attribute( "id", &id );
 
 					m_filters = (filters*)sl_push( m_filters, filters_create( x, y, w, h, ffp->get_i_node( m_w, m_h ), ffp->name(), id ) );
-					Frei0rNode* frei0r_node = dynamic_cast<Frei0rNode*>(m_filters->node);
-					if ( frei0r_node ) {
-						frei0r_node->readXML( xml_filter );
-					}
-					BezierCurveNode* bezier_curve_node = dynamic_cast<BezierCurveNode*>(m_filters->node);
-					if ( bezier_curve_node ) {
-						bezier_curve_node->readXML( xml_filter );
-					}
-					nle::PreviewNode* preview_node = dynamic_cast<nle::PreviewNode*>(m_filters->node);
-					if ( preview_node ) {
-						preview_node->readXML( xml_filter );
-					}
+					m_filters->node->readXML( xml_filter );
 				}
 
 			}

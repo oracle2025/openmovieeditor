@@ -14,6 +14,7 @@ class SrcNode : public INode
 		int getInputCount() { return 0; }
 		int getOutputCount() { return 1; }
 		uint32_t* getFrame( int output, double position );
+		const char* identifier() { return "effect:builtin:SrcNode"; }
 	private:
 		nle::NodeFilter* m_node_filter;
 };

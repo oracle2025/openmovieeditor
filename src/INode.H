@@ -14,6 +14,9 @@ class INode
 		virtual void delete_widgets() {};
 		virtual uint32_t* getFrame( int output, double position ) = 0;
 		virtual void init() {}
+		virtual const char* identifier() = 0;
+		virtual void readXML( TiXmlElement* xml_node ) {}
+		virtual void writeXML( TiXmlElement* xml_node ) {}
 		filters* node;
 
 };

@@ -13,6 +13,7 @@ class SinkNode : public INode
 		int getInputCount() { return 1; }
 		int getOutputCount() { return 0; }
 		uint32_t* getFrame( int output, double position );
+		const char* identifier() { return "effect:builtin:SinkNode"; }
 };
 
 
