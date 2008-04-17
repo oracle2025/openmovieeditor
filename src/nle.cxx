@@ -6977,72 +6977,13 @@ export_filename->value( nle::g_preferences->lastRenderFilename().c_str() );
 }
 
 nle::IVideoFileWriter* ExportDialog::getFileWriter() {
-  quicktime_t* qt;
-if (presets_browser->value()==0) {
+  if (presets_browser->value()==0) {
 	return 0;
 }
 
 nle::EncodingPreset* preset = (nle::EncodingPreset*)presets_browser->data(presets_browser->value());
-if ( preset->m_avi_odml ) {
-	qt = quicktime_open( (char*)export_filename->value(), 0, 1 );
-	quicktime_set_avi(qt, 1);
-	//qt = lqt_open_write ( export_filename->value(), LQT_FILE_AVI_ODML ); /* For new Libquicktime */
-} else {
-	
-#if (LQT_CODEC_API_VERSION & 0xffff) > 6
-	qt = lqt_open_write( export_filename->value(), preset->m_file_type ); /* For new Libquicktime */
-#else
-	qt = quicktime_open( (char*)export_filename->value(), 0, 1 );
-#endif
-}
 
-nle::video_format fmt;
-preset->getFormat( &fmt );
-
-lqt_codec_info_t** codec = lqt_find_video_codec_by_name( fmt.video_codec );
-if (!codec || !codec[0]) {
-	cerr << "Video Codec missing: " << fmt.video_codec << endl;
-}
-assert(codec);
-assert(codec[0]);
-
-
-lqt_set_video( qt, 1, fmt.w, fmt.h, fmt.framerate.frame_duration, fmt.framerate.timescale, codec[0] );
-int pixel_w = 1;
-int pixel_h = 1;
-nle::convert_pixel_aspect_to_pixel_w_h( fmt.pixel_aspect_ratio, pixel_w, pixel_h );
-lqt_set_pixel_aspect( qt, 0, pixel_w, pixel_h );
-
-
-lqt_destroy_codec_info( codec );
-
-#if (LQT_CODEC_API_VERSION & 0xffff) > 6
-switch ( fmt.interlacing ) {
-	case nle::INTERLACE_TOP_FIELD_FIRST:
-		lqt_set_interlace_mode( qt, 0, LQT_INTERLACE_TOP_FIRST );
-		break;
-	case nle::INTERLACE_BOTTOM_FIELD_FIRST:
-		lqt_set_interlace_mode( qt, 0, LQT_INTERLACE_BOTTOM_FIRST );
-		break;
-	case nle::INTERLACE_PROGRESSIVE:
-		lqt_set_interlace_mode( qt, 0, LQT_INTERLACE_NONE );
-		break;
-}
-#endif
-
-codec = lqt_find_audio_codec_by_name( fmt.audio_codec );
-if (!codec || !codec[0]) {
-	cerr << "Audio Codec missing: " << fmt.audio_codec << endl;
-}
-assert(codec);
-assert(codec[0]);
-lqt_set_audio( qt, 2, fmt.samplerate, 16, codec[0] );
-lqt_destroy_codec_info( codec );
-lqt_set_cmodel( qt, 0, BC_RGB888 );
-
-preset->set2(qt);
-
-return new nle::VideoWriterQT( qt, fmt );
+return preset->getFileWriter( export_filename->value() );
 }
 
 ExportDialog::~ExportDialog() {

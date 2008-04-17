@@ -18,6 +18,7 @@
  */
 
 #include "EncodingPreset.H"
+#include "VideoWriterQT.H"
 #include <cstring>
 #include "sl/sl.h"
 #include <tinyxml.h>
@@ -684,8 +685,65 @@ EncodingPreset::~EncodingPreset()
 	}
 
 }
-IVideoFileWriter* EncodingPreset::getFileWriter()
+IVideoFileWriter* EncodingPreset::getFileWriter( const char* filename )
 {
+	quicktime_t* qt;
+	if ( m_avi_odml ) {
+		qt = quicktime_open( (char*)filename, 0, 1 );
+		quicktime_set_avi(qt, 1);
+		//qt = lqt_open_write ( filename, LQT_FILE_AVI_ODML ); /* For new Libquicktime */
+	} else {
+#if (LQT_CODEC_API_VERSION & 0xffff) > 6
+		qt = lqt_open_write( filename, m_file_type ); /* For new Libquicktime */
+#else
+		qt = quicktime_open( (char*)filename, 0, 1 );
+#endif
+	}
+
+	lqt_codec_info_t** codec = lqt_find_video_codec_by_name( m_format.video_codec );
+	if (!codec || !codec[0]) {
+		cerr << "Video Codec missing: " << m_format.video_codec << endl;
+	}
+	assert(codec);
+	assert(codec[0]);
+
+
+	lqt_set_video( qt, 1, m_format.w, m_format.h, m_format.framerate.frame_duration, m_format.framerate.timescale, codec[0] );
+	int pixel_w = 1;
+	int pixel_h = 1;
+	nle::convert_pixel_aspect_to_pixel_w_h( m_format.pixel_aspect_ratio, pixel_w, pixel_h );
+	lqt_set_pixel_aspect( qt, 0, pixel_w, pixel_h );
+
+
+	lqt_destroy_codec_info( codec );
+
+#if (LQT_CODEC_API_VERSION & 0xffff) > 6
+	switch ( m_format.interlacing ) {
+		case nle::INTERLACE_TOP_FIELD_FIRST:
+			lqt_set_interlace_mode( qt, 0, LQT_INTERLACE_TOP_FIRST );
+			break;
+		case nle::INTERLACE_BOTTOM_FIELD_FIRST:
+			lqt_set_interlace_mode( qt, 0, LQT_INTERLACE_BOTTOM_FIRST );
+			break;
+		case nle::INTERLACE_PROGRESSIVE:
+			lqt_set_interlace_mode( qt, 0, LQT_INTERLACE_NONE );
+			break;
+	}
+#endif
+
+	codec = lqt_find_audio_codec_by_name( m_format.audio_codec );
+	if ( !codec || !codec[0] ) {
+		cerr << "Audio Codec missing: " << m_format.audio_codec << endl;
+	}
+	assert( codec );
+	assert( codec[0] );
+	lqt_set_audio( qt, 2, m_format.samplerate, 16, codec[0] );
+	lqt_destroy_codec_info( codec );
+	lqt_set_cmodel( qt, 0, BC_RGB888 );
+
+	set2( qt );
+
+	return new nle::VideoWriterQT( qt, m_format );
 }
 void EncodingPreset::writeXML( TiXmlElement* xml_node )
 {

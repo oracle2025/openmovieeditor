@@ -93,7 +93,7 @@ class EncodingPreset
 		EncodingPreset();
 		EncodingPreset( EncodingPreset* preset );
 		~EncodingPreset();
-		IVideoFileWriter* getFileWriter();
+		IVideoFileWriter* getFileWriter( const char* filename );
 		void writeXML( TiXmlElement* );
 		void readXML( TiXmlElement* );
 		void setFormat( video_format* format );
