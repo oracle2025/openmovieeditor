@@ -21,7 +21,6 @@
 #include "AudioFileQT.H"
 #include "AudioFileSnd.H"
 #include "AudioFileFfmpeg.H"
-#include "AudioFileMpeg3.H"
 #include "Resampler.H"
 #include <FL/filename.H>
 
@@ -33,12 +32,6 @@ namespace nle
 IAudioFile* AudioFileFactory::get( string filename )
 {
 	IAudioFile *af = 0;
-#ifdef LIBMPEG3
-	const char* ext = fl_filename_ext( filename.c_str() );
-	if ( strcmp( ext, ".TOC" ) == 0 || strcmp( ext, ".toc" ) == 0 ) {
-		af = new AudioFileMpeg3( filename );
-	}
-#endif /* LIBMPEG3 */
 
 	if ( !af || !af->ok() ) {
 		if ( af ) {

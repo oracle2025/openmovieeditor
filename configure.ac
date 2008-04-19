@@ -114,19 +114,6 @@ if test x$HAVE_AVFORMAT = xfalse; then
   fi
 fi
 
-HAVE_LIBMPEG3=false
-AC_CHECK_HEADERS(libmpeg3.h)
-if test $ac_cv_header_libmpeg3_h = "yes" ; then
-	AC_CHECK_LIB(mpeg3, mpeg3_set_mmx, [HAVE_LIBMPEG3=true], [true])
-fi
-if test x$HAVE_LIBMPEG3 = xfalse; then
-  AC_MSG_WARN([*** libmpeg3 1.5 not found])
-else
-  CPPFLAGS="$CPPFLAGS -DLIBMPEG3"
-  LDFLAGS="$LDFLAGS -lmpeg3"
-fi
-
-
 HAVE_SWSCALE=false
 PKG_CHECK_MODULES(SWSCALE, libswscale, [HAVE_SWSCALE=true], [true])
 if test x$HAVE_SWSCALE = xfalse; then
