@@ -62,12 +62,7 @@ ImageClip::ImageClip( Track* track, int64_t position, string filename, int64_t l
 	} else {
 		m_length = NLE_TIME_BASE * 10;
 	}
-	init_frame_struct( &m_frame, m_image->w(), m_image->h() );
-	if ( m_image->d() == 4 ) {
-		m_frame.has_alpha_channel = true;
-	} else if ( m_image->d() == 3 ) {
-		m_frame.has_alpha_channel = false;
-	} else {
+	if ( m_image->d() != 4 && m_image->d() != 3 ) {
 		ERROR_DETAIL( "This image file has a wrong color depth,\nonly RGB and RGBA images are supported" );
 		return;
 	}

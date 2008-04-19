@@ -47,9 +47,6 @@ class VideoEffectClip : public IVideoReader
 		virtual int w() = 0;
 		virtual int h() = 0;
 		//virtual int interlacing() = 0;
-		void unPrepareFormat();
-		void prepareFormat( video_format* fmt );
-		LazyFrame* getFormattedFrame( LazyFrame* tmp_frame, int64_t position );
 		bool crop() { return m_crop; }
 		bool fit() { return m_fit; }
 		bool stretch() { return m_stretch; }

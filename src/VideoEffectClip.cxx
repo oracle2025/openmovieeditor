@@ -114,47 +114,6 @@ LazyFrame* VideoEffectClip::getFrame( int64_t position )
 
 }
 
-void VideoEffectClip::prepareFormat( video_format* fmt )
-{
-	// Compare fmt to LazyFrame->format()
-	LazyFrame* f = getFrame( dynamic_cast<Clip*>(this)->position() );
-	m_format_dst.frame_width  = fmt->w;
-	m_format_dst.frame_height = fmt->h;
-	m_format_dst.image_width  = fmt->w;
-	m_format_dst.image_height = fmt->h;
-	m_format_dst.pixel_width = 1;
-	m_format_dst.pixel_height = 1;
-	m_format_dst.pixelformat = GAVL_RGBA_32;
-	m_format_dst.interlace_mode = GAVL_INTERLACE_NONE;
-	if ( m_format_dst.frame_width == 720 && m_format_dst.frame_height == 576 ) {
-		m_format_dst.pixel_width = 197;
-		m_format_dst.pixel_height = 180;
-	}
-	switch ( fmt->interlacing ) {
-		case INTERLACE_TOP_FIELD_FIRST:
-			m_format_dst.interlace_mode = GAVL_INTERLACE_TOP_FIRST;
-			break;
-		case INTERLACE_BOTTOM_FIELD_FIRST:
-			m_format_dst.interlace_mode = GAVL_INTERLACE_BOTTOM_FIRST;
-			break;
-	}
-
-	f->set_target( &m_format_dst );
-}
-void VideoEffectClip::unPrepareFormat()
-{
-	assert( this );
-	assert( dynamic_cast<Clip*>(this) );
-	LazyFrame* f = getFrame( dynamic_cast<Clip*>(this)->position() );
-	assert( f );
-	f->set_target( 0 );
-}
-
-LazyFrame* VideoEffectClip::getFormattedFrame( LazyFrame* tmp_frame, int64_t position )
-{
-	return getFrame( position );
-}
-	
 ClipData* VideoEffectClip::vec_getClipData()
 {
 	XmlClipData* xml = new XmlClipData;

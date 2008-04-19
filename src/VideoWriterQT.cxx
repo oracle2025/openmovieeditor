@@ -20,40 +20,82 @@
 #include "VideoWriterQT.H"
 #include <cassert>
 #include "LazyFrame.H"
+#include "EncodingPreset.H"
+#include <lqt.h>
+#include <lqt_version.h>
+#include "lqtgavl.h"
+#include <iostream>
+using namespace std;
 
 namespace nle
 {
-VideoWriterQT::VideoWriterQT( quicktime_t *qt, video_format &format )
+
+VideoWriterQT::VideoWriterQT( EncodingPreset* preset, const char* filename )
 {
-	m_qt = qt;
-	m_format = format;
-	m_samplerate = quicktime_sample_rate( m_qt, 0 );
-	m_rows  = new unsigned char*[m_format.h];
+	preset->getFormat( &m_format );
+	if ( preset->m_avi_odml ) {
+		//m_qt = quicktime_open( (char*)filename, 0, 1 );
+		//quicktime_set_avi(m_qt, 1);
+		m_qt = lqt_open_write ( filename, LQT_FILE_AVI_ODML ); /* For new Libquicktime */
+	} else {
+#if (LQT_CODEC_API_VERSION & 0xffff) > 6
+		m_qt = lqt_open_write( filename, preset->m_file_type ); /* For new Libquicktime */
+#else
+		m_qt = quicktime_open( (char*)filename, 0, 1 );
+#endif
+	}
+
+	lqt_codec_info_t** codec = lqt_find_video_codec_by_name( m_format.video_codec );
+	if (!codec || !codec[0]) {
+		cerr << "Video Codec missing: " << m_format.video_codec << endl;
+	}
+	assert(codec);
+	assert(codec[0]);
+
+	convert_ome_format_to_gavl_format( &m_format, &m_gavl_format );
+
+	lqt_gavl_add_video_track( m_qt, &m_gavl_format, codec[0] );
+	
+	//lqt_set_video( m_qt, 1, m_format.w, m_format.h, m_format.framerate.frame_duration, m_format.framerate.timescale, codec[0] );
+
+	/*int pixel_w = 1;
+	int pixel_h = 1;
+	nle::convert_pixel_aspect_to_pixel_w_h( m_format.pixel_aspect_ratio, pixel_w, pixel_h );
+	lqt_set_pixel_aspect( m_qt, 0, pixel_w, pixel_h );*/
+
+	lqt_destroy_codec_info( codec );
+
+	codec = lqt_find_audio_codec_by_name( m_format.audio_codec );
+	if ( !codec || !codec[0] ) {
+		cerr << "Audio Codec missing: " << m_format.audio_codec << endl;
+	}
+	assert( codec );
+	assert( codec[0] );
+	
+/*	m_gavl_audio_format.samplerate = m_format.samplerate;
+	m_gavl_audio_format.samples_per_frame = m_format.framerate.audio_frames_per_chunk;
+	m_gavl_audio_format.num_channels = 2;
+	m_gavl_interleave_mode = GAVL_INTERLEAVE_ALL;*/
+
+
+	lqt_set_audio( m_qt, 2, m_format.samplerate, 16, codec[0] );
+	lqt_destroy_codec_info( codec );
+	//lqt_set_cmodel( m_qt, 0, BC_RGB888 );
+
+	preset->set2( m_qt );
+	m_samplerate = m_format.samplerate;
+	m_rows = lqt_gavl_rows_create( m_qt, 0 );
 }
 VideoWriterQT::~VideoWriterQT()
 {
 	quicktime_close( m_qt );
+	lqt_gavl_rows_destroy( m_rows );
 }
 void VideoWriterQT::encodeVideoFrame( LazyFrame* frame )
 {
-	gavl_video_format_t gavl_format;
-	gavl_format.frame_width  = m_format.w;
-	gavl_format.frame_height = m_format.h;
-	gavl_format.image_width  = m_format.w;
-	gavl_format.image_height = m_format.h;
-	gavl_format.pixel_width = 1;
-	gavl_format.pixel_height = 1;
-	gavl_format.pixelformat = GAVL_RGB_24;
-	gavl_format.interlace_mode = GAVL_INTERLACE_NONE;
-	frame->set_target( &gavl_format );
-
+	frame->set_target( &m_gavl_format );
 	gavl_video_frame_t* gavl_frame = frame->target();
-
-	for ( int j = 0; j < m_format.h; j++ ) {
-		m_rows[j] = ((unsigned char*)(gavl_frame->planes[0])) + m_format.w * 3 * j;
-	}
-
-	quicktime_encode_video( m_qt, m_rows, 0 );
+	lqt_gavl_encode_video ( m_qt, 0, gavl_frame, m_rows );
 }
 void VideoWriterQT::encodeAudioFrame( float* buffer, int frames )
 {

@@ -54,7 +54,6 @@ class ImageClip : public FilterClip, public VideoEffectClip
 	private:
 		Fl_Shared_Image* m_image;
 		int64_t m_length;
-		frame_struct m_frame;
 		bool m_ok;
 		string m_filename;
 		IClipArtist* m_artist;

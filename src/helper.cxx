@@ -290,5 +290,29 @@ gcd (unsigned long a, unsigned long b)
   /* a = b */
   return a;
 }
+void convert_ome_format_to_gavl_format( video_format* in, gavl_video_format_t* out )
+{
+	out->frame_width  = in->w;
+	out->frame_height = in->h;
+	out->image_width  = in->w;
+	out->image_height = in->h;
+	convert_pixel_aspect_to_pixel_w_h( in->pixel_aspect_ratio, out->pixel_width, out->pixel_height );
+	out->pixelformat = GAVL_RGB_24;
+	switch ( in->interlacing ) {
+		case INTERLACE_TOP_FIELD_FIRST:
+			out->interlace_mode = GAVL_INTERLACE_TOP_FIRST;
+			break;
+		case INTERLACE_BOTTOM_FIELD_FIRST:
+			out->interlace_mode = GAVL_INTERLACE_BOTTOM_FIRST;
+			break;
+		case INTERLACE_PROGRESSIVE:
+			out->interlace_mode = GAVL_INTERLACE_NONE;
+			break;
+	}
+	out->frame_duration = in->framerate.frame_duration;
+	out->timescale = in->framerate.timescale;
+	out->framerate_mode = GAVL_FRAMERATE_CONSTANT;
+}
+
 
 } /* namespace nle */

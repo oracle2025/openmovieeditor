@@ -18,6 +18,9 @@
  */
 
 #include "LazyFrame.H"
+#include <cassert>
+#include <iostream>
+using namespace std;
 
 namespace nle
 {
@@ -85,6 +88,7 @@ LazyFrame::~LazyFrame()
 }
 gavl_video_frame_t* LazyFrame::RGBA()
 {
+	assert( m_frame );
 	if ( !m_converter_RGBA ) {
 		return m_frame;
 	}
@@ -93,10 +97,12 @@ gavl_video_frame_t* LazyFrame::RGBA()
 }
 gavl_video_frame_t* LazyFrame::native()
 {
+	assert( m_frame );
 	return m_frame;
 }
 gavl_video_frame_t* LazyFrame::target()
 {
+	assert( m_frame );
 	if ( !m_converter_target ) {
 		return m_frame;
 	}
@@ -110,6 +116,8 @@ gavl_video_format_t* LazyFrame::format()
 }
 void LazyFrame::set_target( gavl_video_format_t *format )
 {
+	/* gavl_video_formats_equal will yield non equal, even if no conversion
+	 * is necessary, be aware and check return value of gavl_video_converter_init */
 	if ( format && m_converter_target && gavl_video_formats_equal( &m_target_format, format ) ) {
 		return;
 	}
@@ -135,8 +143,17 @@ void LazyFrame::set_target( gavl_video_format_t *format )
 	gavl_video_options_t* options = gavl_video_converter_get_options( m_converter_target );
 	
 	gavl_video_options_set_deinterlace_mode( options, GAVL_DEINTERLACE_SCALE );
+
+	gavl_video_options_set_alpha_mode( options, GAVL_ALPHA_BLEND_COLOR );
+	float color[3] = {0.0, 0.0, 0.0};
+	gavl_video_options_set_background_color( options, color );
 	
-	gavl_video_converter_init( m_converter_target, &m_src_format, &m_target_format );
+	if ( gavl_video_converter_init( m_converter_target, &m_src_format, &m_target_format ) == 0 ) {
+		gavl_video_format_copy( &m_src_format, &m_target_format );
+		gavl_video_converter_destroy( m_converter_target );
+		m_converter_target = 0;
+		return;
+	}
 
 	m_target_frame = gavl_video_frame_create( &m_target_format );
 }

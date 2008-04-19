@@ -23,14 +23,17 @@
 #include "IVideoFileWriter.H"
 #include "video_format.H"
 #include <lqt.h>
+#include <gavl/gavl.h>
 
 namespace nle
 {
 
+class EncodingPreset;
+
 class VideoWriterQT : public IVideoFileWriter
 {
 	public:
-		VideoWriterQT( quicktime_t *qt, video_format &format );
+		VideoWriterQT( EncodingPreset* preset, const char* filename );
 		~VideoWriterQT();
 		void encodeVideoFrame( LazyFrame* frame );
 		void encodeAudioFrame( float* buffer, int frames );
@@ -43,6 +46,8 @@ class VideoWriterQT : public IVideoFileWriter
 		video_format m_format;
 		int m_samplerate;
 		unsigned char** m_rows;
+		gavl_video_format_t m_gavl_format;
+		//gavl_audio_format_t m_gavl_audio_format;
 };
 
 	

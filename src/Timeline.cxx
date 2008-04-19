@@ -169,36 +169,6 @@ LazyFrame* Timeline::nextFrame( int64_t position ) //only used from VideoViewGL
 	}
 	return res;
 }
-LazyFrame** Timeline::getFormattedFrameStack( int64_t position )
-{
-	static LazyFrame* frameStack[8]; //At most 8 Frames, ought to be enough for everyone ;)
-	int cnt = 0;
-
-	if ( position < 0 ) {
-		position = m_seekPosition;
-		m_seekPosition += 35280000 / (int)g_fps;
-	}
-	
-	m_playPosition = position;
-	
-	for ( track_node *p = m_allTracks; p; p = p->next ) {
-		VideoTrack* current = dynamic_cast<VideoTrack*>(p->track);
-		if ( !current ) {
-			continue;
-		}
-		LazyFrame** fs = current->getFormattedFrameStack( position );
-		
-		for ( int i = 0; fs[i] && cnt <=7 ; i++ ) {
-			frameStack[cnt] = fs[i];
-			cnt++;
-		}
-		if ( cnt == 7 ) {
-			break;
-		}
-	}
-	frameStack[cnt] = 0;
-	return frameStack;
-}
 LazyFrame** Timeline::getFrameStack( int64_t position )
 {
 	static LazyFrame* frameStack[8]; //At most 8 Frames, ought to be enough for everyone ;)
@@ -283,14 +253,14 @@ LazyFrame* Timeline::getBlendedFrame()
 }
 LazyFrame* Timeline::getBlendedFrame( int64_t position )
 {
-	LazyFrame** fs = getFormattedFrameStack( position );
+	LazyFrame** fs = getFrameStack( position );
 	int len = m_blended_lazy_frame->format()->frame_width * m_blended_lazy_frame->format()->frame_height;
 	unsigned char* dst_buffer = m_blended_gavl_frame->planes[0];
 	gavl_video_frame_clear( m_blended_gavl_frame, m_blended_lazy_frame->format() );
 
 	int start = 0;
 	int stop = 0;
-	
+
 	for ( int i = 0; fs[i]; i++ ) {
 		start = i + 1;
 	}
@@ -298,21 +268,26 @@ LazyFrame* Timeline::getBlendedFrame( int64_t position )
 		start--;
 		if ( start >= 0 ) {
 			unsigned char *src, *dest, *end;
-			src = fs[start]->RGBA()->planes[0];
+			fs[start]->set_target( m_blended_lazy_frame->format() );
+			src = fs[start]->target()->planes[0];
 			dest = dst_buffer;
-			end = fs[start]->RGBA()->planes[0] + ( len * 4 );
+			end = fs[start]->target()->planes[0] + ( len * 4 );
 			while ( src < end ) {
 				dest[0] = src[0];
 				dest[1] = src[1];
 				dest[2] = src[2];
+				dest[4] = src[4];
 				dest += 4;
 				src += 4;
 			}
 		}
 	}
 	start--;
+	gavl_video_frame_t* gavl_frame = 0;
 	for ( int i = start; i >= stop; i-- ) {
-		blend_alpha2( dst_buffer, dst_buffer, fs[i]->RGBA()->planes[0], fs[i]->alpha(), len );
+		fs[i]->set_target( m_blended_lazy_frame->format() );
+		gavl_frame = fs[i]->target();
+		blend_alpha2( dst_buffer, dst_buffer, gavl_frame->planes[0], fs[i]->alpha(), len );
 	}
 
 	return m_blended_lazy_frame;
@@ -324,26 +299,12 @@ LazyFrame* Timeline::getBlendedFrame( int64_t position )
 }
 void Timeline::prepareFormat( video_format* fmt )
 {
-	for ( track_node *p = m_allTracks; p; p = p->next ) {
-		VideoTrack* current = dynamic_cast<VideoTrack*>(p->track);
-		if ( !current ) {
-			continue;
-		}
-		current->prepareFormat( fmt );
-	}
 	m_blended_lazy_frame = new LazyFrame( fmt->w, fmt->h );
 	m_blended_gavl_frame = gavl_video_frame_create( m_blended_lazy_frame->format() );
 	m_blended_lazy_frame->put_data( m_blended_gavl_frame );
 }
 void Timeline::unPrepareFormat()
 {
-	for ( track_node *p = m_allTracks; p; p = p->next ) {
-		VideoTrack* current = dynamic_cast<VideoTrack*>(p->track);
-		if ( !current ) {
-			continue;
-		}
-		current->unPrepareFormat();
-	}
 	if ( m_blended_gavl_frame ) {
 		gavl_video_frame_destroy( m_blended_gavl_frame );
 		m_blended_gavl_frame = 0;

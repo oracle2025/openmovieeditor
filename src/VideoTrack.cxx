@@ -187,64 +187,6 @@ LazyFrame** VideoTrack::getFrameStack( int64_t position )
 	}
 	return frameStack;
 }
-void VideoTrack::prepareFormat( video_format* fmt )
-{
-	for ( clip_node* j = getClips(); j; j = j->next ) {
-		VideoEffectClip* vec = dynamic_cast<VideoEffectClip*>(j->clip);
-		if ( vec ) {
-			vec->prepareFormat( fmt );
-		}
-	}
-
-}
-void VideoTrack::unPrepareFormat()
-{
-}
-LazyFrame** VideoTrack::getFormattedFrameStack( int64_t position )
-{
-	static LazyFrame* frameStack[3];
-	frameStack[0] = 0;
-	frameStack[1] = 0;
-	frameStack[2] = 0;
-
-	fade_over* o = (fade_over*)sl_map( m_fade_overs, find_fade_over_helper, &position );
-	if ( o ) {
-		VideoEffectClip* A;
-		VideoEffectClip* B;
-		A = dynamic_cast<VideoEffectClip*>(o->clipA);
-		B = dynamic_cast<VideoEffectClip*>(o->clipB);
-		assert( A );
-		assert( B );
-		frameStack[0] = A->getFormattedFrame( 0, position );
-		frameStack[1] = B->getFormattedFrame( 0, position );
-		if ( frameStack[0] && frameStack[1] ) {
-			float alpha_a = frameStack[0]->alpha();
-			float alpha_b = frameStack[1]->alpha();
-			get_alpha_values( o, alpha_a, alpha_b, position );
-			frameStack[0]->alpha( alpha_a );
-			frameStack[1]->alpha( alpha_b );
-			/*if ( !frameStack[0]->has_alpha_channel ) {
-				frameStack[1]->alpha = 1.0;
-			}*/
-		}
-		return frameStack;
-	} else {
-		for ( clip_node *p = m_clips; p; p = p->next ) {
-			VideoEffectClip* current;
-			current = dynamic_cast<VideoEffectClip*>(p->clip);
-			if ( !current ) {
-				continue;
-			}
-			frameStack[0] = current->getFormattedFrame( 0, position );
-			if ( frameStack[0] ) {
-				frameStack[0]->alpha( 1.0 );
-				return frameStack;
-			}
-		}
-	}
-	return frameStack;
-
-}
 
 int fo_sort_helper( void* p, void* q )
 {

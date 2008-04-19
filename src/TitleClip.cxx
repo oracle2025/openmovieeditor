@@ -69,7 +69,7 @@ TitleClip::TitleClip( Track* track, int64_t position, int64_t length, int id, Cl
 	m_lazy_frame = new LazyFrame( 768, 576 );
 	m_gavl_frame = gavl_video_frame_create( 0 );
 	m_lazy_frame->put_data( m_gavl_frame );
-	m_gavl_frame->strides[0] = 576 * 4;
+	m_gavl_frame->strides[0] = 768 * 4;
 	m_pixels = new unsigned char[ 768*576*4 ];
 	m_alpha = new unsigned char[ 768*576*3 ];
 	m_ok = true;

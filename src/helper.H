@@ -22,12 +22,16 @@
 
 #include <stdint.h>
 #include "frame_struct.h"
+#include "video_format.H"
+#include <gavl/gavl.h>
 
 namespace nle
 {
 
 void init_frame_struct( frame_struct* fs, int w, int h );
 void copy_frame_struct_props( frame_struct* src, frame_struct* dst );
+
+void convert_ome_format_to_gavl_format( video_format* in, gavl_video_format_t* out );
 
 void convert_pixel_aspect_to_pixel_w_h( float in, int& pw, int& ph );
 const char* pixel_aspect_ratio_to_string( float pixel_aspect_ratio );

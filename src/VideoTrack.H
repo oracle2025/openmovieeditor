@@ -55,9 +55,6 @@ class VideoTrack : public TrackBase
 		float stretchFactor() { return (float)NLE_TIME_BASE; }
 		LazyFrame* getFrame( int64_t position );
 		LazyFrame** getFrameStack( int64_t position );
-		void prepareFormat( video_format* fmt );
-		void unPrepareFormat();
-		LazyFrame** getFormattedFrameStack( int64_t position );
 		void sort();
 		void reconsiderFadeOver();
 		void removeClip( Clip* clip );

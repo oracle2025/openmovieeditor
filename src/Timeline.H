@@ -59,7 +59,6 @@ class Timeline : public TimelineBase, public IAudioReader, public IVideoReader
 		LazyFrame* getBlendedFrame( int64_t position );
 		void prepareFormat( video_format* fmt );
 		void unPrepareFormat();
-		LazyFrame** getFormattedFrameStack( int64_t position );
 		LazyFrame** getFrameStack( int64_t position );
 		int fillBuffer( float* output, unsigned long frames );
 		inline void seek( int64_t position ) { m_seekPosition = position; }
