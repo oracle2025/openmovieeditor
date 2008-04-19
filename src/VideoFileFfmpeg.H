@@ -40,10 +40,12 @@ extern "C" {
 
 #include "global_includes.H"
 #include "IVideoFile.H"
-#include "frame_struct.h"
+#include <gavl/gavl.h>
 
 namespace nle
 {
+
+class LazyFrame;
 
 class VideoFileFfmpeg : public IVideoFile
 {
@@ -53,7 +55,7 @@ class VideoFileFfmpeg : public IVideoFile
 		bool ok();
 		int64_t length();
 //		double fps();
-		frame_struct* read();
+		LazyFrame* read();
 		void read( unsigned char** rows, int w, int h );
 		void seek( int64_t position );
 	protected:
@@ -66,9 +68,9 @@ class VideoFileFfmpeg : public IVideoFile
 		AVFrame*         m_avFrame;
 		AVFrame*         m_avFrameRGB;
 		AVPacket         m_packet;
-		frame_struct     m_framestruct;
+		LazyFrame*       m_lazy_frame;
+		gavl_video_frame_t* m_gavl_frame;
 		unsigned char*   m_frame;
-		unsigned char**  m_rows;
 		bool             m_ok;
 //		double           m_framerate;
 		int64_t          m_length;

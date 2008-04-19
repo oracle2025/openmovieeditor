@@ -289,13 +289,12 @@ openmovieeditor_SOURCES = nle.cxx\
 	InkscapeClip.H\
 	ImageNode.H\
 	ImageNode.cxx\
+	VideoFileFfmpeg.cxx\
+	VideoFileFfmpeg.H\
 	NodeFilterImageFactoryPlugin.H\
 	NodeFilterImageFactoryPlugin.cxx
 #	ColorWheel.H\
-#	ColorWheel.cxx\
-#	VideoFileFfmpeg.cxx\
-#	VideoFileFfmpeg.H\
-#	
+#	ColorWheel.cxx
 
 
 #	ShiftAutomationDragHandler.cxx\

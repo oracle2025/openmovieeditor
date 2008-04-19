@@ -24,6 +24,7 @@
 #include "ErrorDialog/IErrorHandler.H"
 #include "globals.H"
 #include "helper.H"
+#include "LazyFrame.H"
 
 namespace nle
 {
@@ -32,8 +33,8 @@ VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 	: IVideoFile()
 {
 	m_ok = false;
-	m_frame = NULL;
-	m_rows = NULL;
+	m_lazy_frame = 0;
+	m_gavl_frame = 0;
 	m_avFrame = NULL;
 	m_avFrameRGB = NULL;
 	m_formatContext = NULL;
@@ -84,33 +85,27 @@ VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 	int byteLen = avpicture_get_size( PIX_FMT_RGB24, m_width, m_height );
 	m_frame = new unsigned char[byteLen];
 	avpicture_fill( (AVPicture *)m_avFrameRGB, m_frame, PIX_FMT_RGB24, m_width, m_height );
-	m_rows = new unsigned char*[m_height];
-	for ( int i = 0; i < m_height; i++ ) {
-                m_rows[i] = m_frame + m_width * 3 * i;
-	}
-	init_frame_struct( &m_framestruct, m_width, m_height );
-	m_framestruct.RGB = m_frame;
-	m_framestruct.YUV = 0;
-	m_framestruct.rows = m_rows;
-	m_framestruct.has_alpha_channel = false;
-	m_framestruct.cacheable = false;
-	m_filename = filename;
-	int ah, aw;
-	guess_aspect( m_framestruct.w, m_framestruct.h, &m_framestruct );
+	gavl_video_format_t format;
+	format.frame_width  = m_width;
+	format.frame_height = m_height;
+	format.image_width  = m_width;
+	format.image_height = m_height;
+	format.pixel_width = 1;
+	format.pixel_height = 1;
+	format.pixelformat = GAVL_RGB_24;
+	format.interlace_mode = GAVL_INTERLACE_NONE;
+	m_lazy_frame = new LazyFrame( &format );
+	m_gavl_frame = gavl_video_frame_create( 0 );
+	m_lazy_frame->put_data( m_gavl_frame );
+	m_gavl_frame->planes[0] = m_frame;
+	m_gavl_frame->strides[0] = m_width * 3;
 
+	m_filename = filename;
 
 	int64_t num = m_formatContext->streams[m_videoStream]->r_frame_rate.num;
 	int64_t den = m_formatContext->streams[m_videoStream]->r_frame_rate.den;
 
 	m_ticksPerFrame = ( den * NLE_TIME_BASE ) / num;
-
-/*	m_framerate = av_q2d( m_formatContext->streams[m_videoStream]->r_frame_rate );
-	if ( m_framerate < 24.9 || m_framerate > 25.1 ) {
-		CLEAR_ERRORS();
-		ERROR_DETAIL( "Video framerates other than 25 are not supported" );
-		return;
-	}*/
-
 	
 	int64_t len = m_formatContext->duration;
 	m_length = (int64_t)( len * NLE_TIME_BASE / AV_TIME_BASE ) - m_ticksPerFrame;
@@ -126,10 +121,15 @@ VideoFileFfmpeg::~VideoFileFfmpeg()
 		av_free( m_avFrame );
 	if ( m_avFrameRGB )
 		av_free( m_avFrameRGB );
+	if ( m_lazy_frame ) {
+		delete m_lazy_frame;
+	}
+	if ( m_gavl_frame ) {
+		gavl_video_frame_null( m_gavl_frame );
+		gavl_video_frame_destroy( m_gavl_frame );
+	}
 	if ( m_frame )
 		delete [] m_frame;
-	if ( m_rows )
-		delete [] m_rows;
 	if ( m_formatContext )
 		av_close_input_file( m_formatContext );
 #ifdef SWSCALE
@@ -143,7 +143,7 @@ bool VideoFileFfmpeg::ok() { return m_ok; }
 int64_t VideoFileFfmpeg::length() { return m_length; }
 //double VideoFileFfmpeg::fps() { return m_framerate; }
 
-frame_struct* VideoFileFfmpeg::read()
+LazyFrame* VideoFileFfmpeg::read()
 {
 	int frameFinished;
 	while ( 1 ) {
@@ -168,7 +168,7 @@ frame_struct* VideoFileFfmpeg::read()
 #endif
 
 					av_free_packet( &m_packet );
-					return &m_framestruct;
+					return m_lazy_frame;
 				}
 			} 
 			av_free_packet( &m_packet );
@@ -181,11 +181,15 @@ frame_struct* VideoFileFfmpeg::read()
 void VideoFileFfmpeg::read( unsigned char** rows, int w, int h )
 {
 	frame_struct fs;
+	frame_struct fs2;
 	fs.w = w;
 	fs.h = h;
 	fs.RGB = rows[0];
 	read();
-	scale_it( &m_framestruct, &fs );
+	fs2.w = m_width;
+	fs2.h = m_height;
+	fs2.RGB = m_gavl_frame->planes[0];
+	scale_it( &fs2, &fs );
 }
 /*
 http://lists.mplayerhq.hu/pipermail/ffmpeg-devel/2005-July/002320.html

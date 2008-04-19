@@ -18,7 +18,7 @@
  */
 
 #include "VideoFileQT.H"
-//#include "VideoFileFfmpeg.H"
+#include "VideoFileFfmpeg.H"
 #include "VideoFileFactory.H"
 #include "VideoFileMpeg3.H"
 #include <FL/filename.H>
@@ -48,11 +48,11 @@ IVideoFile* VideoFileFactory::get( string filename )
 	}
 	delete vf;
 #ifdef AVCODEC
-/*	vf = new VideoFileFfmpeg( filename );
+	vf = new VideoFileFfmpeg( filename );
 	if ( vf->ok() ) {
 		return vf;
 	}
-	delete vf;*/
+	delete vf;
 #endif /* AVCODEC */
 	return 0;
 }
