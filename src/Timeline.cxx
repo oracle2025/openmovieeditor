@@ -264,6 +264,9 @@ LazyFrame* Timeline::getBlendedFrame( int64_t position )
 	for ( int i = 0; fs[i]; i++ ) {
 		start = i + 1;
 	}
+	if ( start == 1 ) {
+		return fs[0];
+	}
 	if ( !fs[start] ) {
 		start--;
 		if ( start >= 0 ) {

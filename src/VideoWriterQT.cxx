@@ -85,6 +85,7 @@ VideoWriterQT::VideoWriterQT( EncodingPreset* preset, const char* filename )
 	preset->set2( m_qt );
 	m_samplerate = m_format.samplerate;
 	m_rows = lqt_gavl_rows_create( m_qt, 0 );
+	m_timestamp = 0;
 }
 VideoWriterQT::~VideoWriterQT()
 {
@@ -95,6 +96,8 @@ void VideoWriterQT::encodeVideoFrame( LazyFrame* frame )
 {
 	frame->set_target( &m_gavl_format );
 	gavl_video_frame_t* gavl_frame = frame->target();
+	gavl_frame->timestamp = m_timestamp;
+	m_timestamp += m_gavl_format.frame_duration;
 	lqt_gavl_encode_video ( m_qt, 0, gavl_frame, m_rows );
 }
 void VideoWriterQT::encodeAudioFrame( float* buffer, int frames )

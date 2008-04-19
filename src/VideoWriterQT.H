@@ -47,6 +47,7 @@ class VideoWriterQT : public IVideoFileWriter
 		int m_samplerate;
 		unsigned char** m_rows;
 		gavl_video_format_t m_gavl_format;
+		int64_t m_timestamp;
 		//gavl_audio_format_t m_gavl_audio_format;
 };
 
