@@ -114,6 +114,12 @@ if test x$HAVE_AVFORMAT = xfalse; then
   fi
 fi
 
+OLD_FFMPEG=false
+AC_CHECK_HEADER(ffmpeg/avformat.h, [OLD_FFMPEG=true], [true])
+if test x$OLD_FFMPEG = xtrue; then
+  CPPFLAGS="$CPPFLAGS -DOLD_FFMPEG"
+fi
+
 HAVE_SWSCALE=false
 PKG_CHECK_MODULES(SWSCALE, libswscale, [HAVE_SWSCALE=true], [true])
 if test x$HAVE_SWSCALE = xfalse; then
