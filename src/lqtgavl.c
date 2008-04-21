@@ -36,8 +36,8 @@ sampleformats[] =
     { LQT_SAMPLE_UINT8, GAVL_SAMPLE_U8 },
     { LQT_SAMPLE_INT16, GAVL_SAMPLE_S16 },
     { LQT_SAMPLE_INT32, GAVL_SAMPLE_S32 },
-    { LQT_SAMPLE_FLOAT, GAVL_SAMPLE_FLOAT },
-    { LQT_SAMPLE_DOUBLE, GAVL_SAMPLE_DOUBLE }
+    { LQT_SAMPLE_FLOAT, GAVL_SAMPLE_FLOAT }//,
+ /*   { LQT_SAMPLE_DOUBLE, GAVL_SAMPLE_DOUBLE } */ // Ubuntu Hardy ships with libquicktime-to-old
   };
 
 static gavl_sample_format_t
