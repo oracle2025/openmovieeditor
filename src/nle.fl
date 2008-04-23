@@ -23,7 +23,7 @@ if ( Fl::event()==FL_CLOSE ) {
 	m_videoView->stop();
 	nle::g_loadSaveManager->shutdown();
 }} open
-      xywh {359 169 700 600} type Double resizable size_range {450 380 0 0} visible
+      xywh {754 244 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
         label {Black Borders} open selected
@@ -209,45 +209,6 @@ m_timelineView->redraw();}
           }
         }
         Submenu {} {
-          label Format open
-          xywh {0 0 100 20}
-        } {
-          MenuItem {} {
-            label {4:3}
-            callback {g_16_9 = !(o->mvalue())->value();
-m_videoView->redraw();}
-            xywh {0 0 100 20} type Radio value 1
-          }
-          MenuItem {} {
-            label {16:9}
-            callback {g_16_9 = (o->mvalue())->value();
-m_videoView->redraw();}
-            xywh {0 0 100 20} type Radio divider
-          }
-          MenuItem black_border_item {
-            label {Black Borders 16:9}
-            callback {g_black_borders = (o->mvalue())->value();
-g_black_borders_2_35 = false;
-black_border_item_2_35->clear();
-m_videoView->redraw();}
-            xywh {0 0 100 20} type Toggle
-          }
-          MenuItem black_border_item_2_35 {
-            label {Black Borders 2.35:1}
-            callback {g_black_borders_2_35 = (o->mvalue())->value();
-g_black_borders = false;
-black_border_item->clear();
-m_videoView->redraw();}
-            xywh {10 10 100 20} type Toggle
-          }
-          MenuItem {} {
-            label {Disable Interlacing}
-            callback {nle::g_INTERLACING = !(o->mvalue())->value();
-m_videoView->redraw();}
-            xywh {0 0 100 20} type Toggle value 1 hide
-          }
-        }
-        Submenu {} {
           label {&View} open
           xywh {5 5 100 20}
         } {
@@ -369,7 +330,7 @@ window->show();}
             } {
               Fl_Menu_Button fps_pb_menu {
                 label fps open
-                xywh {365 320 80 25}
+                xywh {365 320 80 25} deactivate
               } {
                 MenuItem {} {
                   label flexible
@@ -419,20 +380,44 @@ window->show();}
               } {
                 MenuItem {} {
                   label {4:3}
+                  callback {g_16_9 = !(o->mvalue())->value();
+m_videoView->redraw();}
                   xywh {10 10 100 20} type Radio value 1
                 }
                 MenuItem {} {
                   label {16:9}
+                  callback {g_16_9 = (o->mvalue())->value();
+m_videoView->redraw();}
                   xywh {10 10 100 20} type Radio
                 }
                 MenuItem {} {
                   label {2.35:1}
-                  xywh {10 10 100 20} type Radio
+                  xywh {10 10 100 20} type Radio deactivate
+                }
+                MenuItem {} {
+                  label {Custom Aspect Ratio...}
+                  xywh {0 0 100 20} type Radio deactivate divider
+                }
+                MenuItem black_border_item {
+                  label {16:9 Mask}
+                  callback {g_black_borders = (o->mvalue())->value();
+g_black_borders_2_35 = false;
+black_border_item_2_35->clear();
+m_videoView->redraw();}
+                  xywh {0 0 100 20} type Toggle
+                }
+                MenuItem black_border_item_2_35 {
+                  label {2.35:1 Mask}
+                  callback {g_black_borders_2_35 = (o->mvalue())->value();
+g_black_borders = false;
+black_border_item->clear();
+m_videoView->redraw();}
+                  xywh {0 0 100 20} type Toggle
                 }
               }
               Fl_Check_Button {} {
                 label interlaced
-                xywh {545 320 130 25} down_box DOWN_BOX resizable
+                xywh {545 320 130 25} down_box DOWN_BOX deactivate resizable
               }
             }
           }

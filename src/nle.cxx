@@ -185,50 +185,6 @@ void NleUI::cb_Add2(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Add2_i(o,v);
 }
 
-void NleUI::cb_4_i(Fl_Menu_* o, void*) {
-  g_16_9 = !(o->mvalue())->value();
-m_videoView->redraw();
-}
-void NleUI::cb_4(Fl_Menu_* o, void* v) {
-  ((NleUI*)(o->parent()->user_data()))->cb_4_i(o,v);
-}
-
-void NleUI::cb_16_i(Fl_Menu_* o, void*) {
-  g_16_9 = (o->mvalue())->value();
-m_videoView->redraw();
-}
-void NleUI::cb_16(Fl_Menu_* o, void* v) {
-  ((NleUI*)(o->parent()->user_data()))->cb_16_i(o,v);
-}
-
-void NleUI::cb_black_border_item_i(Fl_Menu_* o, void*) {
-  g_black_borders = (o->mvalue())->value();
-g_black_borders_2_35 = false;
-black_border_item_2_35->clear();
-m_videoView->redraw();
-}
-void NleUI::cb_black_border_item(Fl_Menu_* o, void* v) {
-  ((NleUI*)(o->parent()->user_data()))->cb_black_border_item_i(o,v);
-}
-
-void NleUI::cb_black_border_item_2_35_i(Fl_Menu_* o, void*) {
-  g_black_borders_2_35 = (o->mvalue())->value();
-g_black_borders = false;
-black_border_item->clear();
-m_videoView->redraw();
-}
-void NleUI::cb_black_border_item_2_35(Fl_Menu_* o, void* v) {
-  ((NleUI*)(o->parent()->user_data()))->cb_black_border_item_2_35_i(o,v);
-}
-
-void NleUI::cb_Disable_i(Fl_Menu_* o, void*) {
-  nle::g_INTERLACING = !(o->mvalue())->value();
-m_videoView->redraw();
-}
-void NleUI::cb_Disable(Fl_Menu_* o, void* v) {
-  ((NleUI*)(o->parent()->user_data()))->cb_Disable_i(o,v);
-}
-
 void NleUI::cb_Fullscreen_i(Fl_Menu_*, void*) {
   static bool fullscreen_on = false;
 static int x;
@@ -319,13 +275,6 @@ Fl_Menu_Item NleUI::menu_Black[] = {
  {"2x2 Scaling good", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"2x2 Scaling bad", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
- {"Format", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
- {"4:3", 0,  (Fl_Callback*)NleUI::cb_4, 0, 12, FL_NORMAL_LABEL, 0, 14, 0},
- {"16:9", 0,  (Fl_Callback*)NleUI::cb_16, 0, 136, FL_NORMAL_LABEL, 0, 14, 0},
- {"Black Borders 16:9", 0,  (Fl_Callback*)NleUI::cb_black_border_item, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
- {"Black Borders 2.35:1", 0,  (Fl_Callback*)NleUI::cb_black_border_item_2_35, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
- {"Disable Interlacing", 0,  (Fl_Callback*)NleUI::cb_Disable, 0, 22, FL_NORMAL_LABEL, 0, 14, 0},
- {0,0,0,0,0,0,0,0,0},
  {"&View", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"Fullscreen", 0xffc8,  (Fl_Callback*)NleUI::cb_Fullscreen, 0, 128, FL_NORMAL_LABEL, 0, 14, 0},
  {"Track Overview", 0,  0, 0, 18, FL_NORMAL_LABEL, 0, 14, 0},
@@ -345,8 +294,6 @@ Fl_Menu_Item* NleUI::cut_item = NleUI::menu_Black + 11;
 Fl_Menu_Item* NleUI::copy_item = NleUI::menu_Black + 12;
 Fl_Menu_Item* NleUI::paste_item = NleUI::menu_Black + 13;
 Fl_Menu_Item* NleUI::delete_item = NleUI::menu_Black + 14;
-Fl_Menu_Item* NleUI::black_border_item = NleUI::menu_Black + 29;
-Fl_Menu_Item* NleUI::black_border_item_2_35 = NleUI::menu_Black + 30;
 
 void NleUI::cb_zoom_slider_i(Fl_Slider* o, void*) {
   m_videoView->zoom( o->value() );
@@ -444,12 +391,53 @@ Fl_Menu_Item NleUI::menu_fps_pb_menu[] = {
  {0,0,0,0,0,0,0,0,0}
 };
 
+void NleUI::cb_4_i(Fl_Menu_* o, void*) {
+  g_16_9 = !(o->mvalue())->value();
+m_videoView->redraw();
+}
+void NleUI::cb_4(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_4_i(o,v);
+}
+
+void NleUI::cb_16_i(Fl_Menu_* o, void*) {
+  g_16_9 = (o->mvalue())->value();
+m_videoView->redraw();
+}
+void NleUI::cb_16(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_16_i(o,v);
+}
+
+void NleUI::cb_black_border_item_i(Fl_Menu_* o, void*) {
+  g_black_borders = (o->mvalue())->value();
+g_black_borders_2_35 = false;
+black_border_item_2_35->clear();
+m_videoView->redraw();
+}
+void NleUI::cb_black_border_item(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_black_border_item_i(o,v);
+}
+
+void NleUI::cb_black_border_item_2_35_i(Fl_Menu_* o, void*) {
+  g_black_borders_2_35 = (o->mvalue())->value();
+g_black_borders = false;
+black_border_item->clear();
+m_videoView->redraw();
+}
+void NleUI::cb_black_border_item_2_35(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_black_border_item_2_35_i(o,v);
+}
+
 Fl_Menu_Item NleUI::menu_Aspect[] = {
- {"4:3", 0,  0, 0, 12, FL_NORMAL_LABEL, 0, 14, 0},
- {"16:9", 0,  0, 0, 8, FL_NORMAL_LABEL, 0, 14, 0},
- {"2.35:1", 0,  0, 0, 8, FL_NORMAL_LABEL, 0, 14, 0},
+ {"4:3", 0,  (Fl_Callback*)NleUI::cb_4, 0, 12, FL_NORMAL_LABEL, 0, 14, 0},
+ {"16:9", 0,  (Fl_Callback*)NleUI::cb_16, 0, 8, FL_NORMAL_LABEL, 0, 14, 0},
+ {"2.35:1", 0,  0, 0, 9, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Custom Aspect Ratio...", 0,  0, 0, 137, FL_NORMAL_LABEL, 0, 14, 0},
+ {"16:9 Mask", 0,  (Fl_Callback*)NleUI::cb_black_border_item, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
+ {"2.35:1 Mask", 0,  (Fl_Callback*)NleUI::cb_black_border_item_2_35, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0}
 };
+Fl_Menu_Item* NleUI::black_border_item = NleUI::menu_Aspect + 4;
+Fl_Menu_Item* NleUI::black_border_item_2_35 = NleUI::menu_Aspect + 5;
 
 void NleUI::cb_1_i(nle::FileBrowser* o, void*) {
   nle::FileBrowser* fb = (nle::FileBrowser*)o;
@@ -983,6 +971,7 @@ NleUI::NleUI() {
           { Fl_Group* o = new Fl_Group(365, 320, 310, 25);
             o->box(FL_FLAT_BOX);
             { Fl_Menu_Button* o = fps_pb_menu = new Fl_Menu_Button(365, 320, 80, 25, "fps");
+              o->deactivate();
               o->menu(menu_fps_pb_menu);
             }
             { Fl_Menu_Button* o = new Fl_Menu_Button(445, 320, 100, 25, "Aspect");
@@ -990,6 +979,7 @@ NleUI::NleUI() {
             }
             { Fl_Check_Button* o = new Fl_Check_Button(545, 320, 130, 25, "interlaced");
               o->down_box(FL_DOWN_BOX);
+              o->deactivate();
               Fl_Group::current()->resizable(o);
             }
             o->end();

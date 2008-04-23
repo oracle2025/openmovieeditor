@@ -104,22 +104,6 @@ private:
   static void cb_Add1(Fl_Menu_*, void*);
   void cb_Add2_i(Fl_Menu_*, void*);
   static void cb_Add2(Fl_Menu_*, void*);
-  void cb_4_i(Fl_Menu_*, void*);
-  static void cb_4(Fl_Menu_*, void*);
-  void cb_16_i(Fl_Menu_*, void*);
-  static void cb_16(Fl_Menu_*, void*);
-public:
-  static Fl_Menu_Item *black_border_item;
-private:
-  void cb_black_border_item_i(Fl_Menu_*, void*);
-  static void cb_black_border_item(Fl_Menu_*, void*);
-public:
-  static Fl_Menu_Item *black_border_item_2_35;
-private:
-  void cb_black_border_item_2_35_i(Fl_Menu_*, void*);
-  static void cb_black_border_item_2_35(Fl_Menu_*, void*);
-  void cb_Disable_i(Fl_Menu_*, void*);
-  static void cb_Disable(Fl_Menu_*, void*);
   void cb_Fullscreen_i(Fl_Menu_*, void*);
   static void cb_Fullscreen(Fl_Menu_*, void*);
   void cb_Normal_i(Fl_Menu_*, void*);
@@ -161,6 +145,20 @@ private:
   void cb_60_i(Fl_Menu_*, void*);
   static void cb_60(Fl_Menu_*, void*);
   static Fl_Menu_Item menu_Aspect[];
+  void cb_4_i(Fl_Menu_*, void*);
+  static void cb_4(Fl_Menu_*, void*);
+  void cb_16_i(Fl_Menu_*, void*);
+  static void cb_16(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *black_border_item;
+private:
+  void cb_black_border_item_i(Fl_Menu_*, void*);
+  static void cb_black_border_item(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *black_border_item_2_35;
+private:
+  void cb_black_border_item_2_35_i(Fl_Menu_*, void*);
+  static void cb_black_border_item_2_35(Fl_Menu_*, void*);
 public:
   Fl_Tabs *tab_view;
 private:

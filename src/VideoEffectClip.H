@@ -47,21 +47,9 @@ class VideoEffectClip : public IVideoReader
 		virtual int w() = 0;
 		virtual int h() = 0;
 		//virtual int interlacing() = 0;
-		bool crop() { return m_crop; }
-		bool fit() { return m_fit; }
-		bool stretch() { return m_stretch; }
-		bool def() { return m_default; }
-		void crop( bool v ) { if ( v ) { m_fit = m_stretch = m_default = !(m_crop = true); } }
-		void fit( bool v ) { if ( v ) { m_crop = m_stretch = m_default = !(m_fit = true); } }
-		void stretch( bool v ) { if ( v ) { m_fit = m_crop = m_default = !(m_stretch = true); } }
-		void def( bool v ) { if ( v ) { m_fit = m_crop = m_stretch = !(m_default = true); } }
 	protected:
 		void setEffects( ClipData* data = 0 );
 		VideoEffectClip( FilterClip* filterClip );
-		bool m_crop;
-		bool m_fit;
-		bool m_stretch;
-		bool m_default;
 		ClipData* vec_getClipData();
 	private:
 		gavl_video_format_t m_format_dst;

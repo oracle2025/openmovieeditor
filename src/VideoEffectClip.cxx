@@ -73,8 +73,6 @@ VideoEffectClip::VideoEffectClip( FilterClip* filterClip )
 {
 	m_filterClip = filterClip;
 	//m_effects = 0;
-	m_crop = m_fit = m_stretch = false;
-	m_default = true;
 }
 void VideoEffectClip::setEffects( ClipData* clip_data )
 {

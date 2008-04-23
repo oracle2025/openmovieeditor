@@ -408,7 +408,7 @@ int Timeline::write( string filename, string name )
 				}
 			}
 			if ( VideoEffectClip* vc = dynamic_cast<VideoEffectClip*>(cn->clip) ) {
-				if ( vc->def() ) {
+				/*if ( vc->def() ) {
 					clip->SetAttribute( "render", "default" );
 				} else if ( vc->crop() ) {
 					clip->SetAttribute( "render", "crop" );
@@ -416,7 +416,7 @@ int Timeline::write( string filename, string name )
 					clip->SetAttribute( "render", "fit" );
 				} else if ( vc->stretch() ) {
 					clip->SetAttribute( "render", "stretch" );
-				}
+				}*/
 				if ( VideoClip* vc = dynamic_cast<VideoClip*>(cn->clip) ) {
 					clip->SetAttribute( "mute", (int)vc->m_mute );
 				}
@@ -600,7 +600,7 @@ int Timeline::read( string filename )
 					}
 				}
 			}
-			if ( vec ) {
+			/*if ( vec ) {
 				const char* render;
 				render = j->Attribute( "render" );
 				if ( !render ) {
@@ -613,7 +613,7 @@ int Timeline::read( string filename )
 				} else if ( strcmp( render, "stretch" ) == 0 ) {
 					vec->stretch( true );
 				}
-			}
+			}*/
 
 		}
 		tr->reconsiderFadeOver();
