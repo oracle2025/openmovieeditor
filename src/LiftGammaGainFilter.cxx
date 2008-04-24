@@ -44,6 +44,7 @@ LiftGammaGainFilter::LiftGammaGainFilter( int w, int h )
 	m_lift[0]  = m_lift[1]  = m_lift[2]  = 1.0;
 	m_gamma[0] = m_gamma[1] = m_gamma[2] = 1.0;
 	m_gain[0]  = m_gain[1]  = m_gain[2]  = 1.0;
+	m_lift[3]  = m_gamma[3] = m_gain[3]  = 0.5;
 	m_dialog = 0;
 	m_bypass = false;
 }
@@ -89,53 +90,66 @@ void LiftGammaGainFilter::writeXML( TiXmlElement* xml_node )
 	xml_node->SetDoubleAttribute( "lift_r", m_lift[0] );
 	xml_node->SetDoubleAttribute( "lift_g", m_lift[1] );
 	xml_node->SetDoubleAttribute( "lift_b", m_lift[2] );
+	xml_node->SetDoubleAttribute( "lift_v", m_lift[3] );
 	xml_node->SetDoubleAttribute( "gamma_r", m_gamma[0] );
 	xml_node->SetDoubleAttribute( "gamma_g", m_gamma[1] );
 	xml_node->SetDoubleAttribute( "gamma_b", m_gamma[2] );
+	xml_node->SetDoubleAttribute( "gamma_v", m_gamma[3] );
 	xml_node->SetDoubleAttribute( "gain_r", m_gain[0] );
 	xml_node->SetDoubleAttribute( "gain_g", m_gain[1] );
 	xml_node->SetDoubleAttribute( "gain_b", m_gain[2] );
+	xml_node->SetDoubleAttribute( "gain_v", m_gain[3] );
 }
 void LiftGammaGainFilter::readXML( TiXmlElement* xml_node )
 {
-	double r, g, b;
+	double r, g, b, v;
 	xml_node->Attribute( "lift_r", &r );
 	xml_node->Attribute( "lift_g", &g );
 	xml_node->Attribute( "lift_b", &b );
+	xml_node->Attribute( "lift_v", &v );
 	m_lift[0] = r;
 	m_lift[1] = g;
 	m_lift[2] = b;
+	m_lift[3] = v;
 	xml_node->Attribute( "gamma_r", &r );
 	xml_node->Attribute( "gamma_g", &g );
 	xml_node->Attribute( "gamma_b", &b );
+	xml_node->Attribute( "gamma_v", &v );
 	m_gamma[0] = r;
 	m_gamma[1] = g;
 	m_gamma[2] = b;
+	m_gamma[3] = v;
 	xml_node->Attribute( "gain_r", &r );
 	xml_node->Attribute( "gain_g", &g );
 	xml_node->Attribute( "gain_b", &b );
+	xml_node->Attribute( "gain_v", &v );
 	m_gain[0] = r;
 	m_gain[1] = g;
 	m_gain[2] = b;
+	m_gain[3] = v;
+	calculate_values();
 }
 
-void LiftGammaGainFilter::lift( float r, float g, float b )
+void LiftGammaGainFilter::lift( float r, float g, float b, float v )
 {
 	m_lift[0] = r;
 	m_lift[1] = g;
 	m_lift[2] = b;
+	m_lift[3] = v;
 }
-void LiftGammaGainFilter::gamma( float r, float g, float b )
+void LiftGammaGainFilter::gamma( float r, float g, float b, float v )
 {
 	m_gamma[0] = r;
 	m_gamma[1] = g;
 	m_gamma[2] = b;
+	m_gamma[3] = v;
 }
-void LiftGammaGainFilter::gain( float r, float g, float b )
+void LiftGammaGainFilter::gain( float r, float g, float b, float v )
 {
 	m_gain[0] = r;
 	m_gain[1] = g;
 	m_gain[2] = b;
+	m_gain[3] = v;
 }
 
 
@@ -147,6 +161,9 @@ static float green( float* a ) {
 }
 static float blue( float* a ) {
 	return a[2];
+}
+static float value( float* a ) {
+	return a[3];
 }
 static int f_to_i( float in ) {
 	return (int)( in * 255 );
@@ -169,6 +186,10 @@ void LiftGammaGainFilter::calculate_values()
 {
 	// r goes from 0.0 to 1.0
 	float gain, lift, gamma;
+	float vgain, vlift, vgamma;
+	vgain = value( m_gain ) * 2.0;
+	vlift = value( m_lift ) * 2.0 - 1.0;
+	vgamma = value( m_gamma ) * 2.0;
 	bool m_constant_green = false;
 	if ( m_constant_green ) {
 		for ( unsigned int i = 0; i < 256; i++ ) {
@@ -193,22 +214,22 @@ void LiftGammaGainFilter::calculate_values()
 			/* Red */
 			/* Cyan => Rv */
 			/* Magenta => R^ B^ */
-			gamma = 1.0 / red( m_gamma );
-			gain = red( m_gain );
-			lift = red( m_lift ) - 1.0;
+			gamma = ( 1.0 / red( m_gamma ) ) * vgamma;
+			gain = ( red( m_gain ) ) * vgain;
+			lift = ( red( m_lift ) - 1.0 ) + vlift;
 			m_red[i] = clamp_255(f_to_i(  pow( (( i_to_f(i) * gain ) + lift ), gamma ) ) );
 
 			/* Blue */
 			/* Magenta => R^ B^ */
 			/* Yellow => Bv */
-			gamma = 1.0 / blue( m_gamma );
-			gain = blue( m_gain );
-			lift = blue( m_lift ) - 1.0;
+			gamma = ( 1.0 / blue( m_gamma ) ) * vgamma;
+			gain = ( blue( m_gain ) ) * vgain;
+			lift = ( blue( m_lift ) - 1.0 ) + vlift;
 			m_blue[i] = clamp_255(f_to_i(  pow( (( i_to_f(i) * gain ) + lift ), gamma ) ) );
 
-			gamma = 1.0 / green( m_gamma );
-			gain = green( m_gain );
-			lift = green( m_lift ) - 1.0;
+			gamma = ( 1.0 / green( m_gamma ) ) * vgamma;
+			gain = ( green( m_gain ) ) * vgain;
+			lift = ( green( m_lift ) - 1.0 ) + vlift;
 			m_green[i] = clamp_255(f_to_i(  pow( (( i_to_f(i) * gain ) + lift ), gamma ) ) );
 		}
 	}

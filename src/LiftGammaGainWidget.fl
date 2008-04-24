@@ -4,7 +4,7 @@ header_name {.H}
 code_name {.cxx}
 widget_class LiftGammaGainWidget {
   label {Lift Gamma Gain} open
-  xywh {737 128 585 165} type Double visible
+  xywh {737 128 585 190} type Double visible
 } {
   Fl_Box lift {
     callback {m_dialog->read_values();}
@@ -41,7 +41,19 @@ widget_class LiftGammaGainWidget {
   }
   Fl_Check_Button bypass {
     label Bypass
+    callback {m_dialog->read_values();}
+    xywh {0 165 585 25} down_box DOWN_BOX
+  }
+  Fl_Value_Slider lift_slider {
+    callback {m_dialog->read_values();}
+    xywh {0 140 195 25} type {Horz Knob} step 0.001 value 0.5
+  }
+  Fl_Value_Slider gamma_slider {
+    callback {m_dialog->read_values();}
+    xywh {195 140 195 25} type {Horz Knob} step 0.001 value 0.5
+  }
+  Fl_Value_Slider gain_slider {
     callback {m_dialog->read_values();} selected
-    xywh {0 140 585 25} down_box DOWN_BOX
+    xywh {390 140 195 25} type {Horz Knob} step 0.001 value 0.5
   }
 } 

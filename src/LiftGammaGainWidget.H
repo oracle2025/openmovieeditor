@@ -8,6 +8,7 @@
 #include "LiftGammaGainDialog.H"
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Check_Button.H>
+#include <FL/Fl_Value_Slider.H>
 
 class LiftGammaGainWidget : public Fl_Group {
 public:
@@ -32,5 +33,20 @@ public:
 private:
   void cb_bypass_i(Fl_Check_Button*, void*);
   static void cb_bypass(Fl_Check_Button*, void*);
+public:
+  Fl_Value_Slider *lift_slider;
+private:
+  void cb_lift_slider_i(Fl_Value_Slider*, void*);
+  static void cb_lift_slider(Fl_Value_Slider*, void*);
+public:
+  Fl_Value_Slider *gamma_slider;
+private:
+  void cb_gamma_slider_i(Fl_Value_Slider*, void*);
+  static void cb_gamma_slider(Fl_Value_Slider*, void*);
+public:
+  Fl_Value_Slider *gain_slider;
+private:
+  void cb_gain_slider_i(Fl_Value_Slider*, void*);
+  static void cb_gain_slider(Fl_Value_Slider*, void*);
 };
 #endif

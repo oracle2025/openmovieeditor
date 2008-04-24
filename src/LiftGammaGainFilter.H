@@ -53,9 +53,9 @@ class LiftGammaGainFilter : public IVideoEffect
 
 		void bypass( bool b ) { m_bypass = b; }
 
-		void lift( float r, float g, float b );
-		void gamma( float r, float g, float b );
-		void gain( float r, float g, float b );
+		void lift( float r, float g, float b, float v );
+		void gamma( float r, float g, float b, float v );
+		void gain( float r, float g, float b, float v );
 		const float* lift() { return m_lift; }
 		const float* gamma() { return m_gamma; }
 		const float* gain() { return m_gain; }
@@ -67,9 +67,9 @@ class LiftGammaGainFilter : public IVideoEffect
 		gavl_video_frame_t* m_gavl_frame;
 		LazyFrame* m_lazy_frame;
 		bool m_bypass;
-		float m_lift[3];
-		float m_gamma[3];
-		float m_gain[3];
+		float m_lift[4];
+		float m_gamma[4];
+		float m_gain[4];
 };
 
 	

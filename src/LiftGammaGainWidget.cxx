@@ -29,6 +29,27 @@ void LiftGammaGainWidget::cb_bypass_i(Fl_Check_Button*, void*) {
 void LiftGammaGainWidget::cb_bypass(Fl_Check_Button* o, void* v) {
   ((LiftGammaGainWidget*)(o->parent()))->cb_bypass_i(o,v);
 }
+
+void LiftGammaGainWidget::cb_lift_slider_i(Fl_Value_Slider*, void*) {
+  m_dialog->read_values();
+}
+void LiftGammaGainWidget::cb_lift_slider(Fl_Value_Slider* o, void* v) {
+  ((LiftGammaGainWidget*)(o->parent()))->cb_lift_slider_i(o,v);
+}
+
+void LiftGammaGainWidget::cb_gamma_slider_i(Fl_Value_Slider*, void*) {
+  m_dialog->read_values();
+}
+void LiftGammaGainWidget::cb_gamma_slider(Fl_Value_Slider* o, void* v) {
+  ((LiftGammaGainWidget*)(o->parent()))->cb_gamma_slider_i(o,v);
+}
+
+void LiftGammaGainWidget::cb_gain_slider_i(Fl_Value_Slider*, void*) {
+  m_dialog->read_values();
+}
+void LiftGammaGainWidget::cb_gain_slider(Fl_Value_Slider* o, void* v) {
+  ((LiftGammaGainWidget*)(o->parent()))->cb_gain_slider_i(o,v);
+}
 LiftGammaGainWidget::LiftGammaGainWidget(int X, int Y, int W, int H, const char *L)
   : Fl_Group(X, Y, W, H, L) {
   LiftGammaGainWidget *o = this;
@@ -77,9 +98,27 @@ LiftGammaGainWidget::LiftGammaGainWidget(int X, int Y, int W, int H, const char 
 { Fl_Box* o = new Fl_Box(390, 0, 195, 25, "Gain");
   o->box(FL_THIN_UP_BOX);
 }
-{ Fl_Check_Button* o = bypass = new Fl_Check_Button(0, 140, 585, 25, "Bypass");
+{ Fl_Check_Button* o = bypass = new Fl_Check_Button(0, 165, 585, 25, "Bypass");
   o->down_box(FL_DOWN_BOX);
   o->callback((Fl_Callback*)cb_bypass);
+}
+{ Fl_Value_Slider* o = lift_slider = new Fl_Value_Slider(0, 140, 195, 25);
+  o->type(5);
+  o->step(0.001);
+  o->value(0.5);
+  o->callback((Fl_Callback*)cb_lift_slider);
+}
+{ Fl_Value_Slider* o = gamma_slider = new Fl_Value_Slider(195, 140, 195, 25);
+  o->type(5);
+  o->step(0.001);
+  o->value(0.5);
+  o->callback((Fl_Callback*)cb_gamma_slider);
+}
+{ Fl_Value_Slider* o = gain_slider = new Fl_Value_Slider(390, 140, 195, 25);
+  o->type(5);
+  o->step(0.001);
+  o->value(0.5);
+  o->callback((Fl_Callback*)cb_gain_slider);
 }
 end();
 }
