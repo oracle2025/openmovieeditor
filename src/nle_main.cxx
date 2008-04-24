@@ -59,9 +59,11 @@ extern "C" {
 #include "LiftGammaGainFactory.H"
 #include "AudioVolumeFilterFactory.H"
 #include "NodeFilterFactory.H"
+#include "FloatNodes/FloatNodeFilterFactory.H"
 #include "MainFilterFactory.H"
 
 #include "NodeFilterFrei0rFactory.H"
+#include "FloatNodes/NodeFilterFloat0rFactory.H"
 #include "color_schemes.H"
 
 #include <stdlib.h>
@@ -173,8 +175,12 @@ int main( int argc, char** argv )
 	nle::NodeFilterFactory nodeFilterFactory;
 	nui.m_effectMenu->addEffect( &nodeFilterFactory );
 	fFactory.add( "effect:builtin:NodeFilter", &nodeFilterFactory );
+	nle::FloatNodeFilterFactory floatNodeFilterFactory;
+	nui.m_effectMenu->addEffect( &floatNodeFilterFactory );
+	fFactory.add( "effect:builtin:FloatNodeFilter", &floatNodeFilterFactory );
 
 	NodeFilterFrei0rFactory nodeFilterFrei0rFactory;
+	NodeFilterFloat0rFactory nodeFilterFloat0rFactory;
 
 	nle::AudioVolumeFilterFactory audioVolumeFilterFactory;
 	nui.m_effectMenu->addEffect( &audioVolumeFilterFactory );

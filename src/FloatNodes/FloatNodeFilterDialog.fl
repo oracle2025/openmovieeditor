@@ -1,0 +1,95 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0107 
+header_name {.H} 
+code_name {.cxx}
+decl {\#include "FloatNodeFilter.H"} {public
+} 
+
+decl {\#include "IEffectDialog.H"} {public
+} 
+
+decl {\#include "NodeFilterFloat0rFactory.H"} {public
+} 
+
+decl {\#include "NodeFilterFloat0rFactoryPlugin.H"} {} 
+
+class FloatNodeFilterDialog {open : {public nle::IEffectDialog}
+} {
+  Function {FloatNodeFilterDialog( nle::FloatNodeFilter* filter )} {open
+  } {
+    code {m_factory = g_node_filter_float0r_factory;} {}
+    Fl_Window m_dialog {
+      label {FloatNode Editor} open
+      xywh {862 348 650 495} type Double resizable visible
+    } {
+      Fl_Tile {} {open
+        xywh {5 55 640 375} resizable
+      } {
+        Fl_Browser plugin_browser {
+          callback {if ( o->value() <= 0 ) {
+	return;
+}
+IFloatNodeFilterFactoryPlugin* ffp = (IFloatNodeFilterFactoryPlugin*)o->data(o->value());
+if ( ffp ) {
+	graph_editor->addNode( ffp );
+}}
+          xywh {5 55 280 375}
+          code0 {\#include <FL/Fl_Hold_Browser.H>}
+          class Fl_Hold_Browser
+        }
+        Fl_Scroll {} {open
+          xywh {285 55 360 375} box DOWN_FRAME
+        } {
+          Fl_Box graph_editor {
+            callback {nle::g_videoView->redraw();
+nle::g_timeline->changing();}
+            xywh {285 55 2000 2000} box FLAT_BOX
+            code0 {\#include "Float0rGraphEditor.H"}
+            code1 {\#include "VideoViewGL.H"}
+            code2 {\#include "Timeline.H"}
+            class Float0rGraphEditor
+          }
+        }
+      }
+      Fl_Box {} {
+        label {FloatNode Editor}
+        xywh {0 0 650 50} labelfont 1 labelsize 16
+      }
+      Fl_Return_Button {} {
+        label Close
+        callback {delete this;}
+        xywh {5 465 640 25}
+      }
+      Fl_Check_Button {} {
+        label Bypass
+        xywh {5 435 615 25} down_box DOWN_BOX
+      }
+      Fl_Button trash_can {
+        image {../icons/trash.xpm} xywh {620 435 25 25}
+      }
+    }
+    code {m_filter = filter;
+for ( effect_node_float0r* p = m_factory->m_effects; p; p = p->next ) {
+	plugin_browser->add( p->effect->name(), (void*)p->effect );
+}
+graph_editor->m_trash = trash_can;
+graph_editor->setFilter( m_filter );} {selected
+    }
+  }
+  Function {~FloatNodeFilterDialog()} {open
+  } {
+    code {m_filter->m_dialog = 0;
+m_dialog->hide();
+delete m_dialog;} {}
+  }
+  Function {show()} {open
+  } {
+    code {m_dialog->show();} {}
+  }
+  Function {shown()} {open return_type int
+  } {
+    code {return m_dialog->shown();} {}
+  }
+  decl {nle::FloatNodeFilter* m_filter;} {}
+  decl {NodeFilterFloat0rFactory* m_factory;} {}
+} 

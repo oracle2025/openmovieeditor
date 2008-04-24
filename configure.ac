@@ -199,6 +199,7 @@ AC_CONFIG_FILES([
    src/tinyxml/Makefile
    src/ProgressDialog/Makefile
    src/LoadSaveManager/Makefile
+   src/FloatNodes/Makefile
    src/ErrorDialog/Makefile
    src/timeline/Makefile
 ])
