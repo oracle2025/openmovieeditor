@@ -439,14 +439,6 @@ Fl_Menu_Item NleUI::menu_Aspect[] = {
 Fl_Menu_Item* NleUI::black_border_item = NleUI::menu_Aspect + 4;
 Fl_Menu_Item* NleUI::black_border_item_2_35 = NleUI::menu_Aspect + 5;
 
-void NleUI::cb_1_i(nle::FileBrowser* o, void*) {
-  nle::FileBrowser* fb = (nle::FileBrowser*)o;
-fb->load_rel();
-}
-void NleUI::cb_1(nle::FileBrowser* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_1_i(o,v);
-}
-
 void NleUI::cb_effect_browser_i(nle::EffectStackBrowser*, void*) {
   setEffectButtons();
 }
@@ -621,11 +613,11 @@ void NleUI::cb_projectNameInput(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_projectNameInput_i(o,v);
 }
 
-void NleUI::cb_2_i(Fl_Button* o, void*) {
+void NleUI::cb_1_i(Fl_Button* o, void*) {
   g_snap = o->value();
 }
-void NleUI::cb_2(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_2_i(o,v);
+void NleUI::cb_1(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_1_i(o,v);
 }
 
 #include <FL/Fl_Pixmap.H>
@@ -990,26 +982,7 @@ NleUI::NleUI() {
           { Fl_Tabs* o = tab_view = new Fl_Tabs(0, 50, 365, 255);
             o->box(FL_UP_BOX);
             o->labelcolor(FL_GRAY0);
-            { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Files");
-              o->hide();
-              { nle::FileBrowser* o = new nle::FileBrowser(5, 80, 355, 220);
-                o->box(FL_NO_BOX);
-                o->color(FL_BACKGROUND2_COLOR);
-                o->selection_color(FL_SELECTION_COLOR);
-                o->labeltype(FL_NORMAL_LABEL);
-                o->labelfont(0);
-                o->labelsize(14);
-                o->labelcolor(FL_FOREGROUND_COLOR);
-                o->callback((Fl_Callback*)cb_1);
-                o->align(FL_ALIGN_BOTTOM);
-                o->when(FL_WHEN_RELEASE_ALWAYS);
-                Fl_Group::current()->resizable(o);
-              }
-              o->end();
-              Fl_Group::current()->resizable(o);
-            }
             { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Media Browser");
-              o->hide();
               { nle::MediaPanel* o = new nle::MediaPanel(5, 80, 355, 220);
                 o->box(FL_NO_BOX);
                 o->color(FL_BACKGROUND_COLOR);
@@ -1026,6 +999,7 @@ NleUI::NleUI() {
               o->end();
             }
             { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Clip Inspector");
+              o->hide();
               { nle::FltkEffectMenu* o = m_effectMenu = new nle::FltkEffectMenu(5, 80, 355, 25, "Add Effect");
                 o->box(FL_UP_BOX);
                 o->color(FL_BACKGROUND_COLOR);
@@ -1221,7 +1195,7 @@ NleUI::NleUI() {
               o->type(1);
               o->value(1);
               o->image(image_snap);
-              o->callback((Fl_Callback*)cb_2);
+              o->callback((Fl_Callback*)cb_1);
             }
             { nle::Ruler* o = new nle::Ruler(65, 345, 635, 25, "Ruler");
               o->box(FL_UP_BOX);
@@ -6666,7 +6640,7 @@ void ExportDialog::cb_presets_browser(Fl_Hold_Browser* o, void* v) {
   ((ExportDialog*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_presets_browser_i(o,v);
 }
 
-void ExportDialog::cb_3_i(Fl_Button*, void*) {
+void ExportDialog::cb_2_i(Fl_Button*, void*) {
   CustomFormatDialog dlg;
 dlg.show();
 while (dlg.shown())
@@ -6681,8 +6655,8 @@ if ( preset ) {
 	presets_browser->add(fmt.name, preset);
 };
 }
-void ExportDialog::cb_3(Fl_Button* o, void* v) {
-  ((ExportDialog*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_3_i(o,v);
+void ExportDialog::cb_2(Fl_Button* o, void* v) {
+  ((ExportDialog*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_2_i(o,v);
 }
 
 void ExportDialog::cb_edit_format_button_i(Fl_Button*, void*) {
@@ -6793,7 +6767,7 @@ ExportDialog::ExportDialog() {
             { Fl_Button* o = new Fl_Button(65, 320, 25, 25, "+");
               o->labelfont(1);
               o->labelsize(16);
-              o->callback((Fl_Callback*)cb_3);
+              o->callback((Fl_Callback*)cb_2);
             }
             { Fl_Button* o = edit_format_button = new Fl_Button(90, 320, 190, 25, "Edit...");
               o->callback((Fl_Callback*)cb_edit_format_button);

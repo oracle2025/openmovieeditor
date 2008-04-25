@@ -50,7 +50,6 @@ class FilmStrip : public IdleHandler
 		int64_t m_countAll;
 		int64_t m_count;
 		pic_struct *m_pics;
-		unsigned char **m_rows;
 		IVideoFile* m_vfile;
 		DiskCache* m_cache;
 };

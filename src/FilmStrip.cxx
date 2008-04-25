@@ -25,7 +25,7 @@
 #include "SwitchBoard.H"
 #include "VideoFileFactory.H"
 #include "DiskCache.H"
-
+#include "LazyFrame.H"
 
 namespace nle
 {
@@ -37,7 +37,6 @@ FilmStrip::FilmStrip( IVideoFile* vfile )
 {
 	m_vfile = 0;
 	m_cache = new DiskCache( vfile->filename(), "thumbs" );
-	m_rows  = new unsigned char*[PIC_HEIGHT];
 
 	if ( m_cache->isEmpty() ) {
 		m_vfile = VideoFileFactory::get( vfile->filename() );
@@ -62,10 +61,6 @@ FilmStrip::FilmStrip( IVideoFile* vfile )
 bool FilmStrip::process()
 {
 	if ( m_count == m_countAll ) {
-		if ( m_rows ) {
-			delete [] m_rows;
-			m_rows = 0;
-		}
 		if ( m_vfile ) {
 			delete m_vfile;
 			m_vfile = 0;
@@ -83,10 +78,9 @@ bool FilmStrip::process()
 		m_pics[m_count].data = new unsigned char[PIC_WIDTH * PIC_HEIGHT * 3];
 		m_pics[m_count].w = PIC_WIDTH;
 		m_pics[m_count].h = PIC_HEIGHT;
-		for ( int j = 0; j < PIC_HEIGHT; j++ ) {
-			m_rows[j] = m_pics[m_count].data + PIC_WIDTH * 3 * j;
-		}
-		m_vfile->read( m_rows, PIC_WIDTH, PIC_HEIGHT );
+		LazyFrame* f = m_vfile->read();
+		f->set_rgb_target( PIC_WIDTH, PIC_HEIGHT );
+		memcpy( m_pics[m_count].data, f->get_target_buffer(), PIC_WIDTH * PIC_HEIGHT * 3 );
 		m_cache->write( m_pics[m_count].data, (PIC_WIDTH * PIC_HEIGHT * 3) );
 		m_count++;
 	} else {
@@ -109,9 +103,6 @@ FilmStrip::~FilmStrip()
 		delete [] m_pics[i].data;
 	}
 	delete [] m_pics;
-	if ( m_rows ) {
-		delete [] m_rows;
-	}
 	if ( m_vfile ) {
 		delete m_vfile;
 	}

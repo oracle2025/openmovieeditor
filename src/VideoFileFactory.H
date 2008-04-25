@@ -27,6 +27,8 @@ namespace nle
 
 class IVideoFile;
 
+extern void* g_video_file_factory_progress;
+
 class VideoFileFactory
 {
 	public:

@@ -139,8 +139,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	FolderBrowser.cxx\
 	MediaBrowser.cxx\
 	MediaBrowser.H\
-	FileBrowser.cxx\
-	FileBrowser.H\
 	VideoThumbnails.H\
 	VideoThumbnails.cxx\
 	Resampler.cxx\
@@ -289,9 +287,13 @@ openmovieeditor_SOURCES = nle.cxx\
 	VideoFileFfmpeg.cxx\
 	VideoFileFfmpeg.H\
 	NodeFilterImageFactoryPlugin.H\
-	NodeFilterImageFactoryPlugin.cxx
+	NodeFilterImageFactoryPlugin.cxx\
+	VideoFileGmerlin.H\
+	VideoFileGmerlin.cxx
 #	ColorWheel.H\
 #	ColorWheel.cxx
+#	FileBrowser.cxx\
+#	FileBrowser.H
 
 
 #	ShiftAutomationDragHandler.cxx\

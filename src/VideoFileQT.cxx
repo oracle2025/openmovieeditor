@@ -106,10 +106,6 @@ LazyFrame* VideoFileQT::read()
 	return m_lazy_frame;
 }
 
-void VideoFileQT::read( unsigned char** rows, int w, int h )
-{
-	quicktime_decode_scaled( m_qt, 0, 0, m_width, m_height, w, h, BC_RGB888, rows, 0 );
-}
 void VideoFileQT::seek( int64_t position )
 {
 	int64_t p = position / m_ticksPerFrame;

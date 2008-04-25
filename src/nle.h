@@ -25,7 +25,6 @@
 #include <FL/Fl_Menu_Button.H>
 #include <FL/Fl_Check_Button.H>
 #include <FL/Fl_Tabs.H>
-#include "FileBrowser.H"
 #include "MediaPanel.H"
 #include "FltkEffectMenu.H"
 #include "IVideoEffect.H"
@@ -161,10 +160,6 @@ private:
   static void cb_black_border_item_2_35(Fl_Menu_*, void*);
 public:
   Fl_Tabs *tab_view;
-private:
-  void cb_1_i(nle::FileBrowser*, void*);
-  static void cb_1(nle::FileBrowser*, void*);
-public:
   nle::FltkEffectMenu *m_effectMenu;
   nle::EffectStackBrowser *effect_browser;
 private:
@@ -263,8 +258,8 @@ public:
 private:
   void cb_projectNameInput_i(Fl_Button*, void*);
   static void cb_projectNameInput(Fl_Button*, void*);
-  void cb_2_i(Fl_Button*, void*);
-  static void cb_2(Fl_Button*, void*);
+  void cb_1_i(Fl_Button*, void*);
+  static void cb_1(Fl_Button*, void*);
 public:
   Fl_Scrollbar *vScrollBar;
 private:
@@ -421,8 +416,8 @@ public:
 private:
   void cb_presets_browser_i(Fl_Hold_Browser*, void*);
   static void cb_presets_browser(Fl_Hold_Browser*, void*);
-  void cb_3_i(Fl_Button*, void*);
-  static void cb_3(Fl_Button*, void*);
+  void cb_2_i(Fl_Button*, void*);
+  static void cb_2(Fl_Button*, void*);
 public:
   Fl_Button *edit_format_button;
 private:

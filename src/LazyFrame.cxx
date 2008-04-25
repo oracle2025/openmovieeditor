@@ -25,7 +25,7 @@ using namespace std;
 namespace nle
 {
 
-LazyFrame::LazyFrame( gavl_video_format_t *format )
+LazyFrame::LazyFrame( const gavl_video_format_t *format )
 {
 	m_cacheable = false;
 	m_converter_RGBA = 0;
@@ -168,6 +168,21 @@ void LazyFrame::alpha( float value )
 void LazyFrame::put_data( gavl_video_frame_t* frame )
 {
 	m_frame = frame;
+}
+void LazyFrame::set_rgb_target( int w, int h )
+{
+	gavl_video_format_t fmt;
+	fmt.frame_height = fmt.image_height = h;
+	fmt.frame_width = fmt.image_width = w;
+	fmt.pixel_width = fmt.pixel_height = 1;
+	fmt.interlace_mode = GAVL_INTERLACE_NONE;
+	fmt.pixelformat = GAVL_RGB_24;
+	set_target( &fmt );
+}
+unsigned char* LazyFrame::get_target_buffer()
+{
+	gavl_video_frame_t* gavl_frame = target();
+	return gavl_frame->planes[0];
 }
 
 

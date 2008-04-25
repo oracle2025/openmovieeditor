@@ -65,6 +65,7 @@ extern "C" {
 #include "NodeFilterFrei0rFactory.H"
 #include "FloatNodes/NodeFilterFloat0rFactory.H"
 #include "color_schemes.H"
+#include "VideoFileFactory.H"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -145,6 +146,7 @@ int main( int argc, char** argv )
 	av_register_all();
 #endif	
 	fl_register_images();
+	nle::g_video_file_factory_progress = 0;
 	nle::g_SEEKING = false;
 	srand( time( 0 ) );
 	nle::FltkErrorHandler e;

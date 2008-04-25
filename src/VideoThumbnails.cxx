@@ -23,6 +23,7 @@
 #include "DiskCache.H"
 #include "IVideoFile.H"
 #include "VideoFileFactory.H"
+#include "LazyFrame.H"
 
 #include <cstring>
 
@@ -33,7 +34,6 @@ bool VideoThumbnails::get( const char* filename, unsigned char* rgb, int &w, int
 {
 	DiskCache cache( filename, "thumb" );
 	if ( cache.isEmpty() ) {
-		unsigned char **rows;
 		IVideoFile* vf = VideoFileFactory::get( filename );
 		if ( !vf ) {
 			Fl_Shared_Image* image;
@@ -55,11 +55,9 @@ bool VideoThumbnails::get( const char* filename, unsigned char* rgb, int &w, int
 			cache.clean();
 			return true;
 		}
-		rows  = new unsigned char*[VIDEO_THUMBNAIL_HEIGHT];
-		for ( int j = 0; j < VIDEO_THUMBNAIL_HEIGHT; j++ ) {
-			rows[j] = rgb + VIDEO_THUMBNAIL_WIDTH * 3 * j;
-		}
-		vf->read( rows, VIDEO_THUMBNAIL_WIDTH, VIDEO_THUMBNAIL_HEIGHT );
+		LazyFrame* f = vf->read();
+		f->set_rgb_target( VIDEO_THUMBNAIL_WIDTH, VIDEO_THUMBNAIL_HEIGHT );
+		memcpy( rgb, f->get_target_buffer(), VIDEO_THUMBNAIL_WIDTH * VIDEO_THUMBNAIL_HEIGHT * 3 );
 		w = vf->width();
 		h = vf->height();
 		cache.write( &w, sizeof(int) );
@@ -67,7 +65,6 @@ bool VideoThumbnails::get( const char* filename, unsigned char* rgb, int &w, int
 		cache.write( rgb, VIDEO_THUMBNAIL_HEIGHT * VIDEO_THUMBNAIL_WIDTH * 3 );
 		cache.clean();
 		delete vf;
-		delete [] rows;
 		return true;
 	} else {
 		if ( cache.size() == 0 ) {

@@ -178,19 +178,6 @@ LazyFrame* VideoFileFfmpeg::read()
 	}
 	return 0;
 }
-void VideoFileFfmpeg::read( unsigned char** rows, int w, int h )
-{
-	frame_struct fs;
-	frame_struct fs2;
-	fs.w = w;
-	fs.h = h;
-	fs.RGB = rows[0];
-	read();
-	fs2.w = m_width;
-	fs2.h = m_height;
-	fs2.RGB = m_gavl_frame->planes[0];
-	scale_it( &fs2, &fs );
-}
 /*
 http://lists.mplayerhq.hu/pipermail/ffmpeg-devel/2005-July/002320.html
 On Tuesday 2005 July 05 06:24, Steve Willis wrote:

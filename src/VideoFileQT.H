@@ -39,8 +39,8 @@ class VideoFileQT : public IVideoFile
 		bool ok();
 		int64_t length();
 		LazyFrame* read();
-		void read( unsigned char** rows, int w, int h );
 		void seek( int64_t position );
+		const char* decoder() { return "libquicktime"; }
 	protected:
 		int64_t ticksPerFrame();
 		void seekToFrame( int64_t frame );

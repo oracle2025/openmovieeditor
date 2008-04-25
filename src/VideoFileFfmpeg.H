@@ -56,8 +56,8 @@ class VideoFileFfmpeg : public IVideoFile
 		int64_t length();
 //		double fps();
 		LazyFrame* read();
-		void read( unsigned char** rows, int w, int h );
 		void seek( int64_t position );
+		const char* decoder() { return "ffmpeg"; }
 	protected:
 		int64_t ticksPerFrame();
 		void seekToFrame( int64_t frame );

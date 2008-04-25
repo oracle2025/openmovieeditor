@@ -62,12 +62,14 @@
 #include "ColorCurveFactory.H"
 #include "AutoTrack.H"
 #include "AutoDragHandler.H"
-#include "VideoFileQT.H"
-#include "VideoFileFfmpeg.H"
 #include "XmlClipData.H"
+#include "IVideoFile.H"
+#include "VideoFileFactory.H"
+#include "ProgressDialog/ProgressDialog.h"
 
 #include "audio.xpm"
 #include "video.xpm"
+
 
 namespace nle
 {
@@ -163,10 +165,18 @@ int TimelineView::handle( int event )
 					fn=filename;
 				}
 				if (t && !fl_filename_isdir(fn)) {
+					ProgressDialog pDlg( "Loading File" );
+					
 					int64_t rp = get_real_position( _x, t->stretchFactor() );
 					
+					g_video_file_factory_progress = &pDlg;
+					pDlg.start();
+
 					Command* cmd = new AddCommand( fn, t, rp );
 					g_docManager->submit( cmd );
+
+					pDlg.end();
+					g_video_file_factory_progress = 0;
 					
 					adjustScrollbar();
 					redraw();
@@ -979,15 +989,7 @@ void TimelineView::updateEffectDisplay()
 		stringstream aspectstream;
 		aspectstream << frame.pixel_aspect_ratio;
 		aspect = aspectstream.str();
-		string decoder = "none";
-		if ( dynamic_cast<VideoFileQT*>(vidclip->file()) ) {
-			decoder = "libquicktime";
-		} 
-#ifdef AVCODEC
-		else if ( dynamic_cast<VideoFileFfmpeg*>(vidclip->file()) ) {
-			decoder = "ffmpeg";
-		}
-#endif /* AVCODEC */
+		string decoder = vidclip->file()->decoder();
 		string framerate;
 		stringstream frameratestream;
 		

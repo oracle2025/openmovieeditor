@@ -36,7 +36,7 @@ namespace nle
 class LazyFrame
 {
 	public:
-		LazyFrame( gavl_video_format_t *format );
+		LazyFrame( const gavl_video_format_t *format );
 		LazyFrame( int w, int h );
 		~LazyFrame();
 		gavl_video_frame_t* RGBA();
@@ -44,6 +44,8 @@ class LazyFrame
 		gavl_video_frame_t* target();
 		gavl_video_format_t* format();
 		void set_target( gavl_video_format_t *format );
+		void set_rgb_target( int w, int h );
+		unsigned char* get_target_buffer();
 		//compressed(); //for DV direct Rendering
 		float alpha();
 		void alpha( float value );
