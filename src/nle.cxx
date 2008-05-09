@@ -997,6 +997,7 @@ NleUI::NleUI() {
                 Fl_Group::current()->resizable(o);
               }
               o->end();
+              Fl_Group::current()->resizable(o);
             }
             { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Clip Inspector");
               o->hide();

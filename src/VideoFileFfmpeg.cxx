@@ -38,6 +38,7 @@ VideoFileFfmpeg::VideoFileFfmpeg( string filename )
 	m_avFrame = NULL;
 	m_avFrameRGB = NULL;
 	m_formatContext = NULL;
+	m_frame = 0;
 #ifdef SWSCALE
 	pSWSCtx = 0;
 #endif
