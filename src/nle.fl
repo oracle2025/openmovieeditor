@@ -11,7 +11,8 @@ decl {\#include <lqt.h>} {}
 
 decl {\#include <lqt_version.h>} {} 
 
-class NleUI {} {
+class NleUI {open
+} {
   Function {NleUI()} {open
   } {
     Fl_Window mainWindow {
@@ -26,7 +27,7 @@ if ( Fl::event()==FL_CLOSE ) {
       xywh {754 244 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
-        label {Black Borders} open selected
+        label {Black Borders} open
         xywh {0 0 530 25}
       } {
         Submenu {} {
@@ -330,7 +331,7 @@ window->show();}
             } {
               Fl_Menu_Button fps_pb_menu {
                 label fps open
-                xywh {365 320 80 25} deactivate
+                xywh {465 320 80 25} hide deactivate
               } {
                 MenuItem {} {
                   label flexible
@@ -376,7 +377,7 @@ window->show();}
               }
               Fl_Menu_Button {} {
                 label Aspect open
-                xywh {445 320 100 25}
+                xywh {365 320 100 25}
               } {
                 MenuItem {} {
                   label {4:3}
@@ -416,8 +417,8 @@ m_videoView->redraw();}
                 }
               }
               Fl_Check_Button {} {
-                label interlaced
-                xywh {545 320 130 25} down_box DOWN_BOX deactivate resizable
+                label interlaced selected
+                xywh {545 320 130 25} down_box DOWN_BOX hide deactivate resizable
               }
             }
           }

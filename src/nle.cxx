@@ -962,15 +962,17 @@ NleUI::NleUI() {
           }
           { Fl_Group* o = new Fl_Group(365, 320, 310, 25);
             o->box(FL_FLAT_BOX);
-            { Fl_Menu_Button* o = fps_pb_menu = new Fl_Menu_Button(365, 320, 80, 25, "fps");
+            { Fl_Menu_Button* o = fps_pb_menu = new Fl_Menu_Button(465, 320, 80, 25, "fps");
+              o->hide();
               o->deactivate();
               o->menu(menu_fps_pb_menu);
             }
-            { Fl_Menu_Button* o = new Fl_Menu_Button(445, 320, 100, 25, "Aspect");
+            { Fl_Menu_Button* o = new Fl_Menu_Button(365, 320, 100, 25, "Aspect");
               o->menu(menu_Aspect);
             }
             { Fl_Check_Button* o = new Fl_Check_Button(545, 320, 130, 25, "interlaced");
               o->down_box(FL_DOWN_BOX);
+              o->hide();
               o->deactivate();
               Fl_Group::current()->resizable(o);
             }
