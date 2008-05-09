@@ -13,8 +13,7 @@ decl {\#include <lqt_version.h>} {}
 
 class NleUI {open
 } {
-  Function {NleUI()} {open
-  } {
+  Function {NleUI()} {} {
     Fl_Window mainWindow {
       label {Open Movie Editor}
       callback {if (Fl::event()==FL_SHORTCUT && Fl::event_key()==FL_Escape) 
@@ -24,10 +23,10 @@ if ( Fl::event()==FL_CLOSE ) {
 	m_videoView->stop();
 	nle::g_loadSaveManager->shutdown();
 }} open
-      xywh {754 244 700 600} type Double resizable size_range {450 380 0 0} visible
+      xywh {517 199 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
-        label {Black Borders} open
+        label {Black Borders} open selected
         xywh {0 0 530 25}
       } {
         Submenu {} {
@@ -287,11 +286,15 @@ while (dlg.shown())
           Fl_Group {} {open
             xywh {365 25 335 320}
           } {
-            Fl_Box m_videoView {
-              label VideoView
-              xywh {365 25 310 295} box DOWN_BOX labelcolor 32 resizable
-              code0 {\#include "VideoViewGL.H"}
-              class {nle::VideoViewGL}
+            Fl_Group m_video_view_group {open
+              xywh {365 25 310 295} resizable
+            } {
+              Fl_Box m_videoView {
+                label VideoView
+                xywh {365 25 310 295} box DOWN_BOX labelcolor 32 resizable
+                code0 {\#include "VideoViewGL.H"}
+                class {nle::VideoViewGL}
+              }
             }
             Fl_Group {} {open
               xywh {675 25 25 320}
@@ -315,14 +318,25 @@ m_videoView->redraw();}
               Fl_Button {} {
                 label {@9->}
                 callback {//Make a window and reparent gl_window into it.
-o->deactivate();
-m_videoView->parent()->remove(m_videoView);
-delete m_videoView;
-Fl_Window *window = new Fl_Window(300,180);
-m_videoView = new nle::VideoViewGL(0, 0, 300, 180);
-window->end();
-window->resizable(m_videoView);
-window->show();}
+if ( strcmp( o->label(), "@9->" ) == 0 ) {
+	m_video_view_group->box(FL_FLAT_BOX);
+	m_videoView->parent()->remove(m_videoView);
+	delete m_videoView;
+	Fl_Window *window = new Fl_Window(300,180);
+	m_videoView = new nle::VideoViewGL(0, 0, 300, 180);
+	window->end();
+	window->resizable(m_videoView);
+	window->show();
+	o->label("@1->");
+} else {
+	delete m_videoView->window();
+	m_video_view_group->begin();
+	m_videoView = new nle::VideoViewGL( m_video_view_group->x(), m_video_view_group->y(), m_video_view_group->w(), m_video_view_group->h() );
+	m_video_view_group->resizable(m_videoView);
+	m_video_view_group->end();
+	m_videoView->show();
+	o->label("@9->");
+}}
                 tooltip {Detach Preview} xywh {675 25 25 25}
               }
             }
@@ -417,7 +431,7 @@ m_videoView->redraw();}
                 }
               }
               Fl_Check_Button {} {
-                label interlaced selected
+                label interlaced
                 xywh {545 320 130 25} down_box DOWN_BOX hide deactivate resizable
               }
             }

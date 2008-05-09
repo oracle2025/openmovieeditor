@@ -318,14 +318,25 @@ void NleUI::cb_(Fl_Button* o, void* v) {
 
 void NleUI::cb_9_i(Fl_Button* o, void*) {
   //Make a window and reparent gl_window into it.
-o->deactivate();
-m_videoView->parent()->remove(m_videoView);
-delete m_videoView;
-Fl_Window *window = new Fl_Window(300,180);
-m_videoView = new nle::VideoViewGL(0, 0, 300, 180);
-window->end();
-window->resizable(m_videoView);
-window->show();
+if ( strcmp( o->label(), "@9->" ) == 0 ) {
+	m_video_view_group->box(FL_FLAT_BOX);
+	m_videoView->parent()->remove(m_videoView);
+	delete m_videoView;
+	Fl_Window *window = new Fl_Window(300,180);
+	m_videoView = new nle::VideoViewGL(0, 0, 300, 180);
+	window->end();
+	window->resizable(m_videoView);
+	window->show();
+	o->label("@1->");
+} else {
+	delete m_videoView->window();
+	m_video_view_group->begin();
+	m_videoView = new nle::VideoViewGL( m_video_view_group->x(), m_video_view_group->y(), m_video_view_group->w(), m_video_view_group->h() );
+	m_video_view_group->resizable(m_videoView);
+	m_video_view_group->end();
+	m_videoView->show();
+	o->label("@9->");
+};
 }
 void NleUI::cb_9(Fl_Button* o, void* v) {
   ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_9_i(o,v);
@@ -930,16 +941,20 @@ NleUI::NleUI() {
     { Fl_Tile* o = new Fl_Tile(0, 25, 700, 575);
       { Fl_Tile* o = new Fl_Tile(0, 25, 700, 320);
         { Fl_Group* o = new Fl_Group(365, 25, 335, 320);
-          { nle::VideoViewGL* o = m_videoView = new nle::VideoViewGL(365, 25, 310, 295, "VideoView");
-            o->box(FL_DOWN_BOX);
-            o->color(FL_BACKGROUND_COLOR);
-            o->selection_color(FL_BACKGROUND_COLOR);
-            o->labeltype(FL_NORMAL_LABEL);
-            o->labelfont(0);
-            o->labelsize(14);
-            o->labelcolor(FL_GRAY0);
-            o->align(FL_ALIGN_CENTER);
-            o->when(FL_WHEN_RELEASE);
+          { Fl_Group* o = m_video_view_group = new Fl_Group(365, 25, 310, 295);
+            { nle::VideoViewGL* o = m_videoView = new nle::VideoViewGL(365, 25, 310, 295, "VideoView");
+              o->box(FL_DOWN_BOX);
+              o->color(FL_BACKGROUND_COLOR);
+              o->selection_color(FL_BACKGROUND_COLOR);
+              o->labeltype(FL_NORMAL_LABEL);
+              o->labelfont(0);
+              o->labelsize(14);
+              o->labelcolor(FL_GRAY0);
+              o->align(FL_ALIGN_CENTER);
+              o->when(FL_WHEN_RELEASE);
+              Fl_Group::current()->resizable(o);
+            }
+            o->end();
             Fl_Group::current()->resizable(o);
           }
           { Fl_Group* o = new Fl_Group(675, 25, 25, 320);

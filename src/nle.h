@@ -116,6 +116,7 @@ private:
   void cb_About_i(Fl_Menu_*, void*);
   static void cb_About(Fl_Menu_*, void*);
 public:
+  Fl_Group *m_video_view_group;
   nle::VideoViewGL *m_videoView;
   Fl_Slider *zoom_slider;
 private:
