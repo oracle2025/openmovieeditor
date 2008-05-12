@@ -20,8 +20,8 @@
 #ifndef _VIDEO_THUMBNAILS_H_
 #define _VIDEO_THUMBNAILS_H_
 
-#define VIDEO_THUMBNAIL_WIDTH 50
-#define VIDEO_THUMBNAIL_HEIGHT 40
+#define VIDEO_THUMBNAIL_WIDTH 50 // 64 for gavl
+#define VIDEO_THUMBNAIL_HEIGHT 40 // 32 for gavl
 
 namespace nle
 {
