@@ -79,7 +79,7 @@
 
 //#define SWAP_BYTES
 
-#include "../FL/Flmm_Cursor_Shape.H"
+#include "Flmm_Cursor_Shape.H"
 #include <FL/Fl_Window.H>
 #include <FL/Fl.H>
 #include <FL/x.H>

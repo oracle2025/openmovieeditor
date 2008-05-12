@@ -288,7 +288,9 @@ openmovieeditor_SOURCES = nle.cxx\
 	VideoFileFfmpeg.H\
 	NodeFilterImageFactoryPlugin.H\
 	NodeFilterImageFactoryPlugin.cxx\
-	frame_struct.h
+	frame_struct.h\
+	Flmm_Cursor_Shape.cxx\
+	Flmm_Cursor_Shape.H
 #	VideoFileGmerlin.H\
 #	VideoFileGmerlin.cxx
 #	ColorWheel.H\

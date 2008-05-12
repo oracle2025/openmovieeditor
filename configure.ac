@@ -200,6 +200,7 @@ AC_CONFIG_FILES([
    doc/Makefile
    doc/images/Makefile
    icons/Makefile
+   cursors/Makefile
    src/Makefile
    src/sl/Makefile
    src/tinyxml/Makefile

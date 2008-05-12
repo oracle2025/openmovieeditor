@@ -69,7 +69,9 @@
 
 #include "audio.xpm"
 #include "video.xpm"
-
+#include "Flmm_Cursor_Shape.H"
+#include "../cursors/clip_a_cursor.crsr"
+#include "../cursors/clip_b_cursor.crsr"
 
 namespace nle
 {
@@ -203,11 +205,16 @@ int TimelineView::handle( int event )
 				return 1;
 			}
 			cl = get_clip( _x, _y );
-			if ( cl && ( _x < get_screen_position( cl->position(), cl->track()->stretchFactor() ) + 8 
-					|| _x > get_screen_position( cl->position() + (cl->length()+1), cl->track()->stretchFactor() ) - 8 ) ) {
+			if ( cl && ( _x < get_screen_position( cl->position(), cl->track()->stretchFactor() ) + 8 ) ) {
 				if ( current_cursor != FL_CURSOR_WE ) {
-					window()->cursor( FL_CURSOR_WE, fl_rgb_color(254,254,254), fl_rgb_color(1,1,1) );
+					flmm_cursor( window(), &Flmm_Cursor_Shape(clip_a_cursor_crsr) );
+					//window()->cursor( FL_CURSOR_WE, fl_rgb_color(254,254,254), fl_rgb_color(1,1,1) );
 					current_cursor = FL_CURSOR_WE;
+				}
+			} else if ( cl &&  ( _x > get_screen_position( cl->position() + (cl->length()+1), cl->track()->stretchFactor() ) - 8 ) ) {
+				if ( current_cursor != FL_CURSOR_NE ) {
+					flmm_cursor( window(), &Flmm_Cursor_Shape(clip_b_cursor_crsr) );
+					current_cursor = FL_CURSOR_NE;
 				}
 			} else {
 				if ( current_cursor != FL_CURSOR_DEFAULT ) {
