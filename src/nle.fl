@@ -94,7 +94,7 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
             code3 {\#include "Prefs.H"}
           }
           MenuItem {} {
-            label {Export SRT/Subtitles}
+            label {Export SRT/Subtitles...}
             callback {Fl_Group::current( mainWindow );
 
 

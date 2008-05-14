@@ -253,7 +253,7 @@ Fl_Menu_Item NleUI::menu_Black[] = {
  {"New Project", 0,  (Fl_Callback*)NleUI::cb_New, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Save as...", 0x50073,  (Fl_Callback*)NleUI::cb_Save, 0, 128, FL_NORMAL_LABEL, 0, 14, 0},
  {"Render...", 0,  (Fl_Callback*)NleUI::cb_Render, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"Export SRT/Subtitles", 0,  (Fl_Callback*)NleUI::cb_Export, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Export SRT/Subtitles...", 0,  (Fl_Callback*)NleUI::cb_Export, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Export SMIL/Kino...", 0,  (Fl_Callback*)NleUI::cb_Export1, 0, 128, FL_NORMAL_LABEL, 0, 14, 0},
  {"Quit", 0x40071,  (Fl_Callback*)NleUI::cb_Quit, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},

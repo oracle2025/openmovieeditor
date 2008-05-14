@@ -202,7 +202,7 @@ void VideoViewGL::drawVideoBorder()
 
 void VideoViewGL::pushFrameStack( LazyFrame** fs, bool move_cursor )
 {
- // if ( move_cursor ) {MoveCursor(); }
+ if ( move_cursor ) {MoveCursor(); }
  // TODO: Cursor not Moving when playback
  // When this redraws the TimelineView,
  // it causes redraws of the opengl window, which interferes with the playback,
@@ -313,6 +313,9 @@ void VideoViewGL::draw()
 
 void VideoViewGL::seek( int64_t position )
 {
+	if ( g_playbackCore->active() ) {
+		return;
+	}
 	m_seekPosition = position;
 	redraw();
 }

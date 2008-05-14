@@ -1228,7 +1228,7 @@ void TimelineView::move_cursor( int64_t position )
 	if ( m_stylusPosition < 0 ) {
 		m_stylusPosition = 0;
 	}
-	switch ( g_timeline->m_playback_fps ) {
+/*	switch ( g_timeline->m_playback_fps ) {
 		case PB_FPS_NONE:
 			break;
 		case PB_FPS_25_PAL:
@@ -1251,7 +1251,7 @@ void TimelineView::move_cursor( int64_t position )
 			break;
 
 		
-	}
+	}*/
 	window()->make_current();
 	long screen_pos = get_screen_position(m_stylusPosition);
 	if ( screen_pos > w() + x() - 30 ) {
