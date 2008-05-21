@@ -4,7 +4,7 @@
 #define LiftGammaGainWidget_H
 #include <FL/Fl.H>
 #include <FL/Fl_Group.H>
-#include <FL/Fl_Color_Chooser.H>
+#include "Fl_Hsv_Color_Chooser.H"
 #include "LiftGammaGainDialog.H"
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Check_Button.H>
@@ -13,20 +13,20 @@
 class LiftGammaGainWidget : public Fl_Group {
 public:
   LiftGammaGainWidget(int X, int Y, int W, int H, const char *L = 0);
-  Fl_Color_Chooser *lift;
+  Fl_Hsv_Color_Chooser *lift;
 private:
-  void cb_lift_i(Fl_Color_Chooser*, void*);
-  static void cb_lift(Fl_Color_Chooser*, void*);
+  void cb_lift_i(Fl_Hsv_Color_Chooser*, void*);
+  static void cb_lift(Fl_Hsv_Color_Chooser*, void*);
 public:
-  Fl_Color_Chooser *gamma;
+  Fl_Hsv_Color_Chooser *gamma;
 private:
-  void cb_gamma_i(Fl_Color_Chooser*, void*);
-  static void cb_gamma(Fl_Color_Chooser*, void*);
+  void cb_gamma_i(Fl_Hsv_Color_Chooser*, void*);
+  static void cb_gamma(Fl_Hsv_Color_Chooser*, void*);
 public:
-  Fl_Color_Chooser *gain;
+  Fl_Hsv_Color_Chooser *gain;
 private:
-  void cb_gain_i(Fl_Color_Chooser*, void*);
-  static void cb_gain(Fl_Color_Chooser*, void*);
+  void cb_gain_i(Fl_Hsv_Color_Chooser*, void*);
+  static void cb_gain(Fl_Hsv_Color_Chooser*, void*);
 public:
   nle::LiftGammaGainDialog* m_dialog;
   Fl_Check_Button *bypass;

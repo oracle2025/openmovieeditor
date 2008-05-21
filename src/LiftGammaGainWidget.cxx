@@ -2,24 +2,24 @@
 
 #include "LiftGammaGainWidget.H"
 
-void LiftGammaGainWidget::cb_lift_i(Fl_Color_Chooser*, void*) {
+void LiftGammaGainWidget::cb_lift_i(Fl_Hsv_Color_Chooser*, void*) {
   m_dialog->read_values();
 }
-void LiftGammaGainWidget::cb_lift(Fl_Color_Chooser* o, void* v) {
+void LiftGammaGainWidget::cb_lift(Fl_Hsv_Color_Chooser* o, void* v) {
   ((LiftGammaGainWidget*)(o->parent()))->cb_lift_i(o,v);
 }
 
-void LiftGammaGainWidget::cb_gamma_i(Fl_Color_Chooser*, void*) {
+void LiftGammaGainWidget::cb_gamma_i(Fl_Hsv_Color_Chooser*, void*) {
   m_dialog->read_values();
 }
-void LiftGammaGainWidget::cb_gamma(Fl_Color_Chooser* o, void* v) {
+void LiftGammaGainWidget::cb_gamma(Fl_Hsv_Color_Chooser* o, void* v) {
   ((LiftGammaGainWidget*)(o->parent()))->cb_gamma_i(o,v);
 }
 
-void LiftGammaGainWidget::cb_gain_i(Fl_Color_Chooser*, void*) {
+void LiftGammaGainWidget::cb_gain_i(Fl_Hsv_Color_Chooser*, void*) {
   m_dialog->read_values();
 }
-void LiftGammaGainWidget::cb_gain(Fl_Color_Chooser* o, void* v) {
+void LiftGammaGainWidget::cb_gain(Fl_Hsv_Color_Chooser* o, void* v) {
   ((LiftGammaGainWidget*)(o->parent()))->cb_gain_i(o,v);
 }
 
@@ -53,7 +53,7 @@ void LiftGammaGainWidget::cb_gain_slider(Fl_Value_Slider* o, void* v) {
 LiftGammaGainWidget::LiftGammaGainWidget(int X, int Y, int W, int H, const char *L)
   : Fl_Group(X, Y, W, H, L) {
   LiftGammaGainWidget *o = this;
-{ Fl_Color_Chooser* o = lift = new Fl_Color_Chooser(0, 25, 195, 115);
+{ Fl_Hsv_Color_Chooser* o = lift = new Fl_Hsv_Color_Chooser(0, 25, 195, 115);
   o->box(FL_THIN_DOWN_BOX);
   o->color(FL_BACKGROUND_COLOR);
   o->selection_color(FL_BACKGROUND_COLOR);
@@ -65,7 +65,7 @@ LiftGammaGainWidget::LiftGammaGainWidget(int X, int Y, int W, int H, const char 
   o->align(FL_ALIGN_CENTER);
   o->when(FL_WHEN_RELEASE);
 }
-{ Fl_Color_Chooser* o = gamma = new Fl_Color_Chooser(195, 25, 195, 115);
+{ Fl_Hsv_Color_Chooser* o = gamma = new Fl_Hsv_Color_Chooser(195, 25, 195, 115);
   o->box(FL_THIN_DOWN_BOX);
   o->color(FL_BACKGROUND_COLOR);
   o->selection_color(FL_BACKGROUND_COLOR);
@@ -77,7 +77,7 @@ LiftGammaGainWidget::LiftGammaGainWidget(int X, int Y, int W, int H, const char 
   o->align(FL_ALIGN_CENTER);
   o->when(FL_WHEN_RELEASE);
 }
-{ Fl_Color_Chooser* o = gain = new Fl_Color_Chooser(390, 25, 195, 115);
+{ Fl_Hsv_Color_Chooser* o = gain = new Fl_Hsv_Color_Chooser(390, 25, 195, 115);
   o->box(FL_THIN_DOWN_BOX);
   o->color(FL_BACKGROUND_COLOR);
   o->selection_color(FL_BACKGROUND_COLOR);

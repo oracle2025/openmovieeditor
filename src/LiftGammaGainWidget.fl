@@ -9,21 +9,21 @@ widget_class LiftGammaGainWidget {
   Fl_Box lift {
     callback {m_dialog->read_values();}
     xywh {0 25 195 115} box THIN_DOWN_BOX
-    code0 {\#include <FL/Fl_Color_Chooser.H>}
+    code0 {\#include "Fl_Hsv_Color_Chooser.H"}
     code1 {\#include "LiftGammaGainDialog.H"}
-    class Fl_Color_Chooser
+    class Fl_Hsv_Color_Chooser
   }
   Fl_Box gamma {
     callback {m_dialog->read_values();}
     xywh {195 25 195 115} box THIN_DOWN_BOX
-    code0 {\#include <FL/Fl_Color_Chooser.H>}
-    class Fl_Color_Chooser
+    code0 {\#include "Fl_Hsv_Color_Chooser.H"}
+    class Fl_Hsv_Color_Chooser
   }
   Fl_Box gain {
     callback {m_dialog->read_values();}
     xywh {390 25 195 115} box THIN_DOWN_BOX
-    code0 {\#include <FL/Fl_Color_Chooser.H>}
-    class Fl_Color_Chooser
+    code0 {\#include "Fl_Hsv_Color_Chooser.H"}
+    class Fl_Hsv_Color_Chooser
   }
   Fl_Box {} {
     label Lift
@@ -53,7 +53,7 @@ widget_class LiftGammaGainWidget {
     xywh {195 140 195 25} type {Horz Knob} step 0.001 value 0.5
   }
   Fl_Value_Slider gain_slider {
-    callback {m_dialog->read_values();} selected
+    callback {m_dialog->read_values();}
     xywh {390 140 195 25} type {Horz Knob} step 0.001 value 0.5
   }
 } 
