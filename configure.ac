@@ -72,8 +72,8 @@ LDFLAGS="$LDFLAGS $GAVL_LIBS"
 #CPPFLAGS="$CPPFLAGS $GMERLIN_AVDEC_CFLAGS"
 #LDFLAGS="$LDFLAGS $GMERLIN_AVDEC_LIBS"
 
-PKG_CHECK_MODULES(LIBQUICKTIME, libquicktime >= 0.9.7,,
-  AC_MSG_ERROR([*** libquicktime 0.9.7 not found - this program requires libquicktime >= 0.9.7 http://libquicktime.sourceforge.net/ ***]))
+PKG_CHECK_MODULES(LIBQUICKTIME, libquicktime >= 1.0.2,,
+  AC_MSG_ERROR([*** libquicktime 1.0.2 not found - this program requires libquicktime >= 1.0.2 http://libquicktime.sourceforge.net/ ***]))
 CPPFLAGS="$CPPFLAGS $LIBQUICKTIME_CFLAGS"
 LDFLAGS="$LDFLAGS $LIBQUICKTIME_LIBS"
 
