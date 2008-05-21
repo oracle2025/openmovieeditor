@@ -27,8 +27,6 @@
 #include <gavl/gavl.h>
 #include "frame_struct.h"
 
-typedef struct gavl_video_converter_s gavl_video_converter_t;
-typedef struct gavl_video_frame_s gavl_video_frame_t;
 namespace nle
 {
 
