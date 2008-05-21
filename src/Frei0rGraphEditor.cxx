@@ -13,6 +13,7 @@
 #include "sl/sl.h"
 #include <cassert>
 #include <iostream>
+#include <cstring>
 #include <stdlib.h>
 using namespace std;
 

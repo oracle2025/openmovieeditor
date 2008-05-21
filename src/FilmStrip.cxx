@@ -18,6 +18,7 @@
  */
 
 #include <exception>
+#include <cstring>
 
 #include "FilmStrip.H"
 #include "IVideoFile.H"
