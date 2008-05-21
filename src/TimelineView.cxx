@@ -93,6 +93,7 @@ TimelineView::TimelineView( int x, int y, int w, int, const char *label )
 	current_cursor = FL_CURSOR_DEFAULT;
 	m_vscroll = 0;
 	m_selectedClips = 0;
+	m_draggedFilter = 0;
 }
 TimelineView::~TimelineView()
 {
