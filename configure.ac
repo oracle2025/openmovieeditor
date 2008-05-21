@@ -9,7 +9,7 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 AC_PREREQ(2.5)
-AC_INIT(openmovieeditor, [0.0.20080521], [richard.spindler@gmail.com])
+AC_INIT(openmovieeditor, [0.0.20080522], [richard.spindler@gmail.com])
 AC_CONFIG_HEADER([config.h])
 
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
@@ -203,10 +203,10 @@ AC_CONFIG_FILES([
    src/tinyxml/Makefile
    src/ProgressDialog/Makefile
    src/LoadSaveManager/Makefile
-   src/FloatNodes/Makefile
    src/ErrorDialog/Makefile
    src/timeline/Makefile
 ])
+#src/FloatNodes/Makefile
 
 AC_OUTPUT
 

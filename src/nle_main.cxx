@@ -59,11 +59,11 @@ extern "C" {
 #include "LiftGammaGainFactory.H"
 #include "AudioVolumeFilterFactory.H"
 #include "NodeFilterFactory.H"
-#include "FloatNodes/FloatNodeFilterFactory.H"
+//#include "FloatNodes/FloatNodeFilterFactory.H"
 #include "MainFilterFactory.H"
 
 #include "NodeFilterFrei0rFactory.H"
-#include "FloatNodes/NodeFilterFloat0rFactory.H"
+//#include "FloatNodes/NodeFilterFloat0rFactory.H"
 #include "color_schemes.H"
 #include "VideoFileFactory.H"
 
