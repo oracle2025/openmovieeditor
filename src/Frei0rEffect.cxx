@@ -194,6 +194,14 @@ void Frei0rEffect::readXML( TiXmlElement* xml_node )
 							f0r_set_param_value( m_instance, &cvalue, i );
 							break;
 						}
+					case F0R_PARAM_POSITION:
+						{
+							f0r_param_position_t pos = { 0, 0 };
+							parameterXml->Attribute( "x", &pos.x );
+							parameterXml->Attribute( "y", &pos.y );
+							f0r_set_param_value( m_instance, &pos, i );
+							break;
+						}
 				}
 				break;
 			}
