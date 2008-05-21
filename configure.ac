@@ -50,9 +50,6 @@ LARGEFILE_FLAGS=`getconf LFS_CFLAGS`
 CPPFLAGS="$CPPFLAGS $LARGEFILE_FLAGS"
 CFLAGS="$CFLAGS $LARGEFILE_FLAGS"
 
- AC_CHECK_HEADER(sys/soundcard.h,,
-  AC_MSG_ERROR([*** sys/soundcard.h not found - this program requires the Open Sound System (http://4front-tech.com) or compatible (http://www.alsa-project.com) ***]))
-
 PKG_CHECK_MODULES(SAMPLERATE, samplerate >= 0.1.1,,
   AC_MSG_ERROR([*** libsamplerate not found - this program requires libsamplerate >= 0.1.1 http://www.mega-nerd.com/SRC/ ***]))
 CPPFLAGS="$CPPFLAGS $SAMPLERATE_CFLAGS"
@@ -63,9 +60,9 @@ PKG_CHECK_MODULES(SNDFILE, sndfile >= 1.0.0,,
 CPPFLAGS="$CPPFLAGS $SNDFILE_CFLAGS"
 LDFLAGS="$LDFLAGS $SNDFILE_LIBS"
 
-PKG_CHECK_MODULES(GAVL, gavl >= 0.2.3,,
-  AC_MSG_ERROR([*** gavl >= 0.2.3 not found - this program requires the gmerlin audio
-  video library >= 0.2.3 http://gmerlin.sourceforge.net/ ***]))
+PKG_CHECK_MODULES(GAVL, gavl >= 1.0.0,,
+  AC_MSG_ERROR([*** gavl >= 1.0.0 not found - this program requires the gmerlin audio
+  video library >= 1.0.0 http://gmerlin.sourceforge.net/ ***]))
 CPPFLAGS="$CPPFLAGS $GAVL_CFLAGS"
 LDFLAGS="$LDFLAGS $GAVL_LIBS"
 

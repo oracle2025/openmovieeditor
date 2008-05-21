@@ -177,12 +177,14 @@ int main( int argc, char** argv )
 	nle::NodeFilterFactory nodeFilterFactory;
 	nui.m_effectMenu->addEffect( &nodeFilterFactory );
 	fFactory.add( "effect:builtin:NodeFilter", &nodeFilterFactory );
-	nle::FloatNodeFilterFactory floatNodeFilterFactory;
+
+
+	/*nle::FloatNodeFilterFactory floatNodeFilterFactory;
 	nui.m_effectMenu->addEffect( &floatNodeFilterFactory );
-	fFactory.add( "effect:builtin:FloatNodeFilter", &floatNodeFilterFactory );
+	fFactory.add( "effect:builtin:FloatNodeFilter", &floatNodeFilterFactory );*/
+	//NodeFilterFloat0rFactory nodeFilterFloat0rFactory;
 
 	NodeFilterFrei0rFactory nodeFilterFrei0rFactory;
-	NodeFilterFloat0rFactory nodeFilterFloat0rFactory;
 
 	nle::AudioVolumeFilterFactory audioVolumeFilterFactory;
 	nui.m_effectMenu->addEffect( &audioVolumeFilterFactory );
