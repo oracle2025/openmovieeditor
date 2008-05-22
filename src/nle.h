@@ -261,6 +261,8 @@ private:
   static void cb_projectNameInput(Fl_Button*, void*);
   void cb_1_i(Fl_Button*, void*);
   static void cb_1(Fl_Button*, void*);
+  void cb_L_i(Fl_Button*, void*);
+  static void cb_L(Fl_Button*, void*);
 public:
   Fl_Scrollbar *vScrollBar;
 private:
@@ -550,4 +552,5 @@ public:
   void show();
   ~SrtExportDialog();
 };
+extern bool g_lock;
 #endif

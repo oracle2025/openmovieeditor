@@ -11,9 +11,9 @@ decl {\#include <lqt.h>} {}
 
 decl {\#include <lqt_version.h>} {} 
 
-class NleUI {open
-} {
-  Function {NleUI()} {} {
+class NleUI {} {
+  Function {NleUI()} {open
+  } {
     Fl_Window mainWindow {
       label {Open Movie Editor}
       callback {if (Fl::event()==FL_SHORTCUT && Fl::event_key()==FL_Escape) 
@@ -734,9 +734,14 @@ if ( name ) {
               }
               Fl_Box {} {
                 label Ruler
-                xywh {65 345 635 25} box UP_BOX align 16 resizable
+                xywh {90 345 610 25} box UP_BOX align 16 resizable
                 code0 {\#include "Ruler.H"}
                 class {nle::Ruler}
+              }
+              Fl_Button {} {
+                label L
+                callback {g_lock = o->value();}
+                tooltip Lock xywh {65 345 25 25} type Toggle labelfont 1 labelsize 16
               }
             }
             Fl_Scrollbar vScrollBar {
@@ -829,6 +834,7 @@ scaleBar->slider_size_i(300);
 mainWindow->show(argc, argv);
 projectNameInput->label("Project 1");
 g_snap = true;
+g_lock = false;
 scroll_area->type(0);
 g_v_scrollbar = vScrollBar;
 g_16_9 = false;
@@ -2307,4 +2313,7 @@ track_choice->value(0);} {}
   } {
     code {delete dialog_window;} {}
   }
+} 
+
+decl {bool g_lock;} {public
 } 

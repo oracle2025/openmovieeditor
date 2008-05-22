@@ -657,6 +657,13 @@ static const char *idata_snap[] = {
 };
 static Fl_Pixmap image_snap(idata_snap);
 
+void NleUI::cb_L_i(Fl_Button* o, void*) {
+  g_lock = o->value();
+}
+void NleUI::cb_L(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_L_i(o,v);
+}
+
 void NleUI::cb_vScrollBar_i(Fl_Scrollbar* o, void*) {
   scroll_area->position( 0, o->value() );
 }
@@ -1215,7 +1222,7 @@ NleUI::NleUI() {
               o->image(image_snap);
               o->callback((Fl_Callback*)cb_1);
             }
-            { nle::Ruler* o = new nle::Ruler(65, 345, 635, 25, "Ruler");
+            { nle::Ruler* o = new nle::Ruler(90, 345, 610, 25, "Ruler");
               o->box(FL_UP_BOX);
               o->color(FL_BACKGROUND_COLOR);
               o->selection_color(FL_BACKGROUND_COLOR);
@@ -1226,6 +1233,13 @@ NleUI::NleUI() {
               o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
               o->when(FL_WHEN_RELEASE);
               Fl_Group::current()->resizable(o);
+            }
+            { Fl_Button* o = new Fl_Button(65, 345, 25, 25, "L");
+              o->tooltip("Lock");
+              o->type(1);
+              o->labelfont(1);
+              o->labelsize(16);
+              o->callback((Fl_Callback*)cb_L);
             }
             o->end();
           }
@@ -1353,6 +1367,7 @@ scaleBar->slider_size_i(300);
 mainWindow->show(argc, argv);
 projectNameInput->label("Project 1");
 g_snap = true;
+g_lock = false;
 scroll_area->type(0);
 g_v_scrollbar = vScrollBar;
 g_16_9 = false;
@@ -7656,3 +7671,4 @@ void SrtExportDialog::show() {
 SrtExportDialog::~SrtExportDialog() {
   delete dialog_window;
 }
+bool g_lock;

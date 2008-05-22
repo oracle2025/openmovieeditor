@@ -367,18 +367,23 @@ int TimelineView::handle( int event )
 					m_dragHandler = audioClip->onMouseDown( r, _x, _y, FL_SHIFT & Fl::event_state() );
 					return 1;
 				} else if ( cl ) {
-					if ( _x < get_screen_position( cl->position(), cl->track()->stretchFactor() ) + 8 ) {
-						m_dragHandler = new TrimDragHandler(
-								this, cl, cl->track()->num(),
-								0, 0, false );
-					} else if ( _x > get_screen_position( cl->position() + (cl->length()+1), cl->track()->stretchFactor() ) - 8) {
-						m_dragHandler = new TrimDragHandler(
-								this, cl, cl->track()->num(),
-								0, 0, true );
+					if ( g_lock ) {
+						clear_selection();
+						toggle_selection( cl );
 					} else {
-						m_dragHandler = new MoveDragHandler(
-								this, cl, _x, _y, get_clip_rect( cl, false )
-								);
+						if ( _x < get_screen_position( cl->position(), cl->track()->stretchFactor() ) + 8 ) {
+							m_dragHandler = new TrimDragHandler(
+									this, cl, cl->track()->num(),
+									0, 0, false );
+						} else if ( _x > get_screen_position( cl->position() + (cl->length()+1), cl->track()->stretchFactor() ) - 8) {
+							m_dragHandler = new TrimDragHandler(
+									this, cl, cl->track()->num(),
+									0, 0, true );
+						} else {
+							m_dragHandler = new MoveDragHandler(
+									this, cl, _x, _y, get_clip_rect( cl, false )
+									);
+						}
 					}
 					return 1;
 				}
