@@ -19,4 +19,5 @@ EXTRA_DIST = openmovieeditor.desktop \
 		audio.xpm video.xpm arrows_small.xpm dialog-warning.xpm \
              logo.xpm trash_small.xpm openmovieeditor.png titles.xpm \
 						 trash.xpm tool_automations.xpm tool_positioning.xpm mute.xpm \
-						 razor.xpm snap.xpm emblem-unreadable.xpm frei0r.xpm source.xpm
+						 razor.xpm snap.xpm emblem-unreadable.xpm frei0r.xpm source.xpm \
+						 lock.xpm

@@ -261,8 +261,8 @@ private:
   static void cb_projectNameInput(Fl_Button*, void*);
   void cb_1_i(Fl_Button*, void*);
   static void cb_1(Fl_Button*, void*);
-  void cb_L_i(Fl_Button*, void*);
-  static void cb_L(Fl_Button*, void*);
+  void cb_2_i(Fl_Button*, void*);
+  static void cb_2(Fl_Button*, void*);
 public:
   Fl_Scrollbar *vScrollBar;
 private:
@@ -419,8 +419,8 @@ public:
 private:
   void cb_presets_browser_i(Fl_Hold_Browser*, void*);
   static void cb_presets_browser(Fl_Hold_Browser*, void*);
-  void cb_2_i(Fl_Button*, void*);
-  static void cb_2(Fl_Button*, void*);
+  void cb_3_i(Fl_Button*, void*);
+  static void cb_3(Fl_Button*, void*);
 public:
   Fl_Button *edit_format_button;
 private:

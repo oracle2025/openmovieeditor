@@ -29,7 +29,7 @@ class NodeFilterDialog {open : {public nle::IEffectDialog}
       xywh {590 247 650 495} type Double resizable visible
     } {
       Fl_Tile {} {open
-        xywh {5 55 640 375} resizable
+        xywh {5 55 2280 2000} resizable
       } {
         Fl_Browser plugin_browser {
           callback {if ( o->value() <= 0 ) {
@@ -44,7 +44,7 @@ if ( ffp ) {
           class Fl_Hold_Browser
         }
         Fl_Scroll {} {open
-          xywh {285 55 360 375} box DOWN_FRAME
+          xywh {285 55 2000 2000} box DOWN_FRAME
         } {
           Fl_Box graph_editor {
             callback {nle::g_videoView->redraw();
@@ -67,12 +67,20 @@ nle::g_timeline->changing();}
         xywh {5 465 640 25}
       }
       Fl_Check_Button {} {
-        label Bypass
-        xywh {5 435 615 25} down_box DOWN_BOX
+        label Bypass selected
+        xywh {5 435 455 25} down_box DOWN_BOX
       }
       Fl_Button trash_can {
         image {../icons/trash.xpm} xywh {620 435 25 25}
       }
+      Fl_Button {} {
+        label {Save ...}
+        xywh {460 435 80 25}
+      }
+      Fl_Menu_Button {} {
+        label Load open
+        xywh {540 435 80 25}
+      } {}
     }
     code {m_filter = filter;
 plugin_browser->add( m_bezier_curve_factory.name(), (void*)&m_bezier_curve_factory );
@@ -81,8 +89,7 @@ for ( effect_node* p = m_factory->m_effects; p; p = p->next ) {
 	plugin_browser->add( p->effect->name(), (void*)p->effect );
 }
 graph_editor->m_trash = trash_can;
-graph_editor->setFilter( m_filter );} {selected
-    }
+graph_editor->setFilter( m_filter );} {}
   }
   Function {~NodeFilterDialog()} {open
   } {

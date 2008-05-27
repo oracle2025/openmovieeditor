@@ -657,12 +657,37 @@ static const char *idata_snap[] = {
 };
 static Fl_Pixmap image_snap(idata_snap);
 
-void NleUI::cb_L_i(Fl_Button* o, void*) {
+void NleUI::cb_2_i(Fl_Button* o, void*) {
   g_lock = o->value();
 }
-void NleUI::cb_L(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_L_i(o,v);
+void NleUI::cb_2(Fl_Button* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_2_i(o,v);
 }
+
+static const char *idata_lock[] = {
+"16 16 4 1",
+" \tc None",
+".\tc #000000",
+"+\tc #888888",
+"@\tc #E2E2E2",
+"     .....      ",
+"    .+++++.     ",
+"   .+++++++.    ",
+"  .+++...+++.   ",
+"  .++.   .++.   ",
+"  .++.   .++.   ",
+" .............  ",
+" .@@@@@@@@@@@.  ",
+" .@@@@...@@@@.  ",
+" .@@@@...@@@@.  ",
+" .@@@@...@@@@.  ",
+" .@@@@@.@@@@@.  ",
+" .@@@@...@@@@.  ",
+" .@@@@@@@@@@@.  ",
+" .............  ",
+"                "
+};
+static Fl_Pixmap image_lock(idata_lock);
 
 void NleUI::cb_vScrollBar_i(Fl_Scrollbar* o, void*) {
   scroll_area->position( 0, o->value() );
@@ -1234,12 +1259,13 @@ NleUI::NleUI() {
               o->when(FL_WHEN_RELEASE);
               Fl_Group::current()->resizable(o);
             }
-            { Fl_Button* o = new Fl_Button(65, 345, 25, 25, "L");
+            { Fl_Button* o = new Fl_Button(65, 345, 25, 25);
               o->tooltip("Lock");
               o->type(1);
+              o->image(image_lock);
               o->labelfont(1);
               o->labelsize(16);
-              o->callback((Fl_Callback*)cb_L);
+              o->callback((Fl_Callback*)cb_2);
             }
             o->end();
           }
@@ -6673,7 +6699,7 @@ void ExportDialog::cb_presets_browser(Fl_Hold_Browser* o, void* v) {
   ((ExportDialog*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_presets_browser_i(o,v);
 }
 
-void ExportDialog::cb_2_i(Fl_Button*, void*) {
+void ExportDialog::cb_3_i(Fl_Button*, void*) {
   CustomFormatDialog dlg;
 dlg.show();
 while (dlg.shown())
@@ -6688,8 +6714,8 @@ if ( preset ) {
 	presets_browser->add(fmt.name, preset);
 };
 }
-void ExportDialog::cb_2(Fl_Button* o, void* v) {
-  ((ExportDialog*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_2_i(o,v);
+void ExportDialog::cb_3(Fl_Button* o, void* v) {
+  ((ExportDialog*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_3_i(o,v);
 }
 
 void ExportDialog::cb_edit_format_button_i(Fl_Button*, void*) {
@@ -6800,7 +6826,7 @@ ExportDialog::ExportDialog() {
             { Fl_Button* o = new Fl_Button(65, 320, 25, 25, "+");
               o->labelfont(1);
               o->labelsize(16);
-              o->callback((Fl_Callback*)cb_2);
+              o->callback((Fl_Callback*)cb_3);
             }
             { Fl_Button* o = edit_format_button = new Fl_Button(90, 320, 190, 25, "Edit...");
               o->callback((Fl_Callback*)cb_edit_format_button);

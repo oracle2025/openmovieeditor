@@ -63,7 +63,7 @@ NodeFilterDialog::NodeFilterDialog( nle::NodeFilter* filter ) {
   { Fl_Double_Window* o = m_dialog = new Fl_Double_Window(650, 495, "Node Editor");
     w = o;
     o->user_data((void*)(this));
-    { Fl_Tile* o = new Fl_Tile(5, 55, 640, 375);
+    { Fl_Tile* o = new Fl_Tile(5, 55, 2280, 2000);
       { Fl_Hold_Browser* o = plugin_browser = new Fl_Hold_Browser(5, 55, 280, 375);
         o->box(FL_NO_BOX);
         o->color(FL_BACKGROUND2_COLOR);
@@ -76,7 +76,7 @@ NodeFilterDialog::NodeFilterDialog( nle::NodeFilter* filter ) {
         o->align(FL_ALIGN_BOTTOM);
         o->when(FL_WHEN_RELEASE_ALWAYS);
       }
-      { Fl_Scroll* o = new Fl_Scroll(285, 55, 360, 375);
+      { Fl_Scroll* o = new Fl_Scroll(285, 55, 2000, 2000);
         o->box(FL_DOWN_FRAME);
         { Frei0rGraphEditor* o = graph_editor = new Frei0rGraphEditor(285, 55, 2000, 2000);
           o->box(FL_FLAT_BOX);
@@ -102,11 +102,14 @@ NodeFilterDialog::NodeFilterDialog( nle::NodeFilter* filter ) {
     { Fl_Return_Button* o = new Fl_Return_Button(5, 465, 640, 25, "Close");
       o->callback((Fl_Callback*)cb_Close);
     }
-    { Fl_Check_Button* o = new Fl_Check_Button(5, 435, 615, 25, "Bypass");
+    { Fl_Check_Button* o = new Fl_Check_Button(5, 435, 455, 25, "Bypass");
       o->down_box(FL_DOWN_BOX);
     }
     { Fl_Button* o = trash_can = new Fl_Button(620, 435, 25, 25);
       o->image(image_trash);
+    }
+    new Fl_Button(460, 435, 80, 25, "Save ...");
+    { Fl_Menu_Button* o = new Fl_Menu_Button(540, 435, 80, 25, "Load");
     }
     o->end();
   }

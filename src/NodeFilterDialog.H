@@ -19,6 +19,7 @@
 #include <FL/Fl_Return_Button.H>
 #include <FL/Fl_Check_Button.H>
 #include <FL/Fl_Button.H>
+#include <FL/Fl_Menu_Button.H>
 
 class NodeFilterDialog : public nle::IEffectDialog {
 public:

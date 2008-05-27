@@ -23,7 +23,7 @@ if ( Fl::event()==FL_CLOSE ) {
 	m_videoView->stop();
 	nle::g_loadSaveManager->shutdown();
 }} open
-      xywh {517 199 700 600} type Double resizable size_range {450 380 0 0} visible
+      xywh {517 171 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
         label {Black Borders} open selected
@@ -739,9 +739,8 @@ if ( name ) {
                 class {nle::Ruler}
               }
               Fl_Button {} {
-                label L
                 callback {g_lock = o->value();}
-                tooltip Lock xywh {65 345 25 25} type Toggle labelfont 1 labelsize 16
+                tooltip Lock image {../icons/lock.xpm} xywh {65 345 25 25} type Toggle labelfont 1 labelsize 16
               }
             }
             Fl_Scrollbar vScrollBar {
@@ -1250,7 +1249,7 @@ class ExportDialog {} {
   } {
     Fl_Window dialog_window {
       label Export
-      xywh {394 614 560 405} type Double resizable
+      xywh {394 366 560 405} type Double resizable
       code0 {\#include "VideoWriterQT.H"}
       code1 {\#include <colormodels.h>} modal visible
     } {
@@ -1686,7 +1685,7 @@ video_codec = 0;
 m_preset = new nle::EncodingPreset();} {}
     Fl_Window dialog_window {
       label {Custom Video Format} open
-      xywh {823 244 690 385} type Double modal visible
+      xywh {586 244 690 385} type Double modal visible
     } {
       Fl_Box {} {
         xywh {350 60 330 285} box ENGRAVED_FRAME labelfont 1 align 5
@@ -2131,7 +2130,7 @@ class SmilExportDialog {} {
   } {
     Fl_Window dialog_window {
       label {SMIL Export} open
-      xywh {495 584 555 215} type Double
+      xywh {495 556 555 215} type Double
       code0 {\#include "Timeline.H"} modal visible
     } {
       Fl_Box {} {
@@ -2218,7 +2217,7 @@ class DvgrabImportDialog {} {
   Function {DvgrabImportDialog()} {open
   } {
     Fl_Window dialog_window {open
-      xywh {1179 64 100 100} type Double visible
+      xywh {1176 64 100 100} type Double visible
     } {}
   }
   Function {~DvgrabImportDialog()} {open
