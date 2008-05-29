@@ -72,6 +72,11 @@ LDFLAGS="$LDFLAGS $GAVL_LIBS"
 #CPPFLAGS="$CPPFLAGS $GMERLIN_AVDEC_CFLAGS"
 #LDFLAGS="$LDFLAGS $GMERLIN_AVDEC_LIBS"
 
+PKG_CHECK_MODULES(GMERLIN, gmerlin >= 0.3.7,,
+  AC_MSG_ERROR([*** gmerlin >= 0.3.7 not found - this program requires gmerlin >= 0.3.7 http://gmerlin.sourceforge.net/ ***]))
+CPPFLAGS="$CPPFLAGS $GMERLIN_CFLAGS"
+LDFLAGS="$LDFLAGS $GMERLIN_LIBS"
+
 PKG_CHECK_MODULES(LIBQUICKTIME, libquicktime >= 1.0.2,,
   AC_MSG_ERROR([*** libquicktime 1.0.2 not found - this program requires libquicktime >= 1.0.2 http://libquicktime.sourceforge.net/ ***]))
 CPPFLAGS="$CPPFLAGS $LIBQUICKTIME_CFLAGS"

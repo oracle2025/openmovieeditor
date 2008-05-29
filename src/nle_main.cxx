@@ -61,6 +61,7 @@ extern "C" {
 #include "NodeFilterFactory.H"
 //#include "FloatNodes/FloatNodeFilterFactory.H"
 #include "MainFilterFactory.H"
+#include "GmerlinBlurFilter.H"
 
 #include "NodeFilterFrei0rFactory.H"
 //#include "FloatNodes/NodeFilterFloat0rFactory.H"
@@ -178,6 +179,9 @@ int main( int argc, char** argv )
 	nui.m_effectMenu->addEffect( &nodeFilterFactory );
 	fFactory.add( "effect:builtin:NodeFilter", &nodeFilterFactory );
 
+	nle::GmerlinBlurFactory gmerlinBlurFactory;
+	nui.m_effectMenu->addEffect( &gmerlinBlurFactory );
+	fFactory.add( gmerlinBlurFactory.identifier(), &gmerlinBlurFactory );
 
 	/*nle::FloatNodeFilterFactory floatNodeFilterFactory;
 	nui.m_effectMenu->addEffect( &floatNodeFilterFactory );
