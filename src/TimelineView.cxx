@@ -426,6 +426,18 @@ int TimelineView::handle( int event )
 					move_cursor_by(-50000000);
 				else if(key == FL_KP + '8')
 					move_cursor_by(50000000);
+				else if(key == 's') //patch by dreamlx from OME Forums
+				{
+					cl = get_clip(get_screen_position(m_stylusPosition), _y);
+					if (cl)
+					{
+						split_clip(cl, get_screen_position(m_stylusPosition));
+						redraw();
+						g_timeline->changing();
+					}
+
+				}
+
 				else
 					return Fl_Widget::handle( event );
 			}
