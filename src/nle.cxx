@@ -1032,6 +1032,7 @@ NleUI::NleUI() {
             o->box(FL_UP_BOX);
             o->labelcolor(FL_GRAY0);
             { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Media Browser");
+              o->hide();
               { nle::MediaPanel* o = new nle::MediaPanel(5, 80, 355, 220);
                 o->box(FL_NO_BOX);
                 o->color(FL_BACKGROUND_COLOR);
@@ -1193,6 +1194,22 @@ NleUI::NleUI() {
               clip_aspect_out = new Fl_Output(150, 205, 205, 25, "Pixel Aspect");
               clip_interlacing_out = new Fl_Output(150, 235, 205, 25, "Interlacing");
               { Fl_Box* o = new Fl_Box(155, 265, 80, 30);
+                Fl_Group::current()->resizable(o);
+              }
+              o->end();
+            }
+            { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Clip Inspector 2");
+              { nle::FilterScroll* o = filter_scroll = new nle::FilterScroll(5, 80, 355, 220);
+                o->box(FL_BORDER_BOX);
+                o->color(FL_BACKGROUND_COLOR);
+                o->selection_color(FL_BACKGROUND_COLOR);
+                o->labeltype(FL_NORMAL_LABEL);
+                o->labelfont(0);
+                o->labelsize(14);
+                o->labelcolor(FL_FOREGROUND_COLOR);
+                o->align(FL_ALIGN_TOP);
+                o->when(FL_WHEN_RELEASE);
+                o->end();
                 Fl_Group::current()->resizable(o);
               }
               o->end();

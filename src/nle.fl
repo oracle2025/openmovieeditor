@@ -23,7 +23,7 @@ if ( Fl::event()==FL_CLOSE ) {
 	m_videoView->stop();
 	nle::g_loadSaveManager->shutdown();
 }} open
-      xywh {517 171 700 600} type Double resizable size_range {450 380 0 0} visible
+      xywh {318 162 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
         label {Black Borders} open selected
@@ -444,7 +444,7 @@ m_videoView->redraw();}
             } {
               Fl_Group {} {
                 label {Media Browser}
-                xywh {0 75 365 230} resizable
+                xywh {0 75 365 230} hide resizable
               } {
                 Fl_Group {} {open
                   xywh {5 80 355 220} resizable
@@ -659,6 +659,16 @@ m_timelineView->titles_text( titles_text->value() );} open
                 Fl_Box {} {
                   xywh {155 265 80 30} resizable
                 }
+              }
+              Fl_Group {} {
+                label {Clip Inspector 2} open
+                xywh {0 75 365 230}
+              } {
+                Fl_Scroll filter_scroll {open
+                  xywh {5 80 355 220} box BORDER_BOX resizable
+                  code0 {\#include "FilterScroll.H"}
+                  class {nle::FilterScroll}
+                } {}
               }
             }
             Fl_Button playButton {
@@ -1249,7 +1259,7 @@ class ExportDialog {} {
   } {
     Fl_Window dialog_window {
       label Export
-      xywh {394 366 560 405} type Double resizable
+      xywh {394 364 560 405} type Double resizable
       code0 {\#include "VideoWriterQT.H"}
       code1 {\#include <colormodels.h>} modal visible
     } {
@@ -2130,7 +2140,7 @@ class SmilExportDialog {} {
   } {
     Fl_Window dialog_window {
       label {SMIL Export} open
-      xywh {495 556 555 215} type Double
+      xywh {495 554 555 215} type Double
       code0 {\#include "Timeline.H"} modal visible
     } {
       Fl_Box {} {

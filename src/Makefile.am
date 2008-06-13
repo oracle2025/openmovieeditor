@@ -297,7 +297,11 @@ openmovieeditor_SOURCES = nle.cxx\
 	Fl_Hsv_Color_Chooser.H\
 	Fl_Hsv_Color_Chooser.cxx\
 	GmerlinBlurFilter.H\
-	GmerlinBlurFilter.cxx
+	GmerlinBlurFilter.cxx\
+	FilterScroll.H\
+	FilterScroll.cxx\
+	FilterItemWidget.H\
+	FilterItemWidget.cxx
 #	VideoFileGmerlin.H\
 #	VideoFileGmerlin.cxx
 #	ColorWheel.H\

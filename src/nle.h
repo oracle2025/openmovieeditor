@@ -38,6 +38,7 @@
 #include "fl_font_browser.h"
 #include <FL/Fl_Choice.H>
 #include <FL/Fl_Output.H>
+#include "FilterScroll.H"
 #include "Ruler.H"
 #include <FL/Fl_Scrollbar.H>
 #include "TimelineScroll.H"
@@ -230,6 +231,7 @@ public:
   Fl_Output *clip_framerate_out;
   Fl_Output *clip_aspect_out;
   Fl_Output *clip_interlacing_out;
+  nle::FilterScroll *filter_scroll;
   Fl_Button *playButton;
 private:
   void cb_playButton_i(Fl_Button*, void*);
