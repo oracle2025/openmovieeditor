@@ -22,13 +22,19 @@ const int defaultHeight = 20;
 FilterScroll::FilterScroll(int X, int Y, int W, int H, const char* L) : Fl_Scroll(X,Y,W,H,L) {
 	nchild = 0;
 	nchildheight = 0;
+	m_pack = 0;
 }
 void FilterScroll::resize(int X, int Y, int W, int H) {
 	// Tell children to resize to our new width
+	if ( m_pack ) {
+		m_pack->resize(m_pack->x(), m_pack->y(), W-20, m_pack->h() );
+	}
+	/*
 	for ( int t=0; t<nchild; t++ ) {
 		Fl_Widget *w = child(t);
 		w->resize(w->x(), w->y(), W-20, w->h());    // W-20: leave room for scrollbar
 	}
+	*/
 	// Tell scroll children changed in size
 	init_sizes();
 	Fl_Scroll::resize(X,Y,W,H);
@@ -49,6 +55,7 @@ void FilterScroll::AddItem(FilterBase* filter) {
 	w->setFilter(filter);
 	IEffectWidget* f = filter->widget();
 	nchildheight += defaultHeight;
+	w->setFilterWidget(f);
 	if ( f ) {
 		f->resize(X, Y+H, 430, f->h() );
 		nchildheight += f->h();
@@ -57,7 +64,7 @@ void FilterScroll::AddItem(FilterBase* filter) {
 	//s->type(5);
 	p->end();
 	p->resize(X,Y,W,H);
-	add(p);
+	m_pack->add(p);
 	redraw();
 	nchild++;
 }
@@ -66,6 +73,9 @@ void FilterScroll::setClip( FilterClip* clip )
 	nchild=0;
 	nchildheight=0;
 	clear();
+	m_pack = new Fl_Pack( x(), y(), w()-20, h() );
+	m_pack->spacing(0);
+	add(m_pack);
 	filter_stack* es = clip->getFilters();
 	while ( es ) {
 		AddItem( es->filter );

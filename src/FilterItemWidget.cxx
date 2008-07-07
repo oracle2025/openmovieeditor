@@ -2,15 +2,41 @@
 
 #include "FilterItemWidget.H"
 #include "FilterBase.H"
+#include "IEffectWidget.H"
 
 namespace nle
 {
+
+void FilterItemWidget::cb_Expand_i( Fl_Button* o )
+{
+	if ( !m_filter_widget ) {
+		return;
+	}
+	if ( m_filter_widget->visible() ) {
+		m_filter_widget->hide();
+		o->label( "@>" );
+	} else {
+		m_filter_widget->show();
+		o->label( "@2>" );
+	}
+	Fl_Group* g = m_filter_widget->parent()->parent()->parent();
+	g->init_sizes();
+	//g->resize( g->x(), g->y(), g->w(), g->h() );
+	g->redraw();
+}
+void FilterItemWidget::cb_Expand( Fl_Button* o, void* v )
+{
+	FilterItemWidget* fiw = (FilterItemWidget*)v;
+	fiw->cb_Expand_i( o );
+}
 
 FilterItemWidget::FilterItemWidget(int X, int Y, int W, int H, const char *L)
   : Fl_Group(X, Y, W, H, L) {
   FilterItemWidget *o = this;
   o->box(FL_ENGRAVED_BOX);
-new Fl_Button(X+0, Y+0, 20, 20, "@2>");
+  { Fl_Button* o = new Fl_Button(X+0, Y+0, 20, 20, "@2>");
+	o->callback((Fl_Callback*)cb_Expand, this);
+  }
 { Fl_Check_Button* o = new Fl_Check_Button(X+20, Y+0, 20, 20);
   o->down_box(FL_DOWN_BOX);
   o->value(1);
@@ -24,10 +50,16 @@ new Fl_Button(X+370, Y+0, 20, 20, "@2>");
 new Fl_Button(X+390, Y+0, 20, 20, "@8>");
 new Fl_Button(X+410, Y+0, 20, 20, "@-11+");
 end();
+m_filter_widget = 0;
 }
 void FilterItemWidget::setFilter( FilterBase* filter )
 {
 	m_filter_name->label( filter->name() );
+	m_filter = filter;
+}
+void FilterItemWidget::setFilterWidget( IEffectWidget* filter_widget )
+{
+	m_filter_widget = filter_widget;
 }
 
 } /* namespace nle */

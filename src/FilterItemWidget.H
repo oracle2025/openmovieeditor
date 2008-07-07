@@ -10,13 +10,21 @@
 
 namespace nle
 {
+
 class FilterBase;
+class IEffectWidget;
+
 class FilterItemWidget : public Fl_Group {
 public:
   FilterItemWidget(int X, int Y, int W, int H, const char *L = 0);
   void setFilter( FilterBase* filter );
+  void setFilterWidget( IEffectWidget* filter_widget );
+  void cb_Expand_i( Fl_Button* o );
+  static void cb_Expand( Fl_Button* o, void* v );
 private:
 	Fl_Box* m_filter_name;
+	FilterBase* m_filter;
+	IEffectWidget* m_filter_widget;
 };
 
 } /* namespace nle */

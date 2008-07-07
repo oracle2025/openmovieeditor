@@ -50,7 +50,7 @@ static void yCallback( Fl_Widget* i, void* v )
 }
 
 Frei0rWidget::Frei0rWidget( Frei0rEffect* effect )
-	: IEffectWidget( 0, 0, 340, effect->getPluginInfo()->num_params * 30 + 5 ), m_effect( effect )
+	: IEffectWidget( 0, 0, 340, effect->getPluginInfo()->num_params * 25 + 5 ), m_effect( effect )
 	//: IEffectWidget(0, 0, 340, effect->getPluginInfo()->num_params * 30 + 5 ),
 {
 	f0r_plugin_info_t* finfo;
@@ -65,13 +65,14 @@ Frei0rWidget::Frei0rWidget( Frei0rEffect* effect )
 		m_infostack[i].number = i;
 		int x, y, w, h;
 		w = 225;
-		h = 25;
+		h = 20;
 		x = 100;
-		y = 5 + ( i * 30 );
+		y = 5 + ( i * 25 );
 		switch ( pinfo.type ) {
 			case F0R_PARAM_DOUBLE: //Seems to be always between 0.0 and 1.0
 				{
 				Fl_Slider* o = new Fl_Slider( x, y, w /*- 25*/, h, pinfo.name );
+				o->labelsize( 12 );
 				o->type( 5 );
 				o->callback( doubleCallback, &(m_infostack[i]) );
 				o->align(FL_ALIGN_LEFT);
@@ -88,6 +89,7 @@ Frei0rWidget::Frei0rWidget( Frei0rEffect* effect )
 			case F0R_PARAM_BOOL:
 				{
 				Fl_Check_Button* b = new Fl_Check_Button( x, y, w, h, pinfo.name );
+				b->labelsize( 12 );
 				b->callback( boolCallback, &(m_infostack[i]) );
 				b->tooltip( pinfo.explanation );
 				f0r_param_bool bvalue;
@@ -100,6 +102,7 @@ Frei0rWidget::Frei0rWidget( Frei0rEffect* effect )
 			case F0R_PARAM_POSITION:
 				{
 				Fl_Value_Input* sx = new Fl_Value_Input( x, y, 110, h, pinfo.name);
+				sx->labelsize( 12 );
 				Fl_Value_Input* sy = new Fl_Value_Input( x + 115, y, 110, h );
 				sx->callback( xCallback, &(m_infostack[i]) );
 				sy->callback( yCallback, &(m_infostack[i]) );
@@ -118,6 +121,7 @@ Frei0rWidget::Frei0rWidget( Frei0rEffect* effect )
 			case F0R_PARAM_STRING:
 				{
 				Fl_Input* o = new Fl_Input( x, y, w, h, pinfo.name );
+				o->labelsize( 12 );
 				o->align(FL_ALIGN_LEFT);
 				o->tooltip( pinfo.explanation );
 				o->callback( stringCallback, &(m_infostack[i]) );
