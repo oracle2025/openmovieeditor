@@ -301,7 +301,10 @@ openmovieeditor_SOURCES = nle.cxx\
 	FilterScroll.H\
 	FilterScroll.cxx\
 	FilterItemWidget.H\
-	FilterItemWidget.cxx
+	FilterItemWidget.cxx\
+	IEffectWidget.H\
+	Frei0rWidget.H\
+	Frei0rWidget.cxx
 #	VideoFileGmerlin.H\
 #	VideoFileGmerlin.cxx
 #	ColorWheel.H\

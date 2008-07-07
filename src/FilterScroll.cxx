@@ -5,9 +5,14 @@
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Box.H>
+#include <FL/Fl_Pack.H>
 #include "FilterClip.H"
 #include "FilterScroll.H"
 #include "FilterItemWidget.H"
+#include "IEffectWidget.H"
+#include "FilterBase.H"
+
+#include <iostream>
 
 namespace nle
 {
@@ -16,6 +21,7 @@ const int defaultHeight = 20;
 
 FilterScroll::FilterScroll(int X, int Y, int W, int H, const char* L) : Fl_Scroll(X,Y,W,H,L) {
 	nchild = 0;
+	nchildheight = 0;
 }
 void FilterScroll::resize(int X, int Y, int W, int H) {
 	// Tell children to resize to our new width
@@ -33,20 +39,32 @@ void FilterScroll::resize(int X, int Y, int W, int H) {
 //
 void FilterScroll::AddItem(FilterBase* filter) {
 	int X = x() + 1,
-	    Y = y() - yposition() + (nchild*defaultHeight) + 1,
+	    Y = y() - yposition() + (nchildheight) + 1,
 	    W = w() - 20,                           // -20: compensate for vscroll bar
 	    H = defaultHeight;
 	//add(new ScrollItem(X,Y,W,H));
+	
+	Fl_Pack* p = new Fl_Pack(X,Y,430,H);
 	FilterItemWidget *w = new FilterItemWidget(X,Y,430,H);
 	w->setFilter(filter);
-	add(w);
-	w->resize(X,Y,W,H);
+	IEffectWidget* f = filter->widget();
+	nchildheight += defaultHeight;
+	if ( f ) {
+		f->resize(X, Y+H, 430, f->h() );
+		nchildheight += f->h();
+	}
+	//Fl_Slider* s = new Fl_Slider(X,Y+H,430,20);
+	//s->type(5);
+	p->end();
+	p->resize(X,Y,W,H);
+	add(p);
 	redraw();
 	nchild++;
 }
 void FilterScroll::setClip( FilterClip* clip )
 {
 	nchild=0;
+	nchildheight=0;
 	clear();
 	filter_stack* es = clip->getFilters();
 	while ( es ) {

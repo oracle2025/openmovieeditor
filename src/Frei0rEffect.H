@@ -50,6 +50,7 @@ class Frei0rEffect : public IVideoEffect
 		int numParams();
 		IEffectDialog* m_dialog;
 		IEffectDialog* dialog();
+		IEffectWidget* widget();
 		void writeXML( TiXmlElement* );
 		void readXML( TiXmlElement* );
 		FilterData* getFilterData();

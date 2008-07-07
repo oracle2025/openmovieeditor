@@ -29,6 +29,7 @@
 #include "AutoTrack.H"
 #include "helper.H"
 #include "LazyFrame.H"
+#include "Frei0rWidget.H"
 
 namespace nle
 {
@@ -221,6 +222,10 @@ const char* Frei0rEffect::identifier()
 	string result = "effect:frei0r:";
 	result += name();
 	return result.c_str(); //TODO: this is not OK?
+}
+IEffectWidget* Frei0rEffect::widget()
+{
+	return new Frei0rWidget( this );
 }
 
 } /* namespace nle */

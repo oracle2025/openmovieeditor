@@ -9,6 +9,7 @@ namespace nle
 FilterItemWidget::FilterItemWidget(int X, int Y, int W, int H, const char *L)
   : Fl_Group(X, Y, W, H, L) {
   FilterItemWidget *o = this;
+  o->box(FL_ENGRAVED_BOX);
 new Fl_Button(X+0, Y+0, 20, 20, "@2>");
 { Fl_Check_Button* o = new Fl_Check_Button(X+20, Y+0, 20, 20);
   o->down_box(FL_DOWN_BOX);
