@@ -1146,13 +1146,13 @@ void TimelineView::addEffect( FilterFactory* effectFactory )
 	updateEffectDisplay();
 	g_ui->setEffectButtons();
 	g_videoView->redraw();
-	IEffectDialog* dialog = fe->dialog();
+/*	IEffectDialog* dialog = fe->dialog();
 	//TODO: VideoEffects: move Stylus to start of clip if it is not inside the clip.
 
 	IVideoEffect* ive = dynamic_cast<IVideoEffect*>(fe);
 	if ( ive && ive->numParams() && dialog ) {
 		dialog->show();
-	}
+	}*/
 }
 void TimelineView::removeEffect()
 {

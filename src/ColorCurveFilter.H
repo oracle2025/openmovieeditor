@@ -50,6 +50,7 @@ class ColorCurveFilter : public IVideoEffect
 		const char* name();
 		int numParams() { return 1; }
 		IEffectDialog* dialog();
+		IEffectWidget* widget();
 		IEffectDialog* m_dialog;
 		unsigned char m_values[256];
 		unsigned char m_values_r[256];
