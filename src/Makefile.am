@@ -185,6 +185,7 @@ openmovieeditor_SOURCES = nle.cxx\
 	ColorCurveDialog.cxx\
 	ColorCurveDialog.H\
 	FilterBase.H\
+	FilterBase.cxx\
 	FilterFactory.H\
 	AudioFilter.H\
 	AudioVolumeFilter.cxx\

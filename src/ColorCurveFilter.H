@@ -49,8 +49,8 @@ class ColorCurveFilter : public IVideoEffect
 		LazyFrame* getFrame( LazyFrame* frame, int64_t position = -1 );
 		const char* name();
 		int numParams() { return 1; }
+		bool hasDialog() { return true; }
 		IEffectDialog* dialog();
-		IEffectWidget* widget();
 		IEffectDialog* m_dialog;
 		unsigned char m_values[256];
 		unsigned char m_values_r[256];

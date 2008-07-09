@@ -23,7 +23,6 @@
 #include "ColorCurveDialog.H"
 #include "helper.H"
 #include "LazyFrame.H"
-#include "EffectDialogButtonWidget.H"
 
 namespace nle
 {
@@ -86,10 +85,7 @@ const char* ColorCurveFilter::name()
 {
 	return "Color Curve";
 }
-IEffectWidget* ColorCurveFilter::widget()
-{
-	return new EffectDialogButtonWidget( this );
-}
+
 IEffectDialog* ColorCurveFilter::dialog()
 {
 	if ( !m_dialog ) {

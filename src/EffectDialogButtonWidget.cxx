@@ -1,7 +1,7 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Button.H>
 #include "IEffectDialog.H"
-#include "IVideoEffect.H"
+#include "FilterBase.H"
 #include "EffectDialogButtonWidget.H"
 
 
@@ -19,7 +19,7 @@ void EffectDialogButtonWidget::cb_Edit( Fl_Button* o, void* v )
 	EffectDialogButtonWidget* edbw = (EffectDialogButtonWidget*)v;
 	edbw->cb_Edit_i( o );
 }
-EffectDialogButtonWidget::EffectDialogButtonWidget( IVideoEffect* filter )
+EffectDialogButtonWidget::EffectDialogButtonWidget( FilterBase* filter )
 : IEffectWidget( 0, 0, 340, 20 ), m_filter( filter )
 {
 	 { Fl_Button* o = new Fl_Button(10, 0, 320, 20, "Edit");

@@ -8,17 +8,17 @@ class Fl_Button;
 namespace nle
 {
 
-class IVideoEffect;
+class FilterBase;
 
 class EffectDialogButtonWidget : public IEffectWidget
 {
 	public:
-		EffectDialogButtonWidget( IVideoEffect* filter );
+		EffectDialogButtonWidget( FilterBase* filter );
 		~EffectDialogButtonWidget();
 		void cb_Edit_i( Fl_Button* o );
 		static void cb_Edit( Fl_Button* o, void* v );
 	private:
-		IVideoEffect* m_filter;
+		FilterBase* m_filter;
 };
 
 } /* namespace nle */

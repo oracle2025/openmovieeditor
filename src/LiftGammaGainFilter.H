@@ -34,6 +34,7 @@ class LiftGammaGainFilter : public IVideoEffect
 		LazyFrame* getFrame( LazyFrame* frame, int64_t position = -1 );
 		const char* name();
 		int numParams() { return 1; }
+		bool hasDialog() { return true; }
 		IEffectDialog* dialog();
 		IEffectDialog* m_dialog;
 

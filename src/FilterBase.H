@@ -52,7 +52,7 @@ class FilterBase
 		virtual void readXML( TiXmlElement* ) {}
 		virtual bool hasDialog() { return false; }
 		virtual IEffectDialog* dialog() { return 0; }
-		virtual IEffectWidget* widget() { return 0; }
+		virtual IEffectWidget* widget();
 		virtual const char* identifier() = 0;
 		virtual FilterData* getFilterData() = 0;
 		virtual void setFilterData( FilterData* ) = 0;
