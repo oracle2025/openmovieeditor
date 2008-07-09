@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0107 
+version 1.0109 
 header_name {.h} 
 code_name {.cxx}
 decl {\#include <tinyxml.h>} {} 
@@ -11,7 +11,8 @@ decl {\#include <lqt.h>} {}
 
 decl {\#include <lqt_version.h>} {} 
 
-class NleUI {} {
+class NleUI {open
+} {
   Function {NleUI()} {open
   } {
     Fl_Window mainWindow {
@@ -23,7 +24,7 @@ if ( Fl::event()==FL_CLOSE ) {
 	m_videoView->stop();
 	nle::g_loadSaveManager->shutdown();
 }} open
-      xywh {318 162 700 600} type Double resizable size_range {450 380 0 0} visible
+      xywh {57 169 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
         label {Black Borders} open selected
@@ -453,15 +454,9 @@ m_videoView->redraw();}
                 } {}
               }
               Fl_Group {} {
-                label {Clip Inspector}
+                label {Clip Inspector} open
                 xywh {0 75 365 230} hide
               } {
-                Fl_Menu_Button m_effectMenu {
-                  label {Add Effect} open
-                  xywh {5 80 355 25} deactivate
-                  code0 {\#include "FltkEffectMenu.H"}
-                  class {nle::FltkEffectMenu}
-                } {}
                 Fl_Browser effect_browser {
                   callback {setEffectButtons();}
                   xywh {5 105 355 170} resizable
@@ -665,9 +660,15 @@ m_timelineView->titles_text( titles_text->value() );} open
                 xywh {0 75 365 230}
               } {
                 Fl_Scroll filter_scroll {open
-                  xywh {5 80 355 220} box BORDER_BOX resizable
+                  xywh {5 105 355 195} box BORDER_BOX resizable
                   code0 {\#include "FilterScroll.H"}
                   class {nle::FilterScroll}
+                } {}
+                Fl_Menu_Button m_effectMenu {
+                  label {Add Effect} open
+                  xywh {5 80 355 25} deactivate
+                  code0 {\#include "FltkEffectMenu.H"}
+                  class {nle::FltkEffectMenu}
                 } {}
               }
             }
@@ -755,7 +756,7 @@ if ( name ) {
             }
             Fl_Scrollbar vScrollBar {
               callback {scroll_area->position( 0, o->value() );}
-              xywh {680 370 20 210} maximum 50 slider_size 0.40404
+              xywh {680 370 20 210} maximum 50
             }
             Fl_Scroll scroll_area {
               callback {cout << "scrollarea" << endl;} open
@@ -779,7 +780,7 @@ float slider_size = sb->slider_size_i();
 float zoom = width / slider_size;
 m_timelineView->scroll( (int64_t)sb->value() );
 m_timelineView->zoom( zoom );}
-                private xywh {40 580 600 20} type Horizontal maximum 1024 slider_size 0.40404 resizable
+                private xywh {40 580 600 20} type Horizontal maximum 1024 resizable
                 code0 {\#include "Flmm_Scalebar.H"}
                 code1 {\#include "globals.H"}
                 code2 {using namespace std;}
@@ -1814,10 +1815,10 @@ if ( audio_bitrate->value() < 0 ) {
       }
       Fl_Spinner frame_size_w {
         label Framesize
-        xywh {495 130 85 25}
+        xywh {495 130 85 25} value 1
       }
       Fl_Spinner frame_size_h {
-        xywh {585 130 85 25}
+        xywh {585 130 85 25} value 1
       }
       Fl_Box {} {
         label Video
