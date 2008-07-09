@@ -12,18 +12,27 @@ namespace nle
 {
 
 class FilterBase;
+class FilterClip;
 class IEffectWidget;
 
 class FilterItemWidget : public Fl_Group {
 public:
   FilterItemWidget(int X, int Y, int W, int H, const char *L = 0);
   void setFilter( FilterBase* filter );
+  void setClip( FilterClip* clip );
   void setFilterWidget( IEffectWidget* filter_widget );
   void cb_Expand_i( Fl_Button* o );
   static void cb_Expand( Fl_Button* o, void* v );
+  void cb_Up_i( Fl_Button* o );
+  static void cb_Up( Fl_Button* o, void* v );
+  void cb_Down_i( Fl_Button* o );
+  static void cb_Down( Fl_Button* o, void* v );
+  void cb_Remove_i( Fl_Button* o );
+  static void cb_Remove( Fl_Button* o, void* v );
 private:
 	Fl_Box* m_filter_name;
 	FilterBase* m_filter;
+	FilterClip* m_clip;
 	IEffectWidget* m_filter_widget;
 };
 

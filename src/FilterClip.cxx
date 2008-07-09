@@ -123,6 +123,23 @@ void FilterClip::moveFilterUp( int num )
 	p->next = sl_swap( p->next );
 
 }
+void FilterClip::moveFilterUp( FilterBase* filter )
+{
+	if ( !m_filters || filter == m_filters->filter ) {
+		return;
+	}
+	if ( m_filters->next && m_filters->next->filter == filter ) {
+		m_filters = sl_swap( m_filters );
+		return;
+	}
+	filter_stack* p = m_filters;
+	for ( ; p->next && p->next->next && p->next->next->filter != filter ; ) {
+		p = p->next;
+	}
+	if ( p->next && p->next->next ) {
+		p->next = sl_swap( p->next );
+	}
+}
 void FilterClip::moveFilterDown( int num )
 {
 	if ( !m_filters ) {
@@ -134,6 +151,22 @@ void FilterClip::moveFilterDown( int num )
 	}
 	filter_stack* p = m_filters;
 	for ( int i = 2; i < num; i++ ) {
+		p = p->next;
+	}
+	p->next = sl_swap( p->next );
+
+}
+void FilterClip::moveFilterDown( FilterBase* filter )
+{
+	if ( !m_filters ) {
+		return;
+	}
+	if ( m_filters->filter == filter ) {
+		m_filters = sl_swap( m_filters );
+		return;
+	}
+	filter_stack* p = m_filters;
+	for ( ; p->next && p->next->filter != filter ; ) {
 		p = p->next;
 	}
 	p->next = sl_swap( p->next );

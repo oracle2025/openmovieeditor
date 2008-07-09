@@ -98,12 +98,12 @@ class TimelineView : public Fl_Widget
 		void remove();
 		void setSelectionButtons();
 		void help();
+		void updateEffectDisplay();
 	protected:
 		void draw();
 	private:
 		TitleClip* getTitleClip();
 		void updateTitlesDisplay();
-		void updateEffectDisplay();
 		DragHandler *m_dragHandler;
 		int64_t m_scrollPosition;
 		int64_t m_stylusPosition;

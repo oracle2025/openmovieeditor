@@ -16,7 +16,7 @@ class FilterScroll : public Fl_Scroll {
 public:
     FilterScroll(int X, int Y, int W, int H, const char* L=0);
     void resize(int X, int Y, int W, int H);
-    void AddItem(FilterBase* filter);
+    void AddItem(FilterBase* filter, FilterClip* clip);
     void setClip( FilterClip* clip );
 };
 

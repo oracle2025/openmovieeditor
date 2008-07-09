@@ -2,7 +2,13 @@
 
 #include "FilterItemWidget.H"
 #include "FilterBase.H"
+#include "FilterClip.H"
 #include "IEffectWidget.H"
+#include "VideoViewGL.H"
+#include "TimelineView.H"
+#include "FilterRemoveCommand.H"
+#include "DocManager.H"
+#include <cassert>
 
 namespace nle
 {
@@ -29,6 +35,50 @@ void FilterItemWidget::cb_Expand( Fl_Button* o, void* v )
 	FilterItemWidget* fiw = (FilterItemWidget*)v;
 	fiw->cb_Expand_i( o );
 }
+void FilterItemWidget::cb_Up_i( Fl_Button* o )
+{
+	assert( m_clip );
+	m_clip->moveFilterUp( m_filter );
+	g_timelineView->updateEffectDisplay();
+	g_videoView->redraw();
+}
+void FilterItemWidget::cb_Up( Fl_Button* o, void* v )
+{
+	FilterItemWidget* fiw = (FilterItemWidget*)v;
+	fiw->cb_Up_i( o );
+}
+void FilterItemWidget::cb_Down_i( Fl_Button* o )
+{
+	assert( m_clip );
+	m_clip->moveFilterDown( m_filter );
+	g_timelineView->updateEffectDisplay();
+	g_videoView->redraw();
+}
+void FilterItemWidget::cb_Down( Fl_Button* o, void* v )
+{
+	FilterItemWidget* fiw = (FilterItemWidget*)v;
+	fiw->cb_Down_i( o );
+}
+void FilterItemWidget::cb_Remove_i( Fl_Button* o )
+{
+	assert( m_clip );
+	int c = 1;
+	filter_stack* es = m_clip->getFilters();
+	while ( es && es->filter != m_filter ) {
+		c++;
+		es = es->next;
+	}
+	Command* cmd = new FilterRemoveCommand( m_clip, c );
+	submit( cmd );
+	g_timelineView->updateEffectDisplay();
+	g_videoView->redraw();
+}
+void FilterItemWidget::cb_Remove( Fl_Button* o, void* v )
+{
+	FilterItemWidget* fiw = (FilterItemWidget*)v;
+	fiw->cb_Remove_i( o );
+}
+
 
 FilterItemWidget::FilterItemWidget(int X, int Y, int W, int H, const char *L)
   : Fl_Group(X, Y, W, H, L) {
@@ -46,16 +96,29 @@ FilterItemWidget::FilterItemWidget(int X, int Y, int W, int H, const char *L)
   o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
   Fl_Group::current()->resizable(o);
 }
-new Fl_Button(X+370, Y+0, 20, 20, "@2>");
-new Fl_Button(X+390, Y+0, 20, 20, "@8>");
-new Fl_Button(X+410, Y+0, 20, 20, "@-11+");
+{ Fl_Button* o = new Fl_Button(X+370, Y+0, 20, 20, "@2>");
+  	o->callback((Fl_Callback*)cb_Down, this);
+}
+  { Fl_Button* o = new Fl_Button(X+390, Y+0, 20, 20, "@8>");	
+  	o->callback((Fl_Callback*)cb_Up, this);
+  }
+
+{ Fl_Button* o = new Fl_Button(X+410, Y+0, 20, 20, "@-11+");
+	o->callback((Fl_Callback*)cb_Remove, this);
+}
 end();
 m_filter_widget = 0;
+m_clip = 0;
+m_filter = 0;
 }
 void FilterItemWidget::setFilter( FilterBase* filter )
 {
 	m_filter_name->label( filter->name() );
 	m_filter = filter;
+}
+void FilterItemWidget::setClip( FilterClip* clip )
+{
+	m_clip = clip;
 }
 void FilterItemWidget::setFilterWidget( IEffectWidget* filter_widget )
 {

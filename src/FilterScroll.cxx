@@ -43,7 +43,7 @@ void FilterScroll::resize(int X, int Y, int W, int H) {
 // Append new scrollitem to bottom
 //     Note: An Fl_Pack would be a good way to do this, too
 //
-void FilterScroll::AddItem(FilterBase* filter) {
+void FilterScroll::AddItem(FilterBase* filter, FilterClip* clip) {
 	int X = x() + 1,
 	    Y = y() - yposition() + (nchildheight) + 1,
 	    W = w() - 20,                           // -20: compensate for vscroll bar
@@ -53,6 +53,7 @@ void FilterScroll::AddItem(FilterBase* filter) {
 	Fl_Pack* p = new Fl_Pack(X,Y,430,H);
 	FilterItemWidget *w = new FilterItemWidget(X,Y,430,H);
 	w->setFilter(filter);
+	w->setClip(clip);
 	IEffectWidget* f = filter->widget();
 	nchildheight += defaultHeight;
 	w->setFilterWidget(f);
@@ -73,12 +74,12 @@ void FilterScroll::setClip( FilterClip* clip )
 	nchild=0;
 	nchildheight=0;
 	clear();
-	m_pack = new Fl_Pack( x(), y(), w()-20, h() );
+	m_pack = new Fl_Pack( x() + 1, y() + 1, w()-20-2, h()-2 );
 	m_pack->spacing(0);
 	add(m_pack);
 	filter_stack* es = clip->getFilters();
 	while ( es ) {
-		AddItem( es->filter );
+		AddItem( es->filter, clip );
 		es = es->next;
 	}
 }

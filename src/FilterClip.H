@@ -45,7 +45,9 @@ class FilterClip : public Clip
 		FilterBase* appendFilter( FilterFactory* factory );
 		FilterBase* insertFilter( FilterFactory* factory, int position );
 		void moveFilterUp( int num );
+		void moveFilterUp( FilterBase* filter );
 		void moveFilterDown( int num );
+		void moveFilterDown( FilterBase* filter );
 		void removeFilter( int num );
 		FilterBase* getFilter( int num );
 		void popFilter();
