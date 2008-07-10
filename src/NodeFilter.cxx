@@ -58,6 +58,8 @@ NodeFilter::NodeFilter( int w, int h )
 	m_gavl_frame->strides[0] = w * 4;
 	m_lazy_frame->put_data( m_gavl_frame );
 	m_frame_cache = 0;
+	m_bypass = false;
+	m_expanded = true;
 }
 NodeFilter::~NodeFilter()
 {
@@ -80,6 +82,8 @@ NodeFilter::~NodeFilter()
 }
 void NodeFilter::writeXML( TiXmlElement* xml_node )
 {
+	int bypass = m_bypass;
+	xml_node->SetAttribute( "bypass", bypass );
 	TiXmlElement* project = xml_node;
 
 	TiXmlElement* xml_filter;
@@ -121,6 +125,9 @@ void NodeFilter::writeXML( TiXmlElement* xml_node )
 }
 void NodeFilter::readXML( TiXmlElement* xml_node )
 {
+	int bypass = m_bypass;
+	xml_node->Attribute( "bypass", &bypass );
+	m_bypass = bypass;
 	NodeFilterBezierCurveFactoryPlugin bezier_node_factory_plugin;
 	nle::NodeFilterPreviewFactoryPlugin preview_factory_plugin;
 	nle::NodeFilterImageFactoryPlugin image_factory_plugin;

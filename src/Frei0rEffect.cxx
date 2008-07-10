@@ -53,6 +53,7 @@ Frei0rEffect::Frei0rEffect( f0r_plugin_info_t* info, void* handle, int w, int h 
 	m_lazy_frame->put_data( m_gavl_frame );
 	m_frame = m_gavl_frame->planes[0];
 	m_bypass = false;
+	m_expanded = true;
 }
 Frei0rEffect::~Frei0rEffect()
 {
@@ -105,6 +106,10 @@ void Frei0rEffect::writeXML( TiXmlElement* xml_node )
 {
 	TiXmlElement* parameter;
 	TiXmlElement* effect = xml_node;
+	
+	int bypass = m_bypass;
+	xml_node->SetAttribute( "bypass", bypass );
+
 	f0r_plugin_info_t* finfo;
 	f0r_param_info_t pinfo;
 	finfo = getPluginInfo();
@@ -157,6 +162,10 @@ void Frei0rEffect::writeXML( TiXmlElement* xml_node )
 void Frei0rEffect::readXML( TiXmlElement* xml_node )
 {
 	
+	int bypass = m_bypass;
+	xml_node->Attribute( "bypass", &bypass );
+	m_bypass = bypass;
+
 	TiXmlElement* parameterXml = TiXmlHandle( xml_node ).FirstChildElement( "parameter" ).Element();
 	for ( ; parameterXml; parameterXml = parameterXml->NextSiblingElement( "parameter" ) ) {
 		string paramName = parameterXml->Attribute( "name" );

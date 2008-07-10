@@ -37,6 +37,7 @@ private:
 	FilterClip* m_clip;
 	IEffectWidget* m_filter_widget;
 	Fl_Check_Button* m_bypass_button;
+	Fl_Button* m_expand_button;
 };
 
 } /* namespace nle */

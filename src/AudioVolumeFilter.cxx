@@ -47,6 +47,8 @@ AudioVolumeFilter::AudioVolumeFilter( AudioClip* clip )
 	r->y = 1.0;
 	r->x = 0;
 	m_automationPoints = (auto_node*)sl_push( m_automationPoints, r );
+	m_expanded = true;
+	m_bypass = false;
 }
 AudioVolumeFilter::~AudioVolumeFilter()
 {

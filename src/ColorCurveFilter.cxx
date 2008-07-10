@@ -50,6 +50,7 @@ ColorCurveFilter::ColorCurveFilter( int w, int h )
 	m_parameters.r.p2.y = 0;
 
 	m_parameters.g = m_parameters.b = m_parameters.m = m_parameters.r;
+	m_expanded = true;
 	m_bypass = false;
 }
 
@@ -140,6 +141,9 @@ void ColorCurveFilter::calculate_values()
 }
 void ColorCurveFilter::writeXML( TiXmlElement* xml_node )
 {
+	int bypass = m_bypass;
+	xml_node->SetAttribute( "bypass", bypass );
+
 	xml_node->SetAttribute( "r_p1_x", m_parameters.r.p1.x );
 	xml_node->SetAttribute( "r_p1_y", m_parameters.r.p1.y );
 	xml_node->SetAttribute( "r_p2_x", m_parameters.r.p2.x );
@@ -163,6 +167,9 @@ void ColorCurveFilter::writeXML( TiXmlElement* xml_node )
 }
 void ColorCurveFilter::readXML( TiXmlElement* xml_node )
 {
+	int bypass = m_bypass;
+	xml_node->Attribute( "bypass", &bypass );
+	m_bypass = bypass;
 	xml_node->Attribute( "r_p1_x", &m_parameters.r.p1.x );
 	xml_node->Attribute( "r_p1_y", &m_parameters.r.p1.y );
 	xml_node->Attribute( "r_p2_x", &m_parameters.r.p2.x );

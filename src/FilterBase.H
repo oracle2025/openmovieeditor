@@ -58,8 +58,11 @@ class FilterBase
 		virtual void setFilterData( FilterData* ) = 0;
 		void bypass( bool b ) { m_bypass = b; }
 		bool bypass() { return m_bypass; }
+		void expanded( bool b ) { m_expanded = b; }
+		bool expanded() { return m_expanded; }
 	protected:
 		bool m_bypass;
+		bool m_expanded;
 };
 	
 } /* namespace nle */

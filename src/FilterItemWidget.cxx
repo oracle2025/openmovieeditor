@@ -21,9 +21,11 @@ void FilterItemWidget::cb_Expand_i( Fl_Button* o )
 	if ( m_filter_widget->visible() ) {
 		m_filter_widget->hide();
 		o->label( "@>" );
+		m_filter->expanded( false );
 	} else {
 		m_filter_widget->show();
 		o->label( "@2>" );
+		m_filter->expanded( true );
 	}
 	Fl_Group* g = m_filter_widget->parent()->parent()->parent();
 	g->init_sizes();
@@ -94,7 +96,7 @@ FilterItemWidget::FilterItemWidget(int X, int Y, int W, int H, const char *L)
   : Fl_Group(X, Y, W, H, L) {
   FilterItemWidget *o = this;
   o->box(FL_ENGRAVED_BOX);
-  { Fl_Button* o = new Fl_Button(X+0, Y+0, 20, 20, "@2>");
+  { Fl_Button* o = m_expand_button = new Fl_Button(X+0, Y+0, 20, 20, "@2>");
 	o->callback((Fl_Callback*)cb_Expand, this);
   }
 { Fl_Check_Button* o = m_bypass_button = new Fl_Check_Button(X+20, Y+0, 20, 20);
@@ -135,6 +137,10 @@ void FilterItemWidget::setClip( FilterClip* clip )
 void FilterItemWidget::setFilterWidget( IEffectWidget* filter_widget )
 {
 	m_filter_widget = filter_widget;
+	if ( !m_filter->expanded() ) {
+		m_filter_widget->hide();
+		m_expand_button->label( "@>" );
+	}
 }
 
 } /* namespace nle */

@@ -47,6 +47,7 @@ LiftGammaGainFilter::LiftGammaGainFilter( int w, int h )
 	m_lift[3]  = m_gamma[3] = m_gain[3]  = 0.5;
 	m_dialog = 0;
 	m_bypass = false;
+	m_expanded = true;
 }
 LiftGammaGainFilter::~LiftGammaGainFilter()
 {
@@ -87,6 +88,8 @@ IEffectDialog* LiftGammaGainFilter::dialog()
 }
 void LiftGammaGainFilter::writeXML( TiXmlElement* xml_node )
 {
+	int bypass = m_bypass;
+	xml_node->SetAttribute( "bypass", bypass );
 	xml_node->SetDoubleAttribute( "lift_r", m_lift[0] );
 	xml_node->SetDoubleAttribute( "lift_g", m_lift[1] );
 	xml_node->SetDoubleAttribute( "lift_b", m_lift[2] );
@@ -102,6 +105,9 @@ void LiftGammaGainFilter::writeXML( TiXmlElement* xml_node )
 }
 void LiftGammaGainFilter::readXML( TiXmlElement* xml_node )
 {
+	int bypass = m_bypass;
+	xml_node->Attribute( "bypass", &bypass );
+	m_bypass = bypass;
 	double r, g, b, v;
 	xml_node->Attribute( "lift_r", &r );
 	xml_node->Attribute( "lift_g", &g );
