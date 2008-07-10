@@ -26,8 +26,8 @@
 #include <FL/Fl_Check_Button.H>
 #include <FL/Fl_Tabs.H>
 #include "MediaPanel.H"
-#include "IVideoEffect.H"
-#include "EffectStackBrowser.H"
+#include "FilterScroll.H"
+#include "FltkEffectMenu.H"
 #include "SpecialClipsBrowser.H"
 #include <FL/Fl_Input.H>
 #include <FL/Fl_Value_Input.H>
@@ -37,8 +37,6 @@
 #include "fl_font_browser.h"
 #include <FL/Fl_Choice.H>
 #include <FL/Fl_Output.H>
-#include "FilterScroll.H"
-#include "FltkEffectMenu.H"
 #include "Ruler.H"
 #include <FL/Fl_Scrollbar.H>
 #include "TimelineScroll.H"
@@ -162,31 +160,8 @@ private:
   static void cb_black_border_item_2_35(Fl_Menu_*, void*);
 public:
   Fl_Tabs *tab_view;
-  nle::EffectStackBrowser *effect_browser;
-private:
-  void cb_effect_browser_i(nle::EffectStackBrowser*, void*);
-  static void cb_effect_browser(nle::EffectStackBrowser*, void*);
-public:
-  Fl_Button *m_effect_up;
-private:
-  void cb_m_effect_up_i(Fl_Button*, void*);
-  static void cb_m_effect_up(Fl_Button*, void*);
-public:
-  Fl_Button *m_effect_down;
-private:
-  void cb_m_effect_down_i(Fl_Button*, void*);
-  static void cb_m_effect_down(Fl_Button*, void*);
-public:
-  Fl_Button *m_remove_effect;
-private:
-  void cb_m_remove_effect_i(Fl_Button*, void*);
-  static void cb_m_remove_effect(Fl_Button*, void*);
-public:
-  Fl_Button *m_edit_effect;
-private:
-  void cb_m_edit_effect_i(Fl_Button*, void*);
-  static void cb_m_edit_effect(Fl_Button*, void*);
-public:
+  nle::FilterScroll *filter_scroll;
+  nle::FltkEffectMenu *m_effectMenu;
   nle::SpecialClipsBrowser *special_clips;
 private:
   Fl_Group *titles_tab;
@@ -230,8 +205,6 @@ public:
   Fl_Output *clip_framerate_out;
   Fl_Output *clip_aspect_out;
   Fl_Output *clip_interlacing_out;
-  nle::FilterScroll *filter_scroll;
-  nle::FltkEffectMenu *m_effectMenu;
   Fl_Button *playButton;
 private:
   void cb_playButton_i(Fl_Button*, void*);
@@ -306,7 +279,6 @@ public:
   void show( int argc, char **argv );
   ~NleUI();
   int automationsMode();
-  void setEffectButtons();
   void deactivate_titles();
   void activate_titles(int font, int size, const char* text, float x, float y, Fl_Color color );
   void portaudio();

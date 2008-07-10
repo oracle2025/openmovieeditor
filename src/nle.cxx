@@ -450,41 +450,6 @@ Fl_Menu_Item NleUI::menu_Aspect[] = {
 Fl_Menu_Item* NleUI::black_border_item = NleUI::menu_Aspect + 4;
 Fl_Menu_Item* NleUI::black_border_item_2_35 = NleUI::menu_Aspect + 5;
 
-void NleUI::cb_effect_browser_i(nle::EffectStackBrowser*, void*) {
-  setEffectButtons();
-}
-void NleUI::cb_effect_browser(nle::EffectStackBrowser* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_effect_browser_i(o,v);
-}
-
-void NleUI::cb_m_effect_up_i(Fl_Button*, void*) {
-  m_timelineView->moveEffectUp();
-}
-void NleUI::cb_m_effect_up(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_m_effect_up_i(o,v);
-}
-
-void NleUI::cb_m_effect_down_i(Fl_Button*, void*) {
-  m_timelineView->moveEffectDown();
-}
-void NleUI::cb_m_effect_down(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_m_effect_down_i(o,v);
-}
-
-void NleUI::cb_m_remove_effect_i(Fl_Button*, void*) {
-  m_timelineView->removeEffect();
-}
-void NleUI::cb_m_remove_effect(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_m_remove_effect_i(o,v);
-}
-
-void NleUI::cb_m_edit_effect_i(Fl_Button*, void*) {
-  m_timelineView->editEffect();
-}
-void NleUI::cb_m_edit_effect(Fl_Button* o, void* v) {
-  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_m_edit_effect_i(o,v);
-}
-
 void NleUI::cb_titles_text_i(Fl_Input* o, void*) {
   m_timelineView->titles_text( o->value() );
 }
@@ -1048,48 +1013,31 @@ NleUI::NleUI() {
               Fl_Group::current()->resizable(o);
             } // Fl_Group* o
             { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Clip Inspector");
-              o->hide();
-              { effect_browser = new nle::EffectStackBrowser(5, 105, 355, 170);
-                effect_browser->box(FL_NO_BOX);
-                effect_browser->color(FL_BACKGROUND2_COLOR);
-                effect_browser->selection_color(FL_SELECTION_COLOR);
-                effect_browser->labeltype(FL_NORMAL_LABEL);
-                effect_browser->labelfont(0);
-                effect_browser->labelsize(14);
-                effect_browser->labelcolor(FL_FOREGROUND_COLOR);
-                effect_browser->callback((Fl_Callback*)cb_effect_browser);
-                effect_browser->align(FL_ALIGN_BOTTOM);
-                effect_browser->when(FL_WHEN_RELEASE_ALWAYS);
-                Fl_Group::current()->resizable(effect_browser);
-              } // nle::EffectStackBrowser* effect_browser
-              { Fl_Group* o = new Fl_Group(5, 275, 355, 25);
-                { Fl_Group* o = new Fl_Group(5, 275, 50, 25);
-                { m_effect_up = new Fl_Button(5, 275, 25, 25, "@8->");
-                m_effect_up->tooltip("Move Up");
-                m_effect_up->callback((Fl_Callback*)cb_m_effect_up);
-                m_effect_up->deactivate();
-                } // Fl_Button* m_effect_up
-                { m_effect_down = new Fl_Button(30, 275, 25, 25, "@2->");
-                m_effect_down->tooltip("Move Down");
-                m_effect_down->callback((Fl_Callback*)cb_m_effect_down);
-                m_effect_down->deactivate();
-                } // Fl_Button* m_effect_down
-                o->end();
-                } // Fl_Group* o
-                { Fl_Group* o = new Fl_Group(55, 275, 305, 25);
-                { m_remove_effect = new Fl_Button(55, 275, 155, 25, "Remove Effect");
-                m_remove_effect->callback((Fl_Callback*)cb_m_remove_effect);
-                m_remove_effect->deactivate();
-                } // Fl_Button* m_remove_effect
-                { m_edit_effect = new Fl_Button(210, 275, 150, 25, "Edit Effect");
-                m_edit_effect->callback((Fl_Callback*)cb_m_edit_effect);
-                m_edit_effect->deactivate();
-                } // Fl_Button* m_edit_effect
-                o->end();
-                Fl_Group::current()->resizable(o);
-                } // Fl_Group* o
-                o->end();
-              } // Fl_Group* o
+              { filter_scroll = new nle::FilterScroll(5, 105, 355, 195);
+                filter_scroll->box(FL_BORDER_BOX);
+                filter_scroll->color(FL_BACKGROUND_COLOR);
+                filter_scroll->selection_color(FL_BACKGROUND_COLOR);
+                filter_scroll->labeltype(FL_NORMAL_LABEL);
+                filter_scroll->labelfont(0);
+                filter_scroll->labelsize(14);
+                filter_scroll->labelcolor(FL_FOREGROUND_COLOR);
+                filter_scroll->align(FL_ALIGN_TOP);
+                filter_scroll->when(FL_WHEN_RELEASE);
+                filter_scroll->end();
+                Fl_Group::current()->resizable(filter_scroll);
+              } // nle::FilterScroll* filter_scroll
+              { m_effectMenu = new nle::FltkEffectMenu(5, 80, 355, 25, "Add Effect");
+                m_effectMenu->box(FL_UP_BOX);
+                m_effectMenu->color(FL_BACKGROUND_COLOR);
+                m_effectMenu->selection_color(FL_SELECTION_COLOR);
+                m_effectMenu->labeltype(FL_NORMAL_LABEL);
+                m_effectMenu->labelfont(0);
+                m_effectMenu->labelsize(14);
+                m_effectMenu->labelcolor(FL_FOREGROUND_COLOR);
+                m_effectMenu->align(FL_ALIGN_CENTER);
+                m_effectMenu->when(FL_WHEN_RELEASE_ALWAYS);
+                m_effectMenu->deactivate();
+              } // nle::FltkEffectMenu* m_effectMenu
               o->end();
             } // Fl_Group* o
             { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Filters & Effects");
@@ -1188,34 +1136,6 @@ NleUI::NleUI() {
               { Fl_Box* o = new Fl_Box(155, 265, 80, 30);
                 Fl_Group::current()->resizable(o);
               } // Fl_Box* o
-              o->end();
-            } // Fl_Group* o
-            { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Clip Inspector 2");
-              { filter_scroll = new nle::FilterScroll(5, 105, 355, 195);
-                filter_scroll->box(FL_BORDER_BOX);
-                filter_scroll->color(FL_BACKGROUND_COLOR);
-                filter_scroll->selection_color(FL_BACKGROUND_COLOR);
-                filter_scroll->labeltype(FL_NORMAL_LABEL);
-                filter_scroll->labelfont(0);
-                filter_scroll->labelsize(14);
-                filter_scroll->labelcolor(FL_FOREGROUND_COLOR);
-                filter_scroll->align(FL_ALIGN_TOP);
-                filter_scroll->when(FL_WHEN_RELEASE);
-                filter_scroll->end();
-                Fl_Group::current()->resizable(filter_scroll);
-              } // nle::FilterScroll* filter_scroll
-              { m_effectMenu = new nle::FltkEffectMenu(5, 80, 355, 25, "Add Effect");
-                m_effectMenu->box(FL_UP_BOX);
-                m_effectMenu->color(FL_BACKGROUND_COLOR);
-                m_effectMenu->selection_color(FL_SELECTION_COLOR);
-                m_effectMenu->labeltype(FL_NORMAL_LABEL);
-                m_effectMenu->labelfont(0);
-                m_effectMenu->labelsize(14);
-                m_effectMenu->labelcolor(FL_FOREGROUND_COLOR);
-                m_effectMenu->align(FL_ALIGN_CENTER);
-                m_effectMenu->when(FL_WHEN_RELEASE_ALWAYS);
-                m_effectMenu->deactivate();
-              } // nle::FltkEffectMenu* m_effectMenu
               o->end();
             } // Fl_Group* o
             tab_view->end();
@@ -1432,32 +1352,6 @@ int NleUI::automationsMode() {
 	return 1;
 } else {
 	return 2;
-}
-}
-
-void NleUI::setEffectButtons() {
-  nle::FilterBase* f = (nle::FilterBase*)effect_browser->data( effect_browser->value() );
-nle::IVideoEffect* e = dynamic_cast<nle::IVideoEffect*>(f);
-if ( ( e && e->numParams() ) || ( f && f->hasDialog() ) ) {
-	m_edit_effect->activate();
-} else {
-	m_edit_effect->deactivate();
-}
-
-if ( effect_browser->value() <= 1 ) {
-	m_effect_up->deactivate();
-} else {
-	m_effect_up->activate();
-}
-if ( effect_browser->value() == effect_browser->size() || effect_browser->value() == 0 ) {
-	m_effect_down->deactivate();
-} else {
-	m_effect_down->activate();
-}
-if ( effect_browser->value() == 0 ) {
-	m_remove_effect->deactivate();
-} else {
-	m_remove_effect->activate();
 }
 }
 

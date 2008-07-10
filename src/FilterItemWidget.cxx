@@ -20,11 +20,11 @@ void FilterItemWidget::cb_Expand_i( Fl_Button* o )
 	}
 	if ( m_filter_widget->visible() ) {
 		m_filter_widget->hide();
-		o->label( "@>" );
+		o->label( "@-1>" );
 		m_filter->expanded( false );
 	} else {
 		m_filter_widget->show();
-		o->label( "@2>" );
+		o->label( "@-12>" );
 		m_filter->expanded( true );
 	}
 	Fl_Group* g = m_filter_widget->parent()->parent()->parent();
@@ -95,9 +95,10 @@ void FilterItemWidget::cb_Bypass( Fl_Check_Button* o, void* v )
 FilterItemWidget::FilterItemWidget(int X, int Y, int W, int H, const char *L)
   : Fl_Group(X, Y, W, H, L) {
   FilterItemWidget *o = this;
-  o->box(FL_ENGRAVED_BOX);
-  { Fl_Button* o = m_expand_button = new Fl_Button(X+0, Y+0, 20, 20, "@2>");
+  //o->box(FL_ENGRAVED_BOX);
+  { Fl_Button* o = m_expand_button = new Fl_Button(X+0, Y+0, 20, 20, "@-12>");
 	o->callback((Fl_Callback*)cb_Expand, this);
+	o->box(FL_NO_BOX);
   }
 { Fl_Check_Button* o = m_bypass_button = new Fl_Check_Button(X+20, Y+0, 20, 20);
   	o->callback((Fl_Callback*)cb_Bypass, this);
@@ -106,17 +107,18 @@ FilterItemWidget::FilterItemWidget(int X, int Y, int W, int H, const char *L)
 }
 { Fl_Box* o = m_filter_name = new Fl_Box(X+40, Y+0, 330, 20, "Filter Name");
   o->labelsize(12);
+  o->labelfont(FL_HELVETICA_BOLD);
   o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
   Fl_Group::current()->resizable(o);
 }
-{ Fl_Button* o = new Fl_Button(X+370, Y+0, 20, 20, "@2>");
+{ Fl_Button* o = new Fl_Button(X+370, Y+1, 18, 18, "@-12>");
   	o->callback((Fl_Callback*)cb_Down, this);
 }
-  { Fl_Button* o = new Fl_Button(X+390, Y+0, 20, 20, "@8>");	
+  { Fl_Button* o = new Fl_Button(X+390, Y+1, 18, 18, "@-18>");	
   	o->callback((Fl_Callback*)cb_Up, this);
   }
 
-{ Fl_Button* o = new Fl_Button(X+410, Y+0, 20, 20, "@-11+");
+{ Fl_Button* o = new Fl_Button(X+410, Y+1, 18, 18, "@-11+");
 	o->callback((Fl_Callback*)cb_Remove, this);
 }
 end();

@@ -844,7 +844,6 @@ void TimelineView::clear_selection()
 	}
 	updateEffectDisplay();
 	setSelectionButtons();
-	g_ui->setEffectButtons();
 }
 void TimelineView::select_clips( int _x1, int _y1, int _x2, int _y2 )
 {
@@ -993,7 +992,6 @@ TitleClip* TimelineView::getTitleClip()
 void TimelineView::updateEffectDisplay()
 {
 	updateTitlesDisplay();
-	g_ui->effect_browser->clear();
 	if (has_next_clip()) {
 		g_ui->m_effectMenu->deactivate();
 		return;
@@ -1029,12 +1027,6 @@ void TimelineView::updateEffectDisplay()
 		return;
 	}
 	g_ui->m_effectMenu->activate();
-	// Liste füllen
-	filter_stack* es = vc->getFilters();
-	while ( es ) {
-		g_ui->effect_browser->add( es->filter->name(), es->filter );
-		es = es->next;
-	}
 }
 void TimelineView::toggle_selection( Clip* clip )
 {
@@ -1053,7 +1045,6 @@ void TimelineView::toggle_selection( Clip* clip )
 		m_selectedClips = (clip_node*)sl_push( m_selectedClips, n );
 	}
 	updateEffectDisplay();
-	g_ui->setEffectButtons();
 	setSelectionButtons();
 	redraw();
 }
@@ -1088,14 +1079,12 @@ void TimelineView::moveEffectDown()
 	if ( !fc ) {
 		return;
 	}
-	int c = g_ui->effect_browser->value();
+	int c = 0;//g_ui->effect_browser->value();
 	if ( c == 0 ) {
 		return;
 	}
 	fc->moveFilterDown( c );
 	updateEffectDisplay();
-	g_ui->effect_browser->value( c + 1 );
-	g_ui->setEffectButtons();
 	g_videoView->redraw();
 }
 void TimelineView::moveEffectUp()
@@ -1110,14 +1099,12 @@ void TimelineView::moveEffectUp()
 	if ( !fc ) {
 		return;
 	}
-	int c = g_ui->effect_browser->value();
+	int c = 0;//g_ui->effect_browser->value();
 	if ( c == 0 ) {
 		return;
 	}
 	fc->moveFilterUp( c );
 	updateEffectDisplay();
-	g_ui->effect_browser->value( c - 1 );
-	g_ui->setEffectButtons();
 	g_videoView->redraw();
 }
 
@@ -1144,7 +1131,6 @@ void TimelineView::addEffect( FilterFactory* effectFactory )
 	FilterBase* fe = cmd->m_filter;
 	assert(fe);
 	updateEffectDisplay();
-	g_ui->setEffectButtons();
 	g_videoView->redraw();
 /*	IEffectDialog* dialog = fe->dialog();
 	//TODO: VideoEffects: move Stylus to start of clip if it is not inside the clip.
@@ -1164,14 +1150,13 @@ void TimelineView::removeEffect()
 	if ( !fc ) {
 		return;
 	}
-	int c = g_ui->effect_browser->value();
+	int c = 0;//g_ui->effect_browser->value();
 	if ( c == 0 ) {
 		return;
 	}
 	Command* cmd = new FilterRemoveCommand( fc, c );
 	submit( cmd );
 	updateEffectDisplay();
-	g_ui->setEffectButtons();
 	g_videoView->redraw();
 }
 void TimelineView::editEffect()
@@ -1182,7 +1167,7 @@ void TimelineView::editEffect()
 	if ( !vc ) {
 		return;
 	}
-	int c = g_ui->effect_browser->value();
+	int c = 0;// g_ui->effect_browser->value();
 	if ( c == 0 ) {
 		return;
 	}
@@ -1208,7 +1193,7 @@ void TimelineView::dragEffect()
 	if ( !vc ) {
 		return;
 	}
-	int c = g_ui->effect_browser->value();
+	int c = 0;//g_ui->effect_browser->value();
 	if ( c == 0 ) {
 		return;
 	}

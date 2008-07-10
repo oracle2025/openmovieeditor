@@ -51,6 +51,8 @@ void FilterScroll::AddItem(FilterBase* filter, FilterClip* clip) {
 	//add(new ScrollItem(X,Y,W,H));
 	
 	Fl_Pack* p = new Fl_Pack(X,Y,430,H);
+	p->box(FL_ENGRAVED_FRAME);
+	p->spacing( 2 );
 	FilterItemWidget *w = new FilterItemWidget(X,Y,430,H);
 	w->setFilter(filter);
 	w->setClip(clip);
