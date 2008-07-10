@@ -52,6 +52,7 @@ Frei0rEffect::Frei0rEffect( f0r_plugin_info_t* info, void* handle, int w, int h 
 	m_gavl_frame = gavl_video_frame_create( m_lazy_frame->format() );
 	m_lazy_frame->put_data( m_gavl_frame );
 	m_frame = m_gavl_frame->planes[0];
+	m_bypass = false;
 }
 Frei0rEffect::~Frei0rEffect()
 {
@@ -64,6 +65,9 @@ Frei0rEffect::~Frei0rEffect()
 }
 LazyFrame* Frei0rEffect::getFrame( LazyFrame* frame, int64_t position )
 {
+	if ( m_bypass ) {
+		return frame;
+	}
 	f0r_update( m_instance, position / (float)NLE_TIME_BASE, (uint32_t*)frame->RGBA()->planes[0], (uint32_t*)m_frame );
 	return m_lazy_frame;
 }

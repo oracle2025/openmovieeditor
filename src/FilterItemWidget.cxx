@@ -78,6 +78,16 @@ void FilterItemWidget::cb_Remove( Fl_Button* o, void* v )
 	FilterItemWidget* fiw = (FilterItemWidget*)v;
 	fiw->cb_Remove_i( o );
 }
+void FilterItemWidget::cb_Bypass_i( Fl_Check_Button* o )
+{
+	m_filter->bypass( !o->value() );
+	g_videoView->redraw();
+}
+void FilterItemWidget::cb_Bypass( Fl_Check_Button* o, void* v )
+{
+	FilterItemWidget* fiw = (FilterItemWidget*)v;
+	fiw->cb_Bypass_i( o );
+}
 
 
 FilterItemWidget::FilterItemWidget(int X, int Y, int W, int H, const char *L)
@@ -87,7 +97,8 @@ FilterItemWidget::FilterItemWidget(int X, int Y, int W, int H, const char *L)
   { Fl_Button* o = new Fl_Button(X+0, Y+0, 20, 20, "@2>");
 	o->callback((Fl_Callback*)cb_Expand, this);
   }
-{ Fl_Check_Button* o = new Fl_Check_Button(X+20, Y+0, 20, 20);
+{ Fl_Check_Button* o = m_bypass_button = new Fl_Check_Button(X+20, Y+0, 20, 20);
+  	o->callback((Fl_Callback*)cb_Bypass, this);
   o->down_box(FL_DOWN_BOX);
   o->value(1);
 }
@@ -115,6 +126,7 @@ void FilterItemWidget::setFilter( FilterBase* filter )
 {
 	m_filter_name->label( filter->name() );
 	m_filter = filter;
+	m_bypass_button->value( !m_filter->bypass() );
 }
 void FilterItemWidget::setClip( FilterClip* clip )
 {

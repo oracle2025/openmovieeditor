@@ -219,6 +219,9 @@ const char* NodeFilter::name()
 }
 LazyFrame* NodeFilter::getFrame( LazyFrame* frame, int64_t position )
 {
+	if ( m_bypass ) {
+		return frame;
+	}
 	m_frame_cache = (uint32_t*)frame->RGBA()->planes[0];
 	m_gavl_frame->planes[0] = (unsigned char*)m_sink_node->getFrame( 0, position / (double)NLE_TIME_BASE );
 

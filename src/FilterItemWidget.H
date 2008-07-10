@@ -29,11 +29,14 @@ public:
   static void cb_Down( Fl_Button* o, void* v );
   void cb_Remove_i( Fl_Button* o );
   static void cb_Remove( Fl_Button* o, void* v );
+  void cb_Bypass_i( Fl_Check_Button* o );
+  static void cb_Bypass( Fl_Check_Button* o, void* v );
 private:
 	Fl_Box* m_filter_name;
 	FilterBase* m_filter;
 	FilterClip* m_clip;
 	IEffectWidget* m_filter_widget;
+	Fl_Check_Button* m_bypass_button;
 };
 
 } /* namespace nle */

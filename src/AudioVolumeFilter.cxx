@@ -107,7 +107,9 @@ DragHandler* AudioVolumeFilter::onMouseDown( Rect& rect, int x, int y, bool /*sh
 int AudioVolumeFilter::fillBuffer( float* input_output, unsigned long frames, int64_t position )
 //int AudioVolumeFilter::fillBuffer( float*, unsigned long frames, int64_t )
 {
-	
+	if ( m_bypass ) {
+		return frames;
+	}
 	int64_t currentPosition = m_audioClip->audioPosition();
 	int64_t aLength = m_audioClip->audioLength();
 	//Manipulate output

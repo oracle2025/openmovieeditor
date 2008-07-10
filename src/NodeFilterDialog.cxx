@@ -91,7 +91,6 @@ NodeFilterDialog::NodeFilterDialog( nle::NodeFilter* filter ) {
         o->end();
       } // Fl_Scroll* o
       o->end();
-      Fl_Group::current()->resizable(o);
     } // Fl_Tile* o
     { Fl_Box* o = new Fl_Box(0, 0, 650, 50, "Node Editor");
       o->labelfont(1);

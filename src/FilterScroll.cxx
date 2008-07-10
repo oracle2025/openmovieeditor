@@ -66,7 +66,6 @@ void FilterScroll::AddItem(FilterBase* filter, FilterClip* clip) {
 	p->end();
 	p->resize(X,Y,W,H);
 	m_pack->add(p);
-	redraw();
 	nchild++;
 }
 void FilterScroll::setClip( FilterClip* clip )
@@ -82,6 +81,7 @@ void FilterScroll::setClip( FilterClip* clip )
 		AddItem( es->filter, clip );
 		es = es->next;
 	}
+	redraw();
 }
 
 } /* namespace nle */

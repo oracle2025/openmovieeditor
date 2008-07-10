@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0107 
+version 1.0109 
 header_name {.H} 
 code_name {.cxx}
 decl {\#include "NodeFilter.H"} {public
@@ -25,11 +25,11 @@ class NodeFilterDialog {open : {public nle::IEffectDialog}
   } {
     code {m_factory = g_node_filter_frei0r_factory;} {}
     Fl_Window m_dialog {
-      label {Node Editor} open
-      xywh {590 247 650 495} type Double resizable visible
+      label {Node Editor} open selected
+      xywh {590 247 650 495} type Double visible
     } {
       Fl_Tile {} {open
-        xywh {5 55 2280 2000} resizable
+        xywh {5 55 2280 2000}
       } {
         Fl_Browser plugin_browser {
           callback {if ( o->value() <= 0 ) {
@@ -67,7 +67,7 @@ nle::g_timeline->changing();}
         xywh {5 465 640 25}
       }
       Fl_Check_Button {} {
-        label Bypass selected
+        label Bypass
         xywh {5 435 455 25} down_box DOWN_BOX
       }
       Fl_Button trash_can {

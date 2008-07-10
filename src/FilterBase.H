@@ -56,6 +56,10 @@ class FilterBase
 		virtual const char* identifier() = 0;
 		virtual FilterData* getFilterData() = 0;
 		virtual void setFilterData( FilterData* ) = 0;
+		void bypass( bool b ) { m_bypass = b; }
+		bool bypass() { return m_bypass; }
+	protected:
+		bool m_bypass;
 };
 	
 } /* namespace nle */

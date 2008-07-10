@@ -52,7 +52,6 @@ class LiftGammaGainFilter : public IVideoEffect
 		void writeXML( TiXmlElement* );
 		void readXML( TiXmlElement* );
 
-		void bypass( bool b ) { m_bypass = b; }
 
 		void lift( float r, float g, float b, float v );
 		void gamma( float r, float g, float b, float v );
@@ -67,7 +66,6 @@ class LiftGammaGainFilter : public IVideoEffect
 		unsigned char *m_frame;
 		gavl_video_frame_t* m_gavl_frame;
 		LazyFrame* m_lazy_frame;
-		bool m_bypass;
 		float m_lift[4];
 		float m_gamma[4];
 		float m_gain[4];
