@@ -8,6 +8,7 @@
 #include "TimelineView.H"
 #include "FilterRemoveCommand.H"
 #include "DocManager.H"
+#include "DragBox.H"
 #include <cassert>
 
 namespace nle
@@ -90,6 +91,19 @@ void FilterItemWidget::cb_Bypass( Fl_Check_Button* o, void* v )
 	FilterItemWidget* fiw = (FilterItemWidget*)v;
 	fiw->cb_Bypass_i( o );
 }
+void FilterItemWidget::cb_Drag_i( DragBox* o )
+{
+	//SET FilterData in Timeline
+	g_timelineView->m_draggedFilter = m_filter;
+	Fl::copy( m_filter->identifier(), strlen(m_filter->identifier()) + 1, 0 );
+	Fl::dnd();
+	g_timelineView->m_draggedFilter = 0;
+}
+void FilterItemWidget::cb_Drag( DragBox* o, void* v )
+{
+	FilterItemWidget* fiw = (FilterItemWidget*)v;
+	fiw->cb_Drag_i( o );
+}
 
 
 FilterItemWidget::FilterItemWidget(int X, int Y, int W, int H, const char *L)
@@ -105,7 +119,8 @@ FilterItemWidget::FilterItemWidget(int X, int Y, int W, int H, const char *L)
   o->down_box(FL_DOWN_BOX);
   o->value(1);
 }
-{ Fl_Box* o = m_filter_name = new Fl_Box(X+40, Y+0, 330, 20, "Filter Name");
+{ DragBox* o = m_filter_name = new DragBox(X+40, Y+0, 330, 20, "Filter Name");
+	o->callback((Fl_Callback*)cb_Drag, this);
   o->labelsize(12);
   o->labelfont(FL_HELVETICA_BOLD);
   o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);

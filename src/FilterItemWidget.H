@@ -14,6 +14,7 @@ namespace nle
 class FilterBase;
 class FilterClip;
 class IEffectWidget;
+class DragBox;
 
 class FilterItemWidget : public Fl_Group {
 public:
@@ -31,8 +32,10 @@ public:
   static void cb_Remove( Fl_Button* o, void* v );
   void cb_Bypass_i( Fl_Check_Button* o );
   static void cb_Bypass( Fl_Check_Button* o, void* v );
+  void cb_Drag_i( DragBox* o );
+  static void cb_Drag( DragBox* o, void* v );
 private:
-	Fl_Box* m_filter_name;
+	DragBox* m_filter_name;
 	FilterBase* m_filter;
 	FilterClip* m_clip;
 	IEffectWidget* m_filter_widget;

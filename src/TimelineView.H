@@ -99,6 +99,7 @@ class TimelineView : public Fl_Widget
 		void setSelectionButtons();
 		void help();
 		void updateEffectDisplay();
+		FilterBase* m_draggedFilter;
 	protected:
 		void draw();
 	private:
@@ -111,7 +112,6 @@ class TimelineView : public Fl_Widget
 		clip_node* m_selectedClips;
 		PasteSelectionCommand* m_pasteCommand;
 		bool has_next_clip();
-		FilterBase* m_draggedFilter;
 
 };
 
