@@ -1067,52 +1067,6 @@ void TimelineView::setSelectionButtons()
 
 }
 
-void TimelineView::moveEffectDown()
-{
-	if ( g_playbackCore->active() ) {
-		return;
-	}
-	//TODO copy and paste from editEffect
-  if(has_next_clip()) {return;}
-
-	FilterClip* fc = dynamic_cast<FilterClip*>( m_selectedClips->clip );
-	if ( !fc ) {
-		return;
-	}
-	int c = 0;//g_ui->effect_browser->value();
-	if ( c == 0 ) {
-		return;
-	}
-	fc->moveFilterDown( c );
-	updateEffectDisplay();
-	g_videoView->redraw();
-}
-void TimelineView::moveEffectUp()
-{
-	if ( g_playbackCore->active() ) {
-		return;
-	}
-  //TODO copy and paste from editEffect
-  if(has_next_clip()) {return;}
-
-	FilterClip* fc = dynamic_cast<FilterClip*>( m_selectedClips->clip );
-	if ( !fc ) {
-		return;
-	}
-	int c = 0;//g_ui->effect_browser->value();
-	if ( c == 0 ) {
-		return;
-	}
-	fc->moveFilterUp( c );
-	updateEffectDisplay();
-	g_videoView->redraw();
-}
-
-/*
-static FilterFactory* findFilterFactory( const char* name )
-{
-}
-*/
 
 void TimelineView::addEffect( FilterFactory* effectFactory )
 {
@@ -1139,76 +1093,6 @@ void TimelineView::addEffect( FilterFactory* effectFactory )
 	if ( ive && ive->numParams() && dialog ) {
 		dialog->show();
 	}*/
-}
-void TimelineView::removeEffect()
-{
-	if ( g_playbackCore->active() ) {
-		return;
-	}
-  if(has_next_clip()) {return;}
-	FilterClip* fc = dynamic_cast<FilterClip*>( m_selectedClips->clip );
-	if ( !fc ) {
-		return;
-	}
-	int c = 0;//g_ui->effect_browser->value();
-	if ( c == 0 ) {
-		return;
-	}
-	Command* cmd = new FilterRemoveCommand( fc, c );
-	submit( cmd );
-	updateEffectDisplay();
-	g_videoView->redraw();
-}
-void TimelineView::editEffect()
-{
-  if(has_next_clip()) {return;}
-
-	FilterClip* vc = dynamic_cast<FilterClip*>( m_selectedClips->clip );
-	if ( !vc ) {
-		return;
-	}
-	int c = 0;// g_ui->effect_browser->value();
-	if ( c == 0 ) {
-		return;
-	}
-	filter_stack* es = vc->getFilters();
-	for ( int i = 1; i < c && es ; i++ ) {
-		es = es->next;
-	}
-	if ( !es ) {
-		return;
-	}
-	FilterBase* fe = es->filter;
-	IEffectDialog* dialog = fe->dialog();
-	dialog->show();
-
-}
-void TimelineView::dragEffect()
-{
-	if( has_next_clip() ) {
-		return;
-	}
-
-	FilterClip* vc = dynamic_cast<FilterClip*>( m_selectedClips->clip );
-	if ( !vc ) {
-		return;
-	}
-	int c = 0;//g_ui->effect_browser->value();
-	if ( c == 0 ) {
-		return;
-	}
-	filter_stack* es = vc->getFilters();
-	for ( int i = 1; i < c && es ; i++ ) {
-		es = es->next;
-	}
-	if ( !es ) {
-		return;
-	}
-	FilterBase* fe = es->filter;
-	Fl::copy( fe->identifier(), strlen( fe->identifier() ) + 1, 0 );
-	m_draggedFilter = fe;
-	Fl::dnd();
-	m_draggedFilter = 0;
 }
 
 void TimelineView::trim_clip( Clip* clip, int _x, bool trimRight )
@@ -1285,6 +1169,7 @@ void TimelineView::move_cursor( int64_t position )
 void TimelineView::stylus( long stylus_pos )
 {
 	move_cursor( get_real_position( stylus_pos ) );
+	g_ui->m_timecode_box->label( timestamp_to_string( m_stylusPosition ) );
 }
 
 /**

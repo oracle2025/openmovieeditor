@@ -80,11 +80,6 @@ class TimelineView : public Fl_Widget
 		void end() {}
 		void adjustScrollbar();
 		void addEffect( FilterFactory* effectFactory );
-		void editEffect();
-		void moveEffectUp();
-		void moveEffectDown();
-		void removeEffect();
-		void dragEffect();
 		void titles_text( const char* t );
 		void titles_x( float x );
 		void titles_y( float y );

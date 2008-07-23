@@ -986,6 +986,9 @@ NleUI::NleUI() {
               o->deactivate();
               Fl_Group::current()->resizable(o);
             } // Fl_Check_Button* o
+            { m_timecode_box = new Fl_Box(465, 320, 210, 25, "00:00:00");
+              m_timecode_box->labelfont(1);
+            } // Fl_Box* m_timecode_box
             o->end();
           } // Fl_Group* o
           o->end();

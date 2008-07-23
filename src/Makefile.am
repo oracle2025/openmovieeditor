@@ -222,8 +222,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	color_schemes.H\
 	AudioThreadedRingbuffer.H\
 	AudioThreadedRingbuffer.cxx\
-	EffectStackBrowser.H\
-	EffectStackBrowser.cxx\
 	lqtgavl.h\
 	lqtgavl.c\
 	ColorGrader2.h\

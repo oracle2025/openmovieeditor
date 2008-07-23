@@ -24,6 +24,7 @@
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Menu_Button.H>
 #include <FL/Fl_Check_Button.H>
+#include <FL/Fl_Box.H>
 #include <FL/Fl_Tabs.H>
 #include "MediaPanel.H"
 #include "FilterScroll.H"
@@ -33,7 +34,6 @@
 #include <FL/Fl_Value_Input.H>
 #include <math.h>
 #include <FL/fl_show_colormap.H>
-#include <FL/Fl_Box.H>
 #include "fl_font_browser.h"
 #include <FL/Fl_Choice.H>
 #include <FL/Fl_Output.H>
@@ -159,6 +159,7 @@ private:
   void cb_black_border_item_2_35_i(Fl_Menu_*, void*);
   static void cb_black_border_item_2_35(Fl_Menu_*, void*);
 public:
+  Fl_Box *m_timecode_box;
   Fl_Tabs *tab_view;
   nle::FilterScroll *filter_scroll;
   nle::FltkEffectMenu *m_effectMenu;

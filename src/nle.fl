@@ -24,10 +24,10 @@ if ( Fl::event()==FL_CLOSE ) {
 	m_videoView->stop();
 	nle::g_loadSaveManager->shutdown();
 }} open
-      xywh {57 169 700 600} type Double resizable size_range {450 380 0 0} visible
+      xywh {414 138 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
-        label {Black Borders} open selected
+        label {Black Borders} open
         xywh {0 0 530 25}
       } {
         Submenu {} {
@@ -434,6 +434,10 @@ m_videoView->redraw();}
               Fl_Check_Button {} {
                 label interlaced
                 xywh {545 320 130 25} down_box DOWN_BOX hide deactivate resizable
+              }
+              Fl_Box m_timecode_box {
+                label {00:00:00} selected
+                xywh {465 320 210 25} labelfont 1
               }
             }
           }
