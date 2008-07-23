@@ -67,6 +67,7 @@ extern "C" {
 //#include "FloatNodes/NodeFilterFloat0rFactory.H"
 #include "color_schemes.H"
 #include "VideoFileFactory.H"
+#include "GmerlinFactory.H"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -164,8 +165,11 @@ int main( int argc, char** argv )
 	nui.special_clips->add("Node Compositing", nle::PL_VIDEO_EFFECT, "effect:builtin:NodeFilter" );
 
 
+
 	nle::MainFilterFactory fFactory;
 	nle::Frei0rFactory effectFactory( nui.m_effectMenu );
+
+	nle::GmerlinFactory( nui.m_effectMenu );
 	
 	nle::ColorCurveFactory colorCurveFactory;
 	nui.m_effectMenu->addEffect( &colorCurveFactory );

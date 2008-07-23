@@ -307,7 +307,13 @@ openmovieeditor_SOURCES = nle.cxx\
 	EffectDialogButtonWidget.H\
 	EffectDialogButtonWidget.cxx\
 	DragBox.H\
-	DragBox.cxx
+	DragBox.cxx\
+	GmerlinFactory.H\
+	GmerlinFactory.cxx\
+	GmerlinFactoryPlugin.H\
+	GmerlinFactoryPlugin.cxx\
+	GmerlinEffect.H\
+	GmerlinEffect.cxx
 #	VideoFileGmerlin.H\
 #	VideoFileGmerlin.cxx
 #	ColorWheel.H\
