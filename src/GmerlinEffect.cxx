@@ -20,8 +20,10 @@
 #include "GmerlinEffect.H"
 #include "LazyFrame.H"
 #include "VideoEffectClip.H"
+#include "GmerlinWidget.H"
 
 #include <string>
+#include <iostream>
 		
 namespace nle
 {	
@@ -32,14 +34,64 @@ int read_video_gmerlin( void* data, gavl_video_frame_t * frame, int stream )
 	gavl_video_frame_copy( &effect->input_format, frame, effect->m_input_lazy_frame->RGBA() );
 	return 1;
 }
-		
-GmerlinEffect::GmerlinEffect( const bg_plugin_info_t* plugin_info, bg_plugin_handle_t* plugin_handle, VideoEffectClip* clip )
+
+const char* gmerlin_parameter_type_string( int v )
 {
-	m_plugin_info = plugin_info;
+	switch ( v ) {
+		case BG_PARAMETER_SECTION:
+			return "BG_PARAMETER_SECTION";
+		case BG_PARAMETER_CHECKBUTTON:
+			return "BG_PARAMETER_CHECKBUTTON";
+		case BG_PARAMETER_INT :
+			return "BG_PARAMETER_INT";
+		case BG_PARAMETER_FLOAT:
+			return "BG_PARAMETER_FLOAT";
+		case BG_PARAMETER_SLIDER_INT :
+			return "BG_PARAMETER_SLIDER_INT";
+		case BG_PARAMETER_SLIDER_FLOAT :
+			return "BG_PARAMETER_SLIDER_FLOAT";
+		case BG_PARAMETER_STRING :
+			return "BG_PARAMETER_STRING";
+		case BG_PARAMETER_STRING_HIDDEN:
+			return "BG_PARAMETER_STRING_HIDDEN";
+		case BG_PARAMETER_STRINGLIST :
+			return "BG_PARAMETER_STRINGLIST";
+		case BG_PARAMETER_COLOR_RGB :
+			return "BG_PARAMETER_COLOR_RGB";
+		case BG_PARAMETER_COLOR_RGBA:
+			return "BG_PARAMETER_COLOR_RGBA";
+		case BG_PARAMETER_FONT :
+			return "BG_PARAMETER_FONT";
+		case BG_PARAMETER_DEVICE:
+			return "BG_PARAMETER_DEVICE";
+		case BG_PARAMETER_FILE :
+			return "BG_PARAMETER_FILE";
+		case BG_PARAMETER_DIRECTORY:
+			return "BG_PARAMETER_DIRECTORY";
+		case BG_PARAMETER_MULTI_MENU:
+			return "BG_PARAMETER_MULTI_MENU";
+		case BG_PARAMETER_MULTI_LIST:
+			return "BG_PARAMETER_MULTI_LIST";
+		case BG_PARAMETER_MULTI_CHAIN:
+			return "BG_PARAMETER_MULTI_CHAIN";
+		case BG_PARAMETER_TIME :
+			return "BG_PARAMETER_TIME";
+		case BG_PARAMETER_POSITION:
+			return "BG_PARAMETER_POSITION";
+	}
+	return "";
+}
+		
+GmerlinEffect::GmerlinEffect( const char* identifier, bg_plugin_handle_t* plugin_handle, VideoEffectClip* clip )
+{
 	m_plugin_handle = plugin_handle;
+	m_identifier = identifier;
 	m_filter = (const bg_fv_plugin_t*)m_plugin_handle->plugin;
 	m_filter_instance = m_filter->common.create();
 	m_parameters = m_filter->common.get_parameters( m_filter_instance );
+	for ( int i = 0; m_parameters[i].name; i++ ) {
+		std::cout << m_parameters[i].name << " : " << m_parameters[i].long_name << " : " << gmerlin_parameter_type_string( m_parameters[i].type ) << std::endl;
+	}
 
 	m_filter->connect_input_port( m_filter_instance, read_video_gmerlin, this, 0, 0 );
 
@@ -64,6 +116,14 @@ GmerlinEffect::~GmerlinEffect()
 	delete m_lazy_frame;
 	gavl_video_frame_destroy( m_gavl_frame );
 }
+int GmerlinEffect::numberOfParams()
+{
+	m_parameters = m_filter->common.get_parameters( m_filter_instance );
+	int i;
+	for ( i = 0; m_parameters[i].name; i++ )
+		; // empty
+	return i;
+}
 LazyFrame* GmerlinEffect::getFrame( LazyFrame* frame, int64_t position )
 {
 	m_input_lazy_frame = frame;
@@ -72,7 +132,7 @@ LazyFrame* GmerlinEffect::getFrame( LazyFrame* frame, int64_t position )
 }
 const char* GmerlinEffect::name()
 {
-	return m_plugin_info->long_name;
+	return m_plugin_handle->info->long_name;
 }
 IEffectDialog* GmerlinEffect::dialog()
 {
@@ -80,9 +140,13 @@ IEffectDialog* GmerlinEffect::dialog()
 }
 const char* GmerlinEffect::identifier()
 {
-	std::string result = "effect:gmerlin:";
-	result += m_plugin_info->name;
-	return result.c_str(); //TODO: this is not OK?
+	static char buffer[256];
+	strncpy( buffer, m_identifier.c_str(), sizeof(buffer) - 1 );
+	return buffer;
+}
+IEffectWidget* GmerlinEffect::widget()
+{
+	return new GmerlinWidget( this );
 }
 void GmerlinEffect::writeXML( TiXmlElement* )
 {

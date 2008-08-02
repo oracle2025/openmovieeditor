@@ -22,6 +22,8 @@
 
 #include "IVideoEffect.H"
 
+#include <string>
+
 #include <gavl/gavl.h>
 extern "C" {
 #include <gmerlin/pluginregistry.h>
@@ -35,12 +37,13 @@ class VideoEffectClip;
 class GmerlinEffect : public IVideoEffect
 {
 	public:
-		GmerlinEffect( const bg_plugin_info_t* plugin_info, bg_plugin_handle_t* plugin_handle, VideoEffectClip* clip );
+		GmerlinEffect( const char* identifier, bg_plugin_handle_t* plugin_handle, VideoEffectClip* clip );
 		~GmerlinEffect();
 		LazyFrame* getFrame( LazyFrame* frame, int64_t position = -1 );
 		const char* name();
 		int numParams() { return 1; }
 		IEffectDialog* dialog();
+		IEffectWidget* widget();
 		const char* identifier();
 		FilterData* getFilterData() { return 0; }
 		void setFilterData( FilterData* ) {}
@@ -48,14 +51,17 @@ class GmerlinEffect : public IVideoEffect
 		void readXML( TiXmlElement* );
 		LazyFrame* m_input_lazy_frame;
 		gavl_video_format_t input_format;
+		const bg_fv_plugin_t* filter() { return m_filter; }
+		void* instance() { return m_filter_instance; }
+		int numberOfParams();
 	private:
-		const bg_plugin_info_t*    m_plugin_info;
 		bg_plugin_handle_t*        m_plugin_handle;
 		const bg_fv_plugin_t*      m_filter;
 		void*                      m_filter_instance;
 		const bg_parameter_info_t* m_parameters;
 		LazyFrame*                 m_lazy_frame;
 		gavl_video_frame_t*        m_gavl_frame;
+		std::string                m_identifier;
 		
 };
 

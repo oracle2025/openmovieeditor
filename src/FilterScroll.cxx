@@ -58,8 +58,8 @@ void FilterScroll::AddItem(FilterBase* filter, FilterClip* clip) {
 	w->setClip(clip);
 	IEffectWidget* f = filter->widget();
 	nchildheight += defaultHeight;
-	w->setFilterWidget(f);
 	if ( f ) {
+		w->setFilterWidget(f);
 		f->resize(X, Y+H, 430, f->h() );
 		nchildheight += f->h();
 	}

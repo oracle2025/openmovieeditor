@@ -19,6 +19,8 @@
 
 #include "GmerlinFactory.H"
 #include "GmerlinFactoryPlugin.H"
+#include "MainFilterFactory.H"
+#include "nle.h"
 
 #include <iostream>
 
@@ -30,29 +32,38 @@ GmerlinFactory::GmerlinFactory( IEffectMenu* menu )
 	m_cfg_registry = bg_cfg_registry_create();
 	m_plugin_cfg = bg_cfg_registry_find_section( m_cfg_registry, "plugins" );
 	m_plugin_registry = bg_plugin_registry_create( m_plugin_cfg );
-	char** filters = bg_plugin_registry_get_plugins( m_plugin_registry, BG_PLUGIN_FILTER_VIDEO, BG_PLUGIN_ALL );
+	m_filters = bg_plugin_registry_get_plugins( m_plugin_registry, BG_PLUGIN_FILTER_VIDEO, BG_PLUGIN_ALL );
 
-	for ( int i = 0; filters[i]; i++ ) {
+	for ( int i = 0; m_filters[i]; i++ ) {
 
-		const bg_plugin_info_t* info = bg_plugin_find_by_name ( m_plugin_registry, filters[i] );
+		const bg_plugin_info_t* plugin_info = bg_plugin_find_by_name ( m_plugin_registry, m_filters[i] );
+		bg_plugin_handle_t* plugin_handle = bg_plugin_load( m_plugin_registry, plugin_info );
+		GmerlinFactoryPlugin* effect = new GmerlinFactoryPlugin( plugin_handle );
+		//TODO: Those are not deleted !!!
+		menu->addEffect( effect );
+		g_mainFilterFactory->add( effect->identifier(), effect );
+		g_ui->special_clips->add( effect->name(), PL_VIDEO_EFFECT, effect->identifier() );
 
-		std::cout << filters[i] << " : " << info->long_name << std::endl;
+
+		std::cout << m_filters[i] << " : " << plugin_info->long_name << " : " << effect->identifier() << std::endl;
 	}
 
-	bg_plugin_registry_free_plugins( filters );
 }
 
 GmerlinFactory::~GmerlinFactory()
 {
+	std::cout << "DELETE GMERLIN_FACTORY" << std::endl;
+	bg_plugin_registry_free_plugins( m_filters );
 	bg_plugin_registry_destroy( m_plugin_registry );
 	bg_cfg_registry_destroy( m_cfg_registry );
 }
 
 FilterFactory* GmerlinFactory::get( const char* name )
 {
+	std::cout << "GMERLIN_FACTORY::GET" << std::endl;
 	const bg_plugin_info_t* plugin_info = bg_plugin_find_by_name( m_plugin_registry, name );
 	bg_plugin_handle_t* plugin_handle = bg_plugin_load( m_plugin_registry, plugin_info );
-	return new GmerlinFactoryPlugin( plugin_info, plugin_handle );
+	return new GmerlinFactoryPlugin( plugin_handle );
 }
 
 } /* namespace nle */

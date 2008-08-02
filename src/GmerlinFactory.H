@@ -41,6 +41,7 @@ class GmerlinFactory
 		bg_cfg_registry_t*    m_cfg_registry;
 		bg_cfg_section_t*     m_plugin_cfg;
 		bg_plugin_registry_t* m_plugin_registry;
+		char** m_filters;
 };
 
 } /* namespace nle */

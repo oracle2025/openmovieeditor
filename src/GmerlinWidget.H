@@ -1,4 +1,4 @@
-/*  GmerlinFactoryPlugin.H
+/* GmerlinWidget.H
  *
  *  Copyright (C) 2008 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,36 +17,40 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _GMERLIN_FACTORY_PLUGIN_H_
-#define _GMERLIN_FACTORY_PLUGIN_H_
+#ifndef _GMERLIN_WIDGET_H_
+#define _GMERLIN_WIDGET_H_
 
-#include "FilterFactory.H"
-
-#include <string>
+#include "IEffectWidget.H"
 
 #include <gavl/gavl.h>
 extern "C" {
-	#include <gmerlin/pluginregistry.h>
+	#include <gmerlin/plugin.h>
 }
 
 namespace nle
 {
 
-class GmerlinFactoryPlugin : public FilterFactory
+class GmerlinEffect;
+class GmerlinWidget;
+
+typedef struct _gmerlin_widget_callback_info {
+	GmerlinWidget* widget;
+	const char* name;
+} gmerlin_widget_callback_info;
+
+class GmerlinWidget : public IEffectWidget
 {
 	public:
-		GmerlinFactoryPlugin( bg_plugin_handle_t* plugin_handle );
-		~GmerlinFactoryPlugin();
-		FilterBase* get( Clip* clip );
-		bool ok() { return m_ok; }
-		const char* name();
-		const char* identifier();
+		GmerlinWidget( GmerlinEffect* effect );
+		~GmerlinWidget();
+		void setValue( const char* name, bg_parameter_value_t *v );
 	private:
-		bool m_ok;
-		bg_plugin_handle_t*     m_plugin_handle;
-		std::string m_identifier;
+		GmerlinEffect* m_effect;
+		gmerlin_widget_callback_info* m_infostack;
+		const bg_fv_plugin_t*      m_filter;
+		void*                      m_filter_instance;
 };
 
 } /* namespace nle */
 
-#endif /* _GMERLIN_FACTORY_PLUGIN_H_ */
+#endif /* _GMERLIN_WIDGET_H_ */

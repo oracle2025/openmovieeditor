@@ -23,18 +23,21 @@
 #include "timeline/Clip.H"
 
 #include <string>
+#include <iostream>
 
 namespace nle
 {
 
-GmerlinFactoryPlugin::GmerlinFactoryPlugin( const bg_plugin_info_t* plugin_info, bg_plugin_handle_t* plugin_handle )
+GmerlinFactoryPlugin::GmerlinFactoryPlugin( bg_plugin_handle_t* plugin_handle )
 {
-	m_plugin_info = plugin_info;
 	m_plugin_handle = plugin_handle;
+	m_identifier = "effect:gmerlin:";
+	m_identifier += m_plugin_handle->info->name;
 }
 
 GmerlinFactoryPlugin::~GmerlinFactoryPlugin()
 {
+	std::cout << "BG_PLUGIN_UNREF" << std::endl;
 	bg_plugin_unref( m_plugin_handle );
 }
 
@@ -44,20 +47,20 @@ FilterBase* GmerlinFactoryPlugin::get( Clip* clip )
 	if ( !effectClip ) {
 		return 0;
 	}
-	GmerlinEffect* effect = new GmerlinEffect( m_plugin_info, m_plugin_handle, effectClip );
+	GmerlinEffect* effect = new GmerlinEffect( m_identifier.c_str(), m_plugin_handle, effectClip );
 	return effect;
 }
 
 const char* GmerlinFactoryPlugin::name()
 {
-	return m_plugin_info->long_name;
+	return m_plugin_handle->info->long_name;
 }
 
 const char* GmerlinFactoryPlugin::identifier()
 {
-	std::string result = "effect:gmerlin:";
-	result += m_plugin_info->name;
-	return result.c_str(); //TODO: this is not OK?
+	static char buffer[256];
+	strncpy( buffer, m_identifier.c_str(), sizeof(buffer) - 1 );
+	return buffer;
 }
 
 } /* namespace nle */

@@ -313,7 +313,9 @@ openmovieeditor_SOURCES = nle.cxx\
 	GmerlinFactoryPlugin.H\
 	GmerlinFactoryPlugin.cxx\
 	GmerlinEffect.H\
-	GmerlinEffect.cxx
+	GmerlinEffect.cxx\
+	GmerlinWidget.H\
+	GmerlinWidget.cxx
 #	VideoFileGmerlin.H\
 #	VideoFileGmerlin.cxx
 #	ColorWheel.H\
