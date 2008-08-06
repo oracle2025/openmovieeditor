@@ -90,8 +90,10 @@ GmerlinEffect::GmerlinEffect( const char* identifier, bg_plugin_handle_t* plugin
 	m_filter_instance = m_filter->common.create();
 	m_parameters = m_filter->common.get_parameters( m_filter_instance );
 	for ( int i = 0; m_parameters[i].name; i++ ) {
+		m_filter->common.set_parameter( m_filter_instance, m_parameters[i].name, &m_parameters[i].val_default );
 		std::cout << m_parameters[i].name << " : " << m_parameters[i].long_name << " : " << gmerlin_parameter_type_string( m_parameters[i].type ) << std::endl;
 	}
+	m_filter->common.set_parameter( m_filter_instance, 0, 0 );
 
 	m_filter->connect_input_port( m_filter_instance, read_video_gmerlin, this, 0, 0 );
 
@@ -148,8 +150,47 @@ IEffectWidget* GmerlinEffect::widget()
 {
 	return new GmerlinWidget( this );
 }
-void GmerlinEffect::writeXML( TiXmlElement* )
+void GmerlinEffect::writeXML( TiXmlElement* xml_noden )
 {
+	/*
+	TiXmlElement* parameter;
+	TiXmlElement* effect = xml_node;
+
+	for ( int i = 0; m_parameters[i].name; i++ ) {
+		parameter = new TiXmlElement( "parameter" );
+		effect->LinkEndChild( parameter );
+		parameter->SetAttribute( "name", m_parameters[i].name );
+		switch ( parameters[i].type ) {
+			case BG_PARAMETER_SECTION:
+			break;
+			case BG_PARAMETER_CHECKBUTTON:
+			case BG_PARAMETER_INT :
+			case BG_PARAMETER_SLIDER_INT :
+				{
+					//get_paramater still unimplemented
+					//ARGH!
+				}
+			case BG_PARAMETER_FLOAT:
+			case BG_PARAMETER_SLIDER_FLOAT :
+			case BG_PARAMETER_STRING :
+			case BG_PARAMETER_STRING_HIDDEN:
+			case BG_PARAMETER_STRINGLIST :
+			case BG_PARAMETER_COLOR_RGB :
+			case BG_PARAMETER_COLOR_RGBA:
+			case BG_PARAMETER_FONT :
+			case BG_PARAMETER_DEVICE:
+			case BG_PARAMETER_FILE :
+			case BG_PARAMETER_DIRECTORY:
+			case BG_PARAMETER_MULTI_MENU:
+			case BG_PARAMETER_MULTI_LIST:
+			case BG_PARAMETER_MULTI_CHAIN:
+			case BG_PARAMETER_TIME :
+			case BG_PARAMETER_POSITION:
+
+		}
+	}
+	*/
+
 }
 void GmerlinEffect::readXML( TiXmlElement* )
 {
