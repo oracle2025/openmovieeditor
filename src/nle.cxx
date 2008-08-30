@@ -3,6 +3,7 @@
 #include "nle.h"
 #include <tinyxml.h>
 #include <lqt.h>
+#include "MainFilterFactory.H"
 #include <lqt_version.h>
 
 void NleUI::cb_mainWindow_i(Fl_Double_Window*, void*) {
@@ -107,6 +108,17 @@ while (dlg.shown())
 }
 void NleUI::cb_Export1(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Export1_i(o,v);
+}
+
+void NleUI::cb_Master_i(Fl_Menu_*, void*) {
+  MasterEffectDialog dlg;
+
+dlg.show();
+while (dlg.shown())
+  Fl::wait();
+}
+void NleUI::cb_Master(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_Master_i(o,v);
 }
 
 void NleUI::cb_Quit_i(Fl_Menu_* o, void*) {
@@ -255,6 +267,7 @@ Fl_Menu_Item NleUI::menu_Black[] = {
  {"Render...", 0,  (Fl_Callback*)NleUI::cb_Render, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Export SRT/Subtitles...", 0,  (Fl_Callback*)NleUI::cb_Export, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Export SMIL/Kino...", 0,  (Fl_Callback*)NleUI::cb_Export1, 0, 128, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Master Effects...", 0,  (Fl_Callback*)NleUI::cb_Master, 0, 128, FL_NORMAL_LABEL, 0, 14, 0},
  {"Quit", 0x40071,  (Fl_Callback*)NleUI::cb_Quit, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"&Edit", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
@@ -288,12 +301,12 @@ Fl_Menu_Item NleUI::menu_Black[] = {
  {0,0,0,0,0,0,0,0,0},
  {0,0,0,0,0,0,0,0,0}
 };
-Fl_Menu_Item* NleUI::undo_item = NleUI::menu_Black + 9;
-Fl_Menu_Item* NleUI::redo_item = NleUI::menu_Black + 10;
-Fl_Menu_Item* NleUI::cut_item = NleUI::menu_Black + 11;
-Fl_Menu_Item* NleUI::copy_item = NleUI::menu_Black + 12;
-Fl_Menu_Item* NleUI::paste_item = NleUI::menu_Black + 13;
-Fl_Menu_Item* NleUI::delete_item = NleUI::menu_Black + 14;
+Fl_Menu_Item* NleUI::undo_item = NleUI::menu_Black + 10;
+Fl_Menu_Item* NleUI::redo_item = NleUI::menu_Black + 11;
+Fl_Menu_Item* NleUI::cut_item = NleUI::menu_Black + 12;
+Fl_Menu_Item* NleUI::copy_item = NleUI::menu_Black + 13;
+Fl_Menu_Item* NleUI::paste_item = NleUI::menu_Black + 14;
+Fl_Menu_Item* NleUI::delete_item = NleUI::menu_Black + 15;
 
 void NleUI::cb_zoom_slider_i(Fl_Slider* o, void*) {
   m_videoView->zoom( o->value() );
@@ -449,6 +462,14 @@ Fl_Menu_Item NleUI::menu_Aspect[] = {
 };
 Fl_Menu_Item* NleUI::black_border_item = NleUI::menu_Aspect + 4;
 Fl_Menu_Item* NleUI::black_border_item_2_35 = NleUI::menu_Aspect + 5;
+
+void NleUI::cb_filter_scroll_i(nle::FilterScroll*, void*) {
+  nle::g_timelineView->updateEffectDisplay();
+nle::g_videoView->redraw();
+}
+void NleUI::cb_filter_scroll(nle::FilterScroll* o, void* v) {
+  ((NleUI*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_filter_scroll_i(o,v);
+}
 
 void NleUI::cb_titles_text_i(Fl_Input* o, void*) {
   m_timelineView->titles_text( o->value() );
@@ -1024,6 +1045,7 @@ NleUI::NleUI() {
                 filter_scroll->labelfont(0);
                 filter_scroll->labelsize(14);
                 filter_scroll->labelcolor(FL_FOREGROUND_COLOR);
+                filter_scroll->callback((Fl_Callback*)cb_filter_scroll);
                 filter_scroll->align(FL_ALIGN_TOP);
                 filter_scroll->when(FL_WHEN_RELEASE);
                 filter_scroll->end();
@@ -7616,3 +7638,151 @@ SrtExportDialog::~SrtExportDialog() {
   delete dialog_window;
 }
 bool g_lock; 
+
+void MasterEffectDialog::cb_Close1_i(Fl_Return_Button* o, void*) {
+  o->window()->hide();
+}
+void MasterEffectDialog::cb_Close1(Fl_Return_Button* o, void* v) {
+  ((MasterEffectDialog*)(o->parent()->user_data()))->cb_Close1_i(o,v);
+}
+
+void MasterEffectDialog::cb_effect_pipes_browser_i(Fl_Browser* o, void*) {
+  filter_scroll->setClip( 0 );
+if ( o->value() <= 0 ) {
+	
+	return;
+}
+nle::master_effects* me = (nle::master_effects*)o->data( o->value() );
+std::cout << me << " " << me->filters << std::endl;
+filter_scroll->setClip( me->filters );
+}
+void MasterEffectDialog::cb_effect_pipes_browser(Fl_Browser* o, void* v) {
+  ((MasterEffectDialog*)(o->parent()->user_data()))->cb_effect_pipes_browser_i(o,v);
+}
+
+void MasterEffectDialog::cb_5_i(Fl_Button*, void*) {
+  const char* s = fl_input("Enter the name for the new chain!", "New Filter Chain" );
+if ( s ) {
+	effect_pipes_browser->add( s, nle::g_timeline->appendMasterChain( s ) );
+	effect_pipes_browser->value( effect_pipes_browser->size() );
+};
+}
+void MasterEffectDialog::cb_5(Fl_Button* o, void* v) {
+  ((MasterEffectDialog*)(o->parent()->user_data()))->cb_5_i(o,v);
+}
+
+void MasterEffectDialog::cb_6_i(Fl_Button*, void*) {
+  int x = effect_pipes_browser->value();
+if ( x > 0 ) {
+	nle::g_timeline->deleteMasterChain( x );
+};
+}
+void MasterEffectDialog::cb_6(Fl_Button* o, void* v) {
+  ((MasterEffectDialog*)(o->parent()->user_data()))->cb_6_i(o,v);
+}
+
+void MasterEffectDialog::cb_Rename_i(Fl_Button*, void*) {
+  if ( effect_pipes_browser->value() <= 0 ) {
+	return;
+}
+const char* s1 = effect_pipes_browser->text( effect_pipes_browser->value() );
+const char* s = fl_input("Enter the name for the chain '%s'!", s1, s1 );
+if ( s ) {
+	nle::g_timeline->renameMasterChain( effect_pipes_browser->value(), s );
+	effect_pipes_browser->text( effect_pipes_browser->value(), s );
+};
+}
+void MasterEffectDialog::cb_Rename(Fl_Button* o, void* v) {
+  ((MasterEffectDialog*)(o->parent()->user_data()))->cb_Rename_i(o,v);
+}
+
+void MasterEffectDialog::cb_filter_scroll1_i(nle::FilterScroll*, void*) {
+  if ( effect_pipes_browser->value() <= 0 ) {
+	return;
+}
+nle::master_effects* me = (nle::master_effects*)effect_pipes_browser->data( effect_pipes_browser->value() );
+filter_scroll->setClip( me->filters );
+}
+void MasterEffectDialog::cb_filter_scroll1(nle::FilterScroll* o, void* v) {
+  ((MasterEffectDialog*)(o->parent()->user_data()))->cb_filter_scroll1_i(o,v);
+}
+
+MasterEffectDialog::MasterEffectDialog() {
+  { dialog_window = new Fl_Double_Window(555, 425, "Master Effects");
+    dialog_window->user_data((void*)(this));
+    { Fl_Box* o = new Fl_Box(0, 0, 555, 45, "Master Effects");
+      o->labelfont(1);
+      o->labelsize(16);
+    } // Fl_Box* o
+    { Fl_Return_Button* o = new Fl_Return_Button(10, 390, 535, 25, "Close");
+      o->callback((Fl_Callback*)cb_Close1);
+    } // Fl_Return_Button* o
+    { effect_pipes_browser = new Fl_Browser(10, 70, 225, 280, "Named Effect Pipes");
+      effect_pipes_browser->type(2);
+      effect_pipes_browser->labelfont(1);
+      effect_pipes_browser->callback((Fl_Callback*)cb_effect_pipes_browser);
+      effect_pipes_browser->align(FL_ALIGN_TOP_LEFT);
+    } // Fl_Browser* effect_pipes_browser
+    { Fl_Button* o = new Fl_Button(10, 350, 25, 25, "@+");
+      o->callback((Fl_Callback*)cb_5);
+    } // Fl_Button* o
+    { Fl_Button* o = new Fl_Button(40, 350, 25, 25, "-");
+      o->labelfont(1);
+      o->labelsize(31);
+      o->callback((Fl_Callback*)cb_6);
+    } // Fl_Button* o
+    { Fl_Button* o = new Fl_Button(70, 350, 165, 25, "Rename ...");
+      o->callback((Fl_Callback*)cb_Rename);
+    } // Fl_Button* o
+    { effect_menu = new nle::MasterEffectMenu(310, 70, 235, 25, "Add Effect");
+      effect_menu->box(FL_UP_BOX);
+      effect_menu->color(FL_BACKGROUND_COLOR);
+      effect_menu->selection_color(FL_SELECTION_COLOR);
+      effect_menu->labeltype(FL_NORMAL_LABEL);
+      effect_menu->labelfont(0);
+      effect_menu->labelsize(14);
+      effect_menu->labelcolor(FL_FOREGROUND_COLOR);
+      effect_menu->align(FL_ALIGN_CENTER);
+      effect_menu->when(FL_WHEN_RELEASE_ALWAYS);
+    } // nle::MasterEffectMenu* effect_menu
+    { new Fl_Value_Input(255, 95, 50, 25, "W");
+    } // Fl_Value_Input* o
+    { new Fl_Value_Input(255, 125, 50, 25, "H");
+    } // Fl_Value_Input* o
+    { new Fl_Button(255, 155, 50, 25, "Set");
+    } // Fl_Button* o
+    { Fl_Box* o = new Fl_Box(310, 45, 235, 25, "Effects");
+      o->labelfont(1);
+      o->align(FL_ALIGN_BOTTOM_LEFT|FL_ALIGN_INSIDE);
+    } // Fl_Box* o
+    { filter_scroll = new nle::FilterScroll(310, 95, 235, 280);
+      filter_scroll->box(FL_BORDER_BOX);
+      filter_scroll->color(FL_BACKGROUND_COLOR);
+      filter_scroll->selection_color(FL_BACKGROUND_COLOR);
+      filter_scroll->labeltype(FL_NORMAL_LABEL);
+      filter_scroll->labelfont(0);
+      filter_scroll->labelsize(14);
+      filter_scroll->labelcolor(FL_FOREGROUND_COLOR);
+      filter_scroll->callback((Fl_Callback*)cb_filter_scroll1);
+      filter_scroll->align(FL_ALIGN_TOP);
+      filter_scroll->when(FL_WHEN_RELEASE);
+      filter_scroll->end();
+    } // nle::FilterScroll* filter_scroll
+    dialog_window->end();
+    dialog_window->resizable(dialog_window);
+  } // Fl_Double_Window* dialog_window
+  nle::g_mainFilterFactory->addAll( effect_menu );
+effect_menu->m_filter_scroll = filter_scroll;
+}
+
+MasterEffectDialog::~MasterEffectDialog() {
+  delete dialog_window;
+}
+
+void MasterEffectDialog::show() {
+  dialog_window->show();
+}
+
+int MasterEffectDialog::shown() {
+  return dialog_window->shown();
+}

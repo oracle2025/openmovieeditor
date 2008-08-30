@@ -10,6 +10,7 @@ class FilterClip;
 class FilterBase;
 
 class FilterScroll : public Fl_Scroll {
+    FilterClip* m_clip;
     int nchild;
     int nchildheight;
     Fl_Pack* m_pack;
@@ -18,6 +19,7 @@ public:
     void resize(int X, int Y, int W, int H);
     void AddItem(FilterBase* filter, FilterClip* clip);
     void setClip( FilterClip* clip );
+    FilterClip* getClip();
 };
 
 } /* namespace nle */

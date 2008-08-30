@@ -64,6 +64,8 @@ private:
   static void cb_Export(Fl_Menu_*, void*);
   void cb_Export1_i(Fl_Menu_*, void*);
   static void cb_Export1(Fl_Menu_*, void*);
+  void cb_Master_i(Fl_Menu_*, void*);
+  static void cb_Master(Fl_Menu_*, void*);
   void cb_Quit_i(Fl_Menu_*, void*);
   static void cb_Quit(Fl_Menu_*, void*);
 public:
@@ -162,6 +164,10 @@ public:
   Fl_Box *m_timecode_box;
   Fl_Tabs *tab_view;
   nle::FilterScroll *filter_scroll;
+private:
+  void cb_filter_scroll_i(nle::FilterScroll*, void*);
+  static void cb_filter_scroll(nle::FilterScroll*, void*);
+public:
   nle::FltkEffectMenu *m_effectMenu;
   nle::SpecialClipsBrowser *special_clips;
 private:
@@ -528,4 +534,36 @@ public:
   ~SrtExportDialog();
 };
 extern bool g_lock; 
+#include "MasterEffectClip.H"
+#include "MasterEffectMenu.H"
+
+class MasterEffectDialog {
+public:
+  MasterEffectDialog();
+  Fl_Double_Window *dialog_window;
+private:
+  void cb_Close1_i(Fl_Return_Button*, void*);
+  static void cb_Close1(Fl_Return_Button*, void*);
+public:
+  Fl_Browser *effect_pipes_browser;
+private:
+  void cb_effect_pipes_browser_i(Fl_Browser*, void*);
+  static void cb_effect_pipes_browser(Fl_Browser*, void*);
+  void cb_5_i(Fl_Button*, void*);
+  static void cb_5(Fl_Button*, void*);
+  void cb_6_i(Fl_Button*, void*);
+  static void cb_6(Fl_Button*, void*);
+  void cb_Rename_i(Fl_Button*, void*);
+  static void cb_Rename(Fl_Button*, void*);
+public:
+  nle::MasterEffectMenu *effect_menu;
+  nle::FilterScroll *filter_scroll;
+private:
+  void cb_filter_scroll1_i(nle::FilterScroll*, void*);
+  static void cb_filter_scroll1(nle::FilterScroll*, void*);
+public:
+  ~MasterEffectDialog();
+  void show();
+  int shown();
+};
 #endif

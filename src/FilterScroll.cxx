@@ -23,6 +23,7 @@ FilterScroll::FilterScroll(int X, int Y, int W, int H, const char* L) : Fl_Scrol
 	nchild = 0;
 	nchildheight = 0;
 	m_pack = 0;
+	m_clip = 0;
 }
 void FilterScroll::resize(int X, int Y, int W, int H) {
 	// Tell children to resize to our new width
@@ -70,11 +71,21 @@ void FilterScroll::AddItem(FilterBase* filter, FilterClip* clip) {
 	m_pack->add(p);
 	nchild++;
 }
+FilterClip* FilterScroll::getClip()
+{
+	std::cout << this << " FilterScroll::getClip " << m_clip << std::endl;
+	return m_clip;
+}
 void FilterScroll::setClip( FilterClip* clip )
 {
+	m_clip = clip;
+	std::cout << this << " FilterScroll::setClip " << m_clip << std::endl;
 	nchild=0;
 	nchildheight=0;
 	clear();
+	if ( !m_clip ) {
+		return;
+	}
 	m_pack = new Fl_Pack( x() + 1, y() + 1, w()-20-2, h()-2 );
 	m_pack->spacing(0);
 	add(m_pack);

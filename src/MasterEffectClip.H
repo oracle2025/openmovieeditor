@@ -1,6 +1,6 @@
-/*  MainFilterFactory.H
+/*  MasterEffectClip.H
  *
- *  Copyright (C) 2007 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2008 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,39 +17,35 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _MAIN_FILTER_FACTORY_H_
-#define _MAIN_FILTER_FACTORY_H_
+#ifndef _MASTER_EFFECT_CLIP_H_
+#define _MASTER_EFFECT_CLIP_H_
 
-#include <string>
-using namespace std;
+#include "FilterClip.H"
+#include "VideoEffectClip.H"
 
 namespace nle
 {
 
-class FilterFactory;
-
-typedef struct _filter_factory_node {
-	struct _filter_factory_node* next;
-	FilterFactory* factory;
-	string identifier;
-} filter_factory_node;
-
-class MainFilterFactory;
-class IEffectMenu;
-extern MainFilterFactory* g_mainFilterFactory;
-
-class MainFilterFactory
+class MasterEffectClip : public FilterClip, public VideoEffectClip
 {
 	public:
-		MainFilterFactory();
-		~MainFilterFactory();
-		void add( const char* identifier, FilterFactory* factory );
-		void addAll( IEffectMenu* menu );
-		FilterFactory* get( const char* identifier );
+		MasterEffectClip();
+		~MasterEffectClip();
+		int64_t length() { return 0; }
+		int64_t fileLength() { return 0; }
+		std::string filename() { return ""; }
+		int type() { return CLIP_TYPE_VIDEO; }
+		nle::ClipData* getClipData() { return 0; }
+		int w() { return 720; }
+		int h() { return 576; }
+		LazyFrame* getRawFrame( int64_t position, int64_t &position_in_file ) { return m_frame; }
+		LazyFrame* processFrame( LazyFrame* frame );
 	private:
-		filter_factory_node* m_factories;	
+		LazyFrame* m_frame;
 };
-	
+
+
 } /* namespace nle */
 
-#endif /* _MAIN_FILTER_FACTORY_H_ */
+#endif /* _MASTER_EFFECT_CLIP_H_ */
+

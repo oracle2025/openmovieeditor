@@ -10,6 +10,7 @@
 #include "DocManager.H"
 #include "DragBox.H"
 #include <cassert>
+#include "MasterEffectClip.H"
 
 namespace nle
 {
@@ -42,8 +43,7 @@ void FilterItemWidget::cb_Up_i( Fl_Button* o )
 {
 	assert( m_clip );
 	m_clip->moveFilterUp( m_filter );
-	g_timelineView->updateEffectDisplay();
-	g_videoView->redraw();
+	parent()->parent()->parent()->do_callback();
 }
 void FilterItemWidget::cb_Up( Fl_Button* o, void* v )
 {
@@ -54,8 +54,7 @@ void FilterItemWidget::cb_Down_i( Fl_Button* o )
 {
 	assert( m_clip );
 	m_clip->moveFilterDown( m_filter );
-	g_timelineView->updateEffectDisplay();
-	g_videoView->redraw();
+	parent()->parent()->parent()->do_callback();
 }
 void FilterItemWidget::cb_Down( Fl_Button* o, void* v )
 {
@@ -71,10 +70,14 @@ void FilterItemWidget::cb_Remove_i( Fl_Button* o )
 		c++;
 		es = es->next;
 	}
-	Command* cmd = new FilterRemoveCommand( m_clip, c );
-	submit( cmd );
-	g_timelineView->updateEffectDisplay();
-	g_videoView->redraw();
+	if ( dynamic_cast<MasterEffectClip*>(m_clip) ) {
+		m_clip->removeFilter( c );
+	} else {
+		Command* cmd = new FilterRemoveCommand( m_clip, c );
+		submit( cmd );
+	}
+	//TODO: Don't do this for the Master Effect List
+	parent()->parent()->parent()->do_callback();
 }
 void FilterItemWidget::cb_Remove( Fl_Button* o, void* v )
 {

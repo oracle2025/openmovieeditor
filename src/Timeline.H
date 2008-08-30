@@ -43,6 +43,14 @@ typedef enum {
 	PB_FPS_60
 } playback_fps;
 
+class MasterEffectClip;
+
+typedef struct _master_effects {
+	struct _master_effects* next;
+	MasterEffectClip* filters; // Derive something?
+	std::string name;
+} master_effects;
+
 class Timeline : public TimelineBase, public IAudioReader, public IVideoReader
 {
 	public:
@@ -80,6 +88,11 @@ class Timeline : public TimelineBase, public IAudioReader, public IVideoReader
 		bool render_mode() { return m_render_mode; }
 		void render_mode( bool b ) { m_render_mode = b; }
 		playback_fps m_playback_fps;
+		master_effects* getMasterEffects() { return m_master_effects; }
+		master_effects* appendMasterChain( const char* name );
+		void deleteMasterChain( int num );
+		master_effects* renameMasterChain( int num, const char* name );
+		LazyFrame* applyMasterEffect( LazyFrame* frame, int num );
 	private:
 		int read_20061221_and_earlier( std::string filename );
 		int64_t m_soundLength;
@@ -89,6 +102,7 @@ class Timeline : public TimelineBase, public IAudioReader, public IVideoReader
 
 		gavl_video_frame_t* m_blended_gavl_frame;
 		LazyFrame*          m_blended_lazy_frame;
+		master_effects*     m_master_effects;
 		
 };
 

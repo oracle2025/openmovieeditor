@@ -297,6 +297,11 @@ int TimelineView::handle( int event )
 					if ( vcl->m_mute ) {
 						Fl_Menu_Item menuitem[] = { { "Unmute Original Sound", MENU_ITEM_INIT },
 							{ "Select all Clips after Cursor", MENU_ITEM_INIT }, 
+							{ "No Master", MENU_ITEM_INIT }, 
+							{ "Master 1", MENU_ITEM_INIT }, 
+							{ "Master 2", MENU_ITEM_INIT }, 
+							{ "Master 3", MENU_ITEM_INIT }, 
+							{ "Master 4", MENU_ITEM_INIT }, 
 							{ 0L, MENU_ITEM_INIT } };
 						Fl_Menu_Item* r = (Fl_Menu_Item*)menuitem->popup( Fl::event_x(), Fl::event_y() );
 						if ( r == &menuitem[0] ) {
@@ -305,10 +310,25 @@ int TimelineView::handle( int event )
 							g_timeline->changing();
 						} else if ( r == &menuitem[1] ) {
 							select_all_after_cursor();	
+						} else if ( r == &menuitem[2] ) {
+							vcl->m_master_effect = 0;
+						} else if ( r == &menuitem[3] ) {
+							vcl->m_master_effect = 1;
+						} else if ( r == &menuitem[4] ) {
+							vcl->m_master_effect = 2;
+						} else if ( r == &menuitem[5] ) {
+							vcl->m_master_effect = 3;
+						} else if ( r == &menuitem[6] ) {
+							vcl->m_master_effect = 4;
 						}
 					} else {
 						Fl_Menu_Item menuitem[] = { { "Mute Original Sound", MENU_ITEM_INIT }, 
 							{ "Select all Clips after Cursor", MENU_ITEM_INIT }, 
+							{ "No Master", MENU_ITEM_INIT }, 
+							{ "Master 1", MENU_ITEM_INIT }, 
+							{ "Master 2", MENU_ITEM_INIT }, 
+							{ "Master 3", MENU_ITEM_INIT }, 
+							{ "Master 4", MENU_ITEM_INIT }, 
 							{ 0L, MENU_ITEM_INIT } };
 						Fl_Menu_Item* r = (Fl_Menu_Item*)menuitem->popup( Fl::event_x(), Fl::event_y() );
 						if ( r == &menuitem[0] ) {
@@ -317,6 +337,16 @@ int TimelineView::handle( int event )
 							g_timeline->changing();
 						} else if ( r == &menuitem[1] ) {
 							select_all_after_cursor();	
+						} else if ( r == &menuitem[2] ) {
+							vcl->m_master_effect = 0;
+						} else if ( r == &menuitem[3] ) {
+							vcl->m_master_effect = 1;
+						} else if ( r == &menuitem[4] ) {
+							vcl->m_master_effect = 2;
+						} else if ( r == &menuitem[5] ) {
+							vcl->m_master_effect = 3;
+						} else if ( r == &menuitem[6] ) {
+							vcl->m_master_effect = 4;
 						}
 					}
 					return 1;

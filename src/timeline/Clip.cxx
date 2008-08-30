@@ -27,15 +27,16 @@ namespace nle
 
 Clip::Clip( Track *track, int64_t position, int id )
 {
+	m_master_effect = 0;
 	m_position = position;
 	m_track = track;
 	m_trimA = 0;
 	m_trimB = 0;
 	if ( id < 0 ) {
-		m_id = track->getClipId();
+		if (track) m_id = track->getClipId();
 	} else {
 		m_id = id;
-		track->updateClipId( id );
+		if (track) track->updateClipId( id );
 	}
 	m_selected = false;
 }

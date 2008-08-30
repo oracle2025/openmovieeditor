@@ -1,6 +1,6 @@
-/*  MainFilterFactory.H
+/*  MasterEffectMenu.H
  *
- *  Copyright (C) 2007 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,39 +17,30 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _MAIN_FILTER_FACTORY_H_
-#define _MAIN_FILTER_FACTORY_H_
+#ifndef _MASTER_EFFECT_MENU_H_
+#define _MASTER_EFFECT_MENU_H_
 
-#include <string>
-using namespace std;
+#include <FL/Fl.H>
+#include <FL/Fl_Menu_Button.H>
+#include "IEffectMenu.H"
 
 namespace nle
 {
 
 class FilterFactory;
+class FilterScroll;
 
-typedef struct _filter_factory_node {
-	struct _filter_factory_node* next;
-	FilterFactory* factory;
-	string identifier;
-} filter_factory_node;
-
-class MainFilterFactory;
-class IEffectMenu;
-extern MainFilterFactory* g_mainFilterFactory;
-
-class MainFilterFactory
+class MasterEffectMenu : public Fl_Menu_Button, public IEffectMenu
 {
 	public:
-		MainFilterFactory();
-		~MainFilterFactory();
-		void add( const char* identifier, FilterFactory* factory );
-		void addAll( IEffectMenu* menu );
-		FilterFactory* get( const char* identifier );
-	private:
-		filter_factory_node* m_factories;	
+		MasterEffectMenu(  int x, int y, int w, int h, const char *l = 0  );
+		~MasterEffectMenu();
+		void addEffect( FilterFactory* effectFactory );
+		void addMasterEffect( FilterFactory* effectFactory );
+		FilterScroll* m_filter_scroll;
 };
-	
+
 } /* namespace nle */
 
-#endif /* _MAIN_FILTER_FACTORY_H_ */
+#endif /* _MASTER_EFFECT_MENU_H_ */
+

@@ -9,6 +9,9 @@ decl {\#include "EncodingPreset.H"} {public
 
 decl {\#include <lqt.h>} {} 
 
+decl {\#include "MainFilterFactory.H"} {global
+} 
+
 decl {\#include <lqt_version.h>} {} 
 
 class NleUI {open
@@ -24,7 +27,7 @@ if ( Fl::event()==FL_CLOSE ) {
 	m_videoView->stop();
 	nle::g_loadSaveManager->shutdown();
 }} open
-      xywh {414 138 700 600} type Double resizable size_range {450 380 0 0} visible
+      xywh {314 133 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
         label {Black Borders} open
@@ -112,6 +115,15 @@ while (dlg.shown())
 
 
 SmilExportDialog dlg;
+
+dlg.show();
+while (dlg.shown())
+  Fl::wait();}
+            xywh {0 0 100 20} divider
+          }
+          MenuItem {} {
+            label {Master Effects...}
+            callback {MasterEffectDialog dlg;
 
 dlg.show();
 while (dlg.shown())
@@ -436,7 +448,7 @@ m_videoView->redraw();}
                 xywh {545 320 130 25} down_box DOWN_BOX hide deactivate resizable
               }
               Fl_Box m_timecode_box {
-                label {00:00:00} selected
+                label {00:00:00}
                 xywh {465 320 210 25} labelfont 1
               }
             }
@@ -461,7 +473,9 @@ m_videoView->redraw();}
                 label {Clip Inspector} open
                 xywh {0 75 365 230}
               } {
-                Fl_Scroll filter_scroll {open
+                Fl_Scroll filter_scroll {
+                  callback {nle::g_timelineView->updateEffectDisplay();
+nle::g_videoView->redraw();} open
                   xywh {5 105 355 195} box BORDER_BOX resizable
                   code0 {\#include "FilterScroll.H"}
                   class {nle::FilterScroll}
@@ -918,7 +932,7 @@ class CodecOptions {} {
   } {
     Fl_Window codecOptions {
       label {Codec Options} open
-      xywh {416 406 345 305} type Double resizable modal visible
+      xywh {416 406 345 305} type Double hide resizable modal
     } {
       Fl_Box codec_label {
         label Codec
@@ -998,12 +1012,13 @@ if ( m_audio ) {
   }
 } 
 
-class AboutDialog {} {
+class AboutDialog {open
+} {
   Function {AboutDialog()} {open
   } {
     Fl_Window aboutDialog {
       label {About Dialog} open
-      xywh {877 399 340 370} type Double modal visible
+      xywh {877 399 340 370} type Double hide modal
     } {
       Fl_Box {} {
         image {../icons/logo.xpm} xywh {0 0 340 155}
@@ -1194,9 +1209,9 @@ class ExportDialog {} {
   } {
     Fl_Window dialog_window {
       label Export
-      xywh {394 364 560 405} type Double resizable
+      xywh {394 364 560 405} type Double hide resizable
       code0 {\#include "VideoWriterQT.H"}
-      code1 {\#include <colormodels.h>} modal visible
+      code1 {\#include <colormodels.h>} modal
     } {
       Fl_Box {} {
         label Export
@@ -1619,7 +1634,8 @@ delete dialog_window;} {}
   }
 } 
 
-class CustomFormatDialog {} {
+class CustomFormatDialog {open
+} {
   decl {void *audio_codec;} {}
   decl {void* video_codec;} {}
   decl {nle::EncodingPreset* m_preset;} {}
@@ -1630,7 +1646,7 @@ video_codec = 0;
 m_preset = new nle::EncodingPreset();} {}
     Fl_Window dialog_window {
       label {Custom Video Format} open
-      xywh {586 244 690 385} type Double modal visible
+      xywh {586 244 690 385} type Double hide modal
     } {
       Fl_Box {} {
         xywh {350 60 330 285} box ENGRAVED_FRAME labelfont 1 align 5
@@ -2075,8 +2091,8 @@ class SmilExportDialog {} {
   } {
     Fl_Window dialog_window {
       label {SMIL Export} open
-      xywh {495 554 555 215} type Double
-      code0 {\#include "Timeline.H"} modal visible
+      xywh {495 554 555 215} type Double hide
+      code0 {\#include "Timeline.H"} modal
     } {
       Fl_Box {} {
         label {SMIL Export (Kino compatible)}
@@ -2162,7 +2178,7 @@ class DvgrabImportDialog {} {
   Function {DvgrabImportDialog()} {open
   } {
     Fl_Window dialog_window {open
-      xywh {1176 64 100 100} type Double visible
+      xywh {1176 64 100 100} type Double hide
     } {}
   }
   Function {~DvgrabImportDialog()} {open
@@ -2171,13 +2187,14 @@ class DvgrabImportDialog {} {
   }
 } 
 
-class SrtExportDialog {} {
+class SrtExportDialog {open
+} {
   Function {SrtExportDialog()} {open
   } {
     Fl_Window dialog_window {
       label {SRT Export} open
-      xywh {655 492 555 215} type Double
-      code0 {\#include "Timeline.H"} modal visible
+      xywh {655 492 555 215} type Double hide
+      code0 {\#include "Timeline.H"} modal
     } {
       Fl_Box {} {
         label {SRT Subtitle Export}
@@ -2260,4 +2277,114 @@ track_choice->value(0);} {}
 } 
 
 decl {bool g_lock;} {public
+} 
+
+class MasterEffectDialog {open
+} {
+  Function {MasterEffectDialog()} {open
+  } {
+    Fl_Window dialog_window {
+      label {Master Effects} open
+      xywh {654 296 555 425} type Double resizable visible
+    } {
+      Fl_Box {} {
+        label {Master Effects}
+        xywh {0 0 555 45} labelfont 1 labelsize 16
+      }
+      Fl_Return_Button {} {
+        label Close
+        callback {o->window()->hide();}
+        xywh {10 390 535 25}
+      }
+      Fl_Browser effect_pipes_browser {
+        label {Named Effect Pipes}
+        callback {filter_scroll->setClip( 0 );
+if ( o->value() <= 0 ) {
+	
+	return;
+}
+nle::master_effects* me = (nle::master_effects*)o->data( o->value() );
+std::cout << me << " " << me->filters << std::endl;
+filter_scroll->setClip( me->filters );}
+        xywh {10 70 225 280} type Hold labelfont 1 align 5
+        code0 {\#include "MasterEffectClip.H"}
+      }
+      Fl_Button {} {
+        label {@+}
+        callback {const char* s = fl_input("Enter the name for the new chain!", "New Filter Chain" );
+if ( s ) {
+	effect_pipes_browser->add( s, nle::g_timeline->appendMasterChain( s ) );
+	effect_pipes_browser->value( effect_pipes_browser->size() );
+}}
+        xywh {10 350 25 25}
+      }
+      Fl_Button {} {
+        label {-}
+        callback {int x = effect_pipes_browser->value();
+if ( x > 0 ) {
+	nle::g_timeline->deleteMasterChain( x );
+}}
+        xywh {40 350 25 25} labelfont 1 labelsize 31
+      }
+      Fl_Button {} {
+        label {Rename ...}
+        callback {if ( effect_pipes_browser->value() <= 0 ) {
+	return;
+}
+const char* s1 = effect_pipes_browser->text( effect_pipes_browser->value() );
+const char* s = fl_input("Enter the name for the chain '%s'!", s1, s1 );
+if ( s ) {
+	nle::g_timeline->renameMasterChain( effect_pipes_browser->value(), s );
+	effect_pipes_browser->text( effect_pipes_browser->value(), s );
+}}
+        xywh {70 350 165 25}
+      }
+      Fl_Menu_Button effect_menu {
+        label {Add Effect} open
+        xywh {310 70 235 25}
+        code0 {\#include "MasterEffectMenu.H"}
+        class {nle::MasterEffectMenu}
+      } {}
+      Fl_Value_Input {} {
+        label W
+        xywh {255 95 50 25}
+      }
+      Fl_Value_Input {} {
+        label H
+        xywh {255 125 50 25}
+      }
+      Fl_Button {} {
+        label Set
+        xywh {255 155 50 25}
+      }
+      Fl_Box {} {
+        label Effects
+        xywh {310 45 235 25} labelfont 1 align 22
+      }
+      Fl_Scroll filter_scroll {
+        callback {if ( effect_pipes_browser->value() <= 0 ) {
+	return;
+}
+nle::master_effects* me = (nle::master_effects*)effect_pipes_browser->data( effect_pipes_browser->value() );
+filter_scroll->setClip( me->filters );} open selected
+        xywh {310 95 235 280} box BORDER_BOX
+        code0 {\#include "FilterScroll.H"}
+        class {nle::FilterScroll}
+      } {}
+    }
+    code {nle::g_mainFilterFactory->addAll( effect_menu );
+effect_menu->m_filter_scroll = filter_scroll;} {}
+  }
+  Function {~MasterEffectDialog()} {open
+  } {
+    code {delete dialog_window;} {}
+  }
+  Function {show()} {open
+  } {
+    code {dialog_window->show();} {}
+  }
+  Function {shown()} {open return_type int
+  } {
+    code {return dialog_window->shown();} {}
+  }
 } 

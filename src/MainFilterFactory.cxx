@@ -18,6 +18,7 @@
  */
 
 #include "MainFilterFactory.H"
+#include "IEffectMenu.H"
 #include "sl/sl.h"
 
 #include <iostream>
@@ -59,6 +60,13 @@ FilterFactory* MainFilterFactory::get( const char* identifier )
 	}
 	return 0;
 
+}
+void MainFilterFactory::addAll( IEffectMenu* menu )
+{
+	filter_factory_node* p;
+	for ( p = m_factories; p; p = p->next ) {
+		menu->addEffect( p->factory );
+	}
 }
 
 

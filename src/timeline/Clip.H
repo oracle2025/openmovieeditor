@@ -70,6 +70,7 @@ class Clip
 		virtual int getActionCount() { return 0; }
 		virtual const char* getActionName( int index ) { return 0; }
 		virtual void doAction( int index ) {}
+		int m_master_effect;
 	protected:
 		Clip( Track *track, int64_t position, int id = -1 );
 		int64_t m_position;

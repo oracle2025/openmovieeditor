@@ -54,6 +54,8 @@
 #include "Frei0rFactory.H"
 #include "AudioVolumeFilter.H"
 #include "AudioVolumeFilterFactory.H"
+#include "MasterEffectClip.H"
+
 namespace nle
 {
 
@@ -63,6 +65,7 @@ Timeline* g_timeline = 0;
 Timeline::Timeline()
 	: TimelineBase()
 {
+	m_master_effects = 0;
 	m_render_mode = false;
 	m_trackId = 0;
 	VideoTrack *vt;
@@ -99,6 +102,11 @@ Timeline::~Timeline()
 	if ( m_blended_lazy_frame ) {
 		delete m_blended_lazy_frame;
 		m_blended_lazy_frame = 0;
+	}
+	master_effects* node;
+	while ( ( node = (master_effects*)sl_pop( &m_master_effects ) ) ) {
+		delete node->filters;
+		delete node;
 	}
 }
 int Timeline::getTrackId() { return m_trackId++; }
@@ -321,6 +329,11 @@ void Timeline::clear()
 {
 	TimelineBase::clear();
 	m_trackId = 0;
+	master_effects* node;
+	while ( ( node = (master_effects*)sl_pop( &m_master_effects ) ) ) {
+		delete node->filters;
+		delete node;
+	}
 }
 
 
@@ -397,6 +410,7 @@ int Timeline::write( string filename, string name )
 			clip->SetAttribute( "trimA", buffer );
 			snprintf( buffer, sizeof(buffer), "%lld", cn->clip->trimB() );
 			clip->SetAttribute( "trimB", buffer );
+			clip->SetAttribute( "master_effect", cn->clip->m_master_effect );
 			if ( FilterClip* fc = dynamic_cast<FilterClip*>(cn->clip) ) {
 				filter_stack* filters;
 				for ( filters = fc->getFilters(); filters; filters = filters->next ) {
@@ -434,9 +448,26 @@ int Timeline::write( string filename, string name )
 		node = node->next;
 	}
 
-	
+	//Save Master Chain here
+	TiXmlElement* master_clip;
+	master_effects* n = m_master_effects;
+	track = new TiXmlElement( "master_effects" );
+	project->LinkEndChild( track );
+	while ( n ) {
+		master_clip = new TiXmlElement( "master_clip" );
+		master_clip->SetAttribute( "name", n->name.c_str() );
+		track->LinkEndChild( master_clip );
+		filter_stack* filters;
+		for ( filters = n->filters->getFilters(); filters; filters = filters->next ) {
+			TiXmlElement* filter_xml = new TiXmlElement( "filter" );
+			master_clip->LinkEndChild( filter_xml );
+			filter_xml->SetAttribute( "name", filters->filter->name() );
+			filter_xml->SetAttribute( "identifier", filters->filter->identifier() );
+			filters->filter->writeXML( filter_xml );
+		}
+		n = n->next;
+	}
 	doc.SaveFile();
-	
 	return 1;
 }
 int Timeline::read( string filename )
@@ -565,6 +596,7 @@ int Timeline::read( string filename )
 				IVideoFile* vf = VideoFileFactory::get( filename );
 				if ( vf ) {
 					VideoClip* c = new VideoClip( tr, position, vf, trimA, trimB, -1 );
+					j->Attribute( "master_effect", &c->m_master_effect );
 					vec = c;
 					c->m_mute = mute;
 					TiXmlElement* filterXml = TiXmlHandle( j ).FirstChildElement( "filter" ).Element();
@@ -578,6 +610,7 @@ int Timeline::read( string filename )
 					this->addClip( trackId, c );
 				} else {
 					ImageClip* ic = new ImageClip( tr, position, filename, length - trimA - trimB, -1 );
+					j->Attribute( "master_effect", &ic->m_master_effect );
 					if ( !ic->ok() ) {
 						delete ic;
 						if ( length > 0 ) {
@@ -679,6 +712,25 @@ int Timeline::read( string filename )
 			this->addClip( trackId, clip );
 		}
 	}
+
+	TiXmlElement* j = docH.FirstChild( "open_movie_editor_project" ).FirstChild( "master_effects" ).FirstChildElement( "master_clip" ).Element();
+	for ( ; j; j = j->NextSiblingElement( "master_clip" ) ) {
+		master_effects* n = new master_effects;
+		n->next = 0;
+		n->filters = new MasterEffectClip();
+		n->name = j->Attribute( "name" );
+		TiXmlElement* effectXml = TiXmlHandle( j ).FirstChildElement( "filter" ).Element();
+		for( ; effectXml; effectXml = effectXml->NextSiblingElement( "filter" ) ) {
+			FilterFactory* ef = g_mainFilterFactory->get( effectXml->Attribute( "identifier" ) );
+			if ( ef ) {
+				FilterBase* effectObj = n->filters->appendFilter( ef );
+				effectObj->readXML( effectXml );
+			}
+		}
+
+		m_master_effects = (master_effects*)sl_unshift( m_master_effects, n );
+	}
+
 	// TODO: vv--- Remove this, doesn't belong here
 	g_timelineView->redraw();
 	g_timelineView->adjustScrollbar();
@@ -1042,6 +1094,62 @@ int Timeline::write_srt( std::string filename, int track )
 	return 1;
 }
 
+master_effects* Timeline::appendMasterChain( const char* name )
+{
+	master_effects* n = new master_effects;
+	n->next = 0;
+	n->filters = new MasterEffectClip();
+	VideoEffectClip* effectClip = dynamic_cast<VideoEffectClip*>(n->filters);
+	if ( effectClip ) {
+		std::cout << n << " " << n->filters << " "<< effectClip << " " << effectClip->w() << " " << effectClip->h() << std::endl;
+	} else {
+		std::cout << " SOMETHING SERIOSLY WRONG" << std::endl;
+	}
+
+	n->name = name;
+	m_master_effects = (master_effects*)sl_unshift( m_master_effects, n );
+	return n;
+}
+static int remove_filter_helper( void*, void* data )
+{
+	int* num = (int*)data;
+	if ( *num ) {
+		(*num)--;
+		return 0;
+	}
+	return 1;
+}
+void Timeline::deleteMasterChain( int num )
+{
+	int count = num - 1;
+	master_effects* node = (master_effects*)sl_remove( &m_master_effects, remove_filter_helper, &count );
+	if ( node ) {
+		delete node->filters;
+		delete node;
+	}
+
+}
+master_effects* Timeline::renameMasterChain( int num, const char* name )
+{
+	master_effects* node = m_master_effects;
+	for ( int i = 1; i < num; i++ ) {
+		node = node->next;
+	}
+	node->name = name;
+	return node;
+}
+
+LazyFrame* Timeline::applyMasterEffect( LazyFrame* frame, int num )
+{
+	master_effects* node = m_master_effects;
+	for ( int i = 1; i < num && node ; i++ ) {
+		node = node->next;
+	}
+	if ( node ) {
+		return node->filters->processFrame( frame );
+	}
+	return frame;
+}
 
 
 } /* namespace nle */
