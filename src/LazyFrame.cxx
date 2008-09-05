@@ -46,7 +46,8 @@ LazyFrame::LazyFrame( const gavl_video_format_t *format )
 
 	gavl_video_options_t* options = gavl_video_converter_get_options( m_converter_RGBA );
 	
-	gavl_video_options_set_deinterlace_mode( options, GAVL_DEINTERLACE_SCALE );
+	//gavl_video_options_set_deinterlace_mode( options, GAVL_DEINTERLACE_SCALE );
+	gavl_video_options_set_deinterlace_mode( options, GAVL_DEINTERLACE_NONE );
 
 	gavl_video_converter_init( m_converter_RGBA, &m_src_format, &rgba_format );
 
@@ -142,7 +143,8 @@ void LazyFrame::set_target( gavl_video_format_t *format )
 
 	gavl_video_options_t* options = gavl_video_converter_get_options( m_converter_target );
 	
-	gavl_video_options_set_deinterlace_mode( options, GAVL_DEINTERLACE_SCALE );
+	//gavl_video_options_set_deinterlace_mode( options, GAVL_DEINTERLACE_SCALE );
+	gavl_video_options_set_deinterlace_mode( options, GAVL_DEINTERLACE_NONE );
 
 	gavl_video_options_set_alpha_mode( options, GAVL_ALPHA_BLEND_COLOR );
 	float color[3] = {0.0, 0.0, 0.0};
