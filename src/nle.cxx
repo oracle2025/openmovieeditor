@@ -7773,6 +7773,13 @@ MasterEffectDialog::MasterEffectDialog() {
   } // Fl_Double_Window* dialog_window
   nle::g_mainFilterFactory->addAll( effect_menu );
 effect_menu->m_filter_scroll = filter_scroll;
+
+nle::master_effects* n = nle::g_timeline->getMasterEffects();
+
+while ( n ) {
+	effect_pipes_browser->add( n->name.c_str(), n );
+	n = n->next;
+}
 }
 
 MasterEffectDialog::~MasterEffectDialog() {

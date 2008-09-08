@@ -2366,14 +2366,22 @@ if ( s ) {
 	return;
 }
 nle::master_effects* me = (nle::master_effects*)effect_pipes_browser->data( effect_pipes_browser->value() );
-filter_scroll->setClip( me->filters );} open selected
+filter_scroll->setClip( me->filters );} open
         xywh {310 95 235 280} box BORDER_BOX
         code0 {\#include "FilterScroll.H"}
         class {nle::FilterScroll}
       } {}
     }
     code {nle::g_mainFilterFactory->addAll( effect_menu );
-effect_menu->m_filter_scroll = filter_scroll;} {}
+effect_menu->m_filter_scroll = filter_scroll;
+
+nle::master_effects* n = nle::g_timeline->getMasterEffects();
+
+while ( n ) {
+	effect_pipes_browser->add( n->name.c_str(), n );
+	n = n->next;
+}} {selected
+    }
   }
   Function {~MasterEffectDialog()} {open
   } {
