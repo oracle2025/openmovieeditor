@@ -52,6 +52,7 @@ class GmerlinEffect : public IVideoEffect
 		LazyFrame* m_input_lazy_frame;
 		gavl_video_format_t input_format;
 		const bg_fv_plugin_t* filter() { return m_filter; }
+		bg_cfg_section_t* config() { return m_cfg_section; }
 		void* instance() { return m_filter_instance; }
 		int numberOfParams();
 	private:
@@ -62,6 +63,7 @@ class GmerlinEffect : public IVideoEffect
 		LazyFrame*                 m_lazy_frame;
 		gavl_video_frame_t*        m_gavl_frame;
 		std::string                m_identifier;
+		bg_cfg_section_t*          m_cfg_section;
 		
 };
 

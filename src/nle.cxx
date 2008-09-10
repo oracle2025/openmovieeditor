@@ -7675,6 +7675,7 @@ void MasterEffectDialog::cb_6_i(Fl_Button*, void*) {
   int x = effect_pipes_browser->value();
 if ( x > 0 ) {
 	nle::g_timeline->deleteMasterChain( x );
+	effect_pipes_browser->remove( x );
 };
 }
 void MasterEffectDialog::cb_6(Fl_Button* o, void* v) {

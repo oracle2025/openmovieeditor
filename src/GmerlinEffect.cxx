@@ -84,6 +84,7 @@ const char* gmerlin_parameter_type_string( int v )
 		
 GmerlinEffect::GmerlinEffect( const char* identifier, bg_plugin_handle_t* plugin_handle, VideoEffectClip* clip )
 {
+	m_bypass = false;
 	m_plugin_handle = plugin_handle;
 	m_identifier = identifier;
 	m_filter = (const bg_fv_plugin_t*)m_plugin_handle->plugin;
@@ -111,12 +112,16 @@ GmerlinEffect::GmerlinEffect( const char* identifier, bg_plugin_handle_t* plugin
 	m_gavl_frame = gavl_video_frame_create( m_lazy_frame->format() );
 	m_lazy_frame->put_data( m_gavl_frame );
 
+	m_cfg_section = bg_cfg_section_create_from_parameters( "hello", m_parameters );
+
 }
 GmerlinEffect::~GmerlinEffect()
 {
 	m_filter->common.destroy( m_filter_instance );
 	delete m_lazy_frame;
 	gavl_video_frame_destroy( m_gavl_frame );
+	bg_cfg_section_destroy( m_cfg_section );
+	m_cfg_section = 0;
 }
 int GmerlinEffect::numberOfParams()
 {
@@ -128,6 +133,9 @@ int GmerlinEffect::numberOfParams()
 }
 LazyFrame* GmerlinEffect::getFrame( LazyFrame* frame, int64_t position )
 {
+	if ( m_bypass ) {
+		return frame;
+	}
 	m_input_lazy_frame = frame;
 	m_filter->read_video( m_filter_instance, m_gavl_frame, 0 );
 	return m_lazy_frame;

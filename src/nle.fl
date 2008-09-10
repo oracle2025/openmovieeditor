@@ -2323,7 +2323,8 @@ if ( s ) {
         callback {int x = effect_pipes_browser->value();
 if ( x > 0 ) {
 	nle::g_timeline->deleteMasterChain( x );
-}}
+	effect_pipes_browser->remove( x );
+}} selected
         xywh {40 350 25 25} labelfont 1 labelsize 31
       }
       Fl_Button {} {
@@ -2380,8 +2381,7 @@ nle::master_effects* n = nle::g_timeline->getMasterEffects();
 while ( n ) {
 	effect_pipes_browser->add( n->name.c_str(), n );
 	n = n->next;
-}} {selected
-    }
+}} {}
   }
   Function {~MasterEffectDialog()} {open
   } {

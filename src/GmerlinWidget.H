@@ -36,6 +36,7 @@ class GmerlinWidget;
 typedef struct _gmerlin_widget_callback_info {
 	GmerlinWidget* widget;
 	const char* name;
+	const bg_parameter_info_t* info;
 } gmerlin_widget_callback_info;
 
 class GmerlinWidget : public IEffectWidget
@@ -43,7 +44,7 @@ class GmerlinWidget : public IEffectWidget
 	public:
 		GmerlinWidget( GmerlinEffect* effect );
 		~GmerlinWidget();
-		void setValue( const char* name, bg_parameter_value_t *v );
+		void setValue( const char* name, const bg_parameter_info_t* info, bg_parameter_value_t *v );
 	private:
 		GmerlinEffect* m_effect;
 		gmerlin_widget_callback_info* m_infostack;

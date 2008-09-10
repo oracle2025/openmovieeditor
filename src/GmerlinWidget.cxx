@@ -39,7 +39,7 @@ static void spin_check_callback( Fl_Widget* i, void* v )
 	gmerlin_widget_callback_info* info = (gmerlin_widget_callback_info*)v;
 	bg_parameter_value_t val;
 	val.val_i = vi->value();
-	info->widget->setValue( info->name, &val );
+	info->widget->setValue( info->name, info->info, &val );
 }
 static void spin_int_callback( Fl_Widget* i, void* v )
 {
@@ -47,7 +47,7 @@ static void spin_int_callback( Fl_Widget* i, void* v )
 	gmerlin_widget_callback_info* info = (gmerlin_widget_callback_info*)v;
 	bg_parameter_value_t val;
 	val.val_i = vi->value();
-	info->widget->setValue( info->name, &val );
+	info->widget->setValue( info->name, info->info, &val );
 }
 static void spin_float_callback( Fl_Widget* i, void* v )
 {
@@ -55,7 +55,7 @@ static void spin_float_callback( Fl_Widget* i, void* v )
 	gmerlin_widget_callback_info* info = (gmerlin_widget_callback_info*)v;
 	bg_parameter_value_t val;
 	val.val_f = vi->value();
-	info->widget->setValue( info->name, &val );
+	info->widget->setValue( info->name, info->info, &val );
 }
 static void slider_int_callback( Fl_Widget* i, void* v )
 {
@@ -63,7 +63,7 @@ static void slider_int_callback( Fl_Widget* i, void* v )
 	gmerlin_widget_callback_info* info = (gmerlin_widget_callback_info*)v;
 	bg_parameter_value_t val;
 	val.val_f = vi->value();
-	info->widget->setValue( info->name, &val );
+	info->widget->setValue( info->name, info->info, &val );
 }
 static void slider_float_callback( Fl_Widget* i, void* v )
 {
@@ -71,7 +71,7 @@ static void slider_float_callback( Fl_Widget* i, void* v )
 	gmerlin_widget_callback_info* info = (gmerlin_widget_callback_info*)v;
 	bg_parameter_value_t val;
 	val.val_f = vi->value();
-	info->widget->setValue( info->name, &val );
+	info->widget->setValue( info->name, info->info, &val );
 }
 
 static void string_list_menu_callback( Fl_Menu_* o, void* v )
@@ -80,7 +80,7 @@ static void string_list_menu_callback( Fl_Menu_* o, void* v )
 	char* name = (char*)v;
 	bg_parameter_value_t val;
 	val.val_str = name;
-	info->widget->setValue( info->name, &val );
+	info->widget->setValue( info->name, info->info, &val );
 }
 static void input_string_callback( Fl_Widget* i, void* v )
 {
@@ -88,7 +88,7 @@ static void input_string_callback( Fl_Widget* i, void* v )
 	gmerlin_widget_callback_info* info = (gmerlin_widget_callback_info*)v;
 	bg_parameter_value_t val;
 	val.val_str = (char*)vi->value();
-	info->widget->setValue( info->name, &val );
+	info->widget->setValue( info->name, info->info, &val );
 }
 static void color_rgb_callback( Fl_Widget* i, void* v )
 {
@@ -103,7 +103,7 @@ static void color_rgb_callback( Fl_Widget* i, void* v )
 		val.val_color[3] = 1.0; //alpha
 		vi->color( fl_rgb_color( (uchar)( r * 255 ), (uchar)( g * 255), (uchar)( b * 255 ) ) );
 		vi->labelcolor( fl_contrast( FL_FOREGROUND_COLOR, vi->color() ) );
-		info->widget->setValue( info->name, &val );
+		info->widget->setValue( info->name, info->info, &val );
 	}
 }
 
@@ -123,6 +123,7 @@ GmerlinWidget::GmerlinWidget( GmerlinEffect* effect )
 		y = 5 + ( i * 25 );
 		m_infostack[i].widget = this;
 		m_infostack[i].name = parameters[i].name;
+		m_infostack[i].info = &parameters[i];
 		switch ( parameters[i].type ) {
 			case BG_PARAMETER_SECTION:
 				break;
@@ -132,12 +133,17 @@ GmerlinWidget::GmerlinWidget( GmerlinEffect* effect )
 				b->labelsize( 12 );
 				b->callback( spin_check_callback, &(m_infostack[i]) );
 				b->tooltip( parameters[i].help_string );
+				bg_parameter_value_t val;
+				bg_cfg_section_get_parameter( m_effect->config(), &parameters[i], &val );
+				b->value( val.val_i );
 				/*
+				//bg_cfg_section_get_parameter (bg_cfg_section_t *section, const bg_parameter_info_t *info, bg_parameter_value_t *value)
+
 				bg_parameter_value_t val;
 				m_filter->common.get_parameter( m_filter_instance, parameters[i].name, &val );
 				b->value( val.val_i );
 				*/
-				b->value( parameters[i].val_default.val_i );
+				//b->value( parameters[i].val_default.val_i );
 				break;
 			}
 			case BG_PARAMETER_INT :
@@ -150,12 +156,15 @@ GmerlinWidget::GmerlinWidget( GmerlinEffect* effect )
 				o->tooltip( parameters[i].help_string );
 				o->maximum( parameters[i].val_max.val_i );
 				o->minimum( parameters[i].val_min.val_i );
+				bg_parameter_value_t val;
+				bg_cfg_section_get_parameter( m_effect->config(), &parameters[i], &val );
+				o->value( val.val_i );
 				/*
 				bg_parameter_value_t val;
 				m_filter->common.get_parameter( m_filter_instance, parameters[i].name, &val );
 				o->value( val.val_i );
 				*/
-				o->value( parameters[i].val_default.val_i );
+				//o->value( parameters[i].val_default.val_i );
 				break;
 			}
 			case BG_PARAMETER_FLOAT:
@@ -168,12 +177,15 @@ GmerlinWidget::GmerlinWidget( GmerlinEffect* effect )
 				o->tooltip( parameters[i].help_string );
 				o->maximum( parameters[i].val_max.val_f );
 				o->minimum( parameters[i].val_min.val_f );
+				bg_parameter_value_t val;
+				bg_cfg_section_get_parameter( m_effect->config(), &parameters[i], &val );
+				o->value( val.val_f );
 				/*
 				bg_parameter_value_t val;
 				m_filter->common.get_parameter( m_filter_instance, parameters[i].name, &val );
 				o->value( val.val_f );
 				*/
-				o->value( parameters[i].val_default.val_f );
+				//o->value( parameters[i].val_default.val_f );
 				break;
 			}
 			case BG_PARAMETER_SLIDER_INT :
@@ -186,12 +198,15 @@ GmerlinWidget::GmerlinWidget( GmerlinEffect* effect )
 				o->tooltip( parameters[i].help_string );
 				o->maximum( parameters[i].val_max.val_i );
 				o->minimum( parameters[i].val_min.val_i );
+				bg_parameter_value_t val;
+				bg_cfg_section_get_parameter( m_effect->config(), &parameters[i], &val );
+				o->value( val.val_i );
 				/*
 				bg_parameter_value_t val;
 				m_filter->common.get_parameter( m_filter_instance, parameters[i].name, &val );
 				o->value( val.val_i );
 				*/
-				o->value( parameters[i].val_default.val_i );
+				//o->value( parameters[i].val_default.val_i );
 				break;
 			}
 			case BG_PARAMETER_SLIDER_FLOAT :
@@ -204,12 +219,15 @@ GmerlinWidget::GmerlinWidget( GmerlinEffect* effect )
 				o->tooltip( parameters[i].help_string );
 				o->maximum( parameters[i].val_max.val_f );
 				o->minimum( parameters[i].val_min.val_f );
+				bg_parameter_value_t val;
+				bg_cfg_section_get_parameter( m_effect->config(), &parameters[i], &val );
+				o->value( val.val_f );
 				/*
 				bg_parameter_value_t val;
 				m_filter->common.get_parameter( m_filter_instance, parameters[i].name, &val );
 				o->value( val.val_f );
 				*/
-				o->value( parameters[i].val_default.val_f );
+				//o->value( parameters[i].val_default.val_f );
 				break;
 			}
 			case BG_PARAMETER_STRING :
@@ -269,9 +287,10 @@ GmerlinWidget::~GmerlinWidget()
 {
 	delete [] m_infostack;
 }
-void GmerlinWidget::setValue( const char* name, bg_parameter_value_t *v )
+void GmerlinWidget::setValue( const char* name, const bg_parameter_info_t* info, bg_parameter_value_t *v )
 {
 	m_filter->common.set_parameter( m_filter_instance, name, v );
+	bg_cfg_section_set_parameter( m_effect->config(), info, v );
 	m_filter->common.set_parameter( m_filter_instance, 0, 0 );
 	g_videoView->redraw();
 }
