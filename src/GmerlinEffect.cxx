@@ -24,7 +24,8 @@
 
 #include <string>
 #include <iostream>
-		
+#include <tinyxml.h>	
+
 namespace nle
 {	
 
@@ -90,8 +91,10 @@ GmerlinEffect::GmerlinEffect( const char* identifier, bg_plugin_handle_t* plugin
 	m_filter = (const bg_fv_plugin_t*)m_plugin_handle->plugin;
 	m_filter_instance = m_filter->common.create();
 	m_parameters = m_filter->common.get_parameters( m_filter_instance );
+	m_cfg_section = bg_cfg_section_create_from_parameters( "hello", m_parameters );
 	for ( int i = 0; m_parameters[i].name; i++ ) {
 		m_filter->common.set_parameter( m_filter_instance, m_parameters[i].name, &m_parameters[i].val_default );
+		bg_cfg_section_set_parameter( m_cfg_section, &m_parameters[i], &m_parameters[i].val_default );
 		std::cout << m_parameters[i].name << " : " << m_parameters[i].long_name << " : " << gmerlin_parameter_type_string( m_parameters[i].type ) << std::endl;
 	}
 	m_filter->common.set_parameter( m_filter_instance, 0, 0 );
@@ -112,7 +115,6 @@ GmerlinEffect::GmerlinEffect( const char* identifier, bg_plugin_handle_t* plugin
 	m_gavl_frame = gavl_video_frame_create( m_lazy_frame->format() );
 	m_lazy_frame->put_data( m_gavl_frame );
 
-	m_cfg_section = bg_cfg_section_create_from_parameters( "hello", m_parameters );
 
 }
 GmerlinEffect::~GmerlinEffect()
@@ -158,31 +160,46 @@ IEffectWidget* GmerlinEffect::widget()
 {
 	return new GmerlinWidget( this );
 }
-void GmerlinEffect::writeXML( TiXmlElement* xml_noden )
+void GmerlinEffect::writeXML( TiXmlElement* xml_node )
 {
-	/*
 	TiXmlElement* parameter;
 	TiXmlElement* effect = xml_node;
+	int bypass = m_bypass;
+	xml_node->SetAttribute( "bypass", bypass );
 
 	for ( int i = 0; m_parameters[i].name; i++ ) {
 		parameter = new TiXmlElement( "parameter" );
 		effect->LinkEndChild( parameter );
 		parameter->SetAttribute( "name", m_parameters[i].name );
-		switch ( parameters[i].type ) {
+		switch ( m_parameters[i].type ) {
 			case BG_PARAMETER_SECTION:
 			break;
 			case BG_PARAMETER_CHECKBUTTON:
 			case BG_PARAMETER_INT :
 			case BG_PARAMETER_SLIDER_INT :
 				{
-					//get_paramater still unimplemented
-					//ARGH!
+					bg_parameter_value_t val;
+					bg_cfg_section_get_parameter( m_cfg_section, &m_parameters[i], &val );
+					parameter->SetAttribute( "value", val.val_i );
+					break;
 				}
 			case BG_PARAMETER_FLOAT:
 			case BG_PARAMETER_SLIDER_FLOAT :
+				{
+					bg_parameter_value_t val;
+					bg_cfg_section_get_parameter( m_cfg_section, &m_parameters[i], &val );
+					parameter->SetDoubleAttribute( "value", (double)val.val_f );
+					break;
+				}
 			case BG_PARAMETER_STRING :
 			case BG_PARAMETER_STRING_HIDDEN:
 			case BG_PARAMETER_STRINGLIST :
+				{
+				/*	bg_parameter_value_t val;
+					bg_cfg_section_get_parameter( m_cfg_section, &m_parameters[i], &val );
+					parameter->SetAttribute( "value", val.val_str ); */
+					break;
+				}
 			case BG_PARAMETER_COLOR_RGB :
 			case BG_PARAMETER_COLOR_RGBA:
 			case BG_PARAMETER_FONT :
@@ -194,14 +211,81 @@ void GmerlinEffect::writeXML( TiXmlElement* xml_noden )
 			case BG_PARAMETER_MULTI_CHAIN:
 			case BG_PARAMETER_TIME :
 			case BG_PARAMETER_POSITION:
-
+			break;
 		}
 	}
-	*/
 
 }
-void GmerlinEffect::readXML( TiXmlElement* )
+void GmerlinEffect::readXML( TiXmlElement* xml_node )
 {
+	int bypass = m_bypass;
+	xml_node->Attribute( "bypass", &bypass );
+	m_bypass = bypass;
+	TiXmlElement* parameterXml = TiXmlHandle( xml_node ).FirstChildElement( "parameter" ).Element();
+	for ( ; parameterXml; parameterXml = parameterXml->NextSiblingElement( "parameter" ) ) {
+		std::string paramName = parameterXml->Attribute( "name" );
+		for ( int i = 0; m_parameters[i].name; i++ ) {
+			if ( paramName == m_parameters[i].name ) {
+				switch ( m_parameters[i].type ) {
+					case BG_PARAMETER_SECTION:
+					break;
+					case BG_PARAMETER_CHECKBUTTON:
+					case BG_PARAMETER_INT :
+					case BG_PARAMETER_SLIDER_INT :
+					{
+						int ival;
+						bg_parameter_value_t val;
+						parameterXml->Attribute( "value", &ival );
+						val.val_i = ival;
+						m_filter->common.set_parameter( m_filter_instance, m_parameters[i].name, &val );
+						bg_cfg_section_set_parameter( m_cfg_section, &m_parameters[i], &val );
+						break;
+
+					}
+					case BG_PARAMETER_FLOAT:
+					case BG_PARAMETER_SLIDER_FLOAT :
+					{
+						double dval;
+						bg_parameter_value_t val;
+						parameterXml->Attribute( "value", &dval );
+						val.val_f = dval;
+						m_filter->common.set_parameter( m_filter_instance, m_parameters[i].name, &val );
+						bg_cfg_section_set_parameter( m_cfg_section, &m_parameters[i], &val );
+						break;
+					}
+					case BG_PARAMETER_STRING :
+					case BG_PARAMETER_STRING_HIDDEN:
+					case BG_PARAMETER_STRINGLIST :
+					{
+						const char* sval;
+						bg_parameter_value_t val;
+						sval = parameterXml->Attribute( "value" );
+						if ( sval ) {
+							val.val_str = (char*)sval;
+							m_filter->common.set_parameter( m_filter_instance, m_parameters[i].name, &val );
+							bg_cfg_section_set_parameter( m_cfg_section, &m_parameters[i], &val );
+						}
+						break;
+					}
+					case BG_PARAMETER_COLOR_RGB :
+					case BG_PARAMETER_COLOR_RGBA:
+					case BG_PARAMETER_FONT :
+					case BG_PARAMETER_DEVICE:
+					case BG_PARAMETER_FILE :
+					case BG_PARAMETER_DIRECTORY:
+					case BG_PARAMETER_MULTI_MENU:
+					case BG_PARAMETER_MULTI_LIST:
+					case BG_PARAMETER_MULTI_CHAIN:
+					case BG_PARAMETER_TIME :
+					case BG_PARAMETER_POSITION:
+					break;
+				}
+				break;
+			}
+		}
+	}
+
+	
 }
 
 
