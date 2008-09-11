@@ -37,10 +37,10 @@ ColorCurveDialog::ColorCurveDialog( ColorCurveFilter* filter )
 	: m_filter( filter )
 {
 	struct color_curve_data* cd = &(filter->m_parameters);
-	m_dialog = new Fl_Double_Window( 605, 350 + 25 + 10, "Color Curves" );
+	m_dialog = new Fl_Double_Window( 605, 200 + 25 + 10, "Color Curves" );
 
 	//ColorGrader2* cg = new ColorGrader2( 0, 0, 430, 335 );
-	ColorGrader2* cg = m_cg = new ColorGrader2( 0, 0, 605, 350 );
+	ColorGrader2* cg = m_cg = new ColorGrader2( 0, 0, 605, 200 );
 	cg->m_dialog = this;
 	cg->editor_red->lineColor( FL_RED );
 	cg->editor_green->lineColor( FL_GREEN );
@@ -54,7 +54,7 @@ ColorCurveDialog::ColorCurveDialog( ColorCurveFilter* filter )
 	
 
 	{
-		Fl_Return_Button* o = new Fl_Return_Button( 5, 355, 595, 25, "Close" );
+		Fl_Return_Button* o = new Fl_Return_Button( 5, 205, 595, 25, "Close" );
 		o->callback( closeCallback, this );
 		m_dialog->hotspot( o );
 	}
