@@ -19,7 +19,7 @@
 
 #include "VideoFileQT.H"
 #include "VideoFileFfmpeg.H"
-#if 0
+#if 1
 #include "VideoFileGmerlin.H"
 #endif
 #include "VideoFileFactory.H"
@@ -38,13 +38,12 @@ IVideoFile* VideoFileFactory::get( string filename )
 		return 0;
 	}
 	IVideoFile* vf;
-#if 0
 	vf = new VideoFileGmerlin( filename, (IProgressListener*)g_video_file_factory_progress );
 	if ( vf->ok() ) {
 		return vf;
 	}
 	delete vf;
-#endif
+/*
 	vf = new VideoFileQT( filename );
 	if ( vf->ok() ) {
 		return vf;
@@ -56,7 +55,8 @@ IVideoFile* VideoFileFactory::get( string filename )
 		return vf;
 	}
 	delete vf;
-#endif /* AVCODEC */
+#endif // AVCODEC
+*/
 	return 0;
 }
 

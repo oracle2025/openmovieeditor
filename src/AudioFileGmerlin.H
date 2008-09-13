@@ -21,6 +21,9 @@
 #define _AUDIO_FILE_Gmerlin_H_
 
 #include <stdint.h>
+extern "C" {
+#include <gmerlin/avdec.h>
+}
 
 #include "global_includes.H"
 #include "IAudioFile.H"
@@ -43,6 +46,13 @@ class AudioFileGmerlin : public IAudioFile
 			// File Format: 44100 stereo interleaved
 	private:
 		bgav_t* m_file;
+		gavl_audio_frame_t* m_frame1;
+		gavl_audio_frame_t* m_frame2;
+		gavl_audio_converter_t* m_converter;
+		int m_samples_per_frame;
+		void init_converter( unsigned long frames );
+		gavl_audio_format_t m_format;
+		gavl_audio_format_t m_float_format;
 };
 
 }

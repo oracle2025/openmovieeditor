@@ -21,6 +21,7 @@
 #include "AudioFileQT.H"
 #include "AudioFileSnd.H"
 #include "AudioFileFfmpeg.H"
+#include "AudioFileGmerlin.H"
 #include "Resampler.H"
 #include <FL/filename.H>
 
@@ -33,12 +34,14 @@ IAudioFile* AudioFileFactory::get( string filename )
 {
 	IAudioFile *af = 0;
 
+	af = new AudioFileSnd( filename );
 	if ( !af || !af->ok() ) {
 		if ( af ) {
 			delete af;
 		}
-		af = new AudioFileSnd( filename );
+		af = new AudioFileGmerlin( filename );
 	}
+/*
 	if ( !af->ok() ) {
 		delete af;
 		af = new AudioFileQT( filename );
@@ -48,14 +51,15 @@ IAudioFile* AudioFileFactory::get( string filename )
 		af = 0;
 #ifdef AVCODEC
 		af = new AudioFileFfmpeg( filename );
-#endif /* AVCODEC */
+#endif // AVCODEC
 	}
 #ifdef AVCODEC
+*/
 	if ( !af->ok() ) {
 		delete af;
 		af = 0;
 	}
-#endif /* AVCODEC */
+//#endif // AVCODEC
 	if ( af && af->samplerate() != 48000 ) {
 		af = new Resampler( af );
 	}

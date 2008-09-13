@@ -319,9 +319,11 @@ openmovieeditor_SOURCES = nle.cxx\
 	MasterEffectClip.H\
 	MasterEffectClip.cxx\
 	MasterEffectMenu.H\
-	MasterEffectMenu.cxx
-#	VideoFileGmerlin.H\
-#	VideoFileGmerlin.cxx
+	MasterEffectMenu.cxx\
+	AudioFileGmerlin.H\
+	AudioFileGmerlin.cxx\
+	VideoFileGmerlin.H\
+	VideoFileGmerlin.cxx
 #	ColorWheel.H\
 #	ColorWheel.cxx
 #	FileBrowser.cxx\

@@ -66,11 +66,11 @@ PKG_CHECK_MODULES(GAVL, gavl >= 1.0.0,,
 CPPFLAGS="$CPPFLAGS $GAVL_CFLAGS"
 LDFLAGS="$LDFLAGS $GAVL_LIBS"
 
-#PKG_CHECK_MODULES(GMERLIN_AVDEC, gmerlin_avdec >= 0.1.7,,
-#  AC_MSG_ERROR([*** gmerlin_avdec >= 0.1.7 not found - this program requires the gmerlin audio
-#  video decoder >= 0.1.7 http://gmerlin.sourceforge.net/ ***]))
-#CPPFLAGS="$CPPFLAGS $GMERLIN_AVDEC_CFLAGS"
-#LDFLAGS="$LDFLAGS $GMERLIN_AVDEC_LIBS"
+PKG_CHECK_MODULES(GMERLIN_AVDEC, gmerlin_avdec >= 0.1.7,,
+  AC_MSG_ERROR([*** gmerlin_avdec >= 0.1.7 not found - this program requires the gmerlin audio
+  video decoder >= 0.1.7 http://gmerlin.sourceforge.net/ ***]))
+CPPFLAGS="$CPPFLAGS $GMERLIN_AVDEC_CFLAGS"
+LDFLAGS="$LDFLAGS $GMERLIN_AVDEC_LIBS"
 
 PKG_CHECK_MODULES(GMERLIN, gmerlin >= 0.3.7,,
   AC_MSG_ERROR([*** gmerlin >= 0.3.7 not found - this program requires gmerlin >= 0.3.7 http://gmerlin.sourceforge.net/ ***]))

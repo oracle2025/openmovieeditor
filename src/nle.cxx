@@ -994,8 +994,6 @@ NleUI::NleUI() {
           { Fl_Group* o = new Fl_Group(365, 320, 310, 25);
             o->box(FL_FLAT_BOX);
             { fps_pb_menu = new Fl_Menu_Button(465, 320, 80, 25, "fps");
-              fps_pb_menu->hide();
-              fps_pb_menu->deactivate();
               fps_pb_menu->menu(menu_fps_pb_menu);
             } // Fl_Menu_Button* fps_pb_menu
             { Fl_Menu_Button* o = new Fl_Menu_Button(365, 320, 100, 25, "Aspect");
@@ -1007,7 +1005,7 @@ NleUI::NleUI() {
               o->deactivate();
               Fl_Group::current()->resizable(o);
             } // Fl_Check_Button* o
-            { m_timecode_box = new Fl_Box(465, 320, 210, 25, "00:00:00");
+            { m_timecode_box = new Fl_Box(545, 320, 130, 25, "00:00:00");
               m_timecode_box->labelfont(1);
             } // Fl_Box* m_timecode_box
             o->end();
