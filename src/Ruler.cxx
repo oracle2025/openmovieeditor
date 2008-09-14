@@ -27,6 +27,7 @@
 #include "helper.H"
 #include "SwitchBoard.H"
 #include "Timeline.H"
+#include "fps_helper.H"
 
 namespace nle
 {
@@ -115,11 +116,18 @@ void Ruler::draw_stylus()
 
 void Ruler::skipForward()
 {
-	g_timelineView->move_cursor_by(1);
+	int64_t framelen = single_frame_length( g_timeline->m_playback_fps );
+	if ( framelen > 0 ) {
+		g_timelineView->move_cursor_by(framelen);
+	}
 }
 void Ruler::skipBackward()
 {
-	g_timelineView->move_cursor_by(-1);
+	int64_t framelen = single_frame_length( g_timeline->m_playback_fps );
+	if ( framelen > 0 ) {
+		g_timelineView->move_cursor_by((-1)*framelen);
+	}
+
 }
 void Ruler::skipFirst()
 {

@@ -40,12 +40,10 @@ openmovieeditor_SOURCES = nle.cxx\
 	Prefs.cxx\
 	MoveDragHandler.cxx\
 	TrimDragHandler.cxx\
-	VideoFileQT.cxx\
 	TrackBase.cxx\
 	AudioTrack.cxx\
 	AudioClip.cxx\
 	AudioFileSnd.cxx\
-	AudioFileQT.cxx\
 	PortAudio19PlaybackCore.cxx\
 	PortAudio19PlaybackCore.H\
 	JackPlaybackCore.cxx\
@@ -63,8 +61,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	Flmm_Scalebar.H\
 	IVideoReader.H\
 	Renderer.H\
-	VideoFileQT.H\
-	AudioFileQT.H\
 	IVideoWriter.H\
 	Ruler.H\
 	VideoTrack.H\
@@ -103,8 +99,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	IdleHandler.H\
 	FilmStripFactory.H\
 	FilmStripFactory.cxx\
-	AudioFileFfmpeg.cxx\
-	AudioFileFfmpeg.H\
 	AudioFileFactory.cxx\
 	AudioFileFactory.H\
 	WaveForm.H\
@@ -286,8 +280,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	InkscapeClip.H\
 	ImageNode.H\
 	ImageNode.cxx\
-	VideoFileFfmpeg.cxx\
-	VideoFileFfmpeg.H\
 	NodeFilterImageFactoryPlugin.H\
 	NodeFilterImageFactoryPlugin.cxx\
 	frame_struct.h\
@@ -323,7 +315,16 @@ openmovieeditor_SOURCES = nle.cxx\
 	AudioFileGmerlin.H\
 	AudioFileGmerlin.cxx\
 	VideoFileGmerlin.H\
-	VideoFileGmerlin.cxx
+	VideoFileGmerlin.cxx\
+	fps_helper.H
+#	AudioFileQT.cxx\
+#	AudioFileQT.H\
+#	AudioFileFfmpeg.cxx\
+#	AudioFileFfmpeg.H\
+#	VideoFileQT.cxx\
+#	VideoFileQT.H\
+#	VideoFileFfmpeg.cxx\
+#	VideoFileFfmpeg.H\
 #	ColorWheel.H\
 #	ColorWheel.cxx
 #	FileBrowser.cxx\

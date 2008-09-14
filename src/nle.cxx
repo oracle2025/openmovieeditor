@@ -6391,7 +6391,7 @@ AboutDialog::AboutDialog() {
     } // Fl_Box* version_box
     { new Fl_Box(0, 250, 340, 25, "Open Movie Editor is FREE Software (GPL)");
     } // Fl_Box* o
-    { new Fl_Box(0, 275, 340, 25, "http://openmovieeditor.sourceforge.net/");
+    { new Fl_Box(0, 275, 340, 25, "http://www.openmovieeditor.org/");
     } // Fl_Box* o
     { Fl_Return_Button* o = new Fl_Return_Button(10, 335, 320, 25, "Close");
       o->callback((Fl_Callback*)cb_Close);

@@ -72,6 +72,7 @@
 #include "Flmm_Cursor_Shape.H"
 #include "../cursors/clip_a_cursor.crsr"
 #include "../cursors/clip_b_cursor.crsr"
+#include "fps_helper.H"
 
 namespace nle
 {
@@ -462,15 +463,17 @@ int TimelineView::handle( int event )
 			}
 		case FL_SHORTCUT: //patch by raaf from OME Forums
 			{
+				//Take m_playback_fps into account here!!
 				int key = Fl::event_key();
-				if(key == FL_KP + '4')
-					move_cursor_by(-1000000);
-				else if(key ==  FL_KP + '6')
-					move_cursor_by(1000000);
-				else if(key == FL_KP + '2')
-					move_cursor_by(-50000000);
-				else if(key == FL_KP + '8')
-					move_cursor_by(50000000);
+				int64_t framelen = single_frame_length( g_timeline->m_playback_fps );
+				if( framelen > 0 && key == FL_KP + '4')
+					move_cursor_by((-1) * framelen);
+				else if(framelen > 0 && key ==  FL_KP + '6')
+					move_cursor_by(framelen);
+				else if(framelen > 0 && key == FL_KP + '2')
+					move_cursor_by((-5)*framelen);
+				else if(framelen > 0 && key == FL_KP + '8')
+					move_cursor_by(5*framelen);
 				else if(key == 's') //patch by dreamlx from OME Forums
 				{
 					cl = get_clip(get_screen_position(m_stylusPosition), _y);

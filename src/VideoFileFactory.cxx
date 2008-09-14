@@ -17,11 +17,9 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "VideoFileQT.H"
-#include "VideoFileFfmpeg.H"
-#if 1
+//#include "VideoFileQT.H"
+//#include "VideoFileFfmpeg.H"
 #include "VideoFileGmerlin.H"
-#endif
 #include "VideoFileFactory.H"
 #include "ProgressDialog/IProgressListener.H"
 #include <FL/filename.H>

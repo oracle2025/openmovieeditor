@@ -18,9 +18,9 @@
  */
 
 #include "AudioFileFactory.H"
-#include "AudioFileQT.H"
+//#include "AudioFileQT.H"
 #include "AudioFileSnd.H"
-#include "AudioFileFfmpeg.H"
+//#include "AudioFileFfmpeg.H"
 #include "AudioFileGmerlin.H"
 #include "Resampler.H"
 #include <FL/filename.H>

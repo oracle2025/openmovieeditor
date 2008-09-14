@@ -403,7 +403,7 @@ if ( strcmp( o->label(), "@9->" ) == 0 ) {
                 }
               }
               Fl_Menu_Button {} {
-                label Aspect open selected
+                label Aspect open
                 xywh {365 320 100 25}
               } {
                 MenuItem {} {
@@ -1018,7 +1018,7 @@ class AboutDialog {open
   } {
     Fl_Window aboutDialog {
       label {About Dialog} open
-      xywh {877 399 340 370} type Double hide modal
+      xywh {877 399 340 370} type Double modal visible
     } {
       Fl_Box {} {
         image {../icons/logo.xpm} xywh {0 0 340 155}
@@ -1041,7 +1041,7 @@ class AboutDialog {open
         xywh {0 250 340 25}
       }
       Fl_Box {} {
-        label {http://openmovieeditor.sourceforge.net/}
+        label {http://www.openmovieeditor.org/} selected
         xywh {0 275 340 25}
       }
       Fl_Return_Button {} {
