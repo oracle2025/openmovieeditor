@@ -61,7 +61,7 @@ NodeFilterDialog::NodeFilterDialog( nle::NodeFilter* filter ) {
   m_factory = g_node_filter_frei0r_factory;
   { m_dialog = new Fl_Double_Window(650, 495, "Node Editor");
     m_dialog->user_data((void*)(this));
-    { Fl_Tile* o = new Fl_Tile(5, 55, 2280, 2000);
+    { Fl_Tile* o = new Fl_Tile(5, 55, 640, 375);
       { plugin_browser = new Fl_Hold_Browser(5, 55, 280, 375);
         plugin_browser->box(FL_NO_BOX);
         plugin_browser->color(FL_BACKGROUND2_COLOR);
@@ -74,7 +74,7 @@ NodeFilterDialog::NodeFilterDialog( nle::NodeFilter* filter ) {
         plugin_browser->align(FL_ALIGN_BOTTOM);
         plugin_browser->when(FL_WHEN_RELEASE_ALWAYS);
       } // Fl_Hold_Browser* plugin_browser
-      { Fl_Scroll* o = new Fl_Scroll(285, 55, 2000, 2000);
+      { Fl_Scroll* o = new Fl_Scroll(285, 55, 360, 375);
         o->box(FL_DOWN_FRAME);
         { graph_editor = new Frei0rGraphEditor(285, 55, 2000, 2000);
           graph_editor->box(FL_FLAT_BOX);
@@ -91,6 +91,7 @@ NodeFilterDialog::NodeFilterDialog( nle::NodeFilter* filter ) {
         o->end();
       } // Fl_Scroll* o
       o->end();
+      Fl_Group::current()->resizable(o);
     } // Fl_Tile* o
     { Fl_Box* o = new Fl_Box(0, 0, 650, 50, "Node Editor");
       o->labelfont(1);
@@ -99,16 +100,20 @@ NodeFilterDialog::NodeFilterDialog( nle::NodeFilter* filter ) {
     { Fl_Return_Button* o = new Fl_Return_Button(5, 465, 640, 25, "Close");
       o->callback((Fl_Callback*)cb_Close);
     } // Fl_Return_Button* o
-    { Fl_Check_Button* o = new Fl_Check_Button(5, 435, 455, 25, "Bypass");
-      o->down_box(FL_DOWN_BOX);
-    } // Fl_Check_Button* o
-    { trash_can = new Fl_Button(620, 435, 25, 25);
-      trash_can->image(image_trash);
-    } // Fl_Button* trash_can
-    { new Fl_Button(460, 435, 80, 25, "Save ...");
-    } // Fl_Button* o
-    { Fl_Menu_Button* o = new Fl_Menu_Button(540, 435, 80, 25, "Load");
-    } // Fl_Menu_Button* o
+    { Fl_Group* o = new Fl_Group(5, 435, 640, 25);
+      { Fl_Check_Button* o = new Fl_Check_Button(5, 435, 455, 25, "Bypass");
+        o->down_box(FL_DOWN_BOX);
+        Fl_Group::current()->resizable(o);
+      } // Fl_Check_Button* o
+      { trash_can = new Fl_Button(620, 435, 25, 25);
+        trash_can->image(image_trash);
+      } // Fl_Button* trash_can
+      { new Fl_Button(460, 435, 80, 25, "Save ...");
+      } // Fl_Button* o
+      { Fl_Menu_Button* o = new Fl_Menu_Button(540, 435, 80, 25, "Load");
+      } // Fl_Menu_Button* o
+      o->end();
+    } // Fl_Group* o
     m_dialog->end();
   } // Fl_Double_Window* m_dialog
   m_filter = filter;

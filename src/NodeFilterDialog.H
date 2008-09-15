@@ -17,6 +17,7 @@
 #include "Timeline.H"
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Return_Button.H>
+#include <FL/Fl_Group.H>
 #include <FL/Fl_Check_Button.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Menu_Button.H>
