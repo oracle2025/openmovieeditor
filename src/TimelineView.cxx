@@ -1164,30 +1164,10 @@ void TimelineView::move_cursor( int64_t position )
 	if ( m_stylusPosition < 0 ) {
 		m_stylusPosition = 0;
 	}
-/*	switch ( g_timeline->m_playback_fps ) {
-		case PB_FPS_NONE:
-			break;
-		case PB_FPS_25_PAL:
-			m_stylusPosition = ( ( ( ( m_stylusPosition * 30000 ) / NLE_TIME_BASE ) / 1200 ) * 1200 ) * NLE_TIME_BASE / 30000;
-			break;
-		case PB_FPS_2997_NTSC:
-			m_stylusPosition = ( ( ( ( m_stylusPosition * 30000 ) / NLE_TIME_BASE ) / 1001 ) * 1001 ) * NLE_TIME_BASE / 30000;
-			break;
-		case PB_FPS_24:
-			m_stylusPosition = ( ( ( ( m_stylusPosition * 30000 ) / NLE_TIME_BASE ) / 1250 ) * 1250 ) * NLE_TIME_BASE / 30000;
-			break;
-		case PB_FPS_15:
-			m_stylusPosition = ( ( ( ( m_stylusPosition * 30000 ) / NLE_TIME_BASE ) / 2000 ) * 2000 ) * NLE_TIME_BASE / 30000;
-			break;
-		case PB_FPS_50:
-			m_stylusPosition = ( ( ( ( m_stylusPosition * 30000 ) / NLE_TIME_BASE ) / 600 ) * 600 ) * NLE_TIME_BASE / 30000;
-			break;
-		case PB_FPS_60:
-			m_stylusPosition = ( ( ( ( m_stylusPosition * 30000 ) / NLE_TIME_BASE ) / 500 ) * 500 ) * NLE_TIME_BASE / 30000;
-			break;
-
-		
-	}*/
+	int64_t framelen = single_frame_length( g_timeline->m_playback_fps );
+	if ( framelen > 0 ) {
+		m_stylusPosition = m_stylusPosition - ( m_stylusPosition % framelen );
+	}
 	window()->make_current();
 	long screen_pos = get_screen_position(m_stylusPosition);
 	if ( screen_pos > w() + x() - 30 ) {

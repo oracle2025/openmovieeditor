@@ -471,7 +471,7 @@ m_videoView->redraw();}
               }
               Fl_Group {} {
                 label {Clip Inspector} open
-                xywh {0 75 365 230}
+                xywh {0 75 365 230} hide
               } {
                 Fl_Scroll filter_scroll {
                   callback {nle::g_timelineView->updateEffectDisplay();
@@ -615,7 +615,7 @@ m_timelineView->titles_text( titles_text->value() );} open
               }
               Fl_Group {} {
                 label Clip
-                xywh {0 75 365 230} hide
+                xywh {0 75 365 230}
               } {
                 Fl_Output clip_filename_out {
                   label Filename
@@ -1041,7 +1041,7 @@ class AboutDialog {open
         xywh {0 250 340 25}
       }
       Fl_Box {} {
-        label {http://www.openmovieeditor.org/} selected
+        label {http://www.openmovieeditor.org/}
         xywh {0 275 340 25}
       }
       Fl_Return_Button {} {
@@ -2384,6 +2384,61 @@ while ( n ) {
 }} {}
   }
   Function {~MasterEffectDialog()} {open
+  } {
+    code {delete dialog_window;} {}
+  }
+  Function {show()} {open
+  } {
+    code {dialog_window->show();} {}
+  }
+  Function {shown()} {open return_type int
+  } {
+    code {return dialog_window->shown();} {}
+  }
+} 
+
+class ClipInfoDialog {open
+} {
+  Function {ClipInfoDialog()} {open
+  } {
+    Fl_Window dialog_window {open selected
+      xywh {71 47 305 255} type Double visible
+    } {
+      Fl_Output clip_filename_out {
+        label Filename
+        xywh {95 45 205 25}
+      }
+      Fl_Output clip_folder_out {
+        label Folder
+        xywh {95 75 205 25}
+      }
+      Fl_Output clip_decoder_out {
+        label Decoder
+        xywh {95 105 205 25}
+      }
+      Fl_Output clip_framerate_out {
+        label Framerate
+        xywh {95 135 205 25}
+      }
+      Fl_Output clip_aspect_out {
+        label {Pixel Aspect}
+        xywh {95 165 205 25}
+      }
+      Fl_Output clip_interlacing_out {
+        label Interlacing
+        xywh {95 195 205 25}
+      }
+      Fl_Return_Button {} {
+        label Close
+        xywh {5 225 295 25}
+      }
+      Fl_Box {} {
+        label {Clip Info}
+        xywh {0 0 305 40} labelfont 1 labelsize 16
+      }
+    }
+  }
+  Function {~ClipInfoDialog()} {open
   } {
     code {delete dialog_window;} {}
   }
