@@ -40,6 +40,7 @@
 #include "ErrorDialog/IErrorHandler.H"
 #include "AudioThreadedRingbuffer.H"
 #include <iostream>
+#include "fps_helper.H"
 
 #include <cstdlib>
 #include <cstring>
@@ -151,7 +152,7 @@ void JackPlaybackCore::play_ping( int fd )
 		return;
 	}
 	m_active = true;
-	Fl::add_timeout( 0.04, video_idle_callback, this ); // looks like hardcoded 25fps 
+	Fl::add_timeout( seconds_frame_length( g_timeline->m_playback_fps ) /*0.04*/, video_idle_callback, this ); // looks like hardcoded 25fps 
 	g_playButton->label( "@square" );
 	g_firstButton->deactivate();
 	g_lastButton->deactivate();
@@ -286,7 +287,7 @@ void JackPlaybackCore::play()
 
 	suspend_idle_handlers();
 	m_active = true;
-	Fl::add_timeout( 0.04, video_idle_callback, this ); // looks like hardcoded 25fps 
+	Fl::add_timeout( seconds_frame_length( g_timeline->m_playback_fps ) /*0.04*/, video_idle_callback, this ); // looks like hardcoded 25fps 
 }
 
 void JackPlaybackCore::stop()
@@ -387,7 +388,7 @@ void JackPlaybackCore::flipFrame()
 		m_videoWriter->pushFrameStack( fs );
 	}
 	fs = m_videoReader->getFrameStack( m_currentFrame );
-	Fl::repeat_timeout( 0.04, video_idle_callback, this ); // more hardcoded framerates.
+	Fl::repeat_timeout( seconds_frame_length( g_timeline->m_playback_fps )/*0.04*/, video_idle_callback, this ); // more hardcoded framerates.
 }
 
 

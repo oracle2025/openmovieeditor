@@ -21,6 +21,7 @@
 //#include "AudioFileQT.H"
 #include "AudioFileSnd.H"
 //#include "AudioFileFfmpeg.H"
+#include "AudioFileProject.H"
 #include "AudioFileGmerlin.H"
 #include "Resampler.H"
 #include <FL/filename.H>
@@ -32,7 +33,12 @@ namespace nle
 
 IAudioFile* AudioFileFactory::get( string filename )
 {
+	const char* ext = fl_filename_ext( filename.c_str() );
 	IAudioFile *af = 0;
+	if ( strcmp( ext, ".vproj" ) == 0 ) {
+		af = new AudioFileProject( filename );
+		return af;
+	}
 
 	af = new AudioFileSnd( filename );
 	if ( !af || !af->ok() ) {

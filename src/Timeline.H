@@ -103,6 +103,8 @@ class Timeline : public TimelineBase, public IAudioReader, public IVideoReader
 		gavl_video_frame_t* m_blended_gavl_frame;
 		LazyFrame*          m_blended_lazy_frame;
 		master_effects*     m_master_effects;
+		float buffer1[32000*2];
+		float buffer2[32000*2];
 		
 };
 

@@ -209,8 +209,9 @@ LazyFrame** Timeline::getFrameStack( int64_t position )
 }
 int Timeline::fillBuffer( float* output, unsigned long frames )
 {
-	static float buffer1[32000*2] = {0};
-	static float buffer2[32000*2] = {0};
+	memset( buffer1, 0, sizeof(buffer1) );
+	memset( buffer2, 0, sizeof(buffer2) );
+
 	unsigned int rv;
 	unsigned int max_frames = 0;
 	track_node* p = m_allTracks;

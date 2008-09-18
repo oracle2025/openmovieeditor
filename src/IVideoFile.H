@@ -28,6 +28,7 @@ namespace nle
 {
 
 class LazyFrame;
+class IAudioFile;
 
 class IVideoFile : public IVideoReader
 {
@@ -61,6 +62,7 @@ class IVideoFile : public IVideoReader
 		inline int interlacing() { return m_interlace_mode; }
 		virtual int64_t ticksPerFrame() = 0;
 		virtual const char* decoder() = 0;
+		virtual IAudioFile* getAudioReader() { return 0; }
 	protected:
 		virtual void seekToFrame( int64_t frame ) = 0;
 		IVideoFile() { m_lastFramePosition = -1; m_interlace_mode = 0; m_first_field = true; }

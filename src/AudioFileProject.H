@@ -1,4 +1,4 @@
-/*  VideoFileProject.H
+/*  AudioFileProject.H
  *
  *  Copyright (C) 2008 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -17,37 +17,34 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _VIDEO_FILE_PROJECT_H_
-#define _VIDEO_FILE_PROJECT_H_
+#ifndef _AUDIO_FILE_PROJECT_H_
+#define _AUDIO_FILE_PROJECT_H_
 
-#include "IVideoFile.H"
-#include "Timeline.H"
-#include <string>
+#include <stdint.h>
+
+#include "global_includes.H"
+#include "IAudioFile.H"
+#include "globals.H"
 
 namespace nle
 {
 
-class LazyFrame;
-
-class VideoFileProject : public IVideoFile
+class AudioFileProject : public IAudioFile
 {
 	public:
-		VideoFileProject( std::string filename );
-		~VideoFileProject();
-		bool ok();
-		int64_t length();
-		LazyFrame* read();
-		void seek( int64_t position );
-		const char* decoder() { return "gmerlin"; }
-		IAudioFile* getAudioReader();
+		AudioFileProject( Timeline* timeline, std::string filename );
+		AudioFileProject( std::string filename );
+		~AudioFileProject();
+		void seek( int64_t sample );
+		int fillBuffer( float* output, unsigned long frames );
+			// sizof(output) == frames * 2
+			// File Format: 44100 stereo interleaved
 	private:
-		int64_t ticksPerFrame();
-		void seekToFrame( int64_t frame );
-	private:
-		Timeline *m_timeline;
-		bool m_ok;
+		Timeline* m_timeline;
+		bool m_delete_timeline_on_destroy;
 };
 
-} /* namespace nle */
+}
 
-#endif /* _VIDEO_FILE_PROJECT_H_ */
+#endif /* _AUDIO_FILE_PROJECT_H_ */
+

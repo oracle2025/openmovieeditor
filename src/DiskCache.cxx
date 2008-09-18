@@ -23,6 +23,7 @@
 #include <cassert>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <cerrno>
 
 #include "DiskCache.H"
 #include "globals.H"
@@ -50,6 +51,10 @@ DiskCache::DiskCache( string filename, string type )
 		assert( r != -1 );
 		m_size = statbuf.st_size;
 		r = stat( filename.c_str(), &statbuf2 );
+		if ( r == -1 ) {
+			cout << "filename: " << filename << endl;
+			cout << strerror( errno ) << endl;
+		}
 		assert( r != -1 );
 		if ( statbuf2.st_mtime > statbuf.st_mtime ) {
 			fclose( m_file );

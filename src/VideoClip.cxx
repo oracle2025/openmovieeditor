@@ -42,7 +42,10 @@ VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A,
 	m_lastFrame = -1;
 	m_audioReader = 0;
 	
-	m_audioFile = AudioFileFactory::get( m_videoFile->filename() );
+	m_audioFile = vf->getAudioReader();
+	if ( !m_audioFile ) {
+		m_audioFile = AudioFileFactory::get( m_videoFile->filename() );
+	}
 	CLEAR_ERRORS();
 
 

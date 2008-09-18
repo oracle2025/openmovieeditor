@@ -20,6 +20,7 @@
 //#include "VideoFileQT.H"
 //#include "VideoFileFfmpeg.H"
 #include "VideoFileGmerlin.H"
+#include "VideoFileProject.H"
 #include "VideoFileFactory.H"
 #include "ProgressDialog/IProgressListener.H"
 #include <FL/filename.H>
@@ -36,6 +37,10 @@ IVideoFile* VideoFileFactory::get( string filename )
 		return 0;
 	}
 	IVideoFile* vf;
+	if ( strcmp( ext, ".vproj" ) == 0 ) {
+		vf = new VideoFileProject( filename );
+		return vf;
+	}
 	vf = new VideoFileGmerlin( filename, (IProgressListener*)g_video_file_factory_progress );
 	if ( vf->ok() ) {
 		return vf;

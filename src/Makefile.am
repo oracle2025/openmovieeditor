@@ -316,7 +316,11 @@ openmovieeditor_SOURCES = nle.cxx\
 	AudioFileGmerlin.cxx\
 	VideoFileGmerlin.H\
 	VideoFileGmerlin.cxx\
-	fps_helper.H
+	fps_helper.H\
+	VideoFileProject.H\
+	VideoFileProject.cxx\
+	AudioFileProject.H\
+	AudioFileProject.cxx
 #	AudioFileQT.cxx\
 #	AudioFileQT.H\
 #	AudioFileFfmpeg.cxx\

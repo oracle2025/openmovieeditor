@@ -46,6 +46,25 @@ inline int64_t single_frame_length( playback_fps fps )
 	}
 	return -1;
 }
+inline double seconds_frame_length( playback_fps fps ) {
+	switch ( fps ) {
+		case PB_FPS_NONE:
+			return 0.04;
+		case PB_FPS_25_PAL:
+			return ( 0.04 );
+		case PB_FPS_2997_NTSC:
+			return ( 1.0 / 29.97 );
+		case PB_FPS_24:
+			return ( 1.0 / 24.0 );
+		case PB_FPS_15:
+			return ( 1.0 / 15.0 );
+		case PB_FPS_50:
+			return ( 1.0 / 50.0 );
+		case PB_FPS_60:
+			return ( 1.0 / 60.0 );
+	}
+	return 0.04;
+}
 
 } /* namespace nle */
 
