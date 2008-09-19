@@ -21,7 +21,7 @@
 #include "IAudioFile.H"
 #include "WavArtist.H"
 #include "AudioClipArtist.H"
-#include "AudioFilter.H"
+#include "IAudioFilter.H"
 #include "timeline/Track.H"
 
 
@@ -114,9 +114,9 @@ int AudioClip::fillBuffer( float* output, unsigned long frames, int64_t position
 {
 	int result = fillBufferRaw( output, frames, position );
 	filter_stack* node = m_filters;
-	AudioFilter* filter;
+	IAudioFilter* filter;
 	while ( node ) {
-		filter = dynamic_cast<AudioFilter*>( node->filter );
+		filter = dynamic_cast<IAudioFilter*>( node->filter );
 		if ( filter ) {
 			filter->fillBuffer( output, frames, position );
 		}
@@ -167,9 +167,9 @@ DragHandler* AudioClip::onMouseDown( Rect& rect, int x, int y, bool shift )
 {
 	DragHandler* h;
 	filter_stack* node = m_filters;
-	AudioFilter* filter;
+	IAudioFilter* filter;
 	while ( node ) {
-		filter = dynamic_cast<AudioFilter*>( node->filter );
+		filter = dynamic_cast<IAudioFilter*>( node->filter );
 		if ( filter ) {
 			h = filter->onMouseDown( rect, x, y, shift );
 			if ( h ) {

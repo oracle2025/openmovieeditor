@@ -176,7 +176,7 @@ openmovieeditor_SOURCES = nle.cxx\
 	FilterBase.H\
 	FilterBase.cxx\
 	FilterFactory.H\
-	AudioFilter.H\
+	IAudioFilter.H\
 	AudioVolumeFilter.cxx\
 	AudioVolumeFilter.H\
 	AudioVolumeFilterFactory.cxx\

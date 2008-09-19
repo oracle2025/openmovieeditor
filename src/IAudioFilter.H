@@ -1,6 +1,6 @@
-/*  AudioFilterFactory.H
+/*  IAudioFilter.H
  *
- *  Copyright (C) 2007 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2007-2008 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,27 +17,39 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#ifndef _I_AUDIO_FILTER_H_
+#define _I_AUDIO_FILTER_H_
 
-#ifndef _AUDIO_FILTER_FACTORY_
-#define _AUDIO_FILTER_FACTORY_
+#include <stdint.h>
+#include "FilterBase.H"
+#include "Rect.H"
 
+class TiXmlElement;
 
 namespace nle
 {
 
-class AudioClip;
-class AudioFilter;
+class DragHandler;
 
-class AudioFilterFactory
+class IAudioFilter : public FilterBase
 {
 	public:
-		virtual ~AudioFilterFactory() {}
-		virtual AudioFilter* get( AudioClip* clip );
-		virtual const char* name() = 0;
-	private:
+		virtual ~IAudioFilter() {}
+		//virtual void onDraw( Rect& rect ) = 0;
+		virtual DragHandler* onMouseDown( Rect& rect, int x, int y, bool shift ) = 0;
+		virtual int fillBuffer( float* input_output, unsigned long frames, int64_t position ) = 0;
+		virtual void writeXML( TiXmlElement* xml_node ) = 0;
+		virtual void readXML( TiXmlElement* xml_node ) = 0;
+		//void setParams();
+		//void getParams();
+		//trimA
+		//trimB
+	protected:
+		IAudioFilter() {}
 };
 
 } /* namespace nle */
 
-#endif /* _AUDIO_FILTER_FACTORY_ */
+
+#endif /* _I_AUDIO_FILTER_H_ */
 

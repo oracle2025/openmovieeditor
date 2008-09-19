@@ -22,7 +22,7 @@
 
 #include <stdint.h>
 #include "Rect.H"
-#include "AudioFilter.H"
+#include "IAudioFilter.H"
 
 namespace nle
 {
@@ -36,7 +36,7 @@ typedef struct _auto_node {
 	float y;
 } auto_node;
 
-class AudioVolumeFilter : public AudioFilter
+class AudioVolumeFilter : public IAudioFilter
 {
 	public:
 		AudioVolumeFilter( AudioClip* clip );
