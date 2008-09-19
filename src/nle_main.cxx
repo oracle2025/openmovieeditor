@@ -54,7 +54,7 @@ extern "C" {
 
 #include "FltkEffectMenu.H"
 #include "Frei0r/Frei0rFactory.H"
-#include "ColorCurveFactory.H"
+#include "ColorCurve/ColorCurveFactory.H"
 #include "LiftGammaGain/LiftGammaGainFactory.H"
 #include "AudioVolumeFilterFactory.H"
 #include "NodeEditor/NodeFilterFactory.H"

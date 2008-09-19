@@ -9,9 +9,7 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 SUBDIRS = tinyxml timeline ProgressDialog sl LoadSaveManager ErrorDialog \
-          NodeEditor GmerlinEffects LiftGammaGain Frei0r
-
-#FloatNodes
+          NodeEditor GmerlinEffects LiftGammaGain Frei0r ColorCurve
 
 EXTRA_DIST = nle.fl
 #AM_CPPFLAGS = -ggdb -Wall -Werror @CPPFLAGS@ -I$(top_srcdir)/icons -I$(top_srcdir)/src -I$(top_srcdir)/src/tinyxml -I$(top_srcdir)/src/sl
@@ -26,8 +24,8 @@ openmovieeditor_LDADD = tinyxml/libtinyxml.a timeline/libtimeline.a\
 	NodeEditor/libNodeEditor.a\
 	GmerlinEffects/libGmerlinEffects.a\
 	LiftGammaGain/libLiftGammaGain.a\
-	Frei0r/libFrei0r.a
-#FloatNodes/libFloatNodes.a
+	Frei0r/libFrei0r.a\
+	ColorCurve/libColorCurve.a
 
 openmovieeditor_SOURCES = nle.cxx\
 	helper.cxx\
@@ -175,14 +173,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	fl_font_browser.cpp\
 	fl_font_browser.h\
 	IEffectDialog.H\
-	ColorCurveFactory.cxx\
-	ColorCurveFactory.H\
-	ColorCurveFilter.cxx\
-	ColorCurveFilter.H\
-	CurveEditor2.cxx\
-	CurveEditor2.H\
-	ColorCurveDialog.cxx\
-	ColorCurveDialog.H\
 	FilterBase.H\
 	FilterBase.cxx\
 	FilterFactory.H\
@@ -222,8 +212,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	AudioThreadedRingbuffer.cxx\
 	lqtgavl.h\
 	lqtgavl.c\
-	ColorGrader2.h\
-	ColorGrader2.cxx\
 	LazyFrame.H\
 	LazyFrame.cxx\
 	ImageClip.cxx\
@@ -255,34 +243,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	VideoFileProject.cxx\
 	AudioFileProject.H\
 	AudioFileProject.cxx
-#	AudioFileQT.cxx\
-#	AudioFileQT.H\
-#	AudioFileFfmpeg.cxx\
-#	AudioFileFfmpeg.H\
-#	VideoFileQT.cxx\
-#	VideoFileQT.H\
-#	VideoFileFfmpeg.cxx\
-#	VideoFileFfmpeg.H\
-#	ColorWheel.H\
-#	ColorWheel.cxx
-#	FileBrowser.cxx\
-#	FileBrowser.H
-
-
-#	ShiftAutomationDragHandler.H\
-#	ShiftAutomationDragHandler.cxx\
-#	AutomationMoveCommand.H\
-#	AutomationMoveCommand.cxx\
-#	AutomationDuoMoveCommand.H\
-#	AutomationDuoMoveCommand.cxx\
-#	AutomationAddCommand.H\
-#	AutomationAddCommand.cxx\
-#	AutomationRemoveCommand.H\
-#	AutomationRemoveCommand.cxx\
-#	EnvelopeClip.cxx\
-#	EnvelopeClip.H
-#	CurveViewRGB.cxx\
-#	CurveViewRGB.H
 
 
 

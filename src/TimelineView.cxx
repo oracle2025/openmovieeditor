@@ -56,15 +56,13 @@
 #include "IEffectDialog.H"
 #include "PasteSelectionCommand.H"
 #include "TitleClip.H"
-//#include "HistogramView.H"
-#include "AudioVolumeFilterFactory.H" //TODO: Remove these two includes
-#include "ColorCurveFactory.H"
 #include "AutoTrack.H"
 #include "AutoDragHandler.H"
 #include "XmlClipData.H"
 #include "IVideoFile.H"
 #include "VideoFileFactory.H"
 #include "ProgressDialog/ProgressDialog.h"
+#include "FilterFactory.H"
 
 #include "audio.xpm"
 #include "video.xpm"
