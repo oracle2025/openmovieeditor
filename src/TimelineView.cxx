@@ -48,7 +48,6 @@
 #include "ErrorDialog/IErrorHandler.H"
 #include "AudioClip.H"
 #include "AutomationDragHandler.H"
-#include "ShiftAutomationDragHandler.H"
 #include "IClipArtist.H"
 #include "IPlaybackCore.H"
 #include "DocManager.H"

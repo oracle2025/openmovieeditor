@@ -25,7 +25,6 @@
 #include "TimelineView.H"
 #include "AudioClip.H"
 #include "timeline/Track.H"
-#include "ShiftAutomationDragHandler.H"
 #include "AutomationDragHandler.H"
 
 namespace nle
@@ -100,11 +99,7 @@ void AudioVolumeFilter::onDraw( Rect& rect )
 }
 DragHandler* AudioVolumeFilter::onMouseDown( Rect& rect, int x, int y, bool /*shift*/ )
 {
-/*	if ( shift ) {
-		return new ShiftAutomationDragHandler( m_audioClip, rect, x, y );
-	} else {*/
-		return new AutomationDragHandler( m_audioClip, rect, m_automationPoints, x, y );
-//	}
+	return new AutomationDragHandler( m_audioClip, rect, m_automationPoints, x, y );
 }
 int AudioVolumeFilter::fillBuffer( float* input_output, unsigned long frames, int64_t position )
 //int AudioVolumeFilter::fillBuffer( float*, unsigned long frames, int64_t )

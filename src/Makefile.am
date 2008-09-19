@@ -197,7 +197,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	FilterRemoveCommand.H\
 	FilterRemoveCommand.cxx\
 	timebase.H\
-	ShiftAutomationDragHandler.H\
 	int_float_scale.H\
 	video_format.H\
 	IVideoFileWriter.H\
@@ -333,6 +332,7 @@ openmovieeditor_SOURCES = nle.cxx\
 #	FileBrowser.H
 
 
+#	ShiftAutomationDragHandler.H\
 #	ShiftAutomationDragHandler.cxx\
 #	AutomationMoveCommand.H\
 #	AutomationMoveCommand.cxx\
