@@ -8,11 +8,11 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-SUBDIRS = tinyxml timeline ProgressDialog sl LoadSaveManager ErrorDialog 
+SUBDIRS = tinyxml timeline ProgressDialog sl LoadSaveManager ErrorDialog NodeEditor 
 
 #FloatNodes
 
-EXTRA_DIST = nle.fl LiftGammaGainWidget.fl NodeFilterDialog.fl
+EXTRA_DIST = nle.fl LiftGammaGainWidget.fl
 #AM_CPPFLAGS = -ggdb -Wall -Werror @CPPFLAGS@ -I$(top_srcdir)/icons -I$(top_srcdir)/src -I$(top_srcdir)/src/tinyxml -I$(top_srcdir)/src/sl
 AM_CPPFLAGS =  -D__STDC_CONSTANT_MACROS -ggdb @CPPFLAGS@ -DINSTALL_PREFIX="\"$(prefix)\"" -I$(top_srcdir)/icons -I$(top_srcdir)/src -I$(top_srcdir)/src/tinyxml -I$(top_srcdir)/src/sl
 
@@ -21,7 +21,8 @@ openmovieeditor_LDADD = tinyxml/libtinyxml.a timeline/libtimeline.a\
 	ProgressDialog/libProgressDialog.a\
 	sl/libsl.a\
 	LoadSaveManager/libLoadSaveManager.a\
-	ErrorDialog/libErrorDialog.a
+	ErrorDialog/libErrorDialog.a\
+	NodeEditor/libNodeEditor.a
 #FloatNodes/libFloatNodes.a
 
 openmovieeditor_SOURCES = nle.cxx\
@@ -237,50 +238,10 @@ openmovieeditor_SOURCES = nle.cxx\
 	Frei0rFactory.H\
 	LazyFrame.H\
 	LazyFrame.cxx\
-	PreviewNode.cxx\
-	PreviewNode.H\
-	NodeFilterPreviewFactoryPlugin.H\
-	NodeFilterPreviewFactoryPlugin.cxx\
-	NodeFilterFactory.H\
-	NodeFilterFactory.cxx\
-	NodeFilter.H\
-	NodeFilter.cxx\
-	NodeFilterDialog.H\
-	NodeFilterDialog.cxx\
-	Frei0rGraphEditor.cxx\
-	Frei0rGraphEditor.H\
-	NodeFilterFrei0rFactory.H\
-	NodeFilterFrei0rFactory.cxx\
-	NodeFilterFrei0rFactoryPlugin.H\
-	NodeFilterFrei0rFactoryPlugin.cxx\
-	SinkNode.H\
-	SinkNode.cxx\
-	SrcNode.H\
-	SrcNode.cxx\
-	Frei0rNode.H\
-	Frei0rNode.cxx\
-	INode.H\
-	Frei0rDoubleSlider.H\
-	Frei0rDoubleSlider.cxx\
-	Frei0rColorButton.H\
-	Frei0rColorButton.cxx\
-	Frei0rBoolButton.H\
-	Frei0rBoolButton.cxx\
-	INodeFilterFactoryPlugin.H\
-	NodeFilterBezierCurveFactoryPlugin.H\
-	NodeFilterBezierCurveFactoryPlugin.cxx\
-	BezierCurveNode.H\
-	BezierCurveNode.cxx\
-	CurveEditorBezier.H\
-	CurveEditorBezier.cxx\
 	ImageClip.cxx\
 	ImageClip.H\
 	InkscapeClip.cxx\
 	InkscapeClip.H\
-	ImageNode.H\
-	ImageNode.cxx\
-	NodeFilterImageFactoryPlugin.H\
-	NodeFilterImageFactoryPlugin.cxx\
 	frame_struct.h\
 	Flmm_Cursor_Shape.cxx\
 	Flmm_Cursor_Shape.H\

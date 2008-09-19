@@ -209,6 +209,7 @@ AC_CONFIG_FILES([
    src/ProgressDialog/Makefile
    src/LoadSaveManager/Makefile
    src/ErrorDialog/Makefile
+   src/NodeEditor/Makefile
    src/timeline/Makefile
 ])
 #src/FloatNodes/Makefile
