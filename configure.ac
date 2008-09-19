@@ -212,6 +212,7 @@ AC_CONFIG_FILES([
    src/NodeEditor/Makefile
    src/GmerlinEffects/Makefile
    src/LiftGammaGain/Makefile
+   src/Frei0r/Makefile
    src/timeline/Makefile
 ])
 #src/FloatNodes/Makefile

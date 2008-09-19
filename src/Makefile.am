@@ -8,7 +8,8 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-SUBDIRS = tinyxml timeline ProgressDialog sl LoadSaveManager ErrorDialog NodeEditor GmerlinEffects LiftGammaGain
+SUBDIRS = tinyxml timeline ProgressDialog sl LoadSaveManager ErrorDialog \
+          NodeEditor GmerlinEffects LiftGammaGain Frei0r
 
 #FloatNodes
 
@@ -24,7 +25,8 @@ openmovieeditor_LDADD = tinyxml/libtinyxml.a timeline/libtimeline.a\
 	ErrorDialog/libErrorDialog.a\
 	NodeEditor/libNodeEditor.a\
 	GmerlinEffects/libGmerlinEffects.a\
-	LiftGammaGain/libLiftGammaGain.a
+	LiftGammaGain/libLiftGammaGain.a\
+	Frei0r/libFrei0r.a
 #FloatNodes/libFloatNodes.a
 
 openmovieeditor_SOURCES = nle.cxx\
@@ -222,14 +224,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	lqtgavl.c\
 	ColorGrader2.h\
 	ColorGrader2.cxx\
-	Frei0rFactoryPlugin.cxx\
-	Frei0rFactoryPlugin.H\
-	Frei0rEffect.cxx\
-	Frei0rEffect.H\
-	Frei0rDialog.H\
-	Frei0rDialog.cxx\
-	Frei0rFactory.cxx\
-	Frei0rFactory.H\
 	LazyFrame.H\
 	LazyFrame.cxx\
 	ImageClip.cxx\
@@ -244,8 +238,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	FilterItemWidget.H\
 	FilterItemWidget.cxx\
 	IEffectWidget.H\
-	Frei0rWidget.H\
-	Frei0rWidget.cxx\
 	EffectDialogButtonWidget.H\
 	EffectDialogButtonWidget.cxx\
 	DragBox.H\

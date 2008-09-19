@@ -30,8 +30,6 @@
 #include "TitleClip.H"
 #include "render_helper.H"
 #include "frei0r.h"
-#include "Frei0rEffect.H"
-#include "Frei0rFactory.H"
 #include "globals.H"
 #include "IVideoFile.H"
 #include "XmlClipData.H"
@@ -41,7 +39,6 @@
 
 namespace nle
 {
-extern Frei0rFactory* g_frei0rFactory;
 struct effect_parameter {
 	string name;
 	f0r_param_bool param_bool;

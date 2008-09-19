@@ -52,9 +52,8 @@ extern "C" {
 #include "FilmStripFactory.H"
 #include "DocManager.H"
 
-#include "Frei0rFactoryPlugin.H"
 #include "FltkEffectMenu.H"
-#include "Frei0rFactory.H"
+#include "Frei0r/Frei0rFactory.H"
 #include "ColorCurveFactory.H"
 #include "LiftGammaGain/LiftGammaGainFactory.H"
 #include "AudioVolumeFilterFactory.H"

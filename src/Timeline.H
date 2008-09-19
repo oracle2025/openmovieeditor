@@ -94,7 +94,6 @@ class Timeline : public TimelineBase, public IAudioReader, public IVideoReader
 		master_effects* renameMasterChain( int num, const char* name );
 		LazyFrame* applyMasterEffect( LazyFrame* frame, int num );
 	private:
-		int read_20061221_and_earlier( std::string filename );
 		int64_t m_soundLength;
 		bool m_changed;
 		int m_trackId;
