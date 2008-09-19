@@ -8,7 +8,7 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-SUBDIRS = tinyxml timeline ProgressDialog sl LoadSaveManager ErrorDialog NodeEditor 
+SUBDIRS = tinyxml timeline ProgressDialog sl LoadSaveManager ErrorDialog NodeEditor GmerlinEffects
 
 #FloatNodes
 
@@ -22,7 +22,8 @@ openmovieeditor_LDADD = tinyxml/libtinyxml.a timeline/libtimeline.a\
 	sl/libsl.a\
 	LoadSaveManager/libLoadSaveManager.a\
 	ErrorDialog/libErrorDialog.a\
-	NodeEditor/libNodeEditor.a
+	NodeEditor/libNodeEditor.a\
+	GmerlinEffects/libGmerlinEffects.a
 #FloatNodes/libFloatNodes.a
 
 openmovieeditor_SOURCES = nle.cxx\
@@ -258,14 +259,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	EffectDialogButtonWidget.cxx\
 	DragBox.H\
 	DragBox.cxx\
-	GmerlinFactory.H\
-	GmerlinFactory.cxx\
-	GmerlinFactoryPlugin.H\
-	GmerlinFactoryPlugin.cxx\
-	GmerlinEffect.H\
-	GmerlinEffect.cxx\
-	GmerlinWidget.H\
-	GmerlinWidget.cxx\
 	MasterEffectClip.H\
 	MasterEffectClip.cxx\
 	MasterEffectMenu.H\

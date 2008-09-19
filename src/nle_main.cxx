@@ -64,7 +64,7 @@ extern "C" {
 #include "NodeEditor/NodeFilterFrei0rFactory.H"
 #include "color_schemes.H"
 #include "VideoFileFactory.H"
-#include "GmerlinFactory.H"
+#include "GmerlinEffects/GmerlinFactory.H"
 
 #include <stdlib.h>
 #include <stdio.h>

@@ -210,6 +210,7 @@ AC_CONFIG_FILES([
    src/LoadSaveManager/Makefile
    src/ErrorDialog/Makefile
    src/NodeEditor/Makefile
+   src/GmerlinEffects/Makefile
    src/timeline/Makefile
 ])
 #src/FloatNodes/Makefile
