@@ -8,11 +8,11 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-SUBDIRS = tinyxml timeline ProgressDialog sl LoadSaveManager ErrorDialog NodeEditor GmerlinEffects
+SUBDIRS = tinyxml timeline ProgressDialog sl LoadSaveManager ErrorDialog NodeEditor GmerlinEffects LiftGammaGain
 
 #FloatNodes
 
-EXTRA_DIST = nle.fl LiftGammaGainWidget.fl
+EXTRA_DIST = nle.fl
 #AM_CPPFLAGS = -ggdb -Wall -Werror @CPPFLAGS@ -I$(top_srcdir)/icons -I$(top_srcdir)/src -I$(top_srcdir)/src/tinyxml -I$(top_srcdir)/src/sl
 AM_CPPFLAGS =  -D__STDC_CONSTANT_MACROS -ggdb @CPPFLAGS@ -DINSTALL_PREFIX="\"$(prefix)\"" -I$(top_srcdir)/icons -I$(top_srcdir)/src -I$(top_srcdir)/src/tinyxml -I$(top_srcdir)/src/sl
 
@@ -23,7 +23,8 @@ openmovieeditor_LDADD = tinyxml/libtinyxml.a timeline/libtimeline.a\
 	LoadSaveManager/libLoadSaveManager.a\
 	ErrorDialog/libErrorDialog.a\
 	NodeEditor/libNodeEditor.a\
-	GmerlinEffects/libGmerlinEffects.a
+	GmerlinEffects/libGmerlinEffects.a\
+	LiftGammaGain/libLiftGammaGain.a
 #FloatNodes/libFloatNodes.a
 
 openmovieeditor_SOURCES = nle.cxx\
@@ -221,14 +222,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	lqtgavl.c\
 	ColorGrader2.h\
 	ColorGrader2.cxx\
-	LiftGammaGainFilter.H\
-	LiftGammaGainFilter.cxx\
-	LiftGammaGainFactory.H\
-	LiftGammaGainFactory.cxx\
-	LiftGammaGainDialog.H\
-	LiftGammaGainDialog.cxx\
-	LiftGammaGainWidget.H\
-	LiftGammaGainWidget.cxx\
 	Frei0rFactoryPlugin.cxx\
 	Frei0rFactoryPlugin.H\
 	Frei0rEffect.cxx\
@@ -246,8 +239,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	frame_struct.h\
 	Flmm_Cursor_Shape.cxx\
 	Flmm_Cursor_Shape.H\
-	Fl_Hsv_Color_Chooser.H\
-	Fl_Hsv_Color_Chooser.cxx\
 	FilterScroll.H\
 	FilterScroll.cxx\
 	FilterItemWidget.H\
