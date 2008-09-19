@@ -45,14 +45,12 @@ GmerlinFactory::GmerlinFactory( IEffectMenu* menu )
 		g_ui->special_clips->add( effect->name(), PL_VIDEO_EFFECT, effect->identifier() );
 
 
-		std::cout << m_filters[i] << " : " << plugin_info->long_name << " : " << effect->identifier() << std::endl;
 	}
 
 }
 
 GmerlinFactory::~GmerlinFactory()
 {
-	std::cout << "DELETE GMERLIN_FACTORY" << std::endl;
 	bg_plugin_registry_free_plugins( m_filters );
 	bg_plugin_registry_destroy( m_plugin_registry );
 	bg_cfg_registry_destroy( m_cfg_registry );
@@ -60,7 +58,6 @@ GmerlinFactory::~GmerlinFactory()
 
 FilterFactory* GmerlinFactory::get( const char* name )
 {
-	std::cout << "GMERLIN_FACTORY::GET" << std::endl;
 	const bg_plugin_info_t* plugin_info = bg_plugin_find_by_name( m_plugin_registry, name );
 	bg_plugin_handle_t* plugin_handle = bg_plugin_load( m_plugin_registry, plugin_info );
 	return new GmerlinFactoryPlugin( plugin_handle );

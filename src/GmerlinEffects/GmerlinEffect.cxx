@@ -95,7 +95,6 @@ GmerlinEffect::GmerlinEffect( const char* identifier, bg_plugin_handle_t* plugin
 	for ( int i = 0; m_parameters[i].name; i++ ) {
 		m_filter->common.set_parameter( m_filter_instance, m_parameters[i].name, &m_parameters[i].val_default );
 		bg_cfg_section_set_parameter( m_cfg_section, &m_parameters[i], &m_parameters[i].val_default );
-		std::cout << m_parameters[i].name << " : " << m_parameters[i].long_name << " : " << gmerlin_parameter_type_string( m_parameters[i].type ) << std::endl;
 	}
 	m_filter->common.set_parameter( m_filter_instance, 0, 0 );
 

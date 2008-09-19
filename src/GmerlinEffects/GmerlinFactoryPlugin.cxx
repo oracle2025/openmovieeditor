@@ -37,7 +37,6 @@ GmerlinFactoryPlugin::GmerlinFactoryPlugin( bg_plugin_handle_t* plugin_handle )
 
 GmerlinFactoryPlugin::~GmerlinFactoryPlugin()
 {
-	std::cout << "BG_PLUGIN_UNREF" << std::endl;
 	bg_plugin_unref( m_plugin_handle );
 }
 
