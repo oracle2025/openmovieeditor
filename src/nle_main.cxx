@@ -182,10 +182,6 @@ int main( int argc, char** argv )
 	nui.m_effectMenu->addEffect( &nodeFilterFactory );
 	fFactory.add( "effect:builtin:NodeFilter", &nodeFilterFactory );
 
-/*	nle::GmerlinBlurFactory gmerlinBlurFactory;
-	nui.m_effectMenu->addEffect( &gmerlinBlurFactory );
-	fFactory.add( gmerlinBlurFactory.identifier(), &gmerlinBlurFactory );*/
-
 	/*nle::FloatNodeFilterFactory floatNodeFilterFactory;
 	nui.m_effectMenu->addEffect( &floatNodeFilterFactory );
 	fFactory.add( "effect:builtin:FloatNodeFilter", &floatNodeFilterFactory );*/
