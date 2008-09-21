@@ -14,4 +14,4 @@ AM_CPPFLAGS = @CPPFLAGS@ -ggdb -I$(top_srcdir)/src -I$(top_srcdir)/src/sl -I$(to
 libColorCurve_a_SOURCES = \
 ColorCurveDialog.cxx  ColorCurveFactory.cxx  ColorCurveFilter.cxx  CurveEditor2.cxx \
 ColorCurveDialog.H    ColorCurveFactory.H    ColorCurveFilter.H    CurveEditor2.H   \
-ColorGrader2.cxx ColorGrader2.H
+ColorGrader2.cxx ColorGrader2.h
