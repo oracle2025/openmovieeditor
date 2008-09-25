@@ -152,7 +152,7 @@ void JackPlaybackCore::play_ping( int fd )
 		return;
 	}
 	m_active = true;
-	Fl::add_timeout( seconds_frame_length( g_timeline->m_playback_fps ) /*0.04*/, video_idle_callback, this ); // looks like hardcoded 25fps 
+	Fl::add_timeout( seconds_frame_length( g_timeline->m_playback_fps ) /*0.04*/, video_idle_callback, this );
 	g_playButton->label( "@square" );
 	g_firstButton->deactivate();
 	g_lastButton->deactivate();

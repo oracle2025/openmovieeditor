@@ -337,19 +337,23 @@ public:
   ~CodecOptions();
 };
 #include "config.h"
+#include <FL/Fl_Text_Display.H>
 
 class AboutDialog {
 public:
   AboutDialog();
   Fl_Double_Window *aboutDialog;
-  Fl_Box *version_box;
 private:
   void cb_Close_i(Fl_Return_Button*, void*);
   static void cb_Close(Fl_Return_Button*, void*);
 public:
+  Fl_Box *version_box;
+  Fl_Text_Display *system_info_display;
   void show();
   int shown();
   ~AboutDialog();
+private:
+  Fl_Text_Buffer buf; 
 };
 extern Fl_Button* g_playButton; 
 extern Fl_Button* g_firstButton; 
@@ -380,7 +384,6 @@ extern Fl_Menu_Item menu_Aspect1[];
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <FL/Fl_Text_Display.H>
 
 class ExportDialog {
 public:
@@ -566,4 +569,20 @@ public:
   void show();
   int shown();
 };
+
+class ClipInfoDialog {
+public:
+  ClipInfoDialog();
+  Fl_Double_Window *dialog_window;
+  Fl_Output *clip_filename_out;
+  Fl_Output *clip_folder_out;
+  Fl_Output *clip_decoder_out;
+  Fl_Output *clip_framerate_out;
+  Fl_Output *clip_aspect_out;
+  Fl_Output *clip_interlacing_out;
+  ~ClipInfoDialog();
+  void show();
+  int shown();
+};
+std::string read_file_if_exists( const char* filename );
 #endif

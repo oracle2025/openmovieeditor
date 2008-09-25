@@ -37,7 +37,7 @@
 #include "Timeline.H"
 #include "ErrorDialog/IErrorHandler.H"
 #include <iostream>
-
+#include "fps_helper.H"
 #include <cstdlib>
 
 #define VIDEO_DRIFT_LIMIT (2 * 1200) //Calculate this based on frame size
@@ -144,7 +144,7 @@ void PortAudio19PlaybackCore::play()
 		suspend_idle_handlers();
 		m_active = true;
 		Fl::add_timeout( 0.1, timer_callback, this );
-		Fl::add_timeout( 0.04, video_idle_callback, this );
+		Fl::add_timeout( seconds_frame_length( g_timeline->m_playback_fps ) /*0.04*/, video_idle_callback, this );
 	}
 }
 
@@ -211,7 +211,7 @@ void PortAudio19PlaybackCore::flipFrame()
 		m_videoWriter->pushFrameStack( fs );
 	}
 	fs = m_videoReader->getFrameStack( m_lastFrame );
-	Fl::repeat_timeout( 0.04, video_idle_callback, this );
+	Fl::repeat_timeout( seconds_frame_length( g_timeline->m_playback_fps ) /*0.04*/, video_idle_callback, this );
 }
 
 

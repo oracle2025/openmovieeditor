@@ -24,6 +24,7 @@
 #include <FL/Fl_Gl_Window.H>
 
 #include "IVideoWriter.H"
+#include <sstream>
 
 namespace nle
 {
@@ -44,6 +45,7 @@ class VideoViewGL : public Fl_Gl_Window, public IVideoWriter
 		void play();
 		void stop();
 		void zoom( float zoom ) { m_zoom = zoom; }
+		std::stringstream opengl_system_information;
 	private:
 		void not_valid();
 		void drawFrameStack( LazyFrame** fs );

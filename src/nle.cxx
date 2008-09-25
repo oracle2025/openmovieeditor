@@ -5,6 +5,11 @@
 #include <lqt.h>
 #include "MainFilterFactory.H"
 #include <lqt_version.h>
+#include <gavl/gavl_version.h>
+#include <gmerlin/bgav_version.h>
+#include <gmerlin/bg_version.h>
+#include <gmerlin/plugin.h>
+#include <sstream>
 
 void NleUI::cb_mainWindow_i(Fl_Double_Window*, void*) {
   if (Fl::event()==FL_SHORTCUT && Fl::event_key()==FL_Escape) 
@@ -1017,7 +1022,6 @@ NleUI::NleUI() {
             tab_view->box(FL_UP_BOX);
             tab_view->labelcolor(FL_GRAY0);
             { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Media Browser");
-              o->hide();
               { nle::MediaPanel* o = new nle::MediaPanel(5, 80, 355, 220);
                 o->box(FL_NO_BOX);
                 o->color(FL_BACKGROUND_COLOR);
@@ -1035,6 +1039,7 @@ NleUI::NleUI() {
               Fl_Group::current()->resizable(o);
             } // Fl_Group* o
             { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Clip Inspector");
+              o->hide();
               { filter_scroll = new nle::FilterScroll(5, 105, 355, 195);
                 filter_scroll->box(FL_BORDER_BOX);
                 filter_scroll->color(FL_BACKGROUND_COLOR);
@@ -1574,6 +1579,13 @@ CodecOptions::CodecOptions() {
 
 CodecOptions::~CodecOptions() {
   delete codecOptions;
+}
+
+void AboutDialog::cb_Close_i(Fl_Return_Button* o, void*) {
+  o->window()->hide();
+}
+void AboutDialog::cb_Close(Fl_Return_Button* o, void* v) {
+  ((AboutDialog*)(o->parent()->user_data()))->cb_Close_i(o,v);
 }
 
 static const char *idata_logo[] = {
@@ -6366,41 +6378,84 @@ W=W+V=f.# #                                                                   \
 };
 static Fl_Pixmap image_logo(idata_logo);
 
-void AboutDialog::cb_Close_i(Fl_Return_Button* o, void*) {
-  o->window()->hide();
-}
-void AboutDialog::cb_Close(Fl_Return_Button* o, void* v) {
-  ((AboutDialog*)(o->parent()->user_data()))->cb_Close_i(o,v);
-}
-
 AboutDialog::AboutDialog() {
-  { aboutDialog = new Fl_Double_Window(340, 370, "About Dialog");
+  { aboutDialog = new Fl_Double_Window(340, 375, "About Dialog");
     aboutDialog->user_data((void*)(this));
-    { Fl_Box* o = new Fl_Box(0, 0, 340, 155);
-      o->image(image_logo);
-    } // Fl_Box* o
-    { Fl_Box* o = new Fl_Box(0, 155, 340, 30, "Open Movie Editor");
-      o->labelfont(1);
-      o->labelsize(16);
-    } // Fl_Box* o
-    { Fl_Box* o = new Fl_Box(0, 210, 340, 40, "(C)opyright 2005-2008 Richard Spindler");
-      o->labelsize(12);
-    } // Fl_Box* o
-    { version_box = new Fl_Box(0, 185, 340, 25, "0.0.0");
-      version_box->labelfont(1);
-    } // Fl_Box* version_box
-    { new Fl_Box(0, 250, 340, 25, "Open Movie Editor is FREE Software (GPL)");
-    } // Fl_Box* o
-    { new Fl_Box(0, 275, 340, 25, "http://www.openmovieeditor.org/");
-    } // Fl_Box* o
-    { Fl_Return_Button* o = new Fl_Return_Button(10, 335, 320, 25, "Close");
+    { Fl_Return_Button* o = new Fl_Return_Button(10, 340, 320, 25, "Close");
       o->callback((Fl_Callback*)cb_Close);
       o->window()->hotspot(o);
     } // Fl_Return_Button* o
+    { Fl_Tabs* o = new Fl_Tabs(5, 5, 330, 330);
+      o->box(FL_UP_BOX);
+      { Fl_Group* o = new Fl_Group(5, 30, 330, 305, "About");
+        { Fl_Box* o = new Fl_Box(5, 30, 330, 155);
+          o->image(image_logo);
+        } // Fl_Box* o
+        { Fl_Box* o = new Fl_Box(5, 185, 330, 30, "Open Movie Editor");
+          o->labelfont(1);
+          o->labelsize(16);
+        } // Fl_Box* o
+        { Fl_Box* o = new Fl_Box(5, 240, 330, 40, "(C)opyright 2005-2008 Richard Spindler");
+          o->labelsize(12);
+        } // Fl_Box* o
+        { version_box = new Fl_Box(5, 215, 330, 25, "0.0.0");
+          version_box->labelfont(1);
+        } // Fl_Box* version_box
+        { new Fl_Box(5, 280, 330, 25, "Open Movie Editor is FREE Software (GPL)");
+        } // Fl_Box* o
+        { new Fl_Box(5, 305, 330, 25, "http://www.openmovieeditor.org/");
+        } // Fl_Box* o
+        o->end();
+      } // Fl_Group* o
+      { Fl_Group* o = new Fl_Group(5, 30, 330, 305, "System Information");
+        o->hide();
+        { system_info_display = new Fl_Text_Display(10, 35, 320, 295);
+        } // Fl_Text_Display* system_info_display
+        o->end();
+      } // Fl_Group* o
+      o->end();
+    } // Fl_Tabs* o
     aboutDialog->set_modal();
     aboutDialog->end();
   } // Fl_Double_Window* aboutDialog
   version_box->label( VERSION );
+system_info_display->buffer( &buf );
+system_info_display->insert( "PLEASE INCLUDE THE FOLLOWING\nINFORMATION FOR BUGREPORTS\n\nOpen Movie Editor Version: " );
+system_info_display->buffer()->append( VERSION );
+system_info_display->buffer()->append( "\nLibquicktime Version: " );
+system_info_display->buffer()->append( LQT_VERSION "\n" );
+system_info_display->buffer()->append( "Libquicktime API Version: " );
+std::stringstream s;
+s << (LQT_CODEC_API_VERSION & 0xffff);
+system_info_display->buffer()->append( s.str().c_str() );
+system_info_display->buffer()->append( "\n" );
+system_info_display->buffer()->append( "BGAV_VERSION: " );
+system_info_display->buffer()->append( BGAV_VERSION "\n" );
+system_info_display->buffer()->append( "BG_VERSION: " );
+system_info_display->buffer()->append( BG_VERSION "\n" );
+system_info_display->buffer()->append( "BG_PLUGIN_API_VERSION: " );
+std::stringstream ss;
+ss << (BG_PLUGIN_API_VERSION);
+system_info_display->buffer()->append( ss.str().c_str() );
+system_info_display->buffer()->append( "\n" );
+system_info_display->buffer()->append( "GAVL_VERSION: " );
+system_info_display->buffer()->append( GAVL_VERSION "\n" );
+system_info_display->buffer()->append( nle::g_videoView->opengl_system_information.str().c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/SUSE-release" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/redhat-release" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/redhat_version" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/fedora-release" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/slackware-release" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/slackware-version" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/debian_release" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/debian_version" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/mandrake-release" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/sun-release" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/release" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/gentoo-release" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/yellowdog-release" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/UnitedLinux-release" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/lsb-release" ).c_str() );
 }
 
 void AboutDialog::show() {
@@ -7791,4 +7846,56 @@ void MasterEffectDialog::show() {
 
 int MasterEffectDialog::shown() {
   return dialog_window->shown();
+}
+
+ClipInfoDialog::ClipInfoDialog() {
+  { dialog_window = new Fl_Double_Window(305, 255);
+    dialog_window->user_data((void*)(this));
+    { clip_filename_out = new Fl_Output(95, 45, 205, 25, "Filename");
+    } // Fl_Output* clip_filename_out
+    { clip_folder_out = new Fl_Output(95, 75, 205, 25, "Folder");
+    } // Fl_Output* clip_folder_out
+    { clip_decoder_out = new Fl_Output(95, 105, 205, 25, "Decoder");
+    } // Fl_Output* clip_decoder_out
+    { clip_framerate_out = new Fl_Output(95, 135, 205, 25, "Framerate");
+    } // Fl_Output* clip_framerate_out
+    { clip_aspect_out = new Fl_Output(95, 165, 205, 25, "Pixel Aspect");
+    } // Fl_Output* clip_aspect_out
+    { clip_interlacing_out = new Fl_Output(95, 195, 205, 25, "Interlacing");
+    } // Fl_Output* clip_interlacing_out
+    { new Fl_Return_Button(5, 225, 295, 25, "Close");
+    } // Fl_Return_Button* o
+    { Fl_Box* o = new Fl_Box(0, 0, 305, 40, "Clip Info");
+      o->labelfont(1);
+      o->labelsize(16);
+    } // Fl_Box* o
+    dialog_window->end();
+  } // Fl_Double_Window* dialog_window
+}
+
+ClipInfoDialog::~ClipInfoDialog() {
+  delete dialog_window;
+}
+
+void ClipInfoDialog::show() {
+  dialog_window->show();
+}
+
+int ClipInfoDialog::shown() {
+  return dialog_window->shown();
+}
+
+std::string read_file_if_exists( const char* filename ) {
+  FILE *stream;
+stream = fopen( filename, "r" );
+if ( stream ) {
+	stringstream s;
+	s << filename << ":" << endl;
+	char c;
+	while ( ( c = (char)fgetc( stream ) ) != EOF ) {
+		s << c;
+	}
+	return s.str();
+}
+return std::string("");
 }

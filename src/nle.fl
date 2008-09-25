@@ -14,6 +14,21 @@ decl {\#include "MainFilterFactory.H"} {global
 
 decl {\#include <lqt_version.h>} {} 
 
+decl {\#include <gavl/gavl_version.h>} {global
+} 
+
+decl {\#include <gmerlin/bgav_version.h>} {global
+} 
+
+decl {\#include <gmerlin/bg_version.h>} {global
+} 
+
+decl {\#include <gmerlin/plugin.h>} {global
+} 
+
+decl {\#include <sstream>} {global
+} 
+
 class NleUI {open
 } {
   Function {NleUI()} {open
@@ -461,7 +476,7 @@ m_videoView->redraw();}
             } {
               Fl_Group {} {
                 label {Media Browser}
-                xywh {0 75 365 230} hide resizable
+                xywh {0 75 365 230} resizable
               } {
                 Fl_Group {} {open
                   xywh {5 80 355 220} resizable
@@ -615,7 +630,7 @@ m_timelineView->titles_text( titles_text->value() );} open
               }
               Fl_Group {} {
                 label Clip
-                xywh {0 75 365 230}
+                xywh {0 75 365 230} hide
               } {
                 Fl_Output clip_filename_out {
                   label Filename
@@ -1018,39 +1033,94 @@ class AboutDialog {open
   } {
     Fl_Window aboutDialog {
       label {About Dialog} open
-      xywh {877 399 340 370} type Double modal visible
+      xywh {690 277 340 375} type Double modal visible
     } {
-      Fl_Box {} {
-        image {../icons/logo.xpm} xywh {0 0 340 155}
-      }
-      Fl_Box {} {
-        label {Open Movie Editor}
-        xywh {0 155 340 30} labelfont 1 labelsize 16
-      }
-      Fl_Box {} {
-        label {(C)opyright 2005-2008 Richard Spindler}
-        xywh {0 210 340 40} labelsize 12
-      }
-      Fl_Box version_box {
-        label {0.0.0}
-        xywh {0 185 340 25} labelfont 1
-        code0 {\#include "config.h"}
-      }
-      Fl_Box {} {
-        label {Open Movie Editor is FREE Software (GPL)}
-        xywh {0 250 340 25}
-      }
-      Fl_Box {} {
-        label {http://www.openmovieeditor.org/}
-        xywh {0 275 340 25}
-      }
       Fl_Return_Button {} {
         label Close
         callback {o->window()->hide();}
-        xywh {10 335 320 25} hotspot
+        xywh {10 340 320 25} hotspot
+      }
+      Fl_Tabs {} {open
+        xywh {5 5 330 330} box UP_BOX
+      } {
+        Fl_Group {} {
+          label About open
+          xywh {5 30 330 305}
+        } {
+          Fl_Box {} {
+            image {../icons/logo.xpm} xywh {5 30 330 155}
+          }
+          Fl_Box {} {
+            label {Open Movie Editor}
+            xywh {5 185 330 30} labelfont 1 labelsize 16
+          }
+          Fl_Box {} {
+            label {(C)opyright 2005-2008 Richard Spindler}
+            xywh {5 240 330 40} labelsize 12
+          }
+          Fl_Box version_box {
+            label {0.0.0}
+            xywh {5 215 330 25} labelfont 1
+            code0 {\#include "config.h"}
+          }
+          Fl_Box {} {
+            label {Open Movie Editor is FREE Software (GPL)}
+            xywh {5 280 330 25}
+          }
+          Fl_Box {} {
+            label {http://www.openmovieeditor.org/}
+            xywh {5 305 330 25}
+          }
+        }
+        Fl_Group {} {
+          label {System Information} open
+          xywh {5 30 330 305} hide
+        } {
+          Fl_Text_Display system_info_display {
+            xywh {10 35 320 295}
+          }
+        }
       }
     }
-    code {version_box->label( VERSION );} {}
+    code {version_box->label( VERSION );
+system_info_display->buffer( &buf );
+system_info_display->insert( "PLEASE INCLUDE THE FOLLOWING\\nINFORMATION FOR BUGREPORTS\\n\\nOpen Movie Editor Version: " );
+system_info_display->buffer()->append( VERSION );
+system_info_display->buffer()->append( "\\nLibquicktime Version: " );
+system_info_display->buffer()->append( LQT_VERSION "\\n" );
+system_info_display->buffer()->append( "Libquicktime API Version: " );
+std::stringstream s;
+s << (LQT_CODEC_API_VERSION & 0xffff);
+system_info_display->buffer()->append( s.str().c_str() );
+system_info_display->buffer()->append( "\\n" );
+system_info_display->buffer()->append( "BGAV_VERSION: " );
+system_info_display->buffer()->append( BGAV_VERSION "\\n" );
+system_info_display->buffer()->append( "BG_VERSION: " );
+system_info_display->buffer()->append( BG_VERSION "\\n" );
+system_info_display->buffer()->append( "BG_PLUGIN_API_VERSION: " );
+std::stringstream ss;
+ss << (BG_PLUGIN_API_VERSION);
+system_info_display->buffer()->append( ss.str().c_str() );
+system_info_display->buffer()->append( "\\n" );
+system_info_display->buffer()->append( "GAVL_VERSION: " );
+system_info_display->buffer()->append( GAVL_VERSION "\\n" );
+system_info_display->buffer()->append( nle::g_videoView->opengl_system_information.str().c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/SUSE-release" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/redhat-release" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/redhat_version" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/fedora-release" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/slackware-release" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/slackware-version" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/debian_release" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/debian_version" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/mandrake-release" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/sun-release" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/release" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/gentoo-release" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/yellowdog-release" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/UnitedLinux-release" ).c_str() );
+system_info_display->buffer()->append( read_file_if_exists( "/etc/lsb-release" ).c_str() );} {selected
+    }
   }
   Function {show()} {} {
     code {aboutDialog->show();} {}
@@ -1062,6 +1132,7 @@ class AboutDialog {open
   Function {~AboutDialog()} {} {
     code {delete aboutDialog;} {}
   }
+  decl {Fl_Text_Buffer buf;} {}
 } 
 
 decl {Fl_Button* g_playButton;} {public
@@ -2401,7 +2472,7 @@ class ClipInfoDialog {open
 } {
   Function {ClipInfoDialog()} {open
   } {
-    Fl_Window dialog_window {open selected
+    Fl_Window dialog_window {open
       xywh {71 47 305 255} type Double visible
     } {
       Fl_Output clip_filename_out {
@@ -2450,4 +2521,20 @@ class ClipInfoDialog {open
   } {
     code {return dialog_window->shown();} {}
   }
+} 
+
+Function {read_file_if_exists( const char* filename )} {open return_type {std::string}
+} {
+  code {FILE *stream;
+stream = fopen( filename, "r" );
+if ( stream ) {
+	stringstream s;
+	s << filename << ":" << endl;
+	char c;
+	while ( ( c = (char)fgetc( stream ) ) != EOF ) {
+		s << c;
+	}
+	return s.str();
+}
+return std::string("");} {}
 } 

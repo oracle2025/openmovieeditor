@@ -31,6 +31,8 @@
 #include "int_float_scale.H"
 #include "LazyFrame.H"
 
+
+
 extern bool g_16_9;
 extern bool g_black_borders;
 extern bool g_black_borders_2_35;
@@ -39,6 +41,7 @@ using namespace std;
 
 namespace nle
 {
+
 
 struct texture_frame_cache {
 	void* p;
@@ -280,13 +283,11 @@ void VideoViewGL::draw()
 			glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 			glTexImage2D (GL_TEXTURE_2D, 0, GL_RGBA, T_W, T_H, 0, GL_RGB, GL_UNSIGNED_BYTE, p);
 		}
-		cout << "When submitting a BUG report, or SUPPORT request, please include the following information:" << endl;
-		cout << "----8<-----------------------" << endl;
-		cout << "OpenGL vendor string: " << ((const char*)glGetString(GL_VENDOR)) << endl;
-		cout << "OpenGL renderer string: " << ((const char*)glGetString(GL_RENDERER)) << endl;
-		cout << "OpenGL version string: " << ((const char*)glGetString(GL_VERSION)) << endl;
-		cout << "GL_MAX_TEXTURE_SIZE = " << max[0] << endl;
-		cout << "----8<-----------------------" << endl;
+		opengl_system_information.str( "" );
+		opengl_system_information << "OpenGL vendor string: " << ((const char*)glGetString(GL_VENDOR)) << endl;
+		opengl_system_information << "OpenGL renderer string: " << ((const char*)glGetString(GL_RENDERER)) << endl;
+		opengl_system_information << "OpenGL version string: " << ((const char*)glGetString(GL_VERSION)) << endl;
+		opengl_system_information << "GL_MAX_TEXTURE_SIZE = " << max[0] << endl;
 		m_once = false;
 	}
 	if ( g_playbackCore->active() ) { return; }

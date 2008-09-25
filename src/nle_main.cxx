@@ -29,16 +29,6 @@
 #include <lqt.h>
 #include <lqt_version.h>
 
-#ifdef AVCODEC
-extern "C" {
-#ifdef OLD_FFMPEG
-  #include <ffmpeg/avformat.h>
-#else
-  #include <libavformat/avformat.h>
-#endif
-}
-#endif
-
 #include "nle.h"
 #include "Prefs.H"
 #include "WavArtist.H"
@@ -94,14 +84,11 @@ static void print_file_if_exists( const char* filename )
 int main( int argc, char** argv )
 {
 	cout << "When submitting a BUG report, or SUPPORT request, please include the following information:" << endl;
+	cout << "(See Help->About... too)" << endl;
 	cout << "----8<-----------------------" << endl;
 	cout << "Open Movie Editor Version: " << VERSION << endl;
 	cout << "Libquicktime Version: " << LQT_VERSION << endl;
 	cout << "Libquicktime API Version: " << (LQT_CODEC_API_VERSION & 0xffff) << endl;
-#ifdef AVCODEC
-	cout << "libavcodec Version: " << LIBAVCODEC_IDENT<< endl;
-	cout << "libavformat Version: " << LIBAVFORMAT_IDENT << endl;
-#endif /* AVCODEC */
 	print_file_if_exists( "/etc/SUSE-release" );
 	print_file_if_exists( "/etc/redhat-release" );
 	print_file_if_exists( "/etc/redhat_version" );
@@ -118,25 +105,6 @@ int main( int argc, char** argv )
 	print_file_if_exists( "/etc/UnitedLinux-release" );
 	print_file_if_exists( "/etc/lsb-release" );
 	cout << "----8<-----------------------" << endl;
-	/*
-
-/etc/SUSE-release
-/etc/redhat-release
-/etc/redhat_version
-/etc/fedora-release
-/etc/slackware-release
-/etc/slackware-version
-/etc/debian_release
-/etc/debian_version
-/etc/mandrake-release
-/etc/yellowdog-release
-/etc/sun-release
-/etc/release
-/etc/gentoo-release
-/etc/UnitedLinux-release
-/etc/lsb-release
-
-	*/
 	
 	nle::g_PREVENT_OFFSCREEN_CRASH = true;
 	nle::g_homefolder = getenv( "HOME" );
