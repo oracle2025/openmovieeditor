@@ -475,7 +475,7 @@ m_videoView->redraw();}
               xywh {0 50 365 255} box UP_BOX labelcolor 32 resizable
             } {
               Fl_Group {} {
-                label {Media Browser}
+                label {Media Browser} selected
                 xywh {0 75 365 230} resizable
               } {
                 Fl_Group {} {open
@@ -626,38 +626,6 @@ m_timelineView->titles_text( titles_text->value() );} open
                       xywh {0 0 100 20}
                     }
                   }
-                }
-              }
-              Fl_Group {} {
-                label Clip
-                xywh {0 75 365 230} hide
-              } {
-                Fl_Output clip_filename_out {
-                  label Filename
-                  xywh {150 85 205 25}
-                }
-                Fl_Output clip_folder_out {
-                  label Folder
-                  xywh {150 115 205 25}
-                }
-                Fl_Output clip_decoder_out {
-                  label Decoder
-                  xywh {150 145 205 25}
-                }
-                Fl_Output clip_framerate_out {
-                  label Framerate
-                  xywh {150 175 205 25}
-                }
-                Fl_Output clip_aspect_out {
-                  label {Pixel Aspect}
-                  xywh {150 205 205 25}
-                }
-                Fl_Output clip_interlacing_out {
-                  label Interlacing
-                  xywh {150 235 205 25}
-                }
-                Fl_Box {} {
-                  xywh {155 265 80 30} resizable
                 }
               }
             }
@@ -895,15 +863,6 @@ g_lastButton = lastButton;
 g_forwardButton = forwardButton;
 g_backButton = backButton;} {}
   }
-  Function {activate_clip( const char* filename, const char* folder, const char* decoder, const char* framerate, const char* aspect, const char* interlacing )} {open
-  } {
-    code {clip_filename_out->value( filename );
-clip_folder_out->value( folder );
-clip_decoder_out->value( decoder );
-clip_framerate_out->value( framerate );
-clip_aspect_out->value( aspect );
-clip_interlacing_out->value( interlacing );} {}
-  }
 } 
 
 decl {Flmm_Scalebar* g_scrollBar;} {public
@@ -1119,8 +1078,7 @@ system_info_display->buffer()->append( read_file_if_exists( "/etc/release" ).c_s
 system_info_display->buffer()->append( read_file_if_exists( "/etc/gentoo-release" ).c_str() );
 system_info_display->buffer()->append( read_file_if_exists( "/etc/yellowdog-release" ).c_str() );
 system_info_display->buffer()->append( read_file_if_exists( "/etc/UnitedLinux-release" ).c_str() );
-system_info_display->buffer()->append( read_file_if_exists( "/etc/lsb-release" ).c_str() );} {selected
-    }
+system_info_display->buffer()->append( read_file_if_exists( "/etc/lsb-release" ).c_str() );} {}
   }
   Function {show()} {} {
     code {aboutDialog->show();} {}
@@ -2473,7 +2431,7 @@ class ClipInfoDialog {open
   Function {ClipInfoDialog()} {open
   } {
     Fl_Window dialog_window {open
-      xywh {71 47 305 255} type Double visible
+      xywh {402 47 305 255} type Double visible
     } {
       Fl_Output clip_filename_out {
         label Filename
@@ -2501,6 +2459,7 @@ class ClipInfoDialog {open
       }
       Fl_Return_Button {} {
         label Close
+        callback {o->window()->hide();}
         xywh {5 225 295 25}
       }
       Fl_Box {} {
@@ -2520,6 +2479,15 @@ class ClipInfoDialog {open
   Function {shown()} {open return_type int
   } {
     code {return dialog_window->shown();} {}
+  }
+  Function {set_info( const char* filename, const char* folder, const char* decoder, const char* framerate, const char* aspect, const char* interlacing )} {open
+  } {
+    code {clip_filename_out->value( filename );
+clip_folder_out->value( folder );
+clip_decoder_out->value( decoder );
+clip_framerate_out->value( framerate );
+clip_aspect_out->value( aspect );
+clip_interlacing_out->value( interlacing );} {}
   }
 } 
 

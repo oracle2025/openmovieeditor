@@ -36,7 +36,6 @@
 #include <FL/fl_show_colormap.H>
 #include "fl_font_browser.h"
 #include <FL/Fl_Choice.H>
-#include <FL/Fl_Output.H>
 #include "Ruler.H"
 #include <FL/Fl_Scrollbar.H>
 #include "TimelineScroll.H"
@@ -206,12 +205,6 @@ private:
   static void cb_titles_font(Fl_Choice*, void*);
   static Fl_Menu_Item menu_titles_font[];
 public:
-  Fl_Output *clip_filename_out;
-  Fl_Output *clip_folder_out;
-  Fl_Output *clip_decoder_out;
-  Fl_Output *clip_framerate_out;
-  Fl_Output *clip_aspect_out;
-  Fl_Output *clip_interlacing_out;
   Fl_Button *playButton;
 private:
   void cb_playButton_i(Fl_Button*, void*);
@@ -290,7 +283,6 @@ public:
   void activate_titles(int font, int size, const char* text, float x, float y, Fl_Color color );
   void portaudio();
   void jack();
-  void activate_clip( const char* filename, const char* folder, const char* decoder, const char* framerate, const char* aspect, const char* interlacing );
 };
 extern Flmm_Scalebar* g_scrollBar; 
 #include <FL/Fl_Return_Button.H>
@@ -569,6 +561,7 @@ public:
   void show();
   int shown();
 };
+#include <FL/Fl_Output.H>
 
 class ClipInfoDialog {
 public:
@@ -580,9 +573,14 @@ public:
   Fl_Output *clip_framerate_out;
   Fl_Output *clip_aspect_out;
   Fl_Output *clip_interlacing_out;
+private:
+  void cb_Close2_i(Fl_Return_Button*, void*);
+  static void cb_Close2(Fl_Return_Button*, void*);
+public:
   ~ClipInfoDialog();
   void show();
   int shown();
+  void set_info( const char* filename, const char* folder, const char* decoder, const char* framerate, const char* aspect, const char* interlacing );
 };
 std::string read_file_if_exists( const char* filename );
 #endif

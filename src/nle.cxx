@@ -1147,25 +1147,6 @@ NleUI::NleUI() {
               } // Fl_Group* o
               titles_tab->end();
             } // Fl_Group* titles_tab
-            { Fl_Group* o = new Fl_Group(0, 75, 365, 230, "Clip");
-              o->hide();
-              { clip_filename_out = new Fl_Output(150, 85, 205, 25, "Filename");
-              } // Fl_Output* clip_filename_out
-              { clip_folder_out = new Fl_Output(150, 115, 205, 25, "Folder");
-              } // Fl_Output* clip_folder_out
-              { clip_decoder_out = new Fl_Output(150, 145, 205, 25, "Decoder");
-              } // Fl_Output* clip_decoder_out
-              { clip_framerate_out = new Fl_Output(150, 175, 205, 25, "Framerate");
-              } // Fl_Output* clip_framerate_out
-              { clip_aspect_out = new Fl_Output(150, 205, 205, 25, "Pixel Aspect");
-              } // Fl_Output* clip_aspect_out
-              { clip_interlacing_out = new Fl_Output(150, 235, 205, 25, "Interlacing");
-              } // Fl_Output* clip_interlacing_out
-              { Fl_Box* o = new Fl_Box(155, 265, 80, 30);
-                Fl_Group::current()->resizable(o);
-              } // Fl_Box* o
-              o->end();
-            } // Fl_Group* o
             tab_view->end();
             Fl_Group::current()->resizable(tab_view);
           } // Fl_Tabs* tab_view
@@ -1423,15 +1404,6 @@ g_firstButton = firstButton;
 g_lastButton = lastButton;
 g_forwardButton = forwardButton;
 g_backButton = backButton;
-}
-
-void NleUI::activate_clip( const char* filename, const char* folder, const char* decoder, const char* framerate, const char* aspect, const char* interlacing ) {
-  clip_filename_out->value( filename );
-clip_folder_out->value( folder );
-clip_decoder_out->value( decoder );
-clip_framerate_out->value( framerate );
-clip_aspect_out->value( aspect );
-clip_interlacing_out->value( interlacing );
 }
 Flmm_Scalebar* g_scrollBar; 
 
@@ -7848,6 +7820,13 @@ int MasterEffectDialog::shown() {
   return dialog_window->shown();
 }
 
+void ClipInfoDialog::cb_Close2_i(Fl_Return_Button* o, void*) {
+  o->window()->hide();
+}
+void ClipInfoDialog::cb_Close2(Fl_Return_Button* o, void* v) {
+  ((ClipInfoDialog*)(o->parent()->user_data()))->cb_Close2_i(o,v);
+}
+
 ClipInfoDialog::ClipInfoDialog() {
   { dialog_window = new Fl_Double_Window(305, 255);
     dialog_window->user_data((void*)(this));
@@ -7863,7 +7842,8 @@ ClipInfoDialog::ClipInfoDialog() {
     } // Fl_Output* clip_aspect_out
     { clip_interlacing_out = new Fl_Output(95, 195, 205, 25, "Interlacing");
     } // Fl_Output* clip_interlacing_out
-    { new Fl_Return_Button(5, 225, 295, 25, "Close");
+    { Fl_Return_Button* o = new Fl_Return_Button(5, 225, 295, 25, "Close");
+      o->callback((Fl_Callback*)cb_Close2);
     } // Fl_Return_Button* o
     { Fl_Box* o = new Fl_Box(0, 0, 305, 40, "Clip Info");
       o->labelfont(1);
@@ -7883,6 +7863,15 @@ void ClipInfoDialog::show() {
 
 int ClipInfoDialog::shown() {
   return dialog_window->shown();
+}
+
+void ClipInfoDialog::set_info( const char* filename, const char* folder, const char* decoder, const char* framerate, const char* aspect, const char* interlacing ) {
+  clip_filename_out->value( filename );
+clip_folder_out->value( folder );
+clip_decoder_out->value( decoder );
+clip_framerate_out->value( framerate );
+clip_aspect_out->value( aspect );
+clip_interlacing_out->value( interlacing );
 }
 
 std::string read_file_if_exists( const char* filename ) {

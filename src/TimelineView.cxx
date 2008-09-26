@@ -1041,6 +1041,7 @@ void TimelineView::updateEffectDisplay()
 		g_ui->m_effectMenu->deactivate();
 		return;
 	}
+	/*
 	VideoClip* vidclip = dynamic_cast<VideoClip*>( m_selectedClips->clip );
 	if ( vidclip ) {
 		string interlacing = "none";
@@ -1065,6 +1066,7 @@ void TimelineView::updateEffectDisplay()
 		framerate = frameratestream.str();
 		g_ui->activate_clip( fl_filename_name(vidclip->filename().c_str()), vidclip->filename().c_str(), decoder.c_str(), framerate.c_str(), aspect.c_str(), interlacing.c_str() );
 	}
+	*/
 	FilterClip* vc = dynamic_cast<FilterClip*>( m_selectedClips->clip );
 	g_ui->filter_scroll->setClip( vc );
 	if ( !vc ) {
