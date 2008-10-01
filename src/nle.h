@@ -3,7 +3,6 @@
 #ifndef nle_h
 #define nle_h
 #include <FL/Fl.H>
-#include "EncodingPreset.H"
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Menu_Bar.H>
 #include "ProgressDialog/ProgressDialog.h"
@@ -293,41 +292,6 @@ public:
 };
 extern Fl_Box *g_trashCan; 
 extern float g_fps; 
-#include <FL/Fl_Hold_Browser.H>
-
-class CodecOptions {
-public:
-  CodecOptions();
-  Fl_Double_Window *codecOptions;
-  Fl_Box *codec_label;
-  Fl_Hold_Browser *parameters_browser;
-private:
-  void cb_parameters_browser_i(Fl_Hold_Browser*, void*);
-  static void cb_parameters_browser(Fl_Hold_Browser*, void*);
-public:
-  Fl_Value_Input *parameter_int_input;
-private:
-  void cb_parameter_int_input_i(Fl_Value_Input*, void*);
-  static void cb_parameter_int_input(Fl_Value_Input*, void*);
-public:
-  Fl_Input *parameter_string_input;
-private:
-  void cb_parameter_string_input_i(Fl_Input*, void*);
-  static void cb_parameter_string_input(Fl_Input*, void*);
-public:
-  Fl_Choice *parameter_stringlist_input;
-private:
-  void cb_parameter_stringlist_input_i(Fl_Choice*, void*);
-  static void cb_parameter_stringlist_input(Fl_Choice*, void*);
-  void cb_Cancel_i(Fl_Button*, void*);
-  static void cb_Cancel(Fl_Button*, void*);
-  void cb_Ok_i(Fl_Return_Button*, void*);
-  static void cb_Ok(Fl_Return_Button*, void*);
-public:
-  bool m_audio; 
-  nle::EncodingPreset* m_preset; 
-  ~CodecOptions();
-};
 #include "config.h"
 #include <FL/Fl_Text_Display.H>
 
@@ -371,114 +335,9 @@ extern Fl_Menu_Item menu_Framesize[];
 extern Fl_Menu_Item menu_Samplerate[];
 extern Fl_Menu_Item menu_Quality[];
 extern Fl_Menu_Item menu_Aspect1[];
-#include "VideoWriterQT.H"
-#include <colormodels.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-
-class ExportDialog {
-public:
-  ExportDialog();
-  Fl_Double_Window *dialog_window;
-  Fl_File_Input *export_filename;
-private:
-  void cb_File1_i(Fl_Button*, void*);
-  static void cb_File1(Fl_Button*, void*);
-  void cb_Encode_i(Fl_Return_Button*, void*);
-  static void cb_Encode(Fl_Return_Button*, void*);
-  void cb_Cancel1_i(Fl_Button*, void*);
-  static void cb_Cancel1(Fl_Button*, void*);
-public:
-  Fl_Text_Display *information_display;
-  Fl_Hold_Browser *presets_browser;
-private:
-  void cb_presets_browser_i(Fl_Hold_Browser*, void*);
-  static void cb_presets_browser(Fl_Hold_Browser*, void*);
-  void cb_3_i(Fl_Button*, void*);
-  static void cb_3(Fl_Button*, void*);
-public:
-  Fl_Button *edit_format_button;
-private:
-  void cb_edit_format_button_i(Fl_Button*, void*);
-  static void cb_edit_format_button(Fl_Button*, void*);
-public:
-  Fl_Button *remove_format_button;
-private:
-  void cb_remove_format_button_i(Fl_Button*, void*);
-  static void cb_remove_format_button(Fl_Button*, void*);
-public:
-  nle::IVideoFileWriter* getFileWriter();
-  bool go; 
-  ~ExportDialog();
-  int shown();
-  void show();
-};
-#include <iostream>
-#include <FL/Fl_Spinner.H>
-#include <FL/Fl_Input_Choice.H>
-
-class CustomFormatDialog {
-  void *audio_codec; 
-  void* video_codec; 
-  nle::EncodingPreset* m_preset; 
-public:
-  CustomFormatDialog();
-  Fl_Double_Window *dialog_window;
-  Fl_Choice *video_codec_menu;
-private:
-  void cb_video_codec_menu_i(Fl_Choice*, void*);
-  static void cb_video_codec_menu(Fl_Choice*, void*);
-  Fl_Button *video_options;
-  void cb_video_options_i(Fl_Button*, void*);
-  static void cb_video_options(Fl_Button*, void*);
-public:
-  Fl_Choice *audio_codec_menu;
-private:
-  void cb_audio_codec_menu_i(Fl_Choice*, void*);
-  static void cb_audio_codec_menu(Fl_Choice*, void*);
-  Fl_Button *audio_options;
-  void cb_audio_options_i(Fl_Button*, void*);
-  static void cb_audio_options(Fl_Button*, void*);
-public:
-  Fl_Choice *samplerate;
-  static Fl_Menu_Item menu_samplerate[];
-  Fl_Input *name;
-  Fl_Choice *frame_rate_choice;
-  static Fl_Menu_Item menu_frame_rate_choice[];
-  Fl_Spinner *frame_size_w;
-  Fl_Spinner *frame_size_h;
-  Fl_Choice *interlacing;
-  static Fl_Menu_Item menu_interlacing[];
-private:
-  void cb_Save1_i(Fl_Return_Button*, void*);
-  static void cb_Save1(Fl_Return_Button*, void*);
-  void cb_Cancel2_i(Fl_Button*, void*);
-  static void cb_Cancel2(Fl_Button*, void*);
-public:
-  Fl_Input_Choice *pixel_aspect_ratio;
-  static Fl_Menu_Item menu_pixel_aspect_ratio[];
-  Fl_Value_Input *video_bitrate;
-private:
-  void cb_video_bitrate_i(Fl_Value_Input*, void*);
-  static void cb_video_bitrate(Fl_Value_Input*, void*);
-public:
-  Fl_Value_Input *audio_bitrate;
-private:
-  void cb_audio_bitrate_i(Fl_Value_Input*, void*);
-  static void cb_audio_bitrate(Fl_Value_Input*, void*);
-public:
-  Fl_Choice *lqt_container_menu;
-  static Fl_Menu_Item menu_lqt_container_menu[];
-  int shown();
-  void show();
-  ~CustomFormatDialog();
-  nle::EncodingPreset* getEncodingPreset();
-private:
-  bool go; 
-public:
-  void setEncodingPreset(nle::EncodingPreset* preset);
-};
 
 class SmilExportDialog {
 public:
@@ -486,15 +345,15 @@ public:
   Fl_Double_Window *dialog_window;
   Fl_File_Input *export_filename;
 private:
-  void cb_File2_i(Fl_Button*, void*);
-  static void cb_File2(Fl_Button*, void*);
+  void cb_File1_i(Fl_Button*, void*);
+  static void cb_File1(Fl_Button*, void*);
 public:
   Fl_Choice *track_choice;
 private:
   void cb_Export2_i(Fl_Return_Button*, void*);
   static void cb_Export2(Fl_Return_Button*, void*);
-  void cb_Cancel3_i(Fl_Button*, void*);
-  static void cb_Cancel3(Fl_Button*, void*);
+  void cb_Cancel_i(Fl_Button*, void*);
+  static void cb_Cancel(Fl_Button*, void*);
 public:
   int shown();
   void show();
@@ -514,15 +373,15 @@ public:
   Fl_Double_Window *dialog_window;
   Fl_File_Input *export_filename;
 private:
-  void cb_File3_i(Fl_Button*, void*);
-  static void cb_File3(Fl_Button*, void*);
+  void cb_File2_i(Fl_Button*, void*);
+  static void cb_File2(Fl_Button*, void*);
 public:
   Fl_Choice *track_choice;
 private:
   void cb_Export3_i(Fl_Return_Button*, void*);
   static void cb_Export3(Fl_Return_Button*, void*);
-  void cb_Cancel4_i(Fl_Button*, void*);
-  static void cb_Cancel4(Fl_Button*, void*);
+  void cb_Cancel1_i(Fl_Button*, void*);
+  static void cb_Cancel1(Fl_Button*, void*);
 public:
   int shown();
   void show();
@@ -544,10 +403,10 @@ public:
 private:
   void cb_effect_pipes_browser_i(Fl_Browser*, void*);
   static void cb_effect_pipes_browser(Fl_Browser*, void*);
+  void cb_3_i(Fl_Button*, void*);
+  static void cb_3(Fl_Button*, void*);
   void cb_5_i(Fl_Button*, void*);
   static void cb_5(Fl_Button*, void*);
-  void cb_6_i(Fl_Button*, void*);
-  static void cb_6(Fl_Button*, void*);
   void cb_Rename_i(Fl_Button*, void*);
   static void cb_Rename(Fl_Button*, void*);
 public:

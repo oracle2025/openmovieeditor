@@ -9,7 +9,8 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 SUBDIRS = tinyxml timeline ProgressDialog sl LoadSaveManager ErrorDialog \
-          NodeEditor GmerlinEffects LiftGammaGain Frei0r ColorCurve
+          NodeEditor GmerlinEffects LiftGammaGain Frei0r ColorCurve \
+	  RenderDialog
 
 EXTRA_DIST = nle.fl FilterItemWidget.fl SaveAsDialog.fl
 #AM_CPPFLAGS = -ggdb -Wall -Werror @CPPFLAGS@ -I$(top_srcdir)/icons -I$(top_srcdir)/src -I$(top_srcdir)/src/tinyxml -I$(top_srcdir)/src/sl
@@ -25,7 +26,8 @@ openmovieeditor_LDADD = tinyxml/libtinyxml.a timeline/libtimeline.a\
 	GmerlinEffects/libGmerlinEffects.a\
 	LiftGammaGain/libLiftGammaGain.a\
 	Frei0r/libFrei0r.a\
-	ColorCurve/libColorCurve.a
+	ColorCurve/libColorCurve.a\
+	RenderDialog/libRenderDialog.a
 
 openmovieeditor_SOURCES = nle.cxx\
 	helper.cxx\
@@ -195,10 +197,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	int_float_scale.H\
 	video_format.H\
 	IVideoFileWriter.H\
-	VideoWriterQT.H\
-	VideoWriterQT.cxx\
-	EncodingPreset.H\
-	EncodingPreset.cxx\
 	AutoTrack.H\
 	AutoTrack.cxx\
 	AutoDragHandler.H\
@@ -242,7 +240,9 @@ openmovieeditor_SOURCES = nle.cxx\
 	VideoFileProject.H\
 	VideoFileProject.cxx\
 	AudioFileProject.H\
-	AudioFileProject.cxx
+	AudioFileProject.cxx\
+	fps_definitions.H\
+	fps_definitions.cxx
 
 
 

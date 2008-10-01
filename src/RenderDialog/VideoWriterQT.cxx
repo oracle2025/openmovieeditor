@@ -25,6 +25,7 @@
 #include <lqt_version.h>
 #include "lqtgavl.h"
 #include <iostream>
+#include "helper.H"
 using namespace std;
 
 namespace nle

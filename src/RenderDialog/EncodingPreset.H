@@ -24,8 +24,8 @@ namespace nle{
 }
 
 
-#include "nle.h"
-#include "Renderer.H"
+#include "RenderDialog.H"
+#include "fps_definitions.H"
 #include <lqt.h>
 
 class CodecOptions;

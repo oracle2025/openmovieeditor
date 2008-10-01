@@ -228,6 +228,7 @@ AC_CONFIG_FILES([
    src/Frei0r/Makefile
    src/ColorCurve/Makefile
    src/timeline/Makefile
+   src/RenderDialog/Makefile
 ])
 #src/FloatNodes/Makefile
 
