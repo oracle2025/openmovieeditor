@@ -108,9 +108,6 @@ int main( int argc, char** argv )
 	
 	nle::g_PREVENT_OFFSCREEN_CRASH = true;
 	nle::g_homefolder = getenv( "HOME" );
-#ifdef AVCODEC
-	av_register_all();
-#endif	
 	fl_register_images();
 	nle::g_video_file_factory_progress = 0;
 	nle::g_SEEKING = false;

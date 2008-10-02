@@ -17,8 +17,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-//#include "VideoFileQT.H"
-//#include "VideoFileFfmpeg.H"
 #include "VideoFileGmerlin.H"
 #include "VideoFileProject.H"
 #include "VideoFileFactory.H"
@@ -46,20 +44,6 @@ IVideoFile* VideoFileFactory::get( string filename )
 		return vf;
 	}
 	delete vf;
-/*
-	vf = new VideoFileQT( filename );
-	if ( vf->ok() ) {
-		return vf;
-	}
-	delete vf;
-#ifdef AVCODEC
-	vf = new VideoFileFfmpeg( filename );
-	if ( vf->ok() ) {
-		return vf;
-	}
-	delete vf;
-#endif // AVCODEC
-*/
 	return 0;
 }
 
