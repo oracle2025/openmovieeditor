@@ -24,7 +24,6 @@
 #include <gavl/gavl.h>
 
 #include "timeline/TimelineBase.H"
-#include "video_format.H"
 #include "IAudioReader.H"
 #include "IVideoReader.H"
 
@@ -65,7 +64,7 @@ class Timeline : public TimelineBase, public IAudioReader, public IVideoReader
 		LazyFrame* getFrame( int64_t position );
 		LazyFrame* getBlendedFrame();
 		LazyFrame* getBlendedFrame( int64_t position );
-		void prepareFormat( video_format* fmt );
+		void prepareFormat( const gavl_video_format_t* format );
 		void unPrepareFormat();
 		LazyFrame** getFrameStack( int64_t position );
 		int fillBuffer( float* output, unsigned long frames );

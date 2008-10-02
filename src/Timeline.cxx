@@ -303,10 +303,10 @@ LazyFrame* Timeline::getBlendedFrame( int64_t position )
 	// 2: ganz unten, zuerst blitten
 
 }
-void Timeline::prepareFormat( video_format* fmt )
+void Timeline::prepareFormat( const gavl_video_format_t* format )
 {
-	m_blended_lazy_frame = new LazyFrame( fmt->w, fmt->h );
-	m_blended_gavl_frame = gavl_video_frame_create( m_blended_lazy_frame->format() );
+	m_blended_lazy_frame = new LazyFrame( format );
+	m_blended_gavl_frame = gavl_video_frame_create( format );
 	m_blended_lazy_frame->put_data( m_blended_gavl_frame );
 }
 void Timeline::unPrepareFormat()

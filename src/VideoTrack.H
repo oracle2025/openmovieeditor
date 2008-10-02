@@ -23,7 +23,6 @@
 #include "TrackBase.H"
 #include "global_includes.H"
 #include "timebase.H"
-#include "video_format.H"
 
 namespace nle
 {

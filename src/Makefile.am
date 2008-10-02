@@ -10,7 +10,7 @@
 
 SUBDIRS = tinyxml timeline ProgressDialog sl LoadSaveManager ErrorDialog \
           NodeEditor GmerlinEffects LiftGammaGain Frei0r ColorCurve \
-	  RenderDialog
+          RenderDialog
 
 EXTRA_DIST = nle.fl FilterItemWidget.fl SaveAsDialog.fl
 #AM_CPPFLAGS = -ggdb -Wall -Werror @CPPFLAGS@ -I$(top_srcdir)/icons -I$(top_srcdir)/src -I$(top_srcdir)/src/tinyxml -I$(top_srcdir)/src/sl

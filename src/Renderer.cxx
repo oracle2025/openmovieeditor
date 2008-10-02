@@ -65,8 +65,19 @@ Renderer::Renderer( IVideoFileWriter* writer )
 	m_fps.timescale = m_writer->format()->framerate.timescale;
 	m_fps.audio_frames_per_chunk = m_writer->format()->framerate.audio_frames_per_chunk;
 	m_fps.video_frames_per_chunk = m_writer->format()->framerate.video_frames_per_chunk;
+
+	gavl_video_format_t format;
+	format.frame_width  = m_w;
+	format.frame_height = m_h;
+	format.image_width  = m_w;
+	format.image_height = m_h;
+	format.pixel_width = 1;
+	format.pixel_height = 1;
+	format.pixelformat = GAVL_RGBA_32;
+	format.interlace_mode = GAVL_INTERLACE_NONE;
+
 		
-	p_timeline->prepareFormat( m_writer->format() ); 
+	p_timeline->prepareFormat( &format ); 
 	
 	return;
 }

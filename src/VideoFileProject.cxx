@@ -35,14 +35,15 @@ VideoFileProject::VideoFileProject( std::string filename )
 	m_timeline->read( filename );
 	m_timeline->render_mode( true );
 
-	video_format format;
-	format.w = 720;
-	format.h = 576;
-	format.pixel_w = 1;
-	format.pixel_h = 1;
-	format.pixel_aspect_ratio = 1.0;
-	format.interlacing = INTERLACE_PROGRESSIVE;
-	format.samplerate = 48000;
+	gavl_video_format_t format;
+	format.frame_width  = 720;
+	format.frame_height = 576;
+	format.image_width  = 720;
+	format.image_height = 576;
+	format.pixel_width = 1;
+	format.pixel_height = 1;
+	format.pixelformat = GAVL_RGBA_32;
+	format.interlace_mode = GAVL_INTERLACE_NONE;
 
 	m_timeline->prepareFormat( &format );
 	
