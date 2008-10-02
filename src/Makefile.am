@@ -27,7 +27,17 @@ openmovieeditor_LDADD = tinyxml/libtinyxml.a timeline/libtimeline.a\
 	LiftGammaGain/libLiftGammaGain.a\
 	Frei0r/libFrei0r.a\
 	ColorCurve/libColorCurve.a\
-	RenderDialog/libRenderDialog.a
+	RenderDialog/libRenderDialog.a\
+	@PORTAUDIO19_LIBS@\
+	@SAMPLERATE_LIBS@\
+	@SNDFILE_LIBS@\
+	@GAVL_LIBS@\
+	@GMERLIN_AVDEC_LIBS@\
+	@GMERLIN_LIBS@\
+	@LIBQUICKTIME_LIBS@\
+	@GLIB2_LIBS@\
+	@FLTK_LIBS@\
+	@JACK_LIBS@
 
 openmovieeditor_SOURCES = nle.cxx\
 	helper.cxx\

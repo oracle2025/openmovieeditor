@@ -53,34 +53,28 @@ CFLAGS="$CFLAGS $LARGEFILE_FLAGS"
 PKG_CHECK_MODULES(SAMPLERATE, samplerate >= 0.1.1,,
   AC_MSG_ERROR([*** libsamplerate not found - this program requires libsamplerate >= 0.1.1 http://www.mega-nerd.com/SRC/ ***]))
 CPPFLAGS="$CPPFLAGS $SAMPLERATE_CFLAGS"
-LDFLAGS="$LDFLAGS $SAMPLERATE_LIBS"
 
 PKG_CHECK_MODULES(SNDFILE, sndfile >= 1.0.0,,
   AC_MSG_ERROR([*** libsndfile 1.0.0 not found - this program requires libsndfile >= 1.0.0 http://www.mega-nerd.com/libsndfile/ ***]))
 CPPFLAGS="$CPPFLAGS $SNDFILE_CFLAGS"
-LDFLAGS="$LDFLAGS $SNDFILE_LIBS"
 
 PKG_CHECK_MODULES(GAVL, gavl >= 1.0.0,,
   AC_MSG_ERROR([*** gavl >= 1.0.0 not found - this program requires the gmerlin audio
   video library >= 1.0.0 http://gmerlin.sourceforge.net/ ***]))
 CPPFLAGS="$CPPFLAGS $GAVL_CFLAGS"
-LDFLAGS="$LDFLAGS $GAVL_LIBS"
 
 PKG_CHECK_MODULES(GMERLIN_AVDEC, gmerlin_avdec >= 0.1.7,,
   AC_MSG_ERROR([*** gmerlin_avdec >= 0.1.7 not found - this program requires the gmerlin audio
   video decoder >= 0.1.7 http://gmerlin.sourceforge.net/ ***]))
 CPPFLAGS="$CPPFLAGS $GMERLIN_AVDEC_CFLAGS"
-LDFLAGS="$LDFLAGS $GMERLIN_AVDEC_LIBS"
 
 PKG_CHECK_MODULES(GMERLIN, gmerlin >= 0.3.7,,
   AC_MSG_ERROR([*** gmerlin >= 0.3.7 not found - this program requires gmerlin >= 0.3.7 http://gmerlin.sourceforge.net/ ***]))
 CPPFLAGS="$CPPFLAGS $GMERLIN_CFLAGS"
-LDFLAGS="$LDFLAGS $GMERLIN_LIBS"
 
 PKG_CHECK_MODULES(LIBQUICKTIME, libquicktime >= 1.0.2,,
   AC_MSG_ERROR([*** libquicktime 1.0.2 not found - this program requires libquicktime >= 1.0.2 http://libquicktime.sourceforge.net/ ***]))
 CPPFLAGS="$CPPFLAGS $LIBQUICKTIME_CFLAGS"
-LDFLAGS="$LDFLAGS $LIBQUICKTIME_LIBS"
 
 #HAVE_AVCODEC=false
 #PKG_CHECK_MODULES(AVCODEC, libavcodec, [HAVE_AVCODEC=true], [true])
@@ -140,7 +134,8 @@ LDFLAGS="$LDFLAGS $LIBQUICKTIME_LIBS"
 PKG_CHECK_MODULES(JACK, jack, ac_jack_lib=yes, ac_jack_lib=no)
 AC_CHECK_HEADER(jack/jack.h, [ac_jack_h="yes"], [ac_jack_h="no"])
 if test "x$ac_jack_lib$ac_jack_h" = "xyesyes"; then
-   LDFLAGS="$LDFLAGS -ljack"
+   JACK_LIBS=" -ljack"
+   AC_SUBST(JACK_LIBS)
 else 
    AC_MSG_ERROR([*** You need JACK audio library (libjack-dev) installed.  http://jackit.sf.net/])
 fi
@@ -148,12 +143,10 @@ fi
 PKG_CHECK_MODULES(GLIB2, glib-2.0 >= 2.10.3,,
   AC_MSG_ERROR([*** glib-2.0 not found - this program requires glib >= 2.10.3 ***]))
 CPPFLAGS="$CPPFLAGS $GLIB2_CFLAGS"
-LDFLAGS="$LDFLAGS $GLIB2_LIBS"
 
 PKG_CHECK_MODULES(PORTAUDIO19, portaudio-2.0 >= 19,,
   AC_MSG_ERROR([*** portaudio-2.0 not found - this program requires portaudio >= 19 ***]))
 CPPFLAGS="$CPPFLAGS $PORTAUDIO19_CFLAGS"
-LDFLAGS="$LDFLAGS $PORTAUDIO19_LIBS"
 
  AC_CHECK_HEADER(GL/gl.h,,
   AC_MSG_ERROR([*** GL/gl.h not found - this program requires OpenGL or compatible (Mesa) Hint: install mesa-common-dev ***]))
@@ -190,10 +183,12 @@ dnl   exit 1
 dnl  fi
 fi
 CPPFLAGS="$CPPFLAGS $FLTK_CXXFLAGS"
-LDFLAGS="$LDFLAGS $FLTK_LIBS"
 AC_SUBST(FLTK_CXXFLAGS)
 AC_SUBST(FLTK_CFLAGS)
 AC_SUBST(FLTK_LIBS)
+
+LDFLAGS_RESTORE="$LDFLAGS"
+LDFLAGS="$LDFLAGS $LIBQUICKTIME_LIBS"
 
 AC_RUN_IFELSE(
      [AC_LANG_PROGRAM([[#include <lqt/lqt.h>]],
@@ -207,7 +202,7 @@ AC_RUN_IFELSE(
                       [],
                       [AC_MSG_ERROR([x264 Codec in libquicktime not found, reinstall libquicktime with x264 enabled])] )
 
-
+LDFLAGS="$LDFLAGS_RESTORE"
 
 AC_CONFIG_FILES([
    Makefile
