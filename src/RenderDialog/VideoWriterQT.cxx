@@ -25,12 +25,57 @@
 #include <lqt_version.h>
 #include "lqtgavl.h"
 #include <iostream>
-#include "helper.H"
 using namespace std;
 
 namespace nle
 {
-
+void convert_pixel_aspect_to_pixel_w_h( float in, int& pw, int& ph )
+{
+	if ( in > 1.093 && in < 1.095 ) {
+		pw = 128;
+		ph = 117;
+	} else if ( in > 1.4586 && in < 1.4588 ) {
+		pw = 512;
+		ph = 351;
+	} else if ( in > 0.9116 && in < 0.9118 ) {
+		pw = 4320;
+		ph = 4739;
+	} else if ( in > 1.2154 && in < 1.2156 ) {
+		pw = 5760;
+		ph = 4739;
+	} 
+	pw = 1;
+	ph = 1;
+/*
+128/117  = 1.094
+512/351  = 1.4587
+4320/4739 = 0.9117
+5760/4739 = 1.21557
+*/
+}
+void convert_ome_format_to_gavl_format( video_format* in, gavl_video_format_t* out )
+{
+	out->frame_width  = in->w;
+	out->frame_height = in->h;
+	out->image_width  = in->w;
+	out->image_height = in->h;
+	convert_pixel_aspect_to_pixel_w_h( in->pixel_aspect_ratio, out->pixel_width, out->pixel_height );
+	out->pixelformat = GAVL_RGB_24;
+	switch ( in->interlacing ) {
+		case INTERLACE_TOP_FIELD_FIRST:
+			out->interlace_mode = GAVL_INTERLACE_TOP_FIRST;
+			break;
+		case INTERLACE_BOTTOM_FIELD_FIRST:
+			out->interlace_mode = GAVL_INTERLACE_BOTTOM_FIRST;
+			break;
+		case INTERLACE_PROGRESSIVE:
+			out->interlace_mode = GAVL_INTERLACE_NONE;
+			break;
+	}
+	out->frame_duration = in->framerate.frame_duration;
+	out->timescale = in->framerate.timescale;
+	out->framerate_mode = GAVL_FRAMERATE_CONSTANT;
+}
 VideoWriterQT::VideoWriterQT( EncodingPreset* preset, const char* filename )
 {
 	preset->getFormat( &m_format );

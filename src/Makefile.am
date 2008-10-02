@@ -205,7 +205,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	FilterRemoveCommand.cxx\
 	timebase.H\
 	int_float_scale.H\
-	video_format.H\
 	IVideoFileWriter.H\
 	AutoTrack.H\
 	AutoTrack.cxx\

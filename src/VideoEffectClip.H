@@ -22,7 +22,6 @@
 
 #include <stdint.h>
 
-#include "video_format.H"
 #include "IVideoReader.H"
 #include <gavl/gavl.h>
 

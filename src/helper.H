@@ -21,15 +21,11 @@
 #define _HELPER_H_
 
 #include <stdint.h>
-#include "video_format.H"
 #include <gavl/gavl.h>
 
 namespace nle
 {
 
-void convert_ome_format_to_gavl_format( video_format* in, gavl_video_format_t* out );
-
-void convert_pixel_aspect_to_pixel_w_h( float in, int& pw, int& ph );
 const char* pixel_aspect_ratio_to_string( float pixel_aspect_ratio );
 float string_to_pixel_aspect_ratio( const char* par_str );
 

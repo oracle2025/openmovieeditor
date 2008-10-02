@@ -20,7 +20,7 @@
 #ifndef _I_VIDEO_FILE_WRITER_H_
 #define _I_VIDEO_FILE_WRITER_H_
 
-#include "video_format.H"
+#include "RenderDialog/video_format.H"
 
 namespace nle
 {
