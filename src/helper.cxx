@@ -29,35 +29,13 @@
 #include <stdlib.h>
 #include "globals.H"
 #include "helper.H"
+#include "fps_definitions.H"
 
 #define BUFFER_LEN 1024
 
 namespace nle
 {
 
-void init_frame_struct( frame_struct* fs, int w, int h )
-{
-	fs->x = fs->y = 0;
-	fs->w = w;
-	fs->h = h;
-	fs->alpha = 1.0;
-	fs->has_alpha_channel = true;
-	fs->cacheable = true;
-	fs->interlace_mode = 0;
-	fs->pixel_aspect_ratio = 1.0;
-	fs->first_field = true;
-	fs->render_strategy = RENDER_DEFAULT;
-	fs->dirty = true;
-	fs->RGB = 0;
-	fs->YUV = 0;
-	fs->rows = 0;
-}
-void copy_frame_struct_props( frame_struct* src, frame_struct* dst )
-{
-	dst->pixel_aspect_ratio = src->pixel_aspect_ratio;
-	dst->interlace_mode     = src->interlace_mode;
-	dst->first_field        = src->first_field;
-}
 const char* pixel_aspect_ratio_to_string( float pixel_aspect_ratio )
 {
 	static char buffer[255];
@@ -171,22 +149,6 @@ Handy Reference Table:
 http://www.mir.com/DMG/aspect.html
 http://lipas.uwasa.fi/~f76998/video/conversion/#conversion_table
 */
-void guess_aspect( int w, int h, frame_struct* frame )
-{
-	if ( w == 720 && h == 576 ) {
-		frame->pixel_aspect_ratio = 1.094;
-		frame->pixel_w = 128;
-		frame->pixel_h = 117;
-	} else if ( w == 720 && h == 480) {
-		frame->pixel_aspect_ratio = 0.9117;
-		frame->pixel_w = 4320;
-		frame->pixel_h = 4739;
-	} else {
-		frame->pixel_aspect_ratio = 1.0;
-		frame->pixel_w = 1;
-		frame->pixel_h = 1;
-	}
-}
 void convert_pixel_aspect_to_pixel_w_h( float in, int& pw, int& ph )
 {
 	if ( in > 1.093 && in < 1.095 ) {

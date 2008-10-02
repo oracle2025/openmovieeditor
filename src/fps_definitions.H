@@ -20,6 +20,13 @@ typedef struct
 	int video_frames_per_chunk;
 } render_fps_chunks;
 
+typedef enum {
+	INTERLACE_PROGRESSIVE = 0,
+	INTERLACE_TOP_FIELD_FIRST = 1,
+	INTERLACE_BOTTOM_FIELD_FIRST = 2,
+	INTERLACE_DEVIDED_FIELDS = 3 /* Top Frame is first */
+} interlace_state;
+
 
 extern render_fps_chunks fps25x48000;
 extern render_fps_chunks fps29_97x48000;

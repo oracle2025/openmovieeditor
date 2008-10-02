@@ -25,7 +25,6 @@
 #include "video_format.H"
 #include "IVideoReader.H"
 #include <gavl/gavl.h>
-#include "frame_struct.h"
 
 namespace nle
 {

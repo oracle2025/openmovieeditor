@@ -20,7 +20,6 @@
 #ifndef _RENDER_HELPER_H_
 #define _RENDER_HELPER_H_
 
-#include "frame_struct.h"
 #include <gavl/gavl.h>
 
 namespace nle
@@ -46,15 +45,8 @@ void stretch_format(
 		double& src_rect_x, double& src_rect_y, double& src_rect_w, double& src_rect_h,
        		int& dst_rect_x, int& dst_rect_y, int& dst_rect_w, int& dst_rect_h );
 
-void crop( frame_struct* src, frame_struct* dst, int crop_top_bottom, int crop_left_right );
-void fit( frame_struct* src, frame_struct* dst );
-
 void halve_image( unsigned char *optr, unsigned char *iptr, int iw, int ih );
 
-void scale_it( frame_struct* src, frame_struct* dst );
-void scale_it_alpha( frame_struct* src, frame_struct* dst );
-void scale_it_alpha_opaque( frame_struct* src, frame_struct* dst );
-	
 void blend( unsigned char* dst, unsigned char* src1, unsigned char* src2, float alpha, int len );
 void blend_alpha( unsigned char* dst, unsigned char* rgb, unsigned char* rgba, float alpha, int len );
 void blend_alpha2( unsigned char* dst, unsigned char* rgba, unsigned char* rgba2, float alpha, int len );

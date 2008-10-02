@@ -20,7 +20,7 @@
 
 #include "VideoFileProject.H"
 #include "AudioFileProject.H"
-#include "frame_struct.h"
+#include "fps_definitions.H"
 
 namespace nle
 {

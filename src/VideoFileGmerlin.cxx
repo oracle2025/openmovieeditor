@@ -23,7 +23,6 @@
 
 #include "ProgressDialog/IProgressListener.H"
 
-#include "frame_struct.h"
 #include "render_helper.H"
 
 #include <cassert>
