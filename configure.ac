@@ -76,61 +76,6 @@ PKG_CHECK_MODULES(LIBQUICKTIME, libquicktime >= 1.0.2,,
   AC_MSG_ERROR([*** libquicktime 1.0.2 not found - this program requires libquicktime >= 1.0.2 http://libquicktime.sourceforge.net/ ***]))
 CPPFLAGS="$CPPFLAGS $LIBQUICKTIME_CFLAGS"
 
-#HAVE_AVCODEC=false
-#PKG_CHECK_MODULES(AVCODEC, libavcodec, [HAVE_AVCODEC=true], [true])
-#if test x$HAVE_AVCODEC = xfalse; then
-#  AC_MSG_WARN([*** libavcodec not found])
-#else
-#  CPPFLAGS="$CPPFLAGS $AVCODEC_CFLAGS -DAVCODEC"
-#  LDFLAGS="$LDFLAGS $AVCODEC_LIBS"
-#fi
-#
-#if test x$HAVE_AVCODEC = xfalse; then
-#  HAVE_AVCODEC_ACL=false
-#  PKG_CHECK_MODULES(AVCODEC_ACL, avcodec_acl, [HAVE_AVCODEC_ACL=true], [true])
-#  if test x$HAVE_AVCODEC_ACL = xfalse; then
-#    AC_MSG_WARN([*** libavcodec_acl not found])
-#  else
-#    CPPFLAGS="$CPPFLAGS $AVCODEC_ACL_CFLAGS -DAVCODEC"
-#    LDFLAGS="$LDFLAGS $AVCODEC_ACL_LIBS"
-#  fi
-#fi
-#
-#HAVE_AVFORMAT=false
-#PKG_CHECK_MODULES(AVFORMAT, libavformat, [HAVE_AVFORMAT=true], [true])
-#if test x$HAVE_AVFORMAT = xfalse; then
-#  AC_MSG_WARN([*** libavformat not found])
-#else
-#  CPPFLAGS="$CPPFLAGS $AVFORMAT_CFLAGS"
-#  LDFLAGS="$LDFLAGS $AVFORMAT_LIBS"
-#fi
-#
-#if test x$HAVE_AVFORMAT = xfalse; then
-#  HAVE_AVFORMAT_ACL=false
-#  PKG_CHECK_MODULES(AVFORMAT_ACL, avformat_acl, [HAVE_AVFORMAT_ACL=true], [true])
-#  if test x$HAVE_AVFORMAT_ACL = xfalse; then
-#    AC_MSG_WARN([*** libavformat_acl not found])
-#  else
-#    CPPFLAGS="$CPPFLAGS $AVFORMAT_ACL_CFLAGS"
-#    LDFLAGS="$LDFLAGS $AVFORMAT_ACL_LIBS"
-#  fi
-#fi
-#
-#OLD_FFMPEG=false
-#AC_CHECK_HEADER(ffmpeg/avformat.h, [OLD_FFMPEG=true], [true])
-#if test x$OLD_FFMPEG = xtrue; then
-#  CPPFLAGS="$CPPFLAGS -DOLD_FFMPEG"
-#fi
-#
-#HAVE_SWSCALE=false
-#PKG_CHECK_MODULES(SWSCALE, libswscale, [HAVE_SWSCALE=true], [true])
-#if test x$HAVE_SWSCALE = xfalse; then
-#  AC_MSG_WARN([*** libswscale not found])
-#else
-#  CPPFLAGS="$CPPFLAGS $SWSCALE_CFLAGS -DSWSCALE"
-#  LDFLAGS="$LDFLAGS $SWSCALE_LIBS"
-#fi
-
 PKG_CHECK_MODULES(JACK, jack, ac_jack_lib=yes, ac_jack_lib=no)
 AC_CHECK_HEADER(jack/jack.h, [ac_jack_h="yes"], [ac_jack_h="no"])
 if test "x$ac_jack_lib$ac_jack_h" = "xyesyes"; then
@@ -225,7 +170,6 @@ AC_CONFIG_FILES([
    src/timeline/Makefile
    src/RenderDialog/Makefile
 ])
-#src/FloatNodes/Makefile
 
 AC_OUTPUT
 
