@@ -119,9 +119,7 @@ int64_t VideoFileGmerlin::length()
 }
 LazyFrame* VideoFileGmerlin::read()
 {
-	if ( !bgav_read_video( m_decoder, m_gavl_frame, 0 ) ) {
-		std::cout << "VideoFileGmerlin::read EOF" << std::endl;
-	}
+	bgav_read_video( m_decoder, m_gavl_frame, 0 );
 	m_lazy_frame->alpha( 1.0 );
 	return m_lazy_frame;
 }

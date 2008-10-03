@@ -51,7 +51,6 @@ void MainFilterFactory::add( const char* identifier, FilterFactory* factory )
 }
 FilterFactory* MainFilterFactory::get( const char* identifier )
 {
-	std::cout << identifier << endl;
 	filter_factory_node* p;
 	for ( p = m_factories; p; p = p->next ) {
 		if ( identifier == p->identifier ) {

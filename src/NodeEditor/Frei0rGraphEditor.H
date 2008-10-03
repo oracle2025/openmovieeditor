@@ -23,6 +23,7 @@ class Frei0rGraphEditor : public Fl_Widget
 		void addNode( INodeFilterFactoryPlugin* ffp );
 		Fl_Widget* m_trash;
 		void setFilter( nle::NodeFilter* filter );
+		void init_all_widgets();
 	private:
 		nle::NodeFilter* m_filter;
 //		filters* m_filters;

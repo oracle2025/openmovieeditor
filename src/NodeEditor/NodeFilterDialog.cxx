@@ -2,6 +2,9 @@
 
 #include "NodeFilterDialog.H"
 #include "NodeFilterFrei0rFactoryPlugin.H"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 void NodeFilterDialog::cb_plugin_browser_i(Fl_Hold_Browser* o, void*) {
   if ( o->value() <= 0 ) {
@@ -57,6 +60,51 @@ static const char *idata_trash[] = {
 };
 static Fl_Pixmap image_trash(idata_trash);
 
+void NodeFilterDialog::cb_Save_i(Fl_Button*, void*) {
+  char* filename = fl_file_chooser( "Open Node Preset", 0, 0 );
+
+if ( filename ) {
+	struct stat statbuf;
+	int r = stat( filename, &statbuf );
+	if ( r == 0 ) {
+		r = fl_choice( "File exists, replace?\nWill be overwritten.", "&Cancel", "&Replace", 0 );
+		if ( r == 0 ) {
+			return;
+		}
+	}
+	TiXmlDocument doc( filename );
+	TiXmlDeclaration* dec = new TiXmlDeclaration( "1.0", "", "no" );
+	doc.LinkEndChild( dec );
+	TiXmlElement* graph = new TiXmlElement( "open_movie_editor_node_graph" );
+	doc.LinkEndChild( graph );
+	m_filter->writeXML( graph );
+	doc.SaveFile();
+	
+};
+}
+void NodeFilterDialog::cb_Save(Fl_Button* o, void* v) {
+  ((NodeFilterDialog*)(o->parent()->parent()->user_data()))->cb_Save_i(o,v);
+}
+
+void NodeFilterDialog::cb_Load_i(Fl_Button*, void*) {
+  char* filename = fl_file_chooser( "Open Node Preset", 0, 0 );
+
+if ( filename ) {
+	TiXmlDocument doc( filename );
+	if ( doc.LoadFile() ) {
+		TiXmlHandle docH( &doc );
+		TiXmlElement* graph = docH.FirstChild( "open_movie_editor_node_graph" ).Element();
+		if ( graph ) {
+			m_filter->readXML( graph );
+			graph_editor->init_all_widgets();
+		}
+	}
+};
+}
+void NodeFilterDialog::cb_Load(Fl_Button* o, void* v) {
+  ((NodeFilterDialog*)(o->parent()->parent()->user_data()))->cb_Load_i(o,v);
+}
+
 NodeFilterDialog::NodeFilterDialog( nle::NodeFilter* filter ) {
   m_factory = g_node_filter_frei0r_factory;
   { m_dialog = new Fl_Double_Window(650, 495, "Node Editor");
@@ -103,15 +151,18 @@ NodeFilterDialog::NodeFilterDialog( nle::NodeFilter* filter ) {
     { Fl_Group* o = new Fl_Group(5, 435, 640, 25);
       { Fl_Check_Button* o = new Fl_Check_Button(5, 435, 455, 25, "Bypass");
         o->down_box(FL_DOWN_BOX);
+        o->hide();
         Fl_Group::current()->resizable(o);
       } // Fl_Check_Button* o
       { trash_can = new Fl_Button(620, 435, 25, 25);
         trash_can->image(image_trash);
       } // Fl_Button* trash_can
-      { new Fl_Button(460, 435, 80, 25, "Save ...");
+      { Fl_Button* o = new Fl_Button(460, 435, 80, 25, "Save ...");
+        o->callback((Fl_Callback*)cb_Save);
       } // Fl_Button* o
-      { Fl_Menu_Button* o = new Fl_Menu_Button(540, 435, 80, 25, "Load");
-      } // Fl_Menu_Button* o
+      { Fl_Button* o = new Fl_Button(540, 435, 80, 25, "Load...");
+        o->callback((Fl_Callback*)cb_Load);
+      } // Fl_Button* o
       o->end();
     } // Fl_Group* o
     m_dialog->end();

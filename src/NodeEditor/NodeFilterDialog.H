@@ -20,7 +20,8 @@
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Check_Button.H>
 #include <FL/Fl_Button.H>
-#include <FL/Fl_Menu_Button.H>
+#include <tinyxml.h>
+#include <FL/Fl_File_Chooser.H>
 
 class NodeFilterDialog : public nle::IEffectDialog {
 public:
@@ -39,6 +40,12 @@ private:
   static void cb_Close(Fl_Return_Button*, void*);
 public:
   Fl_Button *trash_can;
+private:
+  void cb_Save_i(Fl_Button*, void*);
+  static void cb_Save(Fl_Button*, void*);
+  void cb_Load_i(Fl_Button*, void*);
+  static void cb_Load(Fl_Button*, void*);
+public:
   ~NodeFilterDialog();
   void show();
   int shown();

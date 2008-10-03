@@ -53,7 +53,6 @@ static void stringCallback( Fl_Widget* i, void* v )
 {
 	Fl_Input* fi = dynamic_cast<Fl_Input*>(i);
 	callback_info* info = (callback_info*)v;
-	cout << fi->value() << endl;
 	info->dialog->setString( info->number, fi->value() );
 }
 

@@ -56,6 +56,8 @@ class NodeFilter : public IVideoEffect
 	public:
 		NodeFilter( int w, int h );
 		~NodeFilter();
+		void clear();
+		void init();
 		FilterData* getFilterData() { return 0; }
 		void setFilterData( FilterData* ) {}
 		void writeXML( TiXmlElement* );

@@ -44,14 +44,7 @@ NodeFilter::NodeFilter( int w, int h )
 	m_h = h;
 	m_dialog = 0;
 	m_filters = 0;
-	m_filters = (filters*)sl_push( m_filters, filters_create( 10,200, 50, 50, new SinkNode(), "Output", 0 ) );
-	filters* C = m_filters;
-	m_sink_node = C->node;
-	m_filters = (filters*)sl_push( m_filters, filters_create( 10,100, 50, 50, new SrcNode( this ), "Input", 1 ) );
-	C = m_filters;
-	m_src_node = C->node;
-	m_src_node->node->outputs[0] = m_sink_node->node;
-	m_sink_node->node->inputs[0] = m_src_node->node;
+	init();
 
 	m_lazy_frame = new LazyFrame( w, h );
 	m_gavl_frame = gavl_video_frame_create( 0 );
@@ -73,12 +66,27 @@ NodeFilter::~NodeFilter()
 	if ( m_dialog ) {
 		delete m_dialog;
 	}
+	clear();
+}
+void NodeFilter::clear()
+{
 	filters* n;
 	while ( ( n = (filters*)sl_pop( &m_filters ) ) ) {
 		delete n->node;
 		delete n;
 	}
-
+}
+void NodeFilter::init()
+{
+	clear();
+	m_filters = (filters*)sl_push( m_filters, filters_create( 10,200, 50, 50, new SinkNode(), "Output", 0 ) );
+	filters* C = m_filters;
+	m_sink_node = C->node;
+	m_filters = (filters*)sl_push( m_filters, filters_create( 10,100, 50, 50, new SrcNode( this ), "Input", 1 ) );
+	C = m_filters;
+	m_src_node = C->node;
+	m_src_node->node->outputs[0] = m_sink_node->node;
+	m_sink_node->node->inputs[0] = m_src_node->node;
 }
 void NodeFilter::writeXML( TiXmlElement* xml_node )
 {
@@ -125,6 +133,7 @@ void NodeFilter::writeXML( TiXmlElement* xml_node )
 }
 void NodeFilter::readXML( TiXmlElement* xml_node )
 {
+	init();
 	int bypass = m_bypass;
 	xml_node->Attribute( "bypass", &bypass );
 	m_bypass = bypass;

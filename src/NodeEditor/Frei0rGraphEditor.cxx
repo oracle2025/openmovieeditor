@@ -342,15 +342,19 @@ void Frei0rGraphEditor::addNode( INodeFilterFactoryPlugin* ffp )
 	window()->end();
 	redraw();
 }
-void Frei0rGraphEditor::setFilter( nle::NodeFilter* filter )
+void Frei0rGraphEditor::init_all_widgets()
 {
-	m_filter = filter;
-	assert(m_filter);
 	window()->begin();
 	for ( filters* i = m_filter->m_filters; i; i = i->next ) {
 		i->node->init_widgets();
 	}
 	window()->end();
 	redraw();
+}
+void Frei0rGraphEditor::setFilter( nle::NodeFilter* filter )
+{
+	m_filter = filter;
+	assert(m_filter);
+	init_all_widgets();
 }
 
