@@ -114,8 +114,6 @@ Prefs::Prefs()
 	if ( j ) {
 		j->Attribute( "value", &m_window_h );
 	}
-
-
 }
 
 Prefs::~Prefs()
@@ -182,7 +180,6 @@ Prefs::~Prefs()
 	item = new TiXmlElement( "windowH" );
 	doc.LinkEndChild( item );
 	item->SetAttribute( "value", m_window_h );
-
 
 	doc.SaveFile();
 }

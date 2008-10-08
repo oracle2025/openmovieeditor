@@ -115,6 +115,9 @@ private:
   void cb_About_i(Fl_Menu_*, void*);
   static void cb_About(Fl_Menu_*, void*);
 public:
+  Fl_Tile *timeline_tile;
+  Fl_Tile *preview_tile;
+  Fl_Group *file_browser_tile_group;
   Fl_Group *m_video_view_group;
   nle::VideoViewGL *m_videoView;
   Fl_Slider *zoom_slider;
@@ -160,6 +163,7 @@ private:
   static void cb_black_border_item_2_35(Fl_Menu_*, void*);
 public:
   Fl_Box *m_timecode_box;
+  Fl_Group *preview_tile_group;
   Fl_Tabs *tab_view;
   nle::FilterScroll *filter_scroll;
 private:
@@ -233,6 +237,9 @@ public:
 private:
   void cb_projectNameInput_i(Fl_Button*, void*);
   static void cb_projectNameInput(Fl_Button*, void*);
+public:
+  Fl_Group *timeline_tile_group;
+private:
   void cb_1_i(Fl_Button*, void*);
   static void cb_1(Fl_Button*, void*);
   void cb_2_i(Fl_Button*, void*);

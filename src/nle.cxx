@@ -960,9 +960,9 @@ NleUI::NleUI() {
     { Fl_Menu_Bar* o = new Fl_Menu_Bar(0, 0, 530, 25, "Black Borders");
       o->menu(menu_Black);
     } // Fl_Menu_Bar* o
-    { Fl_Tile* o = new Fl_Tile(0, 25, 700, 575);
-      { Fl_Tile* o = new Fl_Tile(0, 25, 700, 320);
-        { Fl_Group* o = new Fl_Group(365, 25, 335, 320);
+    { timeline_tile = new Fl_Tile(0, 25, 700, 575);
+      { preview_tile = new Fl_Tile(0, 25, 700, 320);
+        { file_browser_tile_group = new Fl_Group(365, 25, 335, 320);
           { m_video_view_group = new Fl_Group(365, 25, 310, 295);
             { m_videoView = new nle::VideoViewGL(365, 25, 310, 295, "VideoView");
               m_videoView->box(FL_DOWN_BOX);
@@ -1016,9 +1016,9 @@ NleUI::NleUI() {
             } // Fl_Box* m_timecode_box
             o->end();
           } // Fl_Group* o
-          o->end();
-        } // Fl_Group* o
-        { Fl_Group* o = new Fl_Group(0, 25, 365, 320);
+          file_browser_tile_group->end();
+        } // Fl_Group* file_browser_tile_group
+        { preview_tile_group = new Fl_Group(0, 25, 365, 320);
           { tab_view = new Fl_Tabs(0, 50, 365, 255);
             tab_view->box(FL_UP_BOX);
             tab_view->labelcolor(FL_GRAY0);
@@ -1184,11 +1184,11 @@ NleUI::NleUI() {
             } // Fl_Box* o
             o->end();
           } // Fl_Group* o
-          o->end();
-        } // Fl_Group* o
-        o->end();
-      } // Fl_Tile* o
-      { Fl_Group* o = new Fl_Group(0, 345, 700, 255);
+          preview_tile_group->end();
+        } // Fl_Group* preview_tile_group
+        preview_tile->end();
+      } // Fl_Tile* preview_tile
+      { timeline_tile_group = new Fl_Group(0, 345, 700, 255);
         { Fl_Group* o = new Fl_Group(40, 345, 660, 255);
           { Fl_Group* o = new Fl_Group(40, 345, 660, 25);
             { Fl_Button* o = new Fl_Button(40, 345, 25, 25);
@@ -1319,11 +1319,11 @@ NleUI::NleUI() {
           } // Fl_Button* razorButton
           o->end();
         } // Fl_Group* o
-        o->end();
-      } // Fl_Group* o
-      o->end();
-      Fl_Group::current()->resizable(o);
-    } // Fl_Tile* o
+        timeline_tile_group->end();
+      } // Fl_Group* timeline_tile_group
+      timeline_tile->end();
+      Fl_Group::current()->resizable(timeline_tile);
+    } // Fl_Tile* timeline_tile
     { projectChoice = new Fl_Choice(530, 0, 170, 25);
       projectChoice->down_box(FL_BORDER_BOX);
       projectChoice->callback((Fl_Callback*)cb_projectChoice);

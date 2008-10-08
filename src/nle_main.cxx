@@ -1,6 +1,6 @@
 /*  nle_main.cxx
  *
- *  Copyright (C) 2005-2007 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2005-2008 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -54,6 +54,7 @@
 #include "color_schemes.H"
 #include "VideoFileFactory.H"
 #include "GmerlinEffects/GmerlinFactory.H"
+#include "fltk_layout_persistance.H"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -178,15 +179,23 @@ int main( int argc, char** argv )
 	nle::g_video_codec_info = lqt_query_registry( 0, 1, 1, 0 );
 
 	nui.show( argc, argv );
-	int x, y, w, h;
+/*	int x, y, w, h;
 	preferences.getWindowPosition( x, y, w, h );
 	if ( x > 0 && y > 0 && w > 0 && h > 0 ) {
 		nui.mainWindow->resize( x, y, w, h );
-	}
+	}*/
+
+	Fl_Preferences p( Fl_Preferences::USER, "propirate.net", "openmovieeditor" );
+	Fl_Preferences* window_prefs = new Fl_Preferences( p, "window" );
+	fltk_load_layout( window_prefs, nui.mainWindow );
+	nui.mainWindow->init_sizes();
 
 	lsm.startup();
 	int r = Fl::run();
-	preferences.setWindowPosition( nui.mainWindow->x(), nui.mainWindow->y(), nui.mainWindow->w(), nui.mainWindow->h() );
+	fltk_save_layout( window_prefs, nui.mainWindow );
+	
+
+//	preferences.setWindowPosition( nui.mainWindow->x(), nui.mainWindow->y(), nui.mainWindow->w(), nui.mainWindow->h() );
 	//lsm.shutdown();
 	delete playbackCore;
 	return r;

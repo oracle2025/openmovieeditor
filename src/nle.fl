@@ -29,7 +29,8 @@ decl {\#include <sstream>} {global
 decl {\#include "RenderDialog/RenderDialog.H"} {global
 } 
 
-class NleUI {} {
+class NleUI {open
+} {
   Function {NleUI()} {open
   } {
     Fl_Window mainWindow {
@@ -41,10 +42,10 @@ if ( Fl::event()==FL_CLOSE ) {
 	m_videoView->stop();
 	nle::g_loadSaveManager->shutdown();
 }} open
-      xywh {314 133 700 600} type Double resizable size_range {450 380 0 0} visible
+      xywh {518 98 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
-        label {Black Borders} open
+        label {Black Borders}
         xywh {0 0 530 25}
       } {
         Submenu {} {
@@ -105,7 +106,7 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 //	while ( pDlg.progressDialog->shown() )
 //		Fl::wait();
 //	pDlg.progressDialog->hide();
-}} selected
+}}
             xywh {5 5 100 20}
             code0 {\#include "ProgressDialog/ProgressDialog.h"}
             code1 {\#include "Renderer.H"}
@@ -304,13 +305,13 @@ while (dlg.shown())
           }
         }
       }
-      Fl_Tile {} {open
+      Fl_Tile timeline_tile {open
         xywh {0 25 700 575} resizable
       } {
-        Fl_Tile {} {open
+        Fl_Tile preview_tile {open
           xywh {0 25 700 320}
         } {
-          Fl_Group {} {open
+          Fl_Group file_browser_tile_group {
             xywh {365 25 335 320}
           } {
             Fl_Group m_video_view_group {open
@@ -467,7 +468,7 @@ m_videoView->redraw();}
               }
             }
           }
-          Fl_Group {} {open
+          Fl_Group preview_tile_group {selected
             xywh {0 25 365 320}
           } {
             Fl_Tabs tab_view {open
@@ -686,7 +687,7 @@ if ( name ) {
             }
           }
         }
-        Fl_Group {} {open
+        Fl_Group timeline_tile_group {
           xywh {0 345 700 255}
         } {
           Fl_Group {} {open

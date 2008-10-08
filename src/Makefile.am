@@ -251,7 +251,9 @@ openmovieeditor_SOURCES = nle.cxx\
 	AudioFileProject.H\
 	AudioFileProject.cxx\
 	fps_definitions.H\
-	fps_definitions.cxx
+	fps_definitions.cxx\
+	fltk_layout_persistance.H\
+	fltk_layout_persistance.cxx
 
 
 
