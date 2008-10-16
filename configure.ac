@@ -72,8 +72,8 @@ PKG_CHECK_MODULES(GMERLIN, gmerlin >= 0.3.7,,
   AC_MSG_ERROR([*** gmerlin >= 0.3.7 not found - this program requires gmerlin >= 0.3.7 http://gmerlin.sourceforge.net/ ***]))
 CPPFLAGS="$CPPFLAGS $GMERLIN_CFLAGS"
 
-PKG_CHECK_MODULES(LIBQUICKTIME, libquicktime >= 1.0.2,,
-  AC_MSG_ERROR([*** libquicktime 1.0.2 not found - this program requires libquicktime >= 1.0.2 http://libquicktime.sourceforge.net/ ***]))
+PKG_CHECK_MODULES(LIBQUICKTIME, libquicktime >= 1.0.0,,
+  AC_MSG_ERROR([*** libquicktime 1.0.0 not found - this program requires libquicktime >= 1.0.0 http://libquicktime.sourceforge.net/ ***]))
 CPPFLAGS="$CPPFLAGS $LIBQUICKTIME_CFLAGS"
 
 PKG_CHECK_MODULES(JACK, jack, ac_jack_lib=yes, ac_jack_lib=no)
