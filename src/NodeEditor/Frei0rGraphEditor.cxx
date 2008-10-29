@@ -230,6 +230,8 @@ int Frei0rGraphEditor::handle( int event )
 			if ( m_current && m_output_drag < 0 && m_input_drag < 0 ) {
 				m_current->x = Fl::event_x() - x() - m_x_drag_offset;
 				m_current->y = Fl::event_y() - y() - m_y_drag_offset;
+				if ( m_current->x < 0 ) { m_current->x = 0; }
+				if ( m_current->y < 0 ) { m_current->y = 0; }
 				window()->redraw();
 				return 1;
 			} else if ( m_current && m_output_drag >= 0 ) {
@@ -286,6 +288,8 @@ int Frei0rGraphEditor::handle( int event )
 				} else {
 					m_current->x = Fl::event_x() - x() - m_x_drag_offset;
 					m_current->y = Fl::event_y() - y() - m_y_drag_offset;
+					if ( m_current->x < 0 ) { m_current->x = 0; }
+					if ( m_current->y < 0 ) { m_current->y = 0; }
 					m_current = 0;
 				}
 				window()->redraw();
