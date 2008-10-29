@@ -23,6 +23,7 @@
 #include "timeline/Clip.H"
 
 #include <string>
+#include <cstring>
 #include <iostream>
 
 namespace nle

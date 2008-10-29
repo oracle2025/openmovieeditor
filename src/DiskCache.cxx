@@ -24,6 +24,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <cerrno>
+#include <cstring>
 
 #include "DiskCache.H"
 #include "globals.H"

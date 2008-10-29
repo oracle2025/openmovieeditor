@@ -10,6 +10,7 @@
 #include "DocManager.H"
 #include "DragBox.H"
 #include <cassert>
+#include <cstring>
 
 namespace nle
 {
