@@ -29,8 +29,7 @@ decl {\#include <sstream>} {global
 decl {\#include "RenderDialog/RenderDialog.H"} {global
 } 
 
-class NleUI {open
-} {
+class NleUI {} {
   Function {NleUI()} {open
   } {
     Fl_Window mainWindow {
@@ -45,7 +44,7 @@ if ( Fl::event()==FL_CLOSE ) {
       xywh {518 98 700 600} type Double resizable size_range {450 380 0 0} visible
     } {
       Fl_Menu_Bar {} {
-        label {Black Borders}
+        label {Black Borders} open
         xywh {0 0 530 25}
       } {
         Submenu {} {
@@ -130,15 +129,6 @@ while (dlg.shown())
 
 
 SmilExportDialog dlg;
-
-dlg.show();
-while (dlg.shown())
-  Fl::wait();}
-            xywh {0 0 100 20} divider
-          }
-          MenuItem {} {
-            label {Master Effects...}
-            callback {MasterEffectDialog dlg;
 
 dlg.show();
 while (dlg.shown())
@@ -468,7 +458,7 @@ m_videoView->redraw();}
               }
             }
           }
-          Fl_Group preview_tile_group {selected
+          Fl_Group preview_tile_group {
             xywh {0 25 365 320}
           } {
             Fl_Tabs tab_view {open
@@ -1338,124 +1328,6 @@ track_choice->value(0);} {}
 } 
 
 decl {bool g_lock;} {public
-} 
-
-class MasterEffectDialog {open
-} {
-  Function {MasterEffectDialog()} {open
-  } {
-    Fl_Window dialog_window {
-      label {Master Effects} open
-      xywh {654 296 555 425} type Double resizable visible
-    } {
-      Fl_Box {} {
-        label {Master Effects}
-        xywh {0 0 555 45} labelfont 1 labelsize 16
-      }
-      Fl_Return_Button {} {
-        label Close
-        callback {o->window()->hide();}
-        xywh {10 390 535 25}
-      }
-      Fl_Browser effect_pipes_browser {
-        label {Named Effect Pipes}
-        callback {filter_scroll->setClip( 0 );
-if ( o->value() <= 0 ) {
-	
-	return;
-}
-nle::master_effects* me = (nle::master_effects*)o->data( o->value() );
-std::cout << me << " " << me->filters << std::endl;
-filter_scroll->setClip( me->filters );}
-        xywh {10 70 225 280} type Hold labelfont 1 align 5
-        code0 {\#include "MasterEffectClip.H"}
-      }
-      Fl_Button {} {
-        label {@+}
-        callback {const char* s = fl_input("Enter the name for the new chain!", "New Filter Chain" );
-if ( s ) {
-	effect_pipes_browser->add( s, nle::g_timeline->appendMasterChain( s ) );
-	effect_pipes_browser->value( effect_pipes_browser->size() );
-}}
-        xywh {10 350 25 25}
-      }
-      Fl_Button {} {
-        label {-}
-        callback {int x = effect_pipes_browser->value();
-if ( x > 0 ) {
-	nle::g_timeline->deleteMasterChain( x );
-	effect_pipes_browser->remove( x );
-}}
-        xywh {40 350 25 25} labelfont 1 labelsize 31
-      }
-      Fl_Button {} {
-        label {Rename ...}
-        callback {if ( effect_pipes_browser->value() <= 0 ) {
-	return;
-}
-const char* s1 = effect_pipes_browser->text( effect_pipes_browser->value() );
-const char* s = fl_input("Enter the name for the chain '%s'!", s1, s1 );
-if ( s ) {
-	nle::g_timeline->renameMasterChain( effect_pipes_browser->value(), s );
-	effect_pipes_browser->text( effect_pipes_browser->value(), s );
-}}
-        xywh {70 350 165 25}
-      }
-      Fl_Menu_Button effect_menu {
-        label {Add Effect} open
-        xywh {310 70 235 25}
-        code0 {\#include "MasterEffectMenu.H"}
-        class {nle::MasterEffectMenu}
-      } {}
-      Fl_Value_Input {} {
-        label W
-        xywh {255 95 50 25}
-      }
-      Fl_Value_Input {} {
-        label H
-        xywh {255 125 50 25}
-      }
-      Fl_Button {} {
-        label Set
-        xywh {255 155 50 25}
-      }
-      Fl_Box {} {
-        label Effects
-        xywh {310 45 235 25} labelfont 1 align 22
-      }
-      Fl_Scroll filter_scroll {
-        callback {if ( effect_pipes_browser->value() <= 0 ) {
-	return;
-}
-nle::master_effects* me = (nle::master_effects*)effect_pipes_browser->data( effect_pipes_browser->value() );
-filter_scroll->setClip( me->filters );} open
-        xywh {310 95 235 280} box BORDER_BOX
-        code0 {\#include "FilterScroll.H"}
-        class {nle::FilterScroll}
-      } {}
-    }
-    code {nle::g_mainFilterFactory->addAll( effect_menu );
-effect_menu->m_filter_scroll = filter_scroll;
-
-nle::master_effects* n = nle::g_timeline->getMasterEffects();
-
-while ( n ) {
-	effect_pipes_browser->add( n->name.c_str(), n );
-	n = n->next;
-}} {}
-  }
-  Function {~MasterEffectDialog()} {open
-  } {
-    code {delete dialog_window;} {}
-  }
-  Function {show()} {open
-  } {
-    code {dialog_window->show();} {}
-  }
-  Function {shown()} {open return_type int
-  } {
-    code {return dialog_window->shown();} {}
-  }
 } 
 
 class ClipInfoDialog {open

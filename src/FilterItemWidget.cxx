@@ -10,7 +10,6 @@
 #include "DocManager.H"
 #include "DragBox.H"
 #include <cassert>
-#include "MasterEffectClip.H"
 
 namespace nle
 {
@@ -70,13 +69,8 @@ void FilterItemWidget::cb_Remove_i( Fl_Button* o )
 		c++;
 		es = es->next;
 	}
-	if ( dynamic_cast<MasterEffectClip*>(m_clip) ) {
-		m_clip->removeFilter( c );
-	} else {
-		Command* cmd = new FilterRemoveCommand( m_clip, c );
-		submit( cmd );
-	}
-	//TODO: Don't do this for the Master Effect List
+	Command* cmd = new FilterRemoveCommand( m_clip, c );
+	submit( cmd );
 	parent()->parent()->parent()->do_callback();
 }
 void FilterItemWidget::cb_Remove( Fl_Button* o, void* v )

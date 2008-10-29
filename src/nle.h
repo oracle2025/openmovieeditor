@@ -62,8 +62,6 @@ private:
   static void cb_Export(Fl_Menu_*, void*);
   void cb_Export1_i(Fl_Menu_*, void*);
   static void cb_Export1(Fl_Menu_*, void*);
-  void cb_Master_i(Fl_Menu_*, void*);
-  static void cb_Master(Fl_Menu_*, void*);
   void cb_Quit_i(Fl_Menu_*, void*);
   static void cb_Quit(Fl_Menu_*, void*);
 public:
@@ -395,38 +393,6 @@ public:
   ~SrtExportDialog();
 };
 extern bool g_lock; 
-#include "MasterEffectClip.H"
-#include "MasterEffectMenu.H"
-
-class MasterEffectDialog {
-public:
-  MasterEffectDialog();
-  Fl_Double_Window *dialog_window;
-private:
-  void cb_Close1_i(Fl_Return_Button*, void*);
-  static void cb_Close1(Fl_Return_Button*, void*);
-public:
-  Fl_Browser *effect_pipes_browser;
-private:
-  void cb_effect_pipes_browser_i(Fl_Browser*, void*);
-  static void cb_effect_pipes_browser(Fl_Browser*, void*);
-  void cb_3_i(Fl_Button*, void*);
-  static void cb_3(Fl_Button*, void*);
-  void cb_5_i(Fl_Button*, void*);
-  static void cb_5(Fl_Button*, void*);
-  void cb_Rename_i(Fl_Button*, void*);
-  static void cb_Rename(Fl_Button*, void*);
-public:
-  nle::MasterEffectMenu *effect_menu;
-  nle::FilterScroll *filter_scroll;
-private:
-  void cb_filter_scroll1_i(nle::FilterScroll*, void*);
-  static void cb_filter_scroll1(nle::FilterScroll*, void*);
-public:
-  ~MasterEffectDialog();
-  void show();
-  int shown();
-};
 #include <FL/Fl_Output.H>
 
 class ClipInfoDialog {
@@ -440,8 +406,8 @@ public:
   Fl_Output *clip_aspect_out;
   Fl_Output *clip_interlacing_out;
 private:
-  void cb_Close2_i(Fl_Return_Button*, void*);
-  static void cb_Close2(Fl_Return_Button*, void*);
+  void cb_Close1_i(Fl_Return_Button*, void*);
+  static void cb_Close1(Fl_Return_Button*, void*);
 public:
   ~ClipInfoDialog();
   void show();

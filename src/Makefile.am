@@ -70,7 +70,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	strlcpy.h\
 	FilmStrip.H\
 	IVideoFile.H\
-	RenderDialog.H\
 	VideoClip.H\
 	AudioClip.H\
 	Flmm_Scalebar.H\
@@ -225,7 +224,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	ImageClip.H\
 	InkscapeClip.cxx\
 	InkscapeClip.H\
-	frame_struct.h\
 	Flmm_Cursor_Shape.cxx\
 	Flmm_Cursor_Shape.H\
 	FilterScroll.H\
@@ -237,10 +235,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	EffectDialogButtonWidget.cxx\
 	DragBox.H\
 	DragBox.cxx\
-	MasterEffectClip.H\
-	MasterEffectClip.cxx\
-	MasterEffectMenu.H\
-	MasterEffectMenu.cxx\
 	AudioFileGmerlin.H\
 	AudioFileGmerlin.cxx\
 	VideoFileGmerlin.H\

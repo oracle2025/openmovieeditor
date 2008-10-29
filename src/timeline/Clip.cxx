@@ -27,7 +27,6 @@ namespace nle
 
 Clip::Clip( Track *track, int64_t position, int id )
 {
-	m_master_effect = 0;
 	m_position = position;
 	m_track = track;
 	m_trimA = 0;

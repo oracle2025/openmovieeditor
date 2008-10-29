@@ -104,11 +104,6 @@ LazyFrame* VideoEffectClip::getFrame( int64_t position )
 		if ( !effect ) { continue; }
 		f = effect->getFrame( f, position_in_file );
 	}
-	// TODO: Apply Master Effects!
-	
-	if ( m_filterClip && m_filterClip->m_master_effect > 0 ) {
-		f = g_timeline->applyMasterEffect( f, m_filterClip->m_master_effect );
-	}
 
 	// TODO: Copy pixel aspect
 	//f->render_strategy = m_render_strategy;
