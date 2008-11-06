@@ -612,11 +612,43 @@ void CustomFormatDialog::cb_audio_bitrate(Fl_Value_Input* o, void* v) {
   ((CustomFormatDialog*)(o->parent()->user_data()))->cb_audio_bitrate_i(o,v);
 }
 
+void CustomFormatDialog::cb_Quicktime_i(Fl_Menu_*, void*) {
+  nle::setAudioCodecMenu( audio_codec_menu, LQT_FILE_QT );
+nle::setVideoCodecMenu( video_codec_menu, LQT_FILE_QT );
+}
+void CustomFormatDialog::cb_Quicktime(Fl_Menu_* o, void* v) {
+  ((CustomFormatDialog*)(o->parent()->user_data()))->cb_Quicktime_i(o,v);
+}
+
+void CustomFormatDialog::cb_AVI_i(Fl_Menu_*, void*) {
+  nle::setAudioCodecMenu( audio_codec_menu, LQT_FILE_AVI_ODML );
+nle::setVideoCodecMenu( video_codec_menu, LQT_FILE_AVI_ODML );
+}
+void CustomFormatDialog::cb_AVI(Fl_Menu_* o, void* v) {
+  ((CustomFormatDialog*)(o->parent()->user_data()))->cb_AVI_i(o,v);
+}
+
+void CustomFormatDialog::cb_MP4_i(Fl_Menu_*, void*) {
+  nle::setAudioCodecMenu( audio_codec_menu, LQT_FILE_MP4 );
+nle::setVideoCodecMenu( video_codec_menu, LQT_FILE_MP4 );
+}
+void CustomFormatDialog::cb_MP4(Fl_Menu_* o, void* v) {
+  ((CustomFormatDialog*)(o->parent()->user_data()))->cb_MP4_i(o,v);
+}
+
+void CustomFormatDialog::cb_3GP_i(Fl_Menu_*, void*) {
+  nle::setAudioCodecMenu( audio_codec_menu, LQT_FILE_3GP );
+nle::setVideoCodecMenu( video_codec_menu, LQT_FILE_3GP );
+}
+void CustomFormatDialog::cb_3GP(Fl_Menu_* o, void* v) {
+  ((CustomFormatDialog*)(o->parent()->user_data()))->cb_3GP_i(o,v);
+}
+
 Fl_Menu_Item CustomFormatDialog::menu_lqt_container_menu[] = {
- {"Quicktime (.mov)", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"AVI", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"MP4", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"3GP", 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Quicktime (.mov)", 0,  (Fl_Callback*)CustomFormatDialog::cb_Quicktime, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"AVI", 0,  (Fl_Callback*)CustomFormatDialog::cb_AVI, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"MP4", 0,  (Fl_Callback*)CustomFormatDialog::cb_MP4, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"3GP", 0,  (Fl_Callback*)CustomFormatDialog::cb_3GP, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0}
 };
 
@@ -726,8 +758,8 @@ m_preset = new nle::EncodingPreset();
     dialog_window->set_modal();
     dialog_window->end();
   } // Fl_Double_Window* dialog_window
-  nle::setAudioCodecMenu( audio_codec_menu );
-nle::setVideoCodecMenu( video_codec_menu );
+  nle::setAudioCodecMenu( audio_codec_menu, LQT_FILE_QT );
+nle::setVideoCodecMenu( video_codec_menu, LQT_FILE_QT );
 go = false;
 frame_size_w->range(1,2048);
 frame_size_h->range(1,2048);
@@ -860,6 +892,8 @@ frame_size_h->value(fmt.h);
 interlacing->value(fmt.interlacing);
 pixel_aspect_ratio->value(nle::pixel_aspect_ratio_to_string(fmt.pixel_aspect_ratio));
 
+nle::setAudioCodecMenu( audio_codec_menu, m_preset->m_file_type );
+nle::setVideoCodecMenu( video_codec_menu, m_preset->m_file_type );
 
 int len = video_codec_menu->size();
 for ( int i = 0; i < len; i++ ) {

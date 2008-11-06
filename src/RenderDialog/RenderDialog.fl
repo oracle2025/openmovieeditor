@@ -470,7 +470,7 @@ class CustomFormatDialog {open
 video_codec = 0;
 m_preset = new nle::EncodingPreset();} {}
     Fl_Window dialog_window {
-      label {Custom Video Format} open selected
+      label {Custom Video Format} open
       xywh {576 312 690 405} type Double modal visible
     } {
       Fl_Box {} {
@@ -688,24 +688,32 @@ o->window()->hide();}
       } {
         MenuItem {} {
           label {Quicktime (.mov)}
+          callback {nle::setAudioCodecMenu( audio_codec_menu, LQT_FILE_QT );
+nle::setVideoCodecMenu( video_codec_menu, LQT_FILE_QT );}
           xywh {0 0 100 20}
         }
         MenuItem {} {
           label AVI
+          callback {nle::setAudioCodecMenu( audio_codec_menu, LQT_FILE_AVI_ODML );
+nle::setVideoCodecMenu( video_codec_menu, LQT_FILE_AVI_ODML );}
           xywh {0 0 100 20}
         }
         MenuItem {} {
           label MP4
+          callback {nle::setAudioCodecMenu( audio_codec_menu, LQT_FILE_MP4 );
+nle::setVideoCodecMenu( video_codec_menu, LQT_FILE_MP4 );}
           xywh {0 0 100 20}
         }
         MenuItem {} {
           label 3GP
+          callback {nle::setAudioCodecMenu( audio_codec_menu, LQT_FILE_3GP );
+nle::setVideoCodecMenu( video_codec_menu, LQT_FILE_3GP );}
           xywh {0 0 100 20}
         }
       }
     }
-    code {nle::setAudioCodecMenu( audio_codec_menu );
-nle::setVideoCodecMenu( video_codec_menu );
+    code {nle::setAudioCodecMenu( audio_codec_menu, LQT_FILE_QT );
+nle::setVideoCodecMenu( video_codec_menu, LQT_FILE_QT );
 go = false;
 frame_size_w->range(1,2048);
 frame_size_h->range(1,2048);
@@ -824,7 +832,8 @@ switch ( lqt_container_menu->value() ) {
 return preset;} {}
   }
   decl {bool go;} {}
-  Function {setEncodingPreset(nle::EncodingPreset* preset)} {} {
+  Function {setEncodingPreset(nle::EncodingPreset* preset)} {open
+  } {
     code {nle::video_format fmt;
 preset->getFormat(&fmt);
 
@@ -837,6 +846,8 @@ frame_size_h->value(fmt.h);
 interlacing->value(fmt.interlacing);
 pixel_aspect_ratio->value(nle::pixel_aspect_ratio_to_string(fmt.pixel_aspect_ratio));
 
+nle::setAudioCodecMenu( audio_codec_menu, m_preset->m_file_type );
+nle::setVideoCodecMenu( video_codec_menu, m_preset->m_file_type );
 
 int len = video_codec_menu->size();
 for ( int i = 0; i < len; i++ ) {
@@ -909,7 +920,8 @@ switch ( m_preset->m_file_type ) {
 		lqt_container_menu->value( 3 );
 		break;
 }
-\#endif} {}
+\#endif} {selected
+    }
   }
 } 
 

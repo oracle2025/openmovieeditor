@@ -35,8 +35,8 @@ class TiXmlElement;
 namespace nle
 {
 
-void setAudioCodecMenu( Fl_Choice* menu );
-void setVideoCodecMenu( Fl_Choice* menu );
+void setAudioCodecMenu( Fl_Choice* menu, lqt_file_type_t type );
+void setVideoCodecMenu( Fl_Choice* menu, lqt_file_type_t type );
 
 void setCodecInfo( CodecOptions* dialog, void* data );
 
