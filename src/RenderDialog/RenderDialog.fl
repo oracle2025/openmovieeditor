@@ -857,7 +857,7 @@ for ( int i = 0; i < len; i++ ) {
 		video_codec = codec_info;
 		m_preset->setVideoCodec( (lqt_codec_info_t*)video_codec );
 		video_bitrate->value( m_preset->bitrate() );
-		if ( video_bitrate->value() < 0 ) {
+		if ( video_bitrate->value() <= 0 ) {
 			video_bitrate->deactivate();
 		} else {
 			video_bitrate->activate();
@@ -875,7 +875,7 @@ for ( int i = 0; i < len; i++ ) {
 		audio_codec = codec_info;
 		m_preset->setAudioCodec( (lqt_codec_info_t*)audio_codec );
 		audio_bitrate->value( m_preset->audiobitrate() );
-		if ( audio_bitrate->value() < 0 ) {
+		if ( audio_bitrate->value() <= 0 ) {
 			audio_bitrate->deactivate();
 		} else {
 			audio_bitrate->activate();

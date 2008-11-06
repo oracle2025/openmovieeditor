@@ -69,6 +69,7 @@ void setAudioCodecMenu( Fl_Choice* menu, lqt_file_type_t type )
 		name += info[i]->name;
 		menu->add( escape_slash(name).c_str(), 0, 0, info[i] );
 	}
+	menu->value( 0 );
 }
 void setVideoCodecMenu( Fl_Choice* menu, lqt_file_type_t type )
 {
@@ -83,6 +84,7 @@ void setVideoCodecMenu( Fl_Choice* menu, lqt_file_type_t type )
 		name += info[i]->name;
 		menu->add( escape_slash(name).c_str(), 0, 0, info[i] );
 	}
+	menu->value( 0 );
 }
 
 void setCodecInfo( CodecOptions* dialog, void* data )
