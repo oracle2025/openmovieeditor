@@ -448,8 +448,7 @@ TiXmlText* text = new TiXmlText( export_filename->value() );
 item->LinkEndChild( text );
 
 doc.SaveFile();
-delete dialog_window;} {selected
-    }
+delete dialog_window;} {}
   }
   Function {shown()} {open return_type int
   } {
@@ -471,11 +470,11 @@ class CustomFormatDialog {open
 video_codec = 0;
 m_preset = new nle::EncodingPreset();} {}
     Fl_Window dialog_window {
-      label {Custom Video Format} open
-      xywh {576 312 690 385} type Double modal visible
+      label {Custom Video Format} open selected
+      xywh {576 312 690 405} type Double modal visible
     } {
       Fl_Box {} {
-        xywh {350 60 330 285} box ENGRAVED_FRAME labelfont 1 align 5
+        xywh {350 110 330 260} box ENGRAVED_FRAME labelfont 1 align 5
       }
       Fl_Box {} {
         label {Custom Video Format}
@@ -491,7 +490,7 @@ if ( video_bitrate->value() < 0 ) {
 } else {
 	video_bitrate->activate();
 }} open
-        xywh {125 70 205 25} down_box BORDER_BOX
+        xywh {125 120 205 25} down_box BORDER_BOX
       } {}
       Fl_Button video_options {
         label {Options...}
@@ -506,7 +505,7 @@ if ( video_bitrate->value() < 0 ) {
 		Fl::wait();
 	video_bitrate->value( m_preset->bitrate() );
 }}
-        private xywh {255 100 75 25}
+        private xywh {255 150 75 25}
       }
       Fl_Choice audio_codec_menu {
         label {Audio Codec}
@@ -518,7 +517,7 @@ if ( audio_bitrate->value() < 0 ) {
 } else {
 	audio_bitrate->activate();
 }} open
-        xywh {125 220 205 25} down_box BORDER_BOX
+        xywh {125 245 205 25} down_box BORDER_BOX
         code1 {\#include <iostream>}
         code2 {using namespace std;}
       } {}
@@ -535,11 +534,11 @@ if ( audio_bitrate->value() < 0 ) {
 		Fl::wait();
 	audio_bitrate->value( m_preset->audiobitrate() );
 }}
-        private xywh {255 250 75 25}
+        private xywh {255 275 75 25}
       }
       Fl_Choice samplerate {
         label Samplerate open
-        xywh {125 280 205 25} down_box BORDER_BOX
+        xywh {125 305 205 25} down_box BORDER_BOX
       } {
         MenuItem {} {
           label 48000
@@ -548,15 +547,15 @@ if ( audio_bitrate->value() < 0 ) {
       }
       Fl_Input name {
         label {Preset Name}
-        xywh {495 70 150 25}
+        xywh {495 120 150 25}
       }
       Fl_Button {} {
         label {@-3<-}
-        tooltip Generate xywh {645 70 25 25}
+        tooltip Generate xywh {645 120 25 25}
       }
       Fl_Choice frame_rate_choice {
         label Framerate open
-        xywh {495 100 175 25} down_box BORDER_BOX
+        xywh {495 150 175 25} down_box BORDER_BOX
       } {
         MenuItem {} {
           label {25 (PAL)}
@@ -591,18 +590,18 @@ if ( audio_bitrate->value() < 0 ) {
       }
       Fl_Spinner frame_size_w {
         label Framesize
-        xywh {495 130 85 25} value 1
+        xywh {495 180 85 25} value 1
       }
       Fl_Spinner frame_size_h {
-        xywh {585 130 85 25} value 1
+        xywh {585 180 85 25} value 1
       }
       Fl_Box {} {
         label Video
-        xywh {10 60 330 130} box ENGRAVED_FRAME labelfont 1 align 5
+        xywh {10 110 330 105} box ENGRAVED_FRAME labelfont 1 align 5
       }
       Fl_Choice interlacing {
         label Interlacing open
-        xywh {495 160 175 25} down_box BORDER_BOX
+        xywh {495 210 175 25} down_box BORDER_BOX
       } {
         MenuItem {} {
           label None
@@ -621,28 +620,28 @@ if ( audio_bitrate->value() < 0 ) {
         label {Save Custom Format}
         callback {go = true;
 o->window()->hide();}
-        xywh {350 350 330 25}
+        xywh {350 375 330 25}
       }
       Fl_Box {} {
         label Audio
-        xywh {10 210 330 135} box ENGRAVED_FRAME labelfont 1 align 5
+        xywh {10 235 330 135} box ENGRAVED_FRAME labelfont 1 align 5
       }
       Fl_Check_Button {} {
         label {Render Video}
-        xywh {20 100 235 25} down_box DOWN_BOX value 1 deactivate
+        xywh {20 150 235 25} down_box DOWN_BOX value 1 deactivate
       }
       Fl_Check_Button {} {
         label {Render Audio}
-        xywh {20 250 230 25} down_box DOWN_BOX value 1 deactivate
+        xywh {20 275 230 25} down_box DOWN_BOX value 1 deactivate
       }
       Fl_Button {} {
         label Cancel
         callback {o->window()->hide();}
-        xywh {10 350 330 25}
+        xywh {10 375 330 25}
       }
       Fl_Input_Choice pixel_aspect_ratio {
         label {Pixel Aspect Ratio} open
-        xywh {495 190 175 25}
+        xywh {495 240 175 25}
       } {
         MenuItem {} {
           label 1
@@ -672,16 +671,20 @@ o->window()->hide();}
       Fl_Value_Input video_bitrate {
         label {Bitrate (kbps)}
         callback {m_preset->bitrate( video_bitrate->value() );}
-        xywh {255 130 75 25} maximum 10000 step 1 value 8192
+        xywh {255 180 75 25} maximum 10000 step 1 value 8192
       }
       Fl_Value_Input audio_bitrate {
         label {Bitrate (kbps)}
         callback {m_preset->audiobitrate( audio_bitrate->value() );}
-        xywh {255 310 75 25} maximum 10000 step 1 value 128
+        xywh {255 335 75 25} maximum 10000 step 1 value 128
+      }
+      Fl_Box {} {
+        label Container
+        xywh {10 45 670 45} box ENGRAVED_FRAME labelfont 1 align 5
       }
       Fl_Choice lqt_container_menu {
-        label Container open
-        xywh {495 220 175 25} down_box BORDER_BOX
+        label {File Type} open
+        xywh {210 55 255 25} down_box BORDER_BOX labelfont 1
       } {
         MenuItem {} {
           label {Quicktime (.mov)}

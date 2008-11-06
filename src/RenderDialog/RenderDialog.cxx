@@ -624,9 +624,9 @@ CustomFormatDialog::CustomFormatDialog() {
   audio_codec = 0;
 video_codec = 0;
 m_preset = new nle::EncodingPreset();
-  { dialog_window = new Fl_Double_Window(690, 385, "Custom Video Format");
+  { dialog_window = new Fl_Double_Window(690, 405, "Custom Video Format");
     dialog_window->user_data((void*)(this));
-    { Fl_Box* o = new Fl_Box(350, 60, 330, 285);
+    { Fl_Box* o = new Fl_Box(350, 110, 330, 260);
       o->box(FL_ENGRAVED_FRAME);
       o->labelfont(1);
       o->align(FL_ALIGN_TOP_LEFT);
@@ -635,86 +635,92 @@ m_preset = new nle::EncodingPreset();
       o->labelfont(1);
       o->labelsize(16);
     } // Fl_Box* o
-    { video_codec_menu = new Fl_Choice(125, 70, 205, 25, "Video Codec");
+    { video_codec_menu = new Fl_Choice(125, 120, 205, 25, "Video Codec");
       video_codec_menu->down_box(FL_BORDER_BOX);
       video_codec_menu->callback((Fl_Callback*)cb_video_codec_menu);
     } // Fl_Choice* video_codec_menu
-    { video_options = new Fl_Button(255, 100, 75, 25, "Options...");
+    { video_options = new Fl_Button(255, 150, 75, 25, "Options...");
       video_options->callback((Fl_Callback*)cb_video_options);
     } // Fl_Button* video_options
-    { audio_codec_menu = new Fl_Choice(125, 220, 205, 25, "Audio Codec");
+    { audio_codec_menu = new Fl_Choice(125, 245, 205, 25, "Audio Codec");
       audio_codec_menu->down_box(FL_BORDER_BOX);
       audio_codec_menu->callback((Fl_Callback*)cb_audio_codec_menu);
     } // Fl_Choice* audio_codec_menu
-    { audio_options = new Fl_Button(255, 250, 75, 25, "Options...");
+    { audio_options = new Fl_Button(255, 275, 75, 25, "Options...");
       audio_options->callback((Fl_Callback*)cb_audio_options);
     } // Fl_Button* audio_options
-    { samplerate = new Fl_Choice(125, 280, 205, 25, "Samplerate");
+    { samplerate = new Fl_Choice(125, 305, 205, 25, "Samplerate");
       samplerate->down_box(FL_BORDER_BOX);
       samplerate->menu(menu_samplerate);
     } // Fl_Choice* samplerate
-    { name = new Fl_Input(495, 70, 150, 25, "Preset Name");
+    { name = new Fl_Input(495, 120, 150, 25, "Preset Name");
     } // Fl_Input* name
-    { Fl_Button* o = new Fl_Button(645, 70, 25, 25, "@-3<-");
+    { Fl_Button* o = new Fl_Button(645, 120, 25, 25, "@-3<-");
       o->tooltip("Generate");
     } // Fl_Button* o
-    { frame_rate_choice = new Fl_Choice(495, 100, 175, 25, "Framerate");
+    { frame_rate_choice = new Fl_Choice(495, 150, 175, 25, "Framerate");
       frame_rate_choice->down_box(FL_BORDER_BOX);
       frame_rate_choice->menu(menu_frame_rate_choice);
     } // Fl_Choice* frame_rate_choice
-    { frame_size_w = new Fl_Spinner(495, 130, 85, 25, "Framesize");
+    { frame_size_w = new Fl_Spinner(495, 180, 85, 25, "Framesize");
       frame_size_w->value(1);
     } // Fl_Spinner* frame_size_w
-    { frame_size_h = new Fl_Spinner(585, 130, 85, 25);
+    { frame_size_h = new Fl_Spinner(585, 180, 85, 25);
       frame_size_h->value(1);
     } // Fl_Spinner* frame_size_h
-    { Fl_Box* o = new Fl_Box(10, 60, 330, 130, "Video");
+    { Fl_Box* o = new Fl_Box(10, 110, 330, 105, "Video");
       o->box(FL_ENGRAVED_FRAME);
       o->labelfont(1);
       o->align(FL_ALIGN_TOP_LEFT);
     } // Fl_Box* o
-    { interlacing = new Fl_Choice(495, 160, 175, 25, "Interlacing");
+    { interlacing = new Fl_Choice(495, 210, 175, 25, "Interlacing");
       interlacing->down_box(FL_BORDER_BOX);
       interlacing->menu(menu_interlacing);
     } // Fl_Choice* interlacing
-    { Fl_Return_Button* o = new Fl_Return_Button(350, 350, 330, 25, "Save Custom Format");
+    { Fl_Return_Button* o = new Fl_Return_Button(350, 375, 330, 25, "Save Custom Format");
       o->callback((Fl_Callback*)cb_Save);
     } // Fl_Return_Button* o
-    { Fl_Box* o = new Fl_Box(10, 210, 330, 135, "Audio");
+    { Fl_Box* o = new Fl_Box(10, 235, 330, 135, "Audio");
       o->box(FL_ENGRAVED_FRAME);
       o->labelfont(1);
       o->align(FL_ALIGN_TOP_LEFT);
     } // Fl_Box* o
-    { Fl_Check_Button* o = new Fl_Check_Button(20, 100, 235, 25, "Render Video");
+    { Fl_Check_Button* o = new Fl_Check_Button(20, 150, 235, 25, "Render Video");
       o->down_box(FL_DOWN_BOX);
       o->value(1);
       o->deactivate();
     } // Fl_Check_Button* o
-    { Fl_Check_Button* o = new Fl_Check_Button(20, 250, 230, 25, "Render Audio");
+    { Fl_Check_Button* o = new Fl_Check_Button(20, 275, 230, 25, "Render Audio");
       o->down_box(FL_DOWN_BOX);
       o->value(1);
       o->deactivate();
     } // Fl_Check_Button* o
-    { Fl_Button* o = new Fl_Button(10, 350, 330, 25, "Cancel");
+    { Fl_Button* o = new Fl_Button(10, 375, 330, 25, "Cancel");
       o->callback((Fl_Callback*)cb_Cancel1);
     } // Fl_Button* o
-    { pixel_aspect_ratio = new Fl_Input_Choice(495, 190, 175, 25, "Pixel Aspect Ratio");
+    { pixel_aspect_ratio = new Fl_Input_Choice(495, 240, 175, 25, "Pixel Aspect Ratio");
       pixel_aspect_ratio->menu(menu_pixel_aspect_ratio);
     } // Fl_Input_Choice* pixel_aspect_ratio
-    { video_bitrate = new Fl_Value_Input(255, 130, 75, 25, "Bitrate (kbps)");
+    { video_bitrate = new Fl_Value_Input(255, 180, 75, 25, "Bitrate (kbps)");
       video_bitrate->maximum(10000);
       video_bitrate->step(1);
       video_bitrate->value(8192);
       video_bitrate->callback((Fl_Callback*)cb_video_bitrate);
     } // Fl_Value_Input* video_bitrate
-    { audio_bitrate = new Fl_Value_Input(255, 310, 75, 25, "Bitrate (kbps)");
+    { audio_bitrate = new Fl_Value_Input(255, 335, 75, 25, "Bitrate (kbps)");
       audio_bitrate->maximum(10000);
       audio_bitrate->step(1);
       audio_bitrate->value(128);
       audio_bitrate->callback((Fl_Callback*)cb_audio_bitrate);
     } // Fl_Value_Input* audio_bitrate
-    { lqt_container_menu = new Fl_Choice(495, 220, 175, 25, "Container");
+    { Fl_Box* o = new Fl_Box(10, 45, 670, 45, "Container");
+      o->box(FL_ENGRAVED_FRAME);
+      o->labelfont(1);
+      o->align(FL_ALIGN_TOP_LEFT);
+    } // Fl_Box* o
+    { lqt_container_menu = new Fl_Choice(210, 55, 255, 25, "File Type");
       lqt_container_menu->down_box(FL_BORDER_BOX);
+      lqt_container_menu->labelfont(1);
       lqt_container_menu->menu(menu_lqt_container_menu);
     } // Fl_Choice* lqt_container_menu
     dialog_window->set_modal();
