@@ -84,7 +84,7 @@ AudioFileGmerlin::AudioFileGmerlin( string filename )
 	m_samples_per_frame = 0;
 	m_converter = gavl_audio_converter_create();
 	gavl_audio_converter_init( m_converter, &m_format, &m_float_format );
-	m_frame2 = gavl_audio_frame_create( 0 );
+	m_frame2 = gavl_audio_frame_create( &m_float_format );
 	//Create converter that transforms audio to 2chan float interleaved,
 	//resampling happens outside.
 	m_ok = true;
@@ -96,7 +96,6 @@ AudioFileGmerlin::~AudioFileGmerlin()
 		gavl_audio_frame_destroy( m_frame1 );
 	}
 	if ( m_frame2 ) {
-		gavl_audio_frame_null( m_frame2 );
 		gavl_audio_frame_destroy( m_frame2 );
 	}
 	m_frame1 = 0;
@@ -105,27 +104,29 @@ AudioFileGmerlin::~AudioFileGmerlin()
 void AudioFileGmerlin::seek( int64_t sample )
 {
 	bgav_seek_audio( m_file, 0, sample );
-	gavl_audio_converter_reinit( m_converter );
 }
-void AudioFileGmerlin::init_converter( unsigned long frames )
+void AudioFileGmerlin::reinit_frame( unsigned long frames )
 {
 	m_samples_per_frame = frames;
 	m_format.samples_per_frame = frames;
 	m_float_format.samples_per_frame = frames;
-	gavl_audio_converter_init( m_converter, &m_format, &m_float_format );
 	if ( m_frame1 ) {
 		gavl_audio_frame_destroy( m_frame1 );
 	}
 	m_frame1 = gavl_audio_frame_create( &m_format );
+	gavl_audio_frame_destroy( m_frame2 );
+	m_frame2 = gavl_audio_frame_create( &m_float_format );
 }
 int AudioFileGmerlin::fillBuffer( float* output, unsigned long frames )
 {
 	if ( frames != m_samples_per_frame ) {
-		init_converter( frames );
+		reinit_frame( frames );
 	}
+	float* tmp = m_frame2->samples.f;
 	m_frame2->samples.f = output;
 	int ret = bgav_read_audio( m_file, m_frame1, 0, frames );
 	gavl_audio_convert( m_converter, m_frame1, m_frame2 );
+	m_frame2->samples.f = tmp;
 	return ret;
 }
 

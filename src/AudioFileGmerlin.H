@@ -50,7 +50,7 @@ class AudioFileGmerlin : public IAudioFile
 		gavl_audio_frame_t* m_frame2;
 		gavl_audio_converter_t* m_converter;
 		int m_samples_per_frame;
-		void init_converter( unsigned long frames );
+		void reinit_frame( unsigned long frames );
 		gavl_audio_format_t m_format;
 		gavl_audio_format_t m_float_format;
 };
