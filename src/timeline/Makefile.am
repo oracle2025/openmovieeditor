@@ -9,7 +9,7 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 noinst_LIBRARIES = libtimeline.a
-AM_CPPFLAGS = @CPPFLAGS@ -I$(top_srcdir)/src/sl
+AM_CPPFLAGS = -I$(top_srcdir)/src/sl @CPPFLAGS@
 libtimeline_a_SOURCES = \
 	Clip.cxx              \
   TimelineBase.cxx      \

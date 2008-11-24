@@ -10,7 +10,7 @@
 
 noinst_LIBRARIES = libRenderDialog.a
 EXTRA_DIST = RenderDialog.fl
-AM_CPPFLAGS = @CPPFLAGS@ -ggdb -I$(top_srcdir)/src -I$(top_srcdir)/src/sl -I$(top_srcdir)/src/tinyxml
+AM_CPPFLAGS = -ggdb -I$(top_srcdir)/src -I$(top_srcdir)/src/sl -I$(top_srcdir)/src/tinyxml @CPPFLAGS@
 libRenderDialog_a_SOURCES = \
 	EncodingPreset.cxx EncodingPreset.H  VideoWriterQT.cxx VideoWriterQT.H \
 	video_format.H\

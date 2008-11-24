@@ -14,7 +14,7 @@ SUBDIRS = tinyxml timeline ProgressDialog sl LoadSaveManager ErrorDialog \
 
 EXTRA_DIST = nle.fl FilterItemWidget.fl SaveAsDialog.fl
 #AM_CPPFLAGS = -ggdb -Wall -Werror @CPPFLAGS@ -I$(top_srcdir)/icons -I$(top_srcdir)/src -I$(top_srcdir)/src/tinyxml -I$(top_srcdir)/src/sl
-AM_CPPFLAGS =  -D__STDC_CONSTANT_MACROS -ggdb @CPPFLAGS@ -DINSTALL_PREFIX="\"$(prefix)\"" -I$(top_srcdir)/icons -I$(top_srcdir)/src -I$(top_srcdir)/src/tinyxml -I$(top_srcdir)/src/sl
+AM_CPPFLAGS =  -D__STDC_CONSTANT_MACROS -ggdb -DINSTALL_PREFIX="\"$(prefix)\"" -I$(top_srcdir)/icons -I$(top_srcdir)/src -I$(top_srcdir)/src/tinyxml -I$(top_srcdir)/src/sl @CPPFLAGS@
 
 bin_PROGRAMS = openmovieeditor
 openmovieeditor_LDADD = tinyxml/libtinyxml.a timeline/libtimeline.a\

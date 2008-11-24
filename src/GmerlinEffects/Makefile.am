@@ -9,7 +9,7 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 noinst_LIBRARIES = libGmerlinEffects.a
-AM_CPPFLAGS = @CPPFLAGS@ -ggdb -I$(top_srcdir)/src -I$(top_srcdir)/src/sl -I$(top_srcdir)/src/tinyxml
+AM_CPPFLAGS = -ggdb -I$(top_srcdir)/src -I$(top_srcdir)/src/sl -I$(top_srcdir)/src/tinyxml @CPPFLAGS@
 libGmerlinEffects_a_SOURCES = \
 GmerlinEffect.cxx  GmerlinFactory.cxx  GmerlinFactoryPlugin.cxx  GmerlinWidget.cxx    \
 GmerlinEffect.H    GmerlinFactory.H    GmerlinFactoryPlugin.H    GmerlinWidget.H

@@ -10,7 +10,7 @@
 
 noinst_LIBRARIES = libErrorDialog.a
 EXTRA_DIST = ErrorDialog.fl
-AM_CPPFLAGS = @CPPFLAGS@ -I$(top_srcdir)/src -I$(top_srcdir)/src/sl
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/src/sl @CPPFLAGS@
 libErrorDialog_a_SOURCES = \
 	ErrorDialog.cxx          \
 	FltkErrorHandler.cxx     \
