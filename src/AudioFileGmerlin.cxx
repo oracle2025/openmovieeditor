@@ -20,6 +20,7 @@
 
 #include "AudioFileGmerlin.H"
 #include "ErrorDialog/IErrorHandler.H"
+#include <cstring>
 namespace nle
 {
 
