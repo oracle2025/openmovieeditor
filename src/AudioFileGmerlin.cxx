@@ -122,11 +122,16 @@ int AudioFileGmerlin::fillBuffer( float* output, unsigned long frames )
 	if ( frames != m_samples_per_frame ) {
 		reinit_frame( frames );
 	}
-	float* tmp = m_frame2->samples.f;
-	m_frame2->samples.f = output;
+
+	/*float* tmp = m_frame2->samples.f;
+	m_frame2->samples.f = output;*/
+
 	int ret = bgav_read_audio( m_file, m_frame1, 0, frames );
 	gavl_audio_convert( m_converter, m_frame1, m_frame2 );
-	m_frame2->samples.f = tmp;
+	memcpy( output, m_frame2->samples.f, sizeof(float) * frames * 2 );
+
+	/*m_frame2->samples.f = tmp;*/
+
 	return ret;
 }
 
