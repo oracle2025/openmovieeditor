@@ -18,12 +18,14 @@
  */
 
 #include <FL/Fl_Shared_Image.H>
+#include <FL/Fl_RGB_Image.H>
+
+extern "C" {
+#include <gmerlin/avdec.h>
+}
 
 #include "VideoThumbnails.H"
 #include "DiskCache.H"
-#include "IVideoFile.H"
-#include "VideoFileFactory.H"
-#include "LazyFrame.H"
 
 #include <cstring>
 
@@ -34,8 +36,27 @@ bool VideoThumbnails::get( const char* filename, unsigned char* rgb, int &w, int
 {
 	DiskCache cache( filename, "thumb" );
 	if ( cache.isEmpty() ) {
-		IVideoFile* vf = VideoFileFactory::get( filename );
-		if ( !vf ) {
+		bgav_t* decoder = bgav_create();
+		if ( !bgav_open( decoder, filename ) ) {
+			bgav_close( decoder );
+			decoder = 0;
+		} else if( bgav_is_redirector( decoder ) ) {
+			bgav_close( decoder );
+			decoder = 0;
+		} else if ( bgav_num_video_streams( decoder, 0 ) == 0 ) {
+			bgav_close( decoder );
+			decoder = 0;
+		} else if ( !bgav_select_track( decoder, 0 ) ) {
+			bgav_close( decoder );
+			decoder = 0;
+		} else if ( !bgav_set_video_stream( decoder, 0, BGAV_STREAM_DECODE ) ) {
+			bgav_close( decoder );
+			decoder = 0;
+		} else if ( !bgav_start( decoder ) ) {
+			bgav_close( decoder );
+			decoder = 0;
+		}
+		if ( !decoder ) {
 			Fl_Shared_Image* image;
 			image = Fl_Shared_Image::get( filename );
 			if ( !image || image->d() != 3 ) {
@@ -55,16 +76,38 @@ bool VideoThumbnails::get( const char* filename, unsigned char* rgb, int &w, int
 			cache.clean();
 			return true;
 		}
-		LazyFrame* f = vf->read();
-		f->set_rgb_target( VIDEO_THUMBNAIL_WIDTH, VIDEO_THUMBNAIL_HEIGHT );
-		memcpy( rgb, f->get_target_buffer(), VIDEO_THUMBNAIL_WIDTH * VIDEO_THUMBNAIL_HEIGHT * 3 );
-		w = vf->width();
-		h = vf->height();
+		const gavl_video_format_t *video_format = bgav_get_video_format( decoder, 0 );
+		gavl_video_frame_t *gavl_frame = gavl_video_frame_create( video_format );
+		bgav_read_video( decoder, gavl_frame, 0 );
+		bgav_close( decoder );
+		decoder = 0;
+		gavl_video_format_t rgb_format;
+		gavl_video_format_copy( &rgb_format, video_format );
+		rgb_format.pixelformat = GAVL_RGB_24;
+		rgb_format.interlace_mode = GAVL_INTERLACE_NONE;
+		gavl_video_frame_t *rgb_frame = gavl_video_frame_create( &rgb_format );
+		gavl_video_converter_t *converter = gavl_video_converter_create();
+		gavl_video_options_t* options = gavl_video_converter_get_options( converter );
+		gavl_video_options_set_deinterlace_mode( options, GAVL_DEINTERLACE_SCALE );
+		gavl_video_converter_init( converter, video_format, &rgb_format );
+		gavl_video_convert( converter, gavl_frame, rgb_frame );
+		
+
+		gavl_video_converter_destroy( converter );
+		gavl_video_frame_destroy( gavl_frame );
+
+		Fl_RGB_Image img( rgb_frame->planes[0], video_format->frame_width, video_format->frame_height );
+		Fl_Image* image2 = img.copy( VIDEO_THUMBNAIL_WIDTH, VIDEO_THUMBNAIL_HEIGHT );
+		char** d = (char**)image2->data();
+		memcpy( rgb, d[0], VIDEO_THUMBNAIL_WIDTH * VIDEO_THUMBNAIL_HEIGHT * 3 );
+		delete image2;
+		w = video_format->frame_width;
+		h = video_format->frame_height;
 		cache.write( &w, sizeof(int) );
 		cache.write( &h, sizeof(int) );
 		cache.write( rgb, VIDEO_THUMBNAIL_HEIGHT * VIDEO_THUMBNAIL_WIDTH * 3 );
 		cache.clean();
-		delete vf;
+		gavl_video_frame_destroy( rgb_frame );
 		return true;
 	} else {
 		if ( cache.size() == 0 ) {
