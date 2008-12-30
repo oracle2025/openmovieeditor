@@ -151,10 +151,23 @@ void MediaBrowser::item_draw( void* p, int x, int y, int w, int h ) const
 		string s = m_folder + "/" + f->value;
 		const char* ext = fl_filename_ext( s.c_str() );
 		if ( ( strcmp( ext, ".mov" ) == 0 ) ||
+				( strcmp( ext, ".MOV" ) == 0 ) ||
+				( strcmp( ext, ".mxf" ) == 0 ) ||
+				( strcmp( ext, ".MXF" ) == 0 ) ||
+				( strcmp( ext, ".mp4" ) == 0 ) ||
+				( strcmp( ext, ".MP4" ) == 0 ) ||
+				( strcmp( ext, ".MTS" ) == 0 ) ||
+				( strcmp( ext, ".mts" ) == 0 ) ||
+				( strcmp( ext, ".m2t" ) == 0 ) ||
+				( strcmp( ext, ".DV" ) == 0 ) ||
 				( strcmp( ext, ".dv" ) == 0 ) ||
+				( strcmp( ext, ".AVI" ) == 0 ) ||
 				( strcmp( ext, ".avi" ) == 0 ) ||
+				( strcmp( ext, ".JPG" ) == 0 ) ||
 				( strcmp( ext, ".jpg" ) == 0 ) ||
+				( strcmp( ext, ".PNG" ) == 0 ) ||
 				( strcmp( ext, ".png" ) == 0 ) ||
+				( strcmp( ext, ".JPEG" ) == 0 ) ||
 				( strcmp( ext, ".jpeg" ) == 0 ) ) {
 			f->rgb = new unsigned char[VIDEO_THUMBNAIL_WIDTH*VIDEO_THUMBNAIL_HEIGHT*3];
 			if ( !VideoThumbnails::get( s.c_str(), f->rgb, f->w, f->h ) ) {
