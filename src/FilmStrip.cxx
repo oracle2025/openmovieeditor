@@ -17,6 +17,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <FL/Fl_RGB_Image.H>
 #include <exception>
 #include <cstring>
 
@@ -80,8 +81,16 @@ bool FilmStrip::process()
 		m_pics[m_count].w = PIC_WIDTH;
 		m_pics[m_count].h = PIC_HEIGHT;
 		LazyFrame* f = m_vfile->read();
-		f->set_rgb_target( PIC_WIDTH, PIC_HEIGHT );
-		memcpy( m_pics[m_count].data, f->get_target_buffer(), PIC_WIDTH * PIC_HEIGHT * 3 );
+		//f->set_rgb_target( PIC_WIDTH, PIC_HEIGHT );
+		f->set_rgb_target( m_vfile->width(), m_vfile->height() );
+
+		Fl_RGB_Image img( f->get_target_buffer(), m_vfile->width(), m_vfile->height() );
+		Fl_Image* image2 = img.copy( PIC_WIDTH, PIC_HEIGHT );
+		char** d = (char**)image2->data();
+		memcpy( m_pics[m_count].data, d[0], PIC_WIDTH * PIC_HEIGHT * 3 );
+		delete image2;
+
+		//memcpy( m_pics[m_count].data, f->get_target_buffer(), PIC_WIDTH * PIC_HEIGHT * 3 );
 		m_cache->write( m_pics[m_count].data, (PIC_WIDTH * PIC_HEIGHT * 3) );
 		m_count++;
 	} else {
