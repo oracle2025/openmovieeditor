@@ -1,6 +1,6 @@
 /*  FilmStripFactory.cxx
  *
- *  Copyright (C) 2006 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2006, 2009 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -94,7 +94,9 @@ void FilmStripFactory::unref( IVideoFile* vf )
 {
 	film_strip_node* node = (film_strip_node*)sl_remove( &m_strips, remove_strip_helper, (void*)( vf->filename().c_str() ) );
 	if ( node ) {
-		delete node->strip;
+		if ( node->strip ) {
+			delete node->strip;
+		}
 		delete node;
 	}
 }

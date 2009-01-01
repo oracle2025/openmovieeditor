@@ -1,6 +1,6 @@
 /*  WavArtist.cxx
  *
- *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2005, 2009 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
  */
 
 #include <cstring>
+#include <cassert>
 
 #include <FL/fl_draw.H>
 
@@ -58,7 +59,9 @@ void WavArtist::add( IAudioFile* file )
 		node = node->next;
 	}
        	node = new peakfile_node;
-	node->wav = new WaveForm( file->filename() );
+	node->wav = 0;
+	WaveForm* waveform = new WaveForm( this, file->filename() );
+	g_jobManager->submitJob( waveform );
 	node->filename = file->filename();
 	node->refCount = 1;
 	m_peaks = (peakfile_node*)sl_push( m_peaks, node );
@@ -79,7 +82,9 @@ void WavArtist::remove( string filename )
 {
 	peakfile_node* node = (peakfile_node*)sl_remove( &m_peaks, remove_peakfile_helper, (void*)filename.c_str() );
 	if ( node ) {
-		delete node->wav;
+		if ( node->wav ) {
+			delete node->wav;
+		}
 		delete node;
 	}
 }
@@ -92,11 +97,22 @@ static int find_peakfile_helper( void* p, void* data )
 	}
 	return 0;
 }
+void WavArtist::jobDone( Job* job_description )
+{
+	WaveForm* waveform = dynamic_cast<WaveForm*>( job_description );
+	assert( waveform );
+	peakfile_node* node = (peakfile_node*)sl_map( m_peaks, find_peakfile_helper, (void*)( waveform->filename() ) );
+	if ( node ) {
+		node->wav = waveform;
+	} else {
+		delete waveform;
+	}
+}
 void WavArtist::render( string filename, Rect& rect, int64_t start, int64_t stop )
 {
 	fl_color( FL_GREEN );
 	peakfile_node* node = (peakfile_node*)sl_map( m_peaks, find_peakfile_helper, (void*)filename.c_str() );
-	if ( !node ) {
+	if ( !node || !node->wav ) {
 		return;
 	}
 	int64_t first = start / PEAK_RANGE;

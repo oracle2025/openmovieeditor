@@ -18,7 +18,9 @@
  */
 
 #include "global_includes.H"
-#include "IdleHandler.H"
+#include "JobManager.H"
+
+#include <string>
 
 namespace nle
 {
@@ -26,14 +28,18 @@ namespace nle
 class IAudioFile;
 class DiskCache;
 
-class WaveForm : public IdleHandler
+class WaveForm : public Job
 {
 	public:
-		WaveForm( string filename );
+		WaveForm( JobDoneListener* listener, string filename );
 		~WaveForm();
-		bool process();
+		bool process( double& progress );
+		bool done();
+		const char* name() { return "Generating Wave Form"; }
+		const char* description() { return "Generating the little audio wave form for the timeline"; }
 		float* m_peaks;
 		inline int64_t length() { return m_peakLength; }
+		const char* filename();
 	private:
 		int64_t m_peakLength;
 		int64_t m_finalLength;
@@ -41,6 +47,7 @@ class WaveForm : public IdleHandler
 		//FILE* m_waveformCache;
 		//bool m_readFromCache;
 		DiskCache* m_cache;
+		std::string m_filename;
 };
 
 } /* namespace nle */

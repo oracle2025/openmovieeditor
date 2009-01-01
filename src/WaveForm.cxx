@@ -33,8 +33,10 @@
 namespace nle
 {
 
-WaveForm::WaveForm( string filename )
+WaveForm::WaveForm( JobDoneListener* listener, string filename )
+	: Job( listener )
 {
+	m_filename = filename;
 	m_peaks = 0;
 	m_peakLength = 0;
 	m_finalLength = 0;
@@ -49,12 +51,10 @@ WaveForm::WaveForm( string filename )
 		m_finalLength = m_cache->size() / sizeof(float);
 	}
 	m_peaks = new float[m_finalLength];
-	start();
 }
 
 WaveForm::~WaveForm()
 {
-	stop();
 	if ( m_af ) {
 		delete m_af;
 	}
@@ -67,7 +67,14 @@ WaveForm::~WaveForm()
 	}
 }
 
-bool WaveForm::process()
+bool WaveForm::done()
+{
+	if ( m_peakLength >= m_finalLength ) {
+		return true;
+	}
+	return false;
+}
+bool WaveForm::process( double& progress )
 {
 	assert( m_cache );
 	if ( m_peakLength >= m_finalLength ) {
@@ -104,6 +111,10 @@ bool WaveForm::process()
 		}
 	}
 	return true;
+}
+const char* WaveForm::filename()
+{
+	return m_filename.c_str();
 }
 
 } /* namespace nle */

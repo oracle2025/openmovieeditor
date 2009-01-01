@@ -109,8 +109,6 @@ openmovieeditor_SOURCES = nle.cxx\
 	ImageClipArtist.cxx\
 	VideoFileFactory.cxx\
 	VideoFileFactory.H\
-	IdleHandler.cxx\
-	IdleHandler.H\
 	FilmStripFactory.H\
 	FilmStripFactory.cxx\
 	AudioFileFactory.cxx\

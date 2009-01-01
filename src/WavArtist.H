@@ -23,6 +23,7 @@
 #include "globals.H"
 #include "Rect.H"
 #include "global_includes.H"
+#include "JobManager.H"
 
 #define PEAK_RANGE 1000
 
@@ -39,7 +40,7 @@ typedef struct _peakfile_node {
 	int refCount;
 } peakfile_node;
 
-class WavArtist
+class WavArtist : public JobDoneListener
 {
 	public:
 		WavArtist();
@@ -47,6 +48,7 @@ class WavArtist
 		void add( IAudioFile* file );
 		void remove( string filename );
 		void render( string filename, Rect& rect, int64_t start, int64_t stop );
+		void jobDone( Job* job_description );
 	private:
 		peakfile_node* m_peaks;
 };

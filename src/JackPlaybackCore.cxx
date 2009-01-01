@@ -51,9 +51,6 @@
 namespace nle
 {
 
-void suspend_idle_handlers(); //defined in IdleHandlers.cxx
-
-void resume_idle_handlers();
 
 /*
  * static functions
@@ -147,7 +144,6 @@ void JackPlaybackCore::play_ping( int fd )
 {
 	unsigned char x;
 	read( fd, &x, 1 );
-	suspend_idle_handlers();
 	if ( m_active ) {
 		return;
 	}
@@ -166,7 +162,6 @@ void JackPlaybackCore::stop_ping( int fd )
 	if ( !m_active ) {
 		return;
 	}
-	resume_idle_handlers();
 	m_active = false;
 	g_playButton->label( "@>" );
 	g_firstButton->activate();
@@ -285,7 +280,6 @@ void JackPlaybackCore::play()
 
 	jack_transport_start( jack_client );
 
-	suspend_idle_handlers();
 	m_active = true;
 	Fl::add_timeout( seconds_frame_length( g_timeline->m_playback_fps ) /*0.04*/, video_idle_callback, this ); // looks like hardcoded 25fps 
 }
@@ -295,7 +289,6 @@ void JackPlaybackCore::stop()
 	if ( !m_active ) {
 		return;
 	}
-	resume_idle_handlers();
 	m_active = false;
 	if ( jack_client ) {
 		jack_transport_stop( jack_client );

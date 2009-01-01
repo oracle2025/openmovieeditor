@@ -126,8 +126,6 @@ PortAudio19PlaybackCore::PortAudio19PlaybackCore( IAudioReader* audioReader, IVi
 PortAudio19PlaybackCore::~PortAudio19PlaybackCore()
 {
 }
-void suspend_idle_handlers(); //defined in IdleHandlers.cxx
-void resume_idle_handlers();
 void PortAudio19PlaybackCore::play()
 {
 	if ( m_active ) {
@@ -141,7 +139,6 @@ void PortAudio19PlaybackCore::play()
 
 	if ( portaudio_start( 48000, FRAMES, this ) ) 
 	{
-		suspend_idle_handlers();
 		m_active = true;
 		Fl::add_timeout( 0.1, timer_callback, this );
 		Fl::add_timeout( seconds_frame_length( g_timeline->m_playback_fps ) /*0.04*/, video_idle_callback, this );
@@ -153,7 +150,6 @@ void PortAudio19PlaybackCore::stop()
 	if ( !m_active ) {
 		return;
 	}
-	resume_idle_handlers();
 	m_active = false;
 	portaudio_stop();
 }
