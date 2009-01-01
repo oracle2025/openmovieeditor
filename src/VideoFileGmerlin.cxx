@@ -125,7 +125,7 @@ LazyFrame* VideoFileGmerlin::read()
 }
 void VideoFileGmerlin::seek( int64_t position )
 {
-	bgav_seek_video( m_decoder, 0, position / m_ticksPerFrame );
+	bgav_seek_video( m_decoder, 0, position / m_ticksPerFrame * m_video_format->frame_duration );
 }
 int64_t VideoFileGmerlin::ticksPerFrame()
 {

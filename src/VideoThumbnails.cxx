@@ -18,7 +18,6 @@
  */
 
 #include <FL/Fl_Shared_Image.H>
-#include <FL/Fl_RGB_Image.H>
 
 extern "C" {
 #include <gmerlin/avdec.h>
@@ -26,8 +25,10 @@ extern "C" {
 
 #include "VideoThumbnails.H"
 #include "DiskCache.H"
+#include "helper.H"
 
 #include <cstring>
+#include <iostream>
 
 namespace nle
 {
@@ -85,10 +86,14 @@ bool VideoThumbnails::get( const char* filename, unsigned char* rgb, int &w, int
 		gavl_video_format_copy( &rgb_format, video_format );
 		rgb_format.pixelformat = GAVL_RGB_24;
 		rgb_format.interlace_mode = GAVL_INTERLACE_NONE;
+		rgb_format.image_height = rgb_format.frame_height = VIDEO_THUMBNAIL_HEIGHT;
+		rgb_format.image_width = rgb_format.frame_width = VIDEO_THUMBNAIL_WIDTH;
 		gavl_video_frame_t *rgb_frame = gavl_video_frame_create( &rgb_format );
+
 		gavl_video_converter_t *converter = gavl_video_converter_create();
 		gavl_video_options_t* options = gavl_video_converter_get_options( converter );
 		gavl_video_options_set_deinterlace_mode( options, GAVL_DEINTERLACE_SCALE );
+		gavl_video_options_set_scale_mode( options, GAVL_SCALE_NEAREST );
 		gavl_video_converter_init( converter, video_format, &rgb_format );
 		gavl_video_convert( converter, gavl_frame, rgb_frame );
 		
@@ -96,11 +101,11 @@ bool VideoThumbnails::get( const char* filename, unsigned char* rgb, int &w, int
 		gavl_video_converter_destroy( converter );
 		gavl_video_frame_destroy( gavl_frame );
 
-		Fl_RGB_Image img( rgb_frame->planes[0], video_format->frame_width, video_format->frame_height );
-		Fl_Image* image2 = img.copy( VIDEO_THUMBNAIL_WIDTH, VIDEO_THUMBNAIL_HEIGHT );
-		char** d = (char**)image2->data();
-		memcpy( rgb, d[0], VIDEO_THUMBNAIL_WIDTH * VIDEO_THUMBNAIL_HEIGHT * 3 );
-		delete image2;
+		unsigned char* src = (unsigned char*)rgb_frame->planes[0];
+		int strides = rgb_frame->strides[0];
+		for ( int i = 0; i < VIDEO_THUMBNAIL_HEIGHT; i++ ) {
+			memcpy( &rgb[VIDEO_THUMBNAIL_WIDTH*i*3], &src[i*strides], VIDEO_THUMBNAIL_WIDTH * 3 );
+		}
 		w = video_format->frame_width;
 		h = video_format->frame_height;
 		cache.write( &w, sizeof(int) );

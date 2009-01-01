@@ -21,8 +21,9 @@
 #define _FILM_STRIP_H_
 
 #include <stdint.h>
+#include <string>
 
-#include "IdleHandler.H"
+#include "JobManager.H"
 
 namespace nle
 {
@@ -37,21 +38,26 @@ typedef struct
 class IVideoFile;
 class DiskCache;
 
-class FilmStrip : public IdleHandler
+class FilmStrip : public Job
 {
 	public:
-		FilmStrip( IVideoFile* vfile );
+		FilmStrip( JobDoneListener* listener, IVideoFile* vfile );
 		~FilmStrip();
-		bool process();
+		bool process( double& percentage );
+		bool done();
+		const char* name() { return "Generating Film Strip"; }
+		const char* description() { return "Generating the little thumnails for the timeline"; }
 		inline int64_t count() { return m_count; }
 		inline pic_struct* get_pic( int64_t index )
 			{ return index < m_count ? &m_pics[index] : 0; }
+		const char* filename();
 	private:
 		int64_t m_countAll;
 		int64_t m_count;
 		pic_struct *m_pics;
 		IVideoFile* m_vfile;
 		DiskCache* m_cache;
+		std::string m_filename;
 };
 
 

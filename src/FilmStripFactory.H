@@ -21,6 +21,7 @@
 #define _FILM_STRIP_FACTORY_H_
 
 #include "global_includes.H"
+#include "JobManager.H"
 
 namespace nle
 {
@@ -39,13 +40,15 @@ typedef struct s_film_strip_node {
 } film_strip_node;
 
 
-class FilmStripFactory
+class FilmStripFactory : public JobDoneListener
 {
 	public:
 		FilmStripFactory();
 		~FilmStripFactory();
 		FilmStrip* get( IVideoFile* vf );
-		void remove( FilmStrip* fs );
+		void ref( IVideoFile* vf );
+		void unref( IVideoFile* vf );
+		void jobDone( Job* job_description );
 	private:
 		film_strip_node* m_strips;
 		

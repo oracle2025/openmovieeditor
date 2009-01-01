@@ -57,22 +57,32 @@ FilmStrip* FilmStripFactory::get( IVideoFile* vf )
 {
 	film_strip_node* node = (film_strip_node*)sl_map( m_strips, find_strip_helper, (void*)( vf->filename().c_str() ) );
 	if ( node ) {
-		node->ref_count++;
 		return node->strip;
+	}
+	return 0;
+}
+void FilmStripFactory::ref( IVideoFile* vf )
+{
+	film_strip_node* node = (film_strip_node*)sl_map( m_strips, find_strip_helper, (void*)( vf->filename().c_str() ) );
+	if ( node ) {
+		node->ref_count++;
+		return;
 	}
 	node = new film_strip_node;
 	node->next = 0;
 	node->ref_count = 1;
 	node->filename = vf->filename();
-	node->strip = new FilmStrip( vf );
+	node->strip = 0;
+	FilmStrip* filmstrip = new FilmStrip( this, vf );
+	g_jobManager->submitJob( filmstrip );
 	m_strips = (film_strip_node*)sl_push( m_strips, node );
-	return node->strip;
+	return;
 }
 static int remove_strip_helper( void* p, void* data )
 {
 	film_strip_node* node = (film_strip_node*)p;
-	FilmStrip* s = (FilmStrip*)data;
-	if ( s == node->strip ) {
+	const char* filename = (const char*)data;
+	if ( strcmp( node->filename.c_str(), filename ) == 0 ) {
 		node->ref_count--;
 		if ( node->ref_count == 0 ) {
 			return 1;
@@ -80,15 +90,24 @@ static int remove_strip_helper( void* p, void* data )
 	}
 	return 0;
 }
-void FilmStripFactory::remove( FilmStrip* fs )
+void FilmStripFactory::unref( IVideoFile* vf )
 {
-	film_strip_node* node = (film_strip_node*)sl_remove( &m_strips, remove_strip_helper, (void*)fs );
+	film_strip_node* node = (film_strip_node*)sl_remove( &m_strips, remove_strip_helper, (void*)( vf->filename().c_str() ) );
 	if ( node ) {
 		delete node->strip;
 		delete node;
 	}
 }
-
-
+void FilmStripFactory::jobDone( Job* job_description )
+{
+	FilmStrip* filmstrip = dynamic_cast<FilmStrip*>( job_description );
+	assert( filmstrip );
+	film_strip_node* node = (film_strip_node*)sl_map( m_strips, find_strip_helper, (void*)( filmstrip->filename() ) );
+	if ( node ) {
+		node->strip = filmstrip;
+	} else {
+		delete filmstrip;
+	}
+}
 
 } /* namespace nle */

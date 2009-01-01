@@ -40,6 +40,8 @@ unsigned long gcd (unsigned long a, unsigned long b);
 
 void guess_aspect( int w, int h, int* aspect_height, int* aspect_width, float* aspect_ratio, int* analog_blank, int* pixel_width, int* pixel_height );
 
+void resizePixels( const unsigned char* in, unsigned char* out, int w1, int h1, int w2, int h2 );
+
 } /* namespace nle */
 
 

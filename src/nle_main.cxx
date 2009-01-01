@@ -54,6 +54,7 @@
 #include "color_schemes.H"
 #include "VideoFileFactory.H"
 #include "GmerlinEffects/GmerlinFactory.H"
+#include "JobManager.H"
 #include "fltk_layout_persistance.H"
 
 #include <stdlib.h>
@@ -117,6 +118,7 @@ int main( int argc, char** argv )
 	nle::Timeline timeline;
 	nle::Prefs preferences;
 	nle::WavArtist wavArtist;
+	nle::JobManagerIdle jobManager;
 	NleUI nui;
 	nle::g_ui = &nui;
 	nui.special_clips->add("Titles", nle::PL_VIDEO_SRC, "src:builtin:TitleClip" );

@@ -52,11 +52,10 @@ VideoClip::VideoClip( Track* track, int64_t position, IVideoFile* vf, int64_t A,
 	setEffects( data );
 
 	if ( track->render_mode() ) { // Render mode
-		m_filmStrip = 0;
 		m_artist = 0;
 		m_audioReader = m_audioFile;
 	} else { // Playback mode
-		m_filmStrip = g_filmStripFactory->get( vf );
+		g_filmStripFactory->ref( vf );
 		m_artist = new VideoClipArtist( this );
 		if ( m_audioFile ) {
 			g_wavArtist->add( m_audioFile );
@@ -82,8 +81,7 @@ VideoClip::~VideoClip()
 		delete m_artist;
 		m_artist = 0;
 		g_wavArtist->remove( m_videoFile->filename() );
-		g_filmStripFactory->remove( m_filmStrip );
-		m_filmStrip = 0;
+		g_filmStripFactory->unref( m_videoFile );
 	}
 	delete m_videoFile;
 }

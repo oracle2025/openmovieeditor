@@ -247,7 +247,9 @@ openmovieeditor_SOURCES = nle.cxx\
 	fps_definitions.H\
 	fps_definitions.cxx\
 	fltk_layout_persistance.H\
-	fltk_layout_persistance.cxx
+	fltk_layout_persistance.cxx\
+	JobManager.cxx\
+	JobManager.H
 
 
 

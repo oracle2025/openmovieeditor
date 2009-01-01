@@ -229,5 +229,20 @@ gcd (unsigned long a, unsigned long b)
   return a;
 }
 
+void resizePixels( const unsigned char* in, unsigned char* out, int w1, int h1, int w2, int h2 )
+{
+	int x_ratio = (int)( ( w1 << 16 ) / w2 );
+	int y_ratio = (int)( ( h1 << 16 ) / h2);
+	int x2, y2;
+	for ( int i = 0; i < h2; i++ ) {
+		for ( int j = 0; j < w2; j++ ) {
+			x2 = ( ( j * x_ratio ) >> 16 );
+			y2 = ( (i * y_ratio ) >> 16 );
+			out[ ( ( i * w2 ) + j ) * 3 ] = in[ ( ( y2 * w1 ) + x2 ) * 3 ];
+			out[ ( ( i * w2 ) + j ) * 3 + 1 ] = in[ ( ( y2 * w1 ) + x2 ) * 3 + 1 ];
+			out[ ( ( i * w2 ) + j ) * 3 + 2 ] = in[ ( ( y2 * w1 ) + x2 ) * 3 + 2 ];
+		}                
+	}                
+}
 
 } /* namespace nle */

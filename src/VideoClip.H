@@ -40,7 +40,6 @@ class VideoClip : public AudioClip, public VideoEffectClip
 		int64_t length();
 		void reset();
 		LazyFrame* getRawFrame( int64_t position, int64_t &position_in_file );
-		inline FilmStrip* getFilmStrip() { return m_filmStrip; }
 		string filename();
 		inline IVideoFile* file() { return m_videoFile; }
 		int type() { return CLIP_TYPE_VIDEO; }
@@ -62,7 +61,6 @@ class VideoClip : public AudioClip, public VideoEffectClip
 		int64_t maxAudioLength();
 	private:
 		IVideoFile* m_videoFile;
-		FilmStrip* m_filmStrip;
 		int64_t m_lastFrame;
 
 		int64_t m_audioPosition;

@@ -17,7 +17,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <FL/Fl_RGB_Image.H>
 #include <exception>
 #include <cstring>
 
@@ -35,9 +34,11 @@ namespace nle
 #define PIC_WIDTH 40 
 #define PIC_HEIGHT 30
 
-FilmStrip::FilmStrip( IVideoFile* vfile )
+FilmStrip::FilmStrip( JobDoneListener* listener, IVideoFile* vfile )
+	: Job( listener )
 {
 	m_vfile = 0;
+	m_filename = vfile->filename();
 	m_cache = new DiskCache( vfile->filename(), "thumbs" );
 
 	if ( m_cache->isEmpty() ) {
@@ -58,9 +59,15 @@ FilmStrip::FilmStrip( IVideoFile* vfile )
 		m_pics = new pic_struct[m_countAll];
 	}
 	m_count = 0;
-	start();
 }
-bool FilmStrip::process()
+bool FilmStrip::done()
+{
+	if ( m_count == m_countAll ) {
+		return true;
+	}
+	return false;
+}
+bool FilmStrip::process( double& percentage )
 {
 	if ( m_count == m_countAll ) {
 		if ( m_vfile ) {
@@ -81,14 +88,13 @@ bool FilmStrip::process()
 		m_pics[m_count].w = PIC_WIDTH;
 		m_pics[m_count].h = PIC_HEIGHT;
 		LazyFrame* f = m_vfile->read();
-		//f->set_rgb_target( PIC_WIDTH, PIC_HEIGHT );
-		f->set_rgb_target( m_vfile->width(), m_vfile->height() );
+		f->set_rgb_target( PIC_WIDTH, PIC_HEIGHT );
 
-		Fl_RGB_Image img( f->get_target_buffer(), m_vfile->width(), m_vfile->height() );
-		Fl_Image* image2 = img.copy( PIC_WIDTH, PIC_HEIGHT );
-		char** d = (char**)image2->data();
-		memcpy( m_pics[m_count].data, d[0], PIC_WIDTH * PIC_HEIGHT * 3 );
-		delete image2;
+		unsigned char* src = (unsigned char*)f->get_target_buffer();
+		int strides = f->get_target_buffer_strides();
+		for ( int i = 0; i < PIC_HEIGHT; i++ ) {
+			memcpy( &m_pics[m_count].data[PIC_WIDTH*i*3], &src[i*strides], PIC_WIDTH * 3 );
+		}
 
 		//memcpy( m_pics[m_count].data, f->get_target_buffer(), PIC_WIDTH * PIC_HEIGHT * 3 );
 		m_cache->write( m_pics[m_count].data, (PIC_WIDTH * PIC_HEIGHT * 3) );
@@ -108,7 +114,6 @@ bool FilmStrip::process()
 }
 FilmStrip::~FilmStrip()
 {
-	stop();
 	for ( unsigned int i = 0; i < m_count; i++ ) {
 		delete [] m_pics[i].data;
 	}
@@ -120,6 +125,11 @@ FilmStrip::~FilmStrip()
 		delete m_cache;
 		m_cache = 0;
 	}
+}
+
+const char* FilmStrip::filename()
+{
+	return m_filename.c_str();
 }
 
 

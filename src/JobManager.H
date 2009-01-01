@@ -1,4 +1,4 @@
-/*  JobManager.cxx
+/*  JobManager.H
  *
  *  Copyright (C) 2008 Richard Spindler <richard.spindler AT gmail.com>
  *
@@ -36,36 +36,58 @@ class Job
 	public:
 		virtual ~Job() {}
 		virtual bool process( double& percentage ) = 0;
-		virtual void cancel() = 0;
+		// returns true while running, and false when done
+		//virtual void cancel() = 0;
 		virtual bool done() = 0;
 		virtual const char* name() { return "Generic Job"; }
 		virtual const char* description() { return "Generic Job Description"; }
 		void callJobDone() { if (!m_listener) { return; } m_listener->jobDone( this ); }
 	protected:
-		Job( JobDoneListener* listener = 0 ) { m_listener = listener; }
+		Job( JobDoneListener* listener = 0 ) { m_listener = listener; next = 0; }
+		// The JobDone Listener is supposed to delete the Job
 	private:
 		JobDoneListener* m_listener;
-		IProgressListener
+	public:
+		Job* next;
+};
+
+class JobFifo
+{
+	public:
+		JobFifo();
+		~JobFifo();
+		void append( Job* job );
+		Job *pop();
+	private:
+		Job* m_first;
+		Job* m_last;
 };
 
 class IJobManager
 {
 	public:
-		virtual ~IJobManager();
+		virtual ~IJobManager() {}
 		virtual void submitJob( Job* job_description ) = 0;
 	protected:
 		IJobManager() {}
 	private:
 };
 
-class JobManagerIdle : public IJobManager, public IdleHandler
+extern IJobManager* g_jobManager;
+
+class JobManagerIdle : public IJobManager
 {
 	public:
 		JobManagerIdle();
 		~JobManagerIdle();
-		bool process();
+		void process();
 		void submitJob( Job* job_description );
 	private:
+		JobFifo m_jobs;
+		Job* m_runningJob;
+		bool m_running;
+		void start();
+		void stop();
 };
 
 } /* namespace nle */

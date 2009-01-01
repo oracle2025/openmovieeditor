@@ -46,6 +46,7 @@ class LazyFrame
 		void set_target( gavl_video_format_t *format );
 		void set_rgb_target( int w, int h );
 		unsigned char* get_target_buffer();
+		int get_target_buffer_strides();
 		//compressed(); //for DV direct Rendering
 		float alpha();
 		void alpha( float value );

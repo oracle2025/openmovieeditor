@@ -186,6 +186,11 @@ unsigned char* LazyFrame::get_target_buffer()
 	gavl_video_frame_t* gavl_frame = target();
 	return gavl_frame->planes[0];
 }
+int LazyFrame::get_target_buffer_strides()
+{
+	gavl_video_frame_t* gavl_frame = target();
+	return gavl_frame->strides[0];
+}
 
 
 } /* namespace nle */
