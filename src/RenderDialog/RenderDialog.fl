@@ -694,8 +694,8 @@ nle::setVideoCodecMenu( video_codec_menu, LQT_FILE_QT );}
         }
         MenuItem {} {
           label AVI
-          callback {nle::setAudioCodecMenu( audio_codec_menu, LQT_FILE_AVI_ODML );
-nle::setVideoCodecMenu( video_codec_menu, LQT_FILE_AVI_ODML );}
+          callback {nle::setAudioCodecMenu( audio_codec_menu, LQT_FILE_AVI_ODML | LQT_FILE_AVI );
+nle::setVideoCodecMenu( video_codec_menu, LQT_FILE_AVI_ODML | LQT_FILE_AVI );} selected
           xywh {0 0 100 20}
         }
         MenuItem {} {
@@ -920,8 +920,7 @@ switch ( m_preset->m_file_type ) {
 		lqt_container_menu->value( 3 );
 		break;
 }
-\#endif} {selected
-    }
+\#endif} {}
   }
 } 
 

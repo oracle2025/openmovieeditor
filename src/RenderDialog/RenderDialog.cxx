@@ -621,8 +621,8 @@ void CustomFormatDialog::cb_Quicktime(Fl_Menu_* o, void* v) {
 }
 
 void CustomFormatDialog::cb_AVI_i(Fl_Menu_*, void*) {
-  nle::setAudioCodecMenu( audio_codec_menu, LQT_FILE_AVI_ODML );
-nle::setVideoCodecMenu( video_codec_menu, LQT_FILE_AVI_ODML );
+  nle::setAudioCodecMenu( audio_codec_menu, LQT_FILE_AVI_ODML | LQT_FILE_AVI );
+nle::setVideoCodecMenu( video_codec_menu, LQT_FILE_AVI_ODML | LQT_FILE_AVI );
 }
 void CustomFormatDialog::cb_AVI(Fl_Menu_* o, void* v) {
   ((CustomFormatDialog*)(o->parent()->user_data()))->cb_AVI_i(o,v);
