@@ -56,7 +56,7 @@ string escape_slash( string s ) {
 	return r.str();
 }
 
-void setAudioCodecMenu( Fl_Choice* menu, lqt_file_type_t type )
+void setAudioCodecMenu( Fl_Choice* menu, int type )
 {
 	lqt_codec_info_t** info = g_audio_codec_info;
 	menu->clear();
@@ -71,7 +71,7 @@ void setAudioCodecMenu( Fl_Choice* menu, lqt_file_type_t type )
 	}
 	menu->value( 0 );
 }
-void setVideoCodecMenu( Fl_Choice* menu, lqt_file_type_t type )
+void setVideoCodecMenu( Fl_Choice* menu, int type )
 {
 	lqt_codec_info_t** info = g_video_codec_info;
 	menu->clear();
