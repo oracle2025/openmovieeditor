@@ -19,14 +19,13 @@
 
 #include <exception>
 #include <cstring>
+#include <cassert>
 
 #include "FilmStrip.H"
 #include "IVideoFile.H"
 #include "TimelineView.H"
 #include "SwitchBoard.H"
-#include "VideoFileFactory.H"
 #include "DiskCache.H"
-#include "LazyFrame.H"
 
 namespace nle
 {
@@ -37,13 +36,57 @@ namespace nle
 FilmStrip::FilmStrip( JobDoneListener* listener, IVideoFile* vfile )
 	: Job( listener )
 {
-	m_vfile = 0;
+	m_decoder = 0;
+	m_converter = 0;
+	m_frame_src = 0;
+	m_frame_dst = 0;
 	m_filename = vfile->filename();
 	m_cache = new DiskCache( vfile->filename(), "thumbs" );
 
 	if ( m_cache->isEmpty() ) {
-		m_vfile = VideoFileFactory::get( vfile->filename() );
-		m_countAll = m_vfile->length() / 4 / NLE_TIME_BASE;
+		m_decoder = bgav_create();
+		bgav_options_t* decoder_options = bgav_get_options( m_decoder );
+		bgav_options_set_sample_accurate( decoder_options, 1 );
+		if ( !bgav_open( m_decoder, m_filename.c_str() ) ) {
+			bgav_close( m_decoder );
+			m_decoder = 0;
+		} else if( bgav_is_redirector( m_decoder ) ) {
+			bgav_close( m_decoder );
+			m_decoder = 0;
+		} else if ( bgav_num_video_streams( m_decoder, 0 ) == 0 ) {
+			bgav_close( m_decoder );
+			m_decoder = 0;
+		} else if ( !bgav_can_seek_sample( m_decoder ) ) {
+			bgav_close( m_decoder );
+			m_decoder = 0;
+		} else if ( !bgav_select_track( m_decoder, 0 ) ) {
+			bgav_close( m_decoder );
+			m_decoder = 0;
+		} else if ( !bgav_set_video_stream( m_decoder, 0, BGAV_STREAM_DECODE ) ) {
+			bgav_close( m_decoder );
+			m_decoder = 0;
+		} else if ( !bgav_start( m_decoder ) ) {
+			bgav_close( m_decoder );
+			m_decoder = 0;
+		}
+		assert( m_decoder );
+		const gavl_video_format_t *format_src = m_format_src = bgav_get_video_format( m_decoder, 0 );
+		gavl_video_format_t format_dst;
+		gavl_video_format_copy( &format_dst, format_src );
+		format_dst.pixelformat = GAVL_RGB_24;
+		format_dst.interlace_mode = GAVL_INTERLACE_NONE;
+		format_dst.image_height = format_dst.frame_height = PIC_HEIGHT;
+		format_dst.image_width = format_dst.frame_width = PIC_WIDTH;
+		m_frame_src = gavl_video_frame_create( format_src );
+		m_frame_dst = gavl_video_frame_create( &format_dst );
+
+		m_converter = gavl_video_converter_create();
+		gavl_video_options_t* options = gavl_video_converter_get_options( m_converter );
+		gavl_video_options_set_deinterlace_mode( options, GAVL_DEINTERLACE_SCALE );
+		gavl_video_options_set_scale_mode( options, GAVL_SCALE_NEAREST );
+		gavl_video_converter_init( m_converter, format_src, &format_dst );
+
+		m_countAll = ( bgav_video_duration( m_decoder, 0 ) / format_src->timescale ) / 4;
 	} else {
 		m_countAll = m_cache->size() / ( 3 * PIC_WIDTH * PIC_HEIGHT );
 	}
@@ -60,6 +103,25 @@ FilmStrip::FilmStrip( JobDoneListener* listener, IVideoFile* vfile )
 	}
 	m_count = 0;
 }
+void FilmStrip::delete_gmerlin_avdecoder()
+{
+	if ( m_decoder ) {
+		bgav_close( m_decoder );
+		m_decoder = 0;
+	}
+	if ( m_converter ) {
+		gavl_video_converter_destroy( m_converter );
+		m_converter = 0;
+	}
+	if ( m_frame_src ) {
+		gavl_video_frame_destroy( m_frame_src );
+		m_frame_src = 0;
+	}
+	if ( m_frame_dst ) {
+		gavl_video_frame_destroy( m_frame_dst );
+		m_frame_dst = 0;
+	}
+}
 bool FilmStrip::done()
 {
 	if ( m_count == m_countAll ) {
@@ -70,10 +132,7 @@ bool FilmStrip::done()
 bool FilmStrip::process( double& percentage )
 {
 	if ( m_count == m_countAll ) {
-		if ( m_vfile ) {
-			delete m_vfile;
-			m_vfile = 0;
-		}
+		delete_gmerlin_avdecoder();
 		if ( m_cache ) {
 			m_cache->clean();
 			delete m_cache;
@@ -83,20 +142,20 @@ bool FilmStrip::process( double& percentage )
 		return false;
 	}
 	if ( m_cache->isEmpty() ) {
-		m_vfile->seek( m_count * NLE_TIME_BASE * 4 );
+		bgav_seek_video( m_decoder, 0, m_count * 4 * m_format_src->timescale );
 		m_pics[m_count].data = new unsigned char[PIC_WIDTH * PIC_HEIGHT * 3];
 		m_pics[m_count].w = PIC_WIDTH;
 		m_pics[m_count].h = PIC_HEIGHT;
-		LazyFrame* f = m_vfile->read();
-		f->set_rgb_target( PIC_WIDTH, PIC_HEIGHT );
+		
+		bgav_read_video( m_decoder, m_frame_src, 0 );
+		gavl_video_convert( m_converter, m_frame_src, m_frame_dst );
 
-		unsigned char* src = (unsigned char*)f->get_target_buffer();
-		int strides = f->get_target_buffer_strides();
+		unsigned char* src = (unsigned char*)m_frame_dst->planes[0];
+		int strides = m_frame_dst->strides[0];
 		for ( int i = 0; i < PIC_HEIGHT; i++ ) {
 			memcpy( &m_pics[m_count].data[PIC_WIDTH*i*3], &src[i*strides], PIC_WIDTH * 3 );
 		}
 
-		//memcpy( m_pics[m_count].data, f->get_target_buffer(), PIC_WIDTH * PIC_HEIGHT * 3 );
 		m_cache->write( m_pics[m_count].data, (PIC_WIDTH * PIC_HEIGHT * 3) );
 		m_count++;
 	} else {
@@ -118,9 +177,7 @@ FilmStrip::~FilmStrip()
 		delete [] m_pics[i].data;
 	}
 	delete [] m_pics;
-	if ( m_vfile ) {
-		delete m_vfile;
-	}
+	delete_gmerlin_avdecoder();
 	if ( m_cache ) {
 		delete m_cache;
 		m_cache = 0;

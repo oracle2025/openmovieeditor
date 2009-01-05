@@ -1,6 +1,6 @@
 /*  FilmStrip.H
  *
- *  Copyright (C) 2005 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2005, 2009 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,6 +20,10 @@
 #ifndef _FILM_STRIP_H_
 #define _FILM_STRIP_H_
 
+extern "C" {
+#include <gmerlin/avdec.h>
+}
+
 #include <stdint.h>
 #include <string>
 
@@ -35,8 +39,8 @@ typedef struct
 	int h;
 } pic_struct;
 
-class IVideoFile;
 class DiskCache;
+class IVideoFile;
 
 class FilmStrip : public Job
 {
@@ -52,12 +56,17 @@ class FilmStrip : public Job
 			{ return index < m_count ? &m_pics[index] : 0; }
 		const char* filename();
 	private:
+		void delete_gmerlin_avdecoder();
 		int64_t m_countAll;
 		int64_t m_count;
 		pic_struct *m_pics;
-		IVideoFile* m_vfile;
 		DiskCache* m_cache;
 		std::string m_filename;
+		bgav_t* m_decoder;
+		gavl_video_converter_t* m_converter;
+		gavl_video_frame_t* m_frame_src;
+		gavl_video_frame_t* m_frame_dst;
+		const gavl_video_format_t *m_format_src;
 };
 
 
