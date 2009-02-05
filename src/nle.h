@@ -8,6 +8,8 @@
 #include "ProgressDialog/ProgressDialog.h"
 #include "Renderer.H"
 #include "Prefs.H"
+#include "YoutubeRenderer/YoutubeUploader.H"
+#include "YoutubeRenderer/YoutubeDialog.H"
 #include "LoadSaveManager/LoadSaveManager.H"
 #include "DocManager.H"
 #include "Timeline.H"
@@ -58,6 +60,8 @@ private:
   static void cb_Save(Fl_Menu_*, void*);
   void cb_Render_i(Fl_Menu_*, void*);
   static void cb_Render(Fl_Menu_*, void*);
+  void cb_Upload_i(Fl_Menu_*, void*);
+  static void cb_Upload(Fl_Menu_*, void*);
   void cb_Export_i(Fl_Menu_*, void*);
   static void cb_Export(Fl_Menu_*, void*);
   void cb_Export1_i(Fl_Menu_*, void*);

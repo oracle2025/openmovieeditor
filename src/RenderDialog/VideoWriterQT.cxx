@@ -109,7 +109,6 @@ VideoWriterQT::VideoWriterQT( EncodingPreset* preset, const char* filename )
 	lqt_destroy_codec_info( codec );
 
 	preset->set2( m_qt );
-	m_samplerate = m_format.samplerate;
 	m_rows = lqt_gavl_rows_create( m_qt, 0 );
 	m_timestamp = 0;
 }

@@ -29,7 +29,8 @@ decl {\#include <sstream>} {global
 decl {\#include "RenderDialog/RenderDialog.H"} {global
 } 
 
-class NleUI {} {
+class NleUI {open
+} {
   Function {NleUI()} {open
   } {
     Fl_Window mainWindow {
@@ -110,6 +111,29 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
             code0 {\#include "ProgressDialog/ProgressDialog.h"}
             code1 {\#include "Renderer.H"}
             code3 {\#include "Prefs.H"}
+          }
+          MenuItem {} {
+            label {Upload to Youtube...}
+            callback {Fl_Group::current( mainWindow );
+
+nle::YoutubeUploader yt_uploader;
+YoutubeDialog dlg( &yt_uploader );
+
+dlg.show();
+while ( dlg.shown() )
+  Fl::wait();
+
+if ( dlg.go() ) {
+	YoutubeProgressDialog pDlg;
+	pDlg.show();
+	pDlg.activateEncodingProgress();
+	yt_uploader.encode( &pDlg );
+	pDlg.activateUploadingProgress();
+	yt_uploader.upload( &pDlg );
+}} selected
+            xywh {0 0 100 20}
+            code0 {\#include "YoutubeRenderer/YoutubeUploader.H"}
+            code1 {\#include "YoutubeRenderer/YoutubeDialog.H"}
           }
           MenuItem {} {
             label {Export SRT/Subtitles...}

@@ -50,6 +50,10 @@ LARGEFILE_FLAGS=`getconf LFS_CFLAGS`
 CPPFLAGS="$CPPFLAGS $LARGEFILE_FLAGS"
 CFLAGS="$CFLAGS $LARGEFILE_FLAGS"
 
+PKG_CHECK_MODULES(LIBCURL, libcurl >= 7.18.0,,
+  AC_MSG_ERROR([*** libcurl not found - this program requires libcurl >= 7.18.0 http://curl.haxx.se/libcurl/ **]))
+CPPFLAGS="$CPPFLAGS $LIBCURL_CFLAGS"
+
 PKG_CHECK_MODULES(SAMPLERATE, samplerate >= 0.1.1,,
   AC_MSG_ERROR([*** libsamplerate not found - this program requires libsamplerate >= 0.1.1 http://www.mega-nerd.com/SRC/ ***]))
 CPPFLAGS="$CPPFLAGS $SAMPLERATE_CFLAGS"
@@ -169,6 +173,7 @@ AC_CONFIG_FILES([
    src/ColorCurve/Makefile
    src/timeline/Makefile
    src/RenderDialog/Makefile
+   src/YoutubeRenderer/Makefile
 ])
 
 AC_OUTPUT

@@ -20,7 +20,7 @@
 #include "VideoFileGmerlin.H"
 #include "VideoFileProject.H"
 #include "VideoFileFactory.H"
-#include "ProgressDialog/IProgressListener.H"
+#include "IProgressListener.H"
 #include <FL/filename.H>
 #include <cstring>
 namespace nle

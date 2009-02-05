@@ -88,6 +88,29 @@ void NleUI::cb_Render(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Render_i(o,v);
 }
 
+void NleUI::cb_Upload_i(Fl_Menu_*, void*) {
+  Fl_Group::current( mainWindow );
+
+nle::YoutubeUploader yt_uploader;
+YoutubeDialog dlg( &yt_uploader );
+
+dlg.show();
+while ( dlg.shown() )
+  Fl::wait();
+
+if ( dlg.go() ) {
+	YoutubeProgressDialog pDlg;
+	pDlg.show();
+	pDlg.activateEncodingProgress();
+	yt_uploader.encode( &pDlg );
+	pDlg.activateUploadingProgress();
+	yt_uploader.upload( &pDlg );
+};
+}
+void NleUI::cb_Upload(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_Upload_i(o,v);
+}
+
 void NleUI::cb_Export_i(Fl_Menu_*, void*) {
   Fl_Group::current( mainWindow );
 
@@ -260,6 +283,7 @@ Fl_Menu_Item NleUI::menu_Black[] = {
  {"New Project", 0,  (Fl_Callback*)NleUI::cb_New, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Save as...", 0x50073,  (Fl_Callback*)NleUI::cb_Save, 0, 128, FL_NORMAL_LABEL, 0, 14, 0},
  {"Render...", 0,  (Fl_Callback*)NleUI::cb_Render, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Upload to Youtube...", 0,  (Fl_Callback*)NleUI::cb_Upload, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Export SRT/Subtitles...", 0,  (Fl_Callback*)NleUI::cb_Export, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Export SMIL/Kino...", 0,  (Fl_Callback*)NleUI::cb_Export1, 0, 128, FL_NORMAL_LABEL, 0, 14, 0},
  {"Quit", 0x40071,  (Fl_Callback*)NleUI::cb_Quit, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
@@ -295,12 +319,12 @@ Fl_Menu_Item NleUI::menu_Black[] = {
  {0,0,0,0,0,0,0,0,0},
  {0,0,0,0,0,0,0,0,0}
 };
-Fl_Menu_Item* NleUI::undo_item = NleUI::menu_Black + 9;
-Fl_Menu_Item* NleUI::redo_item = NleUI::menu_Black + 10;
-Fl_Menu_Item* NleUI::cut_item = NleUI::menu_Black + 11;
-Fl_Menu_Item* NleUI::copy_item = NleUI::menu_Black + 12;
-Fl_Menu_Item* NleUI::paste_item = NleUI::menu_Black + 13;
-Fl_Menu_Item* NleUI::delete_item = NleUI::menu_Black + 14;
+Fl_Menu_Item* NleUI::undo_item = NleUI::menu_Black + 10;
+Fl_Menu_Item* NleUI::redo_item = NleUI::menu_Black + 11;
+Fl_Menu_Item* NleUI::cut_item = NleUI::menu_Black + 12;
+Fl_Menu_Item* NleUI::copy_item = NleUI::menu_Black + 13;
+Fl_Menu_Item* NleUI::paste_item = NleUI::menu_Black + 14;
+Fl_Menu_Item* NleUI::delete_item = NleUI::menu_Black + 15;
 
 void NleUI::cb_zoom_slider_i(Fl_Slider* o, void*) {
   m_videoView->zoom( o->value() );

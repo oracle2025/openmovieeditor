@@ -34,7 +34,6 @@ class IVideoFileWriter
 		virtual void encodeVideoFrame( LazyFrame* frame ) = 0;
 		virtual void encodeAudioFrame( float* buffer, int frames ) = 0;
 		virtual video_format* format() = 0;
-		virtual int samplerate() = 0;
 };
 
 	

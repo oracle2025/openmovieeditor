@@ -21,7 +21,7 @@
 #include "LazyFrame.H"
 #include "ErrorDialog/IErrorHandler.H"
 
-#include "ProgressDialog/IProgressListener.H"
+#include "IProgressListener.H"
 
 #include "render_helper.H"
 

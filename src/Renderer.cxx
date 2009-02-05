@@ -28,7 +28,7 @@
 #include "Renderer.H"
 #include "globals.H"
 #include "Timeline.H"
-#include "ProgressDialog/IProgressListener.H"
+#include "IProgressListener.H"
 #include "render_helper.H"
 #include "LazyFrame.H"
 
@@ -60,7 +60,6 @@ Renderer::Renderer( IVideoFileWriter* writer )
 
 	m_w = m_writer->format()->w;
 	m_h = m_writer->format()->h;
-	m_samplerate = m_writer->samplerate();
 	m_fps.frame_duration = m_writer->format()->framerate.frame_duration;
 	m_fps.timescale = m_writer->format()->framerate.timescale;
 	m_fps.audio_frames_per_chunk = m_writer->format()->framerate.audio_frames_per_chunk;

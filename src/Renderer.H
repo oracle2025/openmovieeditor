@@ -43,7 +43,6 @@ class Renderer
 		string m_filename;
 		int m_w;
 		int m_h;
-		int m_samplerate;
 		Timeline* p_timeline;
 		render_fps_chunks m_fps;
 		IVideoFileWriter* m_writer;

@@ -10,6 +10,7 @@
 
 noinst_LIBRARIES = libProgressDialog.a
 EXTRA_DIST = ProgressDialog.fl
+AM_CPPFLAGS = -ggdb -I$(top_srcdir)/src @CPPFLAGS@
 libProgressDialog_a_SOURCES = \
-	IProgressListener.H  ProgressDialog.cxx  ProgressDialog.h
+	ProgressDialog.cxx  ProgressDialog.h
 

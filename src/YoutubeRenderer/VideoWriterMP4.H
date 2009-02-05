@@ -1,6 +1,6 @@
-/* VideoWriterQT.H
+/*  VideoWriterMP4.H
  *
- *  Copyright (C) 2007 Richard Spindler <richard.spindler AT gmail.com>
+ *  Copyright (C) 2009 Richard Spindler <richard.spindler AT gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,39 +17,36 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _VIDEO_WRITER_QT_H_
-#define _VIDEO_WRITER_QT_H_
-
 #include "IVideoFileWriter.H"
-#include "video_format.H"
+#include "RenderDialog/video_format.H"
 #include <lqt.h>
 #include <gavl/gavl.h>
 
 namespace nle
 {
 
-class EncodingPreset;
-
-class VideoWriterQT : public IVideoFileWriter
+class VideoWriterMP4 : public IVideoFileWriter
 {
 	public:
-		VideoWriterQT( EncodingPreset* preset, const char* filename );
-		~VideoWriterQT();
+		/* w, h, fps, rate */
+		VideoWriterMP4( const char* filename );
+		~VideoWriterMP4();
 		void encodeVideoFrame( LazyFrame* frame );
 		void encodeAudioFrame( float* buffer, int frames );
-		video_format* format() { return &m_format; }
+		video_format* format();
+		bool ok();
 	private:
-		quicktime_t *m_qt;
-		float left_buffer[32000];
-		float right_buffer[32000];
-		video_format m_format;
-		unsigned char** m_rows;
-		gavl_video_format_t m_gavl_format;
-		int64_t m_timestamp;
-		//gavl_audio_format_t m_gavl_audio_format;
+		void initFormats();
+		quicktime_t*        m_encoder;
+		float               m_left_buffer[32000];
+		float               m_right_buffer[32000];
+		video_format        m_ome_format;
+		unsigned char**     m_rows;
+		gavl_video_format_t m_video_format;
+		gavl_audio_format_t m_audio_format;
+		int64_t             m_timestamp;
+		bool                m_ok;
 };
 
-	
 } /* namespace nle */
 
-#endif /* _VIDEO_WRITER_QT_H_ */
