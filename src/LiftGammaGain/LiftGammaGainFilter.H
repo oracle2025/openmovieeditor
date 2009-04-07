@@ -36,6 +36,7 @@ class LiftGammaGainFilter : public IVideoEffect
 		int numParams() { return 1; }
 		bool hasDialog() { return true; }
 		IEffectDialog* dialog();
+		IEffectWidget* widget();
 		IEffectDialog* m_dialog;
 
 		unsigned char m_red[256];

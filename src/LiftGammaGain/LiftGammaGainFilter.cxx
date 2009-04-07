@@ -18,7 +18,8 @@
  */
 
 #include "LiftGammaGainFilter.H"
-#include "LiftGammaGainDialog.H"
+//#include "LiftGammaGainDialog.H"
+#include "LiftGammaGainWrapperWidget.H"
 #include "helper.H"
 #include "LazyFrame.H"
 
@@ -80,12 +81,17 @@ const char* LiftGammaGainFilter::name()
 }
 IEffectDialog* LiftGammaGainFilter::dialog()
 {
-	if ( !m_dialog ) {
+/*	if ( !m_dialog ) {
 		m_dialog = new LiftGammaGainDialog( this );
 	}
-	return m_dialog;
-
+	return m_dialog;*/
+	return 0;
 }
+IEffectWidget* LiftGammaGainFilter::widget()
+{
+	return new LiftGammaGainWrapperWidget( this );
+}
+
 void LiftGammaGainFilter::writeXML( TiXmlElement* xml_node )
 {
 	int bypass = m_bypass;

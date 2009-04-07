@@ -12,6 +12,8 @@ noinst_LIBRARIES = libLiftGammaGain.a
 EXTRA_DIST = LiftGammaGainWidget.fl
 AM_CPPFLAGS = -ggdb -I$(top_srcdir)/src -I$(top_srcdir)/src/sl -I$(top_srcdir)/src/tinyxml @CPPFLAGS@
 libLiftGammaGain_a_SOURCES = \
-LiftGammaGainDialog.cxx  LiftGammaGainFactory.cxx  LiftGammaGainFilter.cxx  LiftGammaGainWidget.cxx  LiftGammaGainWidget.H \
-LiftGammaGainDialog.H    LiftGammaGainFactory.H    LiftGammaGainFilter.H    Fl_Hsv_Color_Chooser.cxx Fl_Hsv_Color_Chooser.H
+  LiftGammaGainFactory.cxx  LiftGammaGainFilter.cxx  LiftGammaGainWidget.cxx  LiftGammaGainWidget.H \
+    LiftGammaGainFactory.H    LiftGammaGainFilter.H    Fl_Hsv_Color_Chooser.cxx Fl_Hsv_Color_Chooser.H \
+LiftGammaGainWrapperWidget.H \
+LiftGammaGainWrapperWidget.cxx
 
