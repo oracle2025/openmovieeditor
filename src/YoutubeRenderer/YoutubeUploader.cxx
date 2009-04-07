@@ -29,6 +29,8 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <cstring>
+#include <cstdlib>
 
 #define APPLICATION_KEY "ytapi-RichardSpindler-OpenMovieEditor-f39fht0c-0"
 #define DEVELOPER_KEY "AI39si4urjpjq3Lj2VXBptv3Od-0zOUdSF5xS3ZC96OYyCCPsByzwbrnDnJEvXzu1xlT5opS9jDDgpvGcyNXCO49-Wc0J102Pw"
