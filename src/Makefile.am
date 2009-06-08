@@ -10,7 +10,7 @@
 
 SUBDIRS = tinyxml timeline ProgressDialog sl LoadSaveManager ErrorDialog \
           NodeEditor GmerlinEffects LiftGammaGain Frei0r ColorCurve \
-          RenderDialog YoutubeRenderer
+          RenderDialog YoutubeRenderer GmerlinRender
 
 EXTRA_DIST = nle.fl FilterItemWidget.fl SaveAsDialog.fl
 #AM_CPPFLAGS = -ggdb -Wall -Werror @CPPFLAGS@ -I$(top_srcdir)/icons -I$(top_srcdir)/src -I$(top_srcdir)/src/tinyxml -I$(top_srcdir)/src/sl
@@ -29,6 +29,7 @@ openmovieeditor_LDADD = tinyxml/libtinyxml.a timeline/libtimeline.a\
 	ColorCurve/libColorCurve.a\
 	RenderDialog/libRenderDialog.a\
 	YoutubeRenderer/libYoutubeRenderer.a\
+	GmerlinRender/libOggRender.a\
 	@PORTAUDIO19_LIBS@\
 	@SAMPLERATE_LIBS@\
 	@SNDFILE_LIBS@\

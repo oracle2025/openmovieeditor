@@ -1,0 +1,147 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0109 
+header_name {.H} 
+code_name {.cxx}
+decl {\#include "FileWriterOgg.H"} {public global
+} 
+
+class OggDialog {open
+} {
+  Function {OggDialog()} {open
+  } {
+    Fl_Window dialog_window {
+      label {Ogg Vorbis/Theora Encoder} open
+      xywh {1369 157 485 405} type Double visible
+    } {
+      Fl_Box {} {
+        label {Ogg Vorbis/Theora Encoder}
+        xywh {0 0 485 55} labelfont 1 labelsize 16
+      }
+      Fl_Box {} {
+        label {Vorbis Audio}
+        xywh {10 215 460 45} box ENGRAVED_FRAME labelfont 1 align 5
+      }
+      Fl_Value_Slider audioqualityslider {
+        label Quality
+        xywh {110 225 270 25} type {Horz Knob} align 4 maximum 10 step 1 value 3
+      }
+      Fl_Button {} {
+        label Default
+        xywh {380 225 80 25}
+      }
+      Fl_Box {} {
+        label {Theora Video}
+        xywh {10 285 460 75} box ENGRAVED_FRAME labelfont 1 align 5
+      }
+      Fl_Value_Slider videoqualityslider {
+        label Quality
+        xywh {110 295 270 25} type {Horz Knob} align 4 maximum 63 step 1 value 10
+      }
+      Fl_Button {} {
+        label Default
+        xywh {380 295 80 25}
+      }
+      Fl_Choice {} {
+        label Resolution open
+        xywh {110 325 270 25} down_box BORDER_BOX
+      } {
+        MenuItem {} {
+          label 640x480
+          xywh {0 0 100 20}
+        }
+        MenuItem {} {
+          label 768x576
+          xywh {0 0 100 20}
+        }
+      }
+      Fl_Box {} {
+        label File
+        xywh {10 70 460 120} box ENGRAVED_FRAME labelfont 1 align 5
+      }
+      Fl_File_Input filenameinput {
+        label Filename
+        xywh {110 145 270 35}
+      }
+      Fl_Button {} {
+        label {...}
+        xywh {380 155 80 25}
+      }
+      Fl_Button {} {
+        label Cancel
+        callback {o->window()->hide();}
+        xywh {10 370 225 25}
+      }
+      Fl_Return_Button {} {
+        label Encode
+        callback {m_go = true;
+o->window()->hide();}
+        xywh {245 370 225 25}
+      }
+      Fl_Input {} {
+        label Name
+        xywh {110 85 275 25}
+      }
+      Fl_Box {} {
+        label {.ogg}
+        xywh {385 85 80 25} align 20
+      }
+      Fl_Choice {} {
+        label Folder open
+        xywh {110 115 275 25} down_box BORDER_BOX
+      } {
+        MenuItem {} {
+          label {~/}
+          xywh {0 0 100 20}
+        }
+        MenuItem {} {
+          label {~/Desktop}
+          xywh {0 0 100 20} divider
+        }
+        MenuItem {} {
+          label Favorites
+          xywh {0 0 100 20} labelfont 1 divider
+        }
+        MenuItem {} {
+          label {Recently used}
+          xywh {0 0 100 20} labelfont 1 divider
+        }
+        MenuItem {} {
+          label {Select ...}
+          xywh {0 0 100 20}
+        }
+      }
+    }
+    code {m_go = false;} {}
+  }
+  Function {~OggDialog()} {open
+  } {
+    code {delete dialog_window;} {}
+  }
+  Function {show()} {open
+  } {
+    code {dialog_window->show();} {}
+  }
+  Function {shown()} {open return_type int
+  } {
+    code {return dialog_window->shown();} {}
+  }
+  decl {bool m_go;} {}
+  Function {go()} {open return_type bool
+  } {
+    code {return m_go;} {}
+  }
+  Function {getFileWriter()} {open return_type {nle::IVideoFileWriter*}
+  } {
+    code {nle::FileWriterOgg* file_writer = new nle::FileWriterOgg( filenameinput->value() );
+if ( file_writer->ok() ) {
+	file_writer->videoQuality( videoqualityslider->value() );
+	file_writer->audioQuality( audioqualityslider->value() );
+	file_writer->resolution( 640, 480 );
+	file_writer->done();
+	return file_writer;
+} else {
+	return 0;
+}} {selected
+    }
+  }
+} 

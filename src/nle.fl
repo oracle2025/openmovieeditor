@@ -106,10 +106,67 @@ if ( dlg.go && strcmp( "", dlg.export_filename->value() ) != 0 ) {
 //	while ( pDlg.progressDialog->shown() )
 //		Fl::wait();
 //	pDlg.progressDialog->hide();
-}}
+}} selected
             xywh {5 5 100 20}
             code0 {\#include "ProgressDialog/ProgressDialog.h"}
             code1 {\#include "Renderer.H"}
+            code2 {\#include "ErrorDialog/IErrorHandler.H"}
+            code3 {\#include "Prefs.H"}
+          }
+          MenuItem {} {
+            label {Render Ogg Vorbis/Theora...}
+            callback {Fl_Group::current( mainWindow );
+
+
+OggDialog dlg;
+
+dlg.show();
+while (dlg.shown())
+  Fl::wait();
+  
+//Abfrage File Exists  
+
+
+if ( dlg.go() ) {
+	ProgressDialog pDlg( "Rendering Project" );
+	//render_frame_size* fs = (render_frame_size*)dlg.frameSize();
+	//render_fps_chunks* fps = (render_fps_chunks*)dlg.frameRate();
+	nle::IVideoFileWriter* writer = dlg.getFileWriter();
+	if ( !writer ) {
+		SHOW_ERROR( "Rendering failed" );
+		return;
+	}
+	
+	nle::Renderer ren( writer );
+	//nle::Renderer ren( dlg.export_filename->value(), fs, fps, 48000, &cp );
+
+	/* stop playback before starting to render... */
+	g_playButton->label( "@>" );
+	m_videoView->stop();
+	lastButton->activate();
+	firstButton->activate();
+	forwardButton->activate();
+	backButton->activate();
+
+	if ( ren.ok() ) {
+		/*nle::g_preferences->lastVideoCodec( dlg.video_codec_menu->value() );
+		nle::g_preferences->lastAudioCodec( dlg.audio_codec_menu->value() );
+		nle::g_preferences->lastFramesize( dlg.frame_size_choice->value() );
+		nle::g_preferences->lastFramerate( dlg.frame_rate_choice->value() );
+		*/
+		ren.go( &pDlg );
+	}
+	
+
+//	pDlg.progressDialog->show();
+//	while ( pDlg.progressDialog->shown() )
+//		Fl::wait();
+//	pDlg.progressDialog->hide();
+}}
+            xywh {15 15 100 20}
+            code0 {\#include "ProgressDialog/ProgressDialog.h"}
+            code1 {\#include "Renderer.H"}
+            code2 {\#include "GmerlinRender/OggDialog.H"}
             code3 {\#include "Prefs.H"}
           }
           MenuItem {} {
@@ -130,7 +187,7 @@ if ( dlg.go() ) {
 	yt_uploader.encode( &pDlg );
 	pDlg.activateUploadingProgress();
 	yt_uploader.upload( &pDlg );
-}} selected
+}}
             xywh {0 0 100 20}
             code0 {\#include "YoutubeRenderer/YoutubeUploader.H"}
             code1 {\#include "YoutubeRenderer/YoutubeDialog.H"}

@@ -88,6 +88,60 @@ void NleUI::cb_Render(Fl_Menu_* o, void* v) {
   ((NleUI*)(o->parent()->user_data()))->cb_Render_i(o,v);
 }
 
+void NleUI::cb_Render1_i(Fl_Menu_*, void*) {
+  Fl_Group::current( mainWindow );
+
+
+OggDialog dlg;
+
+dlg.show();
+while (dlg.shown())
+  Fl::wait();
+  
+//Abfrage File Exists  
+
+
+if ( dlg.go() ) {
+	ProgressDialog pDlg( "Rendering Project" );
+	//render_frame_size* fs = (render_frame_size*)dlg.frameSize();
+	//render_fps_chunks* fps = (render_fps_chunks*)dlg.frameRate();
+	nle::IVideoFileWriter* writer = dlg.getFileWriter();
+	if ( !writer ) {
+		SHOW_ERROR( "Rendering failed" );
+		return;
+	}
+	
+	nle::Renderer ren( writer );
+	//nle::Renderer ren( dlg.export_filename->value(), fs, fps, 48000, &cp );
+
+	/* stop playback before starting to render... */
+	g_playButton->label( "@>" );
+	m_videoView->stop();
+	lastButton->activate();
+	firstButton->activate();
+	forwardButton->activate();
+	backButton->activate();
+
+	if ( ren.ok() ) {
+		/*nle::g_preferences->lastVideoCodec( dlg.video_codec_menu->value() );
+		nle::g_preferences->lastAudioCodec( dlg.audio_codec_menu->value() );
+		nle::g_preferences->lastFramesize( dlg.frame_size_choice->value() );
+		nle::g_preferences->lastFramerate( dlg.frame_rate_choice->value() );
+		*/
+		ren.go( &pDlg );
+	}
+	
+
+//	pDlg.progressDialog->show();
+//	while ( pDlg.progressDialog->shown() )
+//		Fl::wait();
+//	pDlg.progressDialog->hide();
+};
+}
+void NleUI::cb_Render1(Fl_Menu_* o, void* v) {
+  ((NleUI*)(o->parent()->user_data()))->cb_Render1_i(o,v);
+}
+
 void NleUI::cb_Upload_i(Fl_Menu_*, void*) {
   Fl_Group::current( mainWindow );
 
@@ -283,6 +337,7 @@ Fl_Menu_Item NleUI::menu_Black[] = {
  {"New Project", 0,  (Fl_Callback*)NleUI::cb_New, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Save as...", 0x50073,  (Fl_Callback*)NleUI::cb_Save, 0, 128, FL_NORMAL_LABEL, 0, 14, 0},
  {"Render...", 0,  (Fl_Callback*)NleUI::cb_Render, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Render Ogg Vorbis/Theora...", 0,  (Fl_Callback*)NleUI::cb_Render1, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Upload to Youtube...", 0,  (Fl_Callback*)NleUI::cb_Upload, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Export SRT/Subtitles...", 0,  (Fl_Callback*)NleUI::cb_Export, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Export SMIL/Kino...", 0,  (Fl_Callback*)NleUI::cb_Export1, 0, 128, FL_NORMAL_LABEL, 0, 14, 0},
@@ -319,12 +374,12 @@ Fl_Menu_Item NleUI::menu_Black[] = {
  {0,0,0,0,0,0,0,0,0},
  {0,0,0,0,0,0,0,0,0}
 };
-Fl_Menu_Item* NleUI::undo_item = NleUI::menu_Black + 10;
-Fl_Menu_Item* NleUI::redo_item = NleUI::menu_Black + 11;
-Fl_Menu_Item* NleUI::cut_item = NleUI::menu_Black + 12;
-Fl_Menu_Item* NleUI::copy_item = NleUI::menu_Black + 13;
-Fl_Menu_Item* NleUI::paste_item = NleUI::menu_Black + 14;
-Fl_Menu_Item* NleUI::delete_item = NleUI::menu_Black + 15;
+Fl_Menu_Item* NleUI::undo_item = NleUI::menu_Black + 11;
+Fl_Menu_Item* NleUI::redo_item = NleUI::menu_Black + 12;
+Fl_Menu_Item* NleUI::cut_item = NleUI::menu_Black + 13;
+Fl_Menu_Item* NleUI::copy_item = NleUI::menu_Black + 14;
+Fl_Menu_Item* NleUI::paste_item = NleUI::menu_Black + 15;
+Fl_Menu_Item* NleUI::delete_item = NleUI::menu_Black + 16;
 
 void NleUI::cb_zoom_slider_i(Fl_Slider* o, void*) {
   m_videoView->zoom( o->value() );

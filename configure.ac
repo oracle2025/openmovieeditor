@@ -174,6 +174,7 @@ AC_CONFIG_FILES([
    src/timeline/Makefile
    src/RenderDialog/Makefile
    src/YoutubeRenderer/Makefile
+   src/GmerlinRender/Makefile
 ])
 
 AC_OUTPUT

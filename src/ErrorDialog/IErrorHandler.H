@@ -22,9 +22,9 @@
 
 #include "global_includes.H"
 
-#define ERROR_DETAIL( s ) g_errorHandler->detail( s )
-#define SHOW_ERROR( s ) g_errorHandler->error( s )
-#define CLEAR_ERRORS() g_errorHandler->clear()
+#define ERROR_DETAIL( s ) nle::g_errorHandler->detail( s )
+#define SHOW_ERROR( s ) nle::g_errorHandler->error( s )
+#define CLEAR_ERRORS() nle::g_errorHandler->clear()
 
 namespace nle
 {
