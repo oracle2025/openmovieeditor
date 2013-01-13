@@ -139,17 +139,17 @@ AC_SUBST(FLTK_LIBS)
 LDFLAGS_RESTORE="$LDFLAGS"
 LDFLAGS="$LDFLAGS $LIBQUICKTIME_LIBS"
 
-AC_RUN_IFELSE(
-     [AC_LANG_PROGRAM([[#include <lqt/lqt.h>]],
-                      [[ if ( lqt_find_audio_codec_by_name( "lame" ) ) { return 0; } return 1; ]])],
-                      [],
-                      [AC_MSG_ERROR([Lame Codec in libquicktime not found, reinstall libquicktime with lame enabled])] )
-
-AC_RUN_IFELSE(
-     [AC_LANG_PROGRAM([[#include <lqt/lqt.h>]],
-                      [[ if ( lqt_find_video_codec_by_name( "x264" ) ) { return 0; } return 1; ]])],
-                      [],
-                      [AC_MSG_ERROR([x264 Codec in libquicktime not found, reinstall libquicktime with x264 enabled])] )
+dnl AC_RUN_IFELSE(
+dnl      [AC_LANG_PROGRAM([[#include <lqt/lqt.h>]],
+dnl                       [[ if ( lqt_find_audio_codec_by_name( "lame" ) ) { return 0; } return 1; ]])],
+dnl                       [],
+dnl                       [AC_MSG_ERROR([Lame Codec in libquicktime not found, reinstall libquicktime with lame enabled])] )
+dnl 
+dnl AC_RUN_IFELSE(
+dnl      [AC_LANG_PROGRAM([[#include <lqt/lqt.h>]],
+dnl                       [[ if ( lqt_find_video_codec_by_name( "x264" ) ) { return 0; } return 1; ]])],
+dnl                       [],
+dnl                       [AC_MSG_ERROR([x264 Codec in libquicktime not found, reinstall libquicktime with x264 enabled])] )
 
 LDFLAGS="$LDFLAGS_RESTORE"
 

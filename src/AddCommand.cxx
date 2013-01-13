@@ -22,6 +22,7 @@
 #include "timeline/Clip.H"
 #include "Timeline.H"
 #include "VideoTrack.H"
+#include <stdio.h>
 
 namespace nle
 {

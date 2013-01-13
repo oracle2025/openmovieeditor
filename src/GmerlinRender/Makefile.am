@@ -1,4 +1,4 @@
-# Copyright (C) 2003 Richard Spindler <richard.spindler AT gmail.com>
+# Copyright (C) 2012 Richard Spindler <richard.spindler AT gmail.com>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -8,14 +8,9 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-#!/bin/sh
-rm -f config.cache
-echo "- aclocal."
-aclocal
-echo "- autoconf."
-autoconf
-echo "- autoheader."
-autoheader
-echo "- automake."
-automake -a
-exit
+EXTRA_DIST = OggDialog.fl
+noinst_LIBRARIES = libOggRender.a
+AM_CPPFLAGS = -ggdb -I$(top_srcdir)/src -I$(top_srcdir)/src/sl -I$(top_srcdir)/src/tinyxml -I$(top_srcdir)/src/ProgressDialog @CPPFLAGS@
+libOggRender_a_SOURCES = \
+FileWriterOgg.cxx  FileWriterOgg.H OggRenderer.cxx  OggRenderer.H \
+OggDialog.cxx OggDialog.H

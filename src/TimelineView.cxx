@@ -206,13 +206,15 @@ int TimelineView::handle( int event )
 			cl = get_clip( _x, _y );
 			if ( cl && ( _x < get_screen_position( cl->position(), cl->track()->stretchFactor() ) + 8 ) ) {
 				if ( current_cursor != FL_CURSOR_WE ) {
-					flmm_cursor( window(), &Flmm_Cursor_Shape(clip_a_cursor_crsr) );
+					Flmm_Cursor_Shape c(clip_a_cursor_crsr);
+					flmm_cursor( window(), &c );
 					//window()->cursor( FL_CURSOR_WE, fl_rgb_color(254,254,254), fl_rgb_color(1,1,1) );
 					current_cursor = FL_CURSOR_WE;
 				}
 			} else if ( cl &&  ( _x > get_screen_position( cl->position() + (cl->length()+1), cl->track()->stretchFactor() ) - 8 ) ) {
 				if ( current_cursor != FL_CURSOR_NE ) {
-					flmm_cursor( window(), &Flmm_Cursor_Shape(clip_b_cursor_crsr) );
+					Flmm_Cursor_Shape c(clip_b_cursor_crsr);
+					flmm_cursor( window(), &c );
 					current_cursor = FL_CURSOR_NE;
 				}
 			} else {

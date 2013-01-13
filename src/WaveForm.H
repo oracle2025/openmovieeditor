@@ -21,6 +21,7 @@
 #include "JobManager.H"
 
 #include <string>
+#include <stdint.h>
 
 namespace nle
 {
