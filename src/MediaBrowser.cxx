@@ -20,6 +20,7 @@
 #include <iostream>
 #include <cstring>
 #include <cstdlib>
+#include <cstdio>
 
 #include <FL/Fl.H>
 #include <FL/filename.H>

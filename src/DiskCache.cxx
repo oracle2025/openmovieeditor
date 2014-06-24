@@ -25,6 +25,7 @@
 #include <sys/stat.h>
 #include <cerrno>
 #include <cstring>
+#include <unistd.h>
 
 #include "DiskCache.H"
 #include "globals.H"

@@ -24,6 +24,7 @@
 #include <iostream>
 #include <cassert>
 #include "../ErrorDialog/IErrorHandler.H"
+#include <gavl/metatags.h>
 
 namespace nle
 {
@@ -92,16 +93,17 @@ FileWriterOgg::FileWriterOgg( const char* filename )
 	m_encoder = (const bg_encoder_plugin_t*)m_plugin_handle->plugin;
 	m_instance = m_encoder->common.create();
 
-	bg_metadata_t metadata;
-	metadata.artist = 0;
-	metadata.title = 0;
-	metadata.album = 0;
-	metadata.track = 0;
-	metadata.date = 0;
-	metadata.genre = 0;
-	metadata.comment = 0;
-	metadata.author = "Open Movie Editor User";
-	metadata.copyright = 0;
+	gavl_metadata_t metadata;
+	gavl_metadata_init (&metadata);
+	gavl_metadata_set (&metadata, GAVL_META_ARTIST, "");
+	gavl_metadata_set (&metadata, GAVL_META_TITLE, "");
+	gavl_metadata_set (&metadata, GAVL_META_ALBUM, "");
+	gavl_metadata_set (&metadata, GAVL_META_TRACKNUMBER, "");
+	gavl_metadata_set (&metadata, GAVL_META_DATE, "");
+	gavl_metadata_set (&metadata, GAVL_META_GENRE, "");
+	gavl_metadata_set (&metadata, GAVL_META_COMMENT, "");
+	gavl_metadata_set (&metadata, GAVL_META_SOFTWARE, "Open Movie Editor");
+	gavl_metadata_set (&metadata, GAVL_META_COPYRIGHT, "");
 	if ( !m_encoder->open( m_instance, filename, &metadata, 0 ) ) {
 		ERROR_DETAIL( "Could not open Video file" );
 		return;
@@ -138,7 +140,7 @@ FileWriterOgg::FileWriterOgg( const char* filename )
 
 	m_audio_frame = gavl_audio_frame_create( 0 );
 
-	m_encoder->add_video_stream( m_instance, &m_video_format );
+	m_encoder->add_video_stream( m_instance, 0, &m_video_format );
 
 	m_encoder->add_audio_stream( m_instance, 0, &m_audio_format );
 
