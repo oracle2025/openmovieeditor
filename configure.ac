@@ -62,18 +62,18 @@ PKG_CHECK_MODULES(SNDFILE, sndfile >= 1.0.0,,
   AC_MSG_ERROR([*** libsndfile 1.0.0 not found - this program requires libsndfile >= 1.0.0 http://www.mega-nerd.com/libsndfile/ ***]))
 CPPFLAGS="$CPPFLAGS $SNDFILE_CFLAGS"
 
-PKG_CHECK_MODULES(GAVL, gavl >= 1.0.0,,
-  AC_MSG_ERROR([*** gavl >= 1.0.0 not found - this program requires the gmerlin audio
-  video library >= 1.0.0 http://gmerlin.sourceforge.net/ ***]))
+PKG_CHECK_MODULES(GAVL, gavl >= 1.4.0,,
+  AC_MSG_ERROR([*** gavl >= 1.4.0 not found - this program requires the gmerlin audio
+  video library >= 1.4.0 http://gmerlin.sourceforge.net/ ***]))
 CPPFLAGS="$CPPFLAGS $GAVL_CFLAGS"
 
-PKG_CHECK_MODULES(GMERLIN_AVDEC, gmerlin_avdec >= 0.1.7,,
-  AC_MSG_ERROR([*** gmerlin_avdec >= 0.1.7 not found - this program requires the gmerlin audio
-  video decoder >= 0.1.7 http://gmerlin.sourceforge.net/ ***]))
+PKG_CHECK_MODULES(GMERLIN_AVDEC, gmerlin_avdec >= 1.2.0,,
+  AC_MSG_ERROR([*** gmerlin_avdec >= 1.2.0 not found - this program requires the gmerlin audio
+  video decoder >= 1.2.0 http://gmerlin.sourceforge.net/ ***]))
 CPPFLAGS="$CPPFLAGS $GMERLIN_AVDEC_CFLAGS"
 
-PKG_CHECK_MODULES(GMERLIN, gmerlin >= 0.3.7,,
-  AC_MSG_ERROR([*** gmerlin >= 0.3.7 not found - this program requires gmerlin >= 0.3.7 http://gmerlin.sourceforge.net/ ***]))
+PKG_CHECK_MODULES(GMERLIN, gmerlin >= 1.2.0,,
+  AC_MSG_ERROR([*** gmerlin >= 1.2.0 not found - this program requires gmerlin >= 1.2.0 http://gmerlin.sourceforge.net/ ***]))
 CPPFLAGS="$CPPFLAGS $GMERLIN_CFLAGS"
 
 PKG_CHECK_MODULES(LIBQUICKTIME, libquicktime >= 1.0.0,,
