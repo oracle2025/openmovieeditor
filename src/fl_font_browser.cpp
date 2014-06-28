@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
-//  fl_font_browser.cpp      v 0.0.2                              2005-10-17 
+//  fl_font_browser.cpp      v 0.0.3                              2014-03-11 
 //
 //         for the Fast Light Tool Kit (FLTK) 1.1.x .
 //
@@ -28,9 +28,6 @@
 
 
 #include "fl_font_browser.h"
-#include <cstdlib>
-#include <cstring>
-#include <cstdio>
 using namespace std;
 
 void Fl_Font_Browser::callback(void (*cb)(Fl_Widget *, void *), void *d ) 
@@ -64,7 +61,7 @@ int Fl_Font_Preview_Box::GetFontStrickTrhough()
 Fl_Font_Preview_Box::Fl_Font_Preview_Box(int x, int y, int w, int h, char*l):Fl_Widget(x, y, w, h, l)
 {
 fontName = 1;  // First font in the server
-fontSize = 14; // Initianl font size
+fontSize = 14; // Initial font size
 fontStyle=0;
 fontStrickTrhough=0;
 fontUnderLine=0;
@@ -76,16 +73,15 @@ fontColor=FL_BLACK;  // Initial font color
 // Draw method for the font preview box 
 void Fl_Font_Preview_Box::draw()
 {
-  color( fl_contrast(FL_WHITE,fontColor) );
   draw_box(); 
-  fl_font((Fl_Font)fontName+fontStyle, fontSize); // Select font to bo used by the widget
+  fl_font((Fl_Font)fontName+fontStyle, fontSize); // Select font to be used by the widget
   fl_color(fontColor); // Select color to be used for drawing the label
   fl_draw(label(), x()+3, y()+3, w()-6, h()-6, align()); 
-// This is quite STUPID.. But since FLTK is not supporting Strikethrough I simplify the matter as here
+// This is quite STUPID.. But since FLTK is not supporting Strike through I simplify the matter as this
    if (fontStrickTrhough!=0)
-       fl_draw("------------------", x()+3, y()+3, w()-6, h()-6, align()); 
+       fl_draw("-------------------------", x()+3, y()+3, w()-6, h()-6, align()); 
    if (fontUnderLine!=0)
-       fl_draw("__________________", x()+3, y()+5, w()-6, h()-6, align()); 
+       fl_draw("_________________________", x()+3, y()+5, w()-6, h()-6, align()); 
 }
 
 // Set font name and size to be used by the box
@@ -96,12 +92,12 @@ void Fl_Font_Preview_Box::SetFont( int fontname,int style,int fontsize)
  fontStyle=style;
  redraw();
 }
-//Get font name ( in intiger)
+//Get font name ( in integer)
 int Fl_Font_Preview_Box::GetFontName()
 {
     return fontName;
 }
-//Get font name ( in intiger)
+//Get font name ( in integer)
 int Fl_Font_Preview_Box::GetFontStyle()
 {
     return fontStyle;
@@ -145,7 +141,7 @@ ft->box_Example->redraw();
 }
 
 // Normal Bold, Italic, or Bold italic selected
-void cb_SyleSelected (Fl_Widget*, void*frmWid) 
+void cb_StyleSelected (Fl_Widget*, void*frmWid) 
 {
 Fl_Font_Browser *ft=(Fl_Font_Browser*)frmWid;
 switch (ft->lst_Style->value())
@@ -228,8 +224,10 @@ void ForwardSort(Fl_Browser *brows)
 // Font Name changed callback
 void cb_FontName_Selected(Fl_Widget*, void*frmWid) 
 {
-Fl_Font_Browser *ft=(Fl_Font_Browser*)frmWid;
-int fn = ft->lst_Font->value();
+ char* buffer;  // Used for the style types
+ Fl_Font_Browser *ft=(Fl_Font_Browser*)frmWid;
+ int fn = ft->lst_Font->value();
+  ft->lst_Style->value(1);  
   if (!fn) return;
   fn--;
   ft->lst_Size->clear();
@@ -237,14 +235,16 @@ int fn = ft->lst_Font->value();
  int *s;
  int t;
  int i;
-  for (i=0;;i++)
+ const char *name =0;
+  for (i=0;i<ft->lst_Font->size();i++) // To previent crash .. We should stop the for loop in some way 2014-03-12
    {
-    const char *name = Fl::get_font_name((Fl_Font)i,&t); 
+    name = Fl::get_font_name((Fl_Font)i,&t); 
     if (strcmp(name,ft->lst_Font->text(ft->lst_Font->value()))==0)
        break;
     }
+     
  int n = Fl::get_font_sizes((Fl_Font)i, s);
- // Retrive Sizes
+ // Retrieve Sizes
  if (n) 
  {
                
@@ -273,7 +273,7 @@ int fn = ft->lst_Font->value();
       for (int i = 0; i < n; i++) 
        {
         if (s[i]<=ft->pickedsize) 
-        w = i;
+         w = i;
         char buf[20];
         sprintf(buf,"%d",s[i]);
         ft->lst_Size->add(buf);
@@ -281,38 +281,41 @@ int fn = ft->lst_Font->value();
       ft->lst_Size->value(w+1);
 
    }
-    int gg=ft->GetFontNr(ft->lst_Font->text(ft->lst_Font->value()));
-   // Retrive Styles 
-     ft->lst_Style->clear();
-     ft->lst_Style->add("Normal");
-     ft->lst_Style->value(1);
-     for (i=gg+1; i<gg+2;i++)
-     {
-       const char *name = Fl::get_font_name((Fl_Font)i,&t);
-        char buffer[128];
-              sprintf(buffer,"%s %s",ft->lst_Font->text(ft->lst_Font->value()), "bold");
-              if(strcmp(name,buffer)==0)
-             {
-               ft->lst_Style->add("Bold");
-              }   
-            else
-                sprintf(buffer,"%s %s",ft->lst_Font->text(ft->lst_Font->value()), "italic");
-                if (strcmp(name,buffer)==0)
-                  ft->lst_Style->add("Italic");
-       
-                  else 
-
-                    sprintf(buffer,"%s %s",ft->lst_Font->text(ft->lst_Font->value()), "bold italic");
-                    if (strcmp(name,buffer)==0)
-                     {
-                       ft->lst_Style->add("Bold Italic");
-                     }
-     }
-      
+ 
 
    ft->box_Example->SetFont(ft->GetFontNr(ft->lst_Font->text(ft->lst_Font->value())),0, ft->pickedsize);
    ft->txt_InputSize->value(ft->lst_Size->text(ft->lst_Size->value()));
  }
+
+     int gg=ft->GetFontNr(ft->lst_Font->text(ft->lst_Font->value()));
+   // Retrieve Styles 
+
+     ft->lst_Style->clear();
+     ft->lst_Style->add("Normal");
+     ft->lst_Style->value(1);
+	 ft->txt_InputStyle->value(ft->lst_Style->text(ft->lst_Style->value()));
+     for (i=gg+1; i<gg+4;i++)
+     {
+        buffer= new char(128); 
+        name = Fl::get_font_name((Fl_Font)i,&t);
+        sprintf(buffer,"%s %s\0",ft->lst_Font->text(ft->lst_Font->value()), "bold");
+        if(strcmp(name,buffer)==0)
+           ft->lst_Style->add("Bold");
+
+        delete buffer;
+        buffer= new char(128);
+        sprintf(buffer,"%s %s\0",ft->lst_Font->text(ft->lst_Font->value()), "italic");
+        if (strcmp(name,buffer)==0)
+           ft->lst_Style->add("Italic");
+
+        delete buffer;
+        buffer= new char(128);
+        sprintf(buffer,"%s %s\0",ft->lst_Font->text(ft->lst_Font->value()), "bold italic");
+        if (strcmp(name,buffer)==0)     
+           ft->lst_Style->add("Bold Italic"); 
+        delete buffer;
+    }
+
 }
 // Change to Upper case 
 char* ToUpperCase(const char* buf)
@@ -384,7 +387,7 @@ Fl_Font_Browser *ft=(Fl_Font_Browser*)frmWid;
   for (i=1; i<= ft->lst_Size->size();i++)// Search for the font Full name 
    {
       int g1=atoi(ft->lst_Size->text(i)); // Size list
-      int g2=atoi(ft->txt_InputSize->value()); // Size enterd
+      int g2=atoi(ft->txt_InputSize->value()); // Size entered
       if (g1==g2)
      {
        ft->lst_Size->value(i);
@@ -394,7 +397,7 @@ Fl_Font_Browser *ft=(Fl_Font_Browser*)frmWid;
        break;
      }
    }
-   if (i>ft->lst_Size->size()) // This means that the size enterd is not availabel
+   if (i>ft->lst_Size->size()) // This means that the size entered is not available
       {
 
          ft->box_Example->SetFont(ft->box_Example->GetFontName(),ft->box_Example->GetFontStyle(), atoi(ft->txt_InputSize->value()));
@@ -444,7 +447,7 @@ Fl_Font_Browser::Fl_Font_Browser():Fl_Window(100,100,550-60,332-5,"Font Browser"
       lst_Style->labelsize(12);
       lst_Style->type(FL_HOLD_BROWSER);
       lst_Style->textsize(12); 
-      lst_Style->callback((Fl_Callback*)cb_SyleSelected, (void*)(lst_Style->parent()));   
+      lst_Style->callback((Fl_Callback*)cb_StyleSelected, (void*)(lst_Style->parent()));   
        
       txt_InputStyle = new Fl_Input(215, 32-5, 155-60, 24, "Syle:");
       txt_InputStyle->labelsize(12);
@@ -530,6 +533,12 @@ Fl_Font_Browser::Fl_Font_Browser():Fl_Window(100,100,550-60,332-5,"Font Browser"
         lst_Font->add(buffer);
      }
   }
+     /* FL_Browser uses the symbol "@" as a formating char. There are some fonts that there 
+      names starts with char "@".       We need to disable this     
+   */  
+     lst_Font->format_char(0);
+       
+  
   // Sort the font Alphabetically
   ForwardSort(lst_Font);
   

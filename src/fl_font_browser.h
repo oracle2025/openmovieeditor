@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
-//  fl_font_browser.h      v 0.0.1                              2005-10-17 
+//  fl_font_browser.h       v 0.0.3                              2014-03-11
 //
 //         for the Fast Light Tool Kit (FLTK) 1.1.x .
 //
@@ -21,14 +21,15 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA.
 //
-// Please report all bugs and problems to "fltk_kurdi@yahoo.com".
+// Please report all bugs and problems to "mariwan.jalal@gmail.com".
 //
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
 
-#ifndef fontbrowser2_h
-#define fontbrowser2_h
+#ifndef FL_FONT_BROWSER_H
+#define FL_FONT_BROWSER_H
+
 #include <FL/Fl.H>
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Browser.H>
@@ -39,7 +40,12 @@
 #include <FL/Fl_Check_Button.H>
 #include <FL/fl_draw.H>
 #include <FL/fl_show_colormap.H>
+
 #include <iostream>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+
 // Preview box for showing font
 class Fl_Font_Preview_Box : public Fl_Widget
 {
